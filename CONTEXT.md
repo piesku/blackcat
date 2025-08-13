@@ -1,8 +1,8 @@
 # Goodluck — Context Document
 
-This document provides a comprehensive overview of the Goodluck game engine, including its technology stack, architecture, key principles, and guidelines for contributors.
+This document provides a comprehensive overview of the Goodluck game engine, including its technology stack, architecture, key principles, and guidelines for contributors. Goodluck is a template for creating small and fast browser games.
 
-## 1. Tech Stack
+## Tech Stack
 
 The project is built primarily with **TypeScript**, leveraging its typing system for better code quality and editor support while minimizing runtime overhead. Key technologies and libraries include:
 
@@ -15,72 +15,92 @@ The project is built primarily with **TypeScript**, leveraging its typing system
   * PostHTML and htmlnano: For processing and minifying the final HTML output.  
 * **No external runtime libraries**: The engine is self-contained and does not rely on external game frameworks.
 
-## 2. Framework Architecture (ECS)
+## Framework Architecture (Goodluck)
 
-Goodluck is a repository template, not a typical library. The user generates a new repository from the template, removes unnecessary code, and modifies it as needed. This is particularly useful for optimizing code for size and when quick, specific changes are required.  
-Goodluck implements the **Entity-Component-System (ECS)** architecture, which favors composition over inheritance.
+Goodluck is a repository template, not a typical library. The user generates a new repository from the template, removes unnecessary code, and modifies it as needed. This is particularly useful for optimizing code for size and when quick, specific changes are required.
 
-* **Components**: Game object data is stored in arrays of components, each responsible for a different concern (e.g., Transform, Render, Collide). Components can be dynamically added and removed during an entity's lifetime. Component data is stored in large arrays indexed by entities, which improves data locality (Structure of Arrays vs. Array of Structures). Components are defined as TypeScript interfaces to emphasize that they should only contain data, not logic (methods).  
-* **Entities**: These are simply indices (type number) into the component arrays. They also index a special Signature array, which for each entity stores a bitmask of currently enabled components. The maximum number of components in Goodluck is 32 due to 32-bit bitwise operations in JavaScript.  
-* **Systems**: These are functions called one by one, which iterate over all entities in the scene and execute logic on those entities whose signatures match the system's query mask. Game data flows in one direction, stored in component arrays and processed by systems in a deterministic order.
+### Entity-Component-System (ECS)
 
-## 3. Key Principles of Goodluck
+Goodluck implements the Entity-Component-System (ECS) architecture.
 
-* **Minimal Abstractions**: Goodluck intentionally avoids excessive abstractions, generalizations, and parameterization to keep the code simple, predictable, and fast in execution. The goal is to ship a game rather than build a generic engine.  
-* **Bitwise Operations**: Goodluck uses bitflags and bitmasks to store the component composition of entities. Bitwise operations are fast and simple to work with, even though the JS engine casts to 32-bit integers for these operations.  
-* **for Loops**: For iterating over entities in systems, Goodluck uses standard for loops, which are generally very efficient, even with tens of thousands of signatures.  
-* **Data Locality**: Component data is stored in large arrays (one array per component), which improves data locality and performance, similar to column-oriented databases (Structure of Arrays).  
-* **Math Functions with out Parameter**: The math library (based on glMatrix) uses a pattern where vector functions take a reference to an output vector (out) as the first parameter. This helps avoid short-lived memory allocations and associated GC pauses.  
-* **Component Mixins**: Components are added using mixin functions, which return thunks called during new entity creation. This allows modification of Game and World instances when adding a component.  
-* **Free Functions**: Much of Goodluck's logic is implemented as free (non-member) functions that take the object to process as the first parameter. This allows for more effective tree-shaking by build tools.  
-* **Repository Template**: Goodluck is designed for extreme "hackability." After generating a project from the template, the user gets all the code for any modification, without needing to worry about updates to newer versions of Goodluck.
+-   **Components:** Game object data is stored in arrays of components, each responsible for a different concern (e.g., `Transform`, `Render`, `Collide`). Components can be dynamically added and removed during an entity's lifetime. Component data is stored in large arrays indexed by entities, which improves data locality (Structure of Arrays vs. Array of Structures). Components are defined as TypeScript interfaces to emphasize that they should only contain data, not logic (methods).
+-   **Entities:** These are simply indices (type `number`) into the component arrays. They also index a special `Signature` array, which for each entity stores a bitmask of currently enabled components. The maximum number of components in Goodluck is 32 due to 32-bit bitwise operations in JavaScript.
+-   **Systems:** These are functions called one by one, which iterate over all entities in the scene and execute logic on those entities whose signatures match the system's query mask. Game data flows in one direction, stored in component arrays and processed by systems in a deterministic order. Systems are typically simple `for` loops iterating over all entities in the scene.
 
-## 4. Directory Structure
+The ECS architecture promotes composition over inheritance, making it easier to experiment with new gameplay ideas and maintain well-isolated behaviors as the project grows.
 
-The repository is organized into several main directories:
+### Key Principles of Goodluck
 
-* .github/workflows/: Contains CI/CD configuration files.  
-* assets/: Raw asset files like .gltf models.  
-* core/: Core components, systems, and UI elements shared across examples.  
-* lib/: Common libraries for math, rendering, and game logic.  
-* materials/: Shader and material definitions.  
-* meshes/: TypeScript files generated from the assets.  
-* play/: Contains the build pipeline for creating optimized production builds.  
-* reference/: Scripts for generating API documentation.  
-* textures/: Image files for textures.  
-* util/: Utility scripts for asset conversion.  
-* **Example Directories** (e.g., Animate/, FirstPerson/): Each example is a self-contained project demonstrating different features of the engine.
+-   **Minimal Abstractions:** Goodluck intentionally avoids excessive abstractions, generalizations, and parameterization to keep the code simple, predictable, and fast in execution. The goal is to ship a game rather than build a generic engine.
+-   **Bitwise Operations:** Goodluck uses bitflags and bitmasks to store the component composition of entities. Bitwise operations are fast and simple to work with, even though the JS engine casts to 32-bit integers for these operations.
+-   **`for` Loops:** For iterating over entities in systems, Goodluck uses standard `for` loops, which are generally very efficient, even with tens of thousands of signatures.
+-   **Data Locality:** Component data is stored in large arrays (one array per component), which improves data locality and performance, similar to column-oriented databases (Structure of Arrays).
+-   **Math Functions with `out` Parameter:** The math library (based on glMatrix) uses a pattern where vector functions take a reference to an output vector (`out`) as the first parameter. This helps avoid short-lived memory allocations and associated GC pauses.
+-   **Component Mixins:** Components are added using mixin functions, which return thunks called during new entity creation. This allows modification of `Game` and `World` instances when adding a component.
+-   **Free Functions:** Much of Goodluck's logic is implemented as free (non-member) functions that take the object to process as the first parameter. This allows for more effective tree-shaking by build tools.
+-   **Repository Template:** Goodluck is designed for extreme "hackability." After generating a project from the template, the user gets all the code for any modification, without needing to worry about updates to newer versions of Goodluck.
 
-## 5. Main Game Loop
+## Project-Specific Architecture
 
-The main game loop is managed by the GameImpl class in lib/game.ts. The FrameUpdate method in each example's game.ts file defines the order in which systems are executed each frame. A typical frame looks like this:
+The project builds upon the structure provided by Goodluck and extends it with specific elements for the chess analysis application. According to the provided files, the project is in its initial phase and primarily uses the 2D elements of the Goodluck framework.
 
-1. **Input Handling**: Process player input from keyboard, mouse, touch, and gamepads.  
-2. **Physics and Collisions**:  
-   * sys\_physics\_integrate: Apply acceleration and velocity.  
-   * sys\_transform: Update entity transforms.  
-   * sys\_collide: Detect collisions.  
-   * sys\_physics\_resolve: Resolve collisions.  
-   * sys\_transform: Update transforms again to reflect collision responses.  
-3. **Game Logic**: Run systems for AI, movement, animations, and other game mechanics.  
-4. **Rendering**:  
-   * sys\_light: Collect lighting information.  
-   * sys\_render\_depth: Render shadow maps.  
-   * sys\_render\_forward / sys\_render\_deferred: Render the scene.  
-   * sys\_draw: Render 2D primitives.  
-   * sys\_ui: Render the UI.
+### Directory and File Structure
 
-## 6. Rendering Pipeline
+-   **`lib/`**: Contains core Goodluck framework modules, such as vector math (e.g., `vec2.ts`, `mat2d.ts`), rendering (e.g., `texture.ts`, `material.ts`), game logic (e.g., `game.ts`, `world.ts`), input handling (`input.ts`), and other utilities (e.g., `aabb2d.ts`, `random.ts`).
+-   **`materials/`**: Definitions of materials and layouts for WebGL rendering, including 2D specifics (`layout2d.ts`, `mat_render2d.ts`).
+-   **`src/`**: Main application code.
+    -   **`actions.ts`**: Defines possible actions in the game (currently only `NoOp`).
+    -   **`game.ts`**: Defines the main game class, initializes the world, materials, shaders, and the main game loop with systems.
+    -   **`index.ts`**: Application entry point, initializes the game and scene.
+    -   **`world.ts`**: Defines the project-specific `World` implementation, storing component arrays and entity signatures.
+    -   **`tiled.ts`**: Logic for processing map data from the Tiled editor.
+    -   **`components/`**: ECS component definitions, e.g., `com_camera2d.ts`, `com_collide2d.ts`, `com_local_transform2d.ts`, `com_render2d.ts`, `com_rigid_body2d.ts`, etc.
+    -   **`maps/`**: Contains map definitions, e.g., `map_platforms.ts`.
+    -   **`scenes/`**: Scene definitions, e.g., `sce_platforms.ts`, `sce_stage.ts`, and "blueprints" for specific entities (`blu_camera.ts`, `blu_player.ts`, `blu_square.ts`).
+    -   **`sprites/`**: Graphical assets, including `atlas.ts` defining the sprite atlas.
+    -   **`systems/`**: ECS system implementations, e.g., `sys_camera2d.ts`, `sys_collide2d.ts`, `sys_control_keyboard.ts`, `sys_render2d.ts`, `sys_transform2d.ts`, etc.
+    -   **`ui/`**: User interface components, e.g., `App.ts`.
+-   **`play/`**: Configured for building an optimized version of the game.
 
-Goodluck supports both forward and deferred rendering pipelines.
+### Main Game Loop and State Management
 
-* **Forward Rendering**: The default pipeline, suitable for most games. It renders objects directly to the screen or a texture. Transparent objects are sorted back-to-front and rendered after opaque objects.  
-* **Deferred Rendering**: A more advanced pipeline that separates geometry and lighting calculations. It first renders scene information (position, normals, color) to a G-buffer and then applies lighting in a separate pass. This is more efficient for scenes with many dynamic lights.  
-* **Post-processing**: The deferred shading example includes a post-processing step for effects like bloom, tone-mapping, and FXAA.
+-   The **main game loop** is defined in `src/game.ts` (the `Game` class). It's responsible for initializing WebGL, resources (e.g., sprite atlas, materials), and then, in the `FrameUpdate` method, sequentially calls all systems in a predefined order.
+-   The **World** is defined in `src/world.ts` and inherits from `WorldImpl` in `lib/world.ts`. It stores all component data in arrays and entity signatures (bitmasks indicating which components are active for a given entity). Entities are created and destroyed using the `create_entity` and `destroy_entity` functions.
+-   **Scenes** (`src/scenes/`) define the initial state of the game world, creating entities and assigning components to them using "blueprints." The `instantiate` function (`lib/game.ts`) is used to create entities based on blueprints.
+-   **Components** (`src/components/`) define the data and state of entities. They are simple data structures (interfaces in TypeScript), and their creation logic is encapsulated in factory functions (e.g., `camera2d`, `collide2d`).
+-   **Systems** (`src/systems/`) contain the game logic. They iterate over entities possessing specific combinations of components (defined by `QUERY` in each system) and modify their state. The order of system calls is crucial for correct game operation and is defined in `Game.FrameUpdate()`.
 
-## 7. Input Handling
+### Rendering
 
-Input is handled in the GameImpl class. It listens for mouse, keyboard, touch, and gamepad events and updates the InputState and InputDelta records. Systems like sys\_control\_keyboard and sys\_control\_mouse\_move then use this information to update the state of controllable entities.
+-   The project uses WebGL for 2D rendering.
+-   The `sys_render2d` system is responsible for drawing sprites. It uses instancing to draw all sprites in a single `drawArraysInstanced` call.
+-   Instance data (position, rotation, scale, color, sprite information) is stored in `World.InstanceData` and updated by `sys_transform2d`.
+-   The `sys_render2d_animate` system handles sprite frame animations.
+-   The `sys_draw2d` system allows drawing simple 2D primitives (rectangles, arcs) using the Canvas 2D API on top of the WebGL scene.
+-   Materials and shaders are defined in `materials/` (e.g., `mat_render2d.ts` contains shaders for 2D rendering).
+
+### Input Handling
+
+-   Basic input handling (mouse, touch, keyboard) is implemented in `lib/game.ts`.
+-   Specific systems like `sys_control_keyboard.ts`, `sys_control_mouse.ts`, and `sys_control_camera.ts` interpret these inputs and translate them into game actions (e.g., character movement, UI interactions, camera control).
+
+## Identified Good Practices
+
+-   **Separation of Concerns:** The ECS architecture naturally promotes the separation of data (components) from logic (systems).
+-   **Use of TypeScript:** Provides type safety and improves code readability. All main game logic files are `.ts` files.
+-   **Modularity:** The code is divided into logical modules (e.g., `lib`, `src/components`, `src/systems`, `src/scenes`), which facilitates project management and development.
+-   **In-code Documentation:** Many component and system files contain JSDoc comments explaining their purpose and usage (e.g., `com_camera2d.ts`, `sys_transform2d.ts`). HTML files describing the Goodluck framework are also available.
+-   **Emphasis on Performance:**
+    -   Avoiding unnecessary memory allocations (e.g., the `out` parameter pattern in math functions).
+    -   Using bitwise operations for component masks.
+    -   Instanced rendering for 2D sprites in `sys_render2d`.
+    -   A fast path in `sys_transform2d` for entities without `SpatialNode2D`.
+-   **Configurability and "Hackability":** Because Goodluck is a repository template, all code is available for modification.
+-   **Build Process:** The project uses `esbuild` for building and serving the development application and a `Makefile` for creating an optimized production version, which includes inlining resources into a single HTML file. Tools like `terser` and `roadroller` are used for code minification and optimization.
+-   **Data-Driven Design:** Evident in how maps are defined (e.g., `map_platforms.ts` exports an object with layer data) and in the `tiled.ts` system for processing this data.
+-   **Use of Free Functions:** As mentioned in the Goodluck documentation, using free functions instead of class methods facilitates tree-shaking and reduces the final bundle size.
+-   **Clearly Defined Project Structure:** The division into directories like `lib`, `src`, `materials`, `designs`, etc., facilitates navigation.
+-   **Dependency Management:** Use of `package.json` for managing project dependencies (e.g., `esbuild`, `typescript`).
 
 ## 8. Summary for New Collaborators and AI Agents
 
@@ -89,6 +109,9 @@ This project is built on the Goodluck framework, which uses an Entity-Component-
 * **ECS**: Entities are identifiers, components store data, and systems implement logic. Familiarize yourself with the files in src/components/ and src/systems/.  
 * **Good Practices**: Adhere to Goodluck's emphasis on minimal abstractions, direct data manipulation in component arrays, and the use of simple for loops within systems to maintain performance and code simplicity.  
 * **Data Flow**: Systems are called in a specific order in src/game.ts, processing data from components.  
-* **Rendering**: Primarily through WebGL, with systems like sys\_render\_forward and sys\_render2d.  
+* **2D Rendering:** Primarily through `sys_render2d` using WebGL and a sprite atlas (`src/sprites/atlas.ts`).
 * **TypeScript**: All code is written in TypeScript, ensuring type safety.  
 * **Project Structure**: Review the directory structure outlined above to understand where different parts of the code are located.
+
+Pay attention to comments in the code, especially in component and system files, which often explain their functionality. The project is under development but already demonstrates many good programming practices.
+
