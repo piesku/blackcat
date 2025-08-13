@@ -1,4 +1,12 @@
-# New Project
+# 33 Duels
+
+**33 Duels** is a fast-paced, high-energy, micro-roguelike auto-battler built for a game jam with the theme "Black Cat."
+
+The player must win 33 consecutive one-on-one duels against randomly generated opponents to become the last human on Earth. The core loop is built around choosing one of three random upgrades before each fight, creating chaotic and strategic builds that clash in spectacular, 10-second battles.
+
+After each victory, the world's population is halved, and the game presents a historical factoid from the new, earlier era. The goal is to survive all 33 rounds and stand alone at the dawn of humanity.
+
+---
 
 This project is based on [Goodluck](https://github.com/piesku/goodluck), a hackable template for creating small and fast browser games.
 
