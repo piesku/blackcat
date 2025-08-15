@@ -8,7 +8,7 @@ export function sys_health_visual(game: Game, _delta: number) {
         if ((game.World.Signature[entity] & QUERY) === QUERY) {
             let health = game.World.Health[entity];
             let render = game.World.Render2D[entity];
-            
+
             if (!health.IsAlive) {
                 // Dead fighters become gray
                 render.Color[0] = 0.5;
@@ -17,7 +17,7 @@ export function sys_health_visual(game: Game, _delta: number) {
                 render.Color[3] = 0.7;
                 continue;
             }
-            
+
             // Flash red when recently damaged
             if (game.Running - health.LastDamageTime < 0.3) {
                 let flash_intensity = 1.0 - (game.Running - health.LastDamageTime) / 0.3;
