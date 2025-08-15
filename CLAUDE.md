@@ -9,12 +9,14 @@ This is "33 Duels", a fast-paced micro-roguelike auto-battler built on the Goodl
 ## Development Commands
 
 ### Local Development
+
 ```bash
 npm install       # Install dependencies
 npm start         # Start dev server at http://localhost:1234
 ```
 
 ### Code Quality
+
 ```bash
 npm test          # Run lint and type check
 npm run lint      # Check code formatting with Prettier
@@ -24,6 +26,7 @@ npm run ts:watch  # Watch mode for type checking
 ```
 
 ### Building
+
 ```bash
 npm run build     # Development build with esbuild
 make -C play      # Optimized production build (creates play/index.html)
@@ -31,6 +34,7 @@ make -C play index.zip  # Create ZIP file (requires 7zip and advancecomp)
 ```
 
 ### Cleanup
+
 ```bash
 npm run clean     # Remove generated JS and map files
 make -C play clean  # Clean production build artifacts
@@ -39,12 +43,14 @@ make -C play clean  # Clean production build artifacts
 ## Architecture
 
 ### Entity-Component-System (ECS)
+
 - **Entities**: Simple numeric IDs (indices into component arrays)
 - **Components**: Data-only interfaces stored in arrays (`src/components/`)
 - **Systems**: Logic functions that iterate over entities (`src/systems/`)
 - **World**: Manages component arrays and entity signatures (`src/world.ts`)
 
 ### Key Directories
+
 - `lib/`: Core Goodluck framework (math, rendering, input, etc.)
 - `src/components/`: ECS component definitions (data structures)
 - `src/systems/`: ECS system implementations (game logic)
@@ -53,6 +59,7 @@ make -C play clean  # Clean production build artifacts
 - `play/`: Production build configuration
 
 ### Core Files
+
 - `src/game.ts`: Main game class, system execution order
 - `src/world.ts`: Project-specific world implementation
 - `src/index.ts`: Application entry point
@@ -69,6 +76,7 @@ make -C play clean  # Clean production build artifacts
 ## 2D Rendering Pipeline
 
 The project is 2D-focused and uses:
+
 - WebGL2 for sprite rendering via `sys_render2d` (instanced drawing)
 - Canvas 2D API for simple shapes via `sys_draw2d`
 - Sprite atlas system in `src/sprites/atlas.ts`
@@ -88,3 +96,31 @@ The project is 2D-focused and uses:
 - Use TypeScript interfaces for components
 - Maintain system execution order in `src/game.ts`
 - Test with both `npm test` and production builds before committing
+
+## AI Agent Testing with Playwright
+
+AI agents should use Playwright to verify changes by testing the running game in a browser.
+
+### Setup Playwright MCP
+
+```bash
+# Install Playwright (if not already installed)
+npm install playwright
+npx playwright install
+
+# Enable Playwright MCP in Claude Code
+claude mcp add playwright npx '@playwright/mcp@latest'
+```
+
+### Testing Workflow
+
+1. Start the dev server: `npm start` (if not already running)
+2. Navigate to `http://localhost:1234/src/` (game runs in src/ directory)
+3. Use Playwright MCP tools to:
+    - Take screenshots to verify visual changes
+    - Click elements to test interactions
+    - Check game state and UI elements
+    - Verify performance stats display correctly
+    - Ensure no console errors appear
+
+This visual verification complements code testing and catches rendering/interaction issues that unit tests might miss.
