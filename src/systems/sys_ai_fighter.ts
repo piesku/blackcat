@@ -5,8 +5,8 @@ import {Game} from "../game.js";
 import {Has} from "../world.js";
 
 const QUERY = Has.AIFighter | Has.LocalTransform2D | Has.Health | Has.Move2D;
-const CIRCLE_DISTANCE = 3.0;
-const ATTACK_DISTANCE = 1.5;
+const CIRCLE_DISTANCE = 1.8;
+const ATTACK_DISTANCE = 1.0;
 const RETREAT_DISTANCE = 4.0;
 const LOW_HEALTH_THRESHOLD = 1;
 
@@ -114,12 +114,12 @@ function update_ai_state(game: Game, entity: number, distance: number, delta: nu
     switch (ai.State) {
         case AIState.Circling:
             // Randomly decide to attack if close enough and cooldown is ready
-            if (distance < ATTACK_DISTANCE && ai.AttackCooldown <= 0 && Math.random() < 0.3) {
+            if (distance < ATTACK_DISTANCE && ai.AttackCooldown <= 0 && Math.random() < 0.5) {
                 change_state(ai, AIState.Attacking, game.Running);
-                ai.AttackCooldown = 2.0 + Math.random() * 2.0; // 2-4 second cooldown
+                ai.AttackCooldown = 1.5 + Math.random() * 2.0; // 1.5-3.5 second cooldown
             }
-            // Occasionally change circle direction
-            else if (ai.StateTimer > 3.0 && Math.random() < 0.2) {
+            // Randomly change circle direction more frequently
+            else if (ai.StateTimer > (1.5 + Math.random() * 2.0) && Math.random() < 0.4) {
                 ai.CircleDirection *= -1;
                 ai.StateTimer = 0;
             }
@@ -157,8 +157,12 @@ function change_state(ai: any, new_state: AIState, time: number) {
 function circle_movement(out: Vec2, to_target: Vec2, distance: number, direction: number) {
     if (distance < 0.1) return;
 
-    // Move towards circle distance
+    // Occasionally spiral inward for aggressive positioning
     let target_distance = CIRCLE_DISTANCE;
+    if (Math.random() < 0.1) {
+        target_distance = ATTACK_DISTANCE + 0.2; // Get closer for attack opportunity
+    }
+    
     let distance_factor = (distance - target_distance) / target_distance;
 
     // Normalize to_target
@@ -168,9 +172,9 @@ function circle_movement(out: Vec2, to_target: Vec2, distance: number, direction
     // Create perpendicular vector for circling
     let perpendicular: Vec2 = [-normalized[1] * direction, normalized[0] * direction];
 
-    // Combine radial and tangential movement
-    vec2_scale(normalized, normalized, distance_factor * 0.5); // Radial component
-    vec2_scale(perpendicular, perpendicular, 0.8); // Tangential component
+    // Combine radial and tangential movement with stronger inward bias
+    vec2_scale(normalized, normalized, distance_factor * 0.7); // Stronger radial component
+    vec2_scale(perpendicular, perpendicular, 0.6); // Weaker tangential component
 
     vec2_add(out, normalized, perpendicular);
     vec2_normalize(out, out);

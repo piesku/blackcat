@@ -23,10 +23,10 @@ export function ai_fighter(target_entity: number = -1) {
         game.World.AIFighter[entity] = {
             State: AIState.Circling,
             LastStateChange: game.Running,
-            StateTimer: 0,
+            StateTimer: Math.random() * 2.0, // Random initial delay 0-2 seconds
             TargetEntity: target_entity,
             CircleDirection: Math.random() > 0.5 ? 1 : -1,
-            AttackCooldown: 0,
+            AttackCooldown: Math.random() * 1.0, // Random initial attack delay 0-1 second
         };
     };
 }
