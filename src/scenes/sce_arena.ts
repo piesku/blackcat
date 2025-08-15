@@ -20,10 +20,7 @@ export function scene_arena(game: Game) {
     game.World.Height = ARENA_HEIGHT;
 
     // Top-down camera at center of arena
-    instantiate(game, [
-        ...blueprint_camera(game),
-        set_position(ARENA_WIDTH / 2, ARENA_HEIGHT / 2),
-    ]);
+    instantiate(game, [...blueprint_camera(game), set_position(ARENA_WIDTH / 2, ARENA_HEIGHT / 2)]);
 
     // Arena background
     instantiate(game, [
@@ -38,7 +35,7 @@ export function scene_arena(game: Game) {
         spatial_node2d(),
         local_transform2d(),
         set_position(ARENA_WIDTH / 2, ARENA_HEIGHT / 2),
-        draw_arc("#444455", ARENA_RADIUS, 0.3), // Ring with thickness
+        draw_arc("#444455", ARENA_RADIUS),
     ]);
 
     // Player fighter (left side)
@@ -47,7 +44,7 @@ export function scene_arena(game: Game) {
         set_position(ARENA_WIDTH / 2 - 4, ARENA_HEIGHT / 2),
     ]);
 
-    // Opponent fighter (right side)  
+    // Opponent fighter (right side)
     instantiate(game, [
         ...blueprint_fighter(game, false),
         set_position(ARENA_WIDTH / 2 + 4, ARENA_HEIGHT / 2),

@@ -6,7 +6,6 @@ import {health} from "../components/com_health.js";
 import {local_transform2d} from "../components/com_local_transform2d.js";
 import {move2d} from "../components/com_move2d.js";
 import {render2d} from "../components/com_render2d.js";
-import {shake} from "../components/com_shake.js";
 import {spatial_node2d} from "../components/com_spatial_node2d.js";
 import {Game, Layer} from "../game.js";
 import {Has} from "../world.js";
@@ -22,6 +21,5 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
         health(3), // 3 HP for each fighter
         move2d(2, 0), // Movement controlled by AI (2 units/sec, no rotation)
         ai_fighter(-1), // AI will find target automatically
-        shake(0.1), // Small shake for impact feedback
     ];
 }
