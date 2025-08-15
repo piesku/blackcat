@@ -11,11 +11,11 @@ import {Game, Layer} from "../game.js";
 export function blueprint_fighter(game: Game, is_player: boolean) {
     return [
         spatial_node2d(),
-        local_transform2d(undefined, 0, [1.5, 1.5]),
-        collide2d(true, Layer.Object, Layer.Terrain | Layer.Object, [1.5, 1.5]),
+        local_transform2d(undefined, 0, [1, 1]),
+        collide2d(true, Layer.Object, Layer.Terrain | Layer.Object, [1, 1]),
         render2d("13"),
         animate_sprite({13: Math.random(), 14: Math.random()}),
-        health(3), // 3 HP for each fighter
+        health(5),
         move2d(2, 0), // Movement controlled by AI (2 units/sec, no rotation)
         ai_fighter(-1), // AI will find target automatically
     ];

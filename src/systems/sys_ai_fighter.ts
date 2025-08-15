@@ -5,9 +5,9 @@ import {Game} from "../game.js";
 import {Has} from "../world.js";
 
 const QUERY = Has.AIFighter | Has.LocalTransform2D | Has.Health | Has.Move2D;
-const CIRCLE_DISTANCE = 1.8;
-const ATTACK_DISTANCE = 1.0;
-const RETREAT_DISTANCE = 4.0;
+const CIRCLE_DISTANCE = 1.3;
+const ATTACK_DISTANCE = 0.7;
+const RETREAT_DISTANCE = 3.0;
 const LOW_HEALTH_THRESHOLD = 1;
 
 export function sys_ai_fighter(game: Game, delta: number) {

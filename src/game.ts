@@ -37,7 +37,7 @@ import {sys_ui} from "./systems/sys_ui.js";
 import {Has, World} from "./world.js";
 
 export const WORLD_CAPACITY = 65_536; // = 4MB of InstanceData.
-export const REAL_UNIT_SIZE = 18;
+export const REAL_UNIT_SIZE = 48;
 
 export class Game extends Game3D {
     World = new World(WORLD_CAPACITY);
