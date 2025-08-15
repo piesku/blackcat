@@ -1,5 +1,6 @@
 import {WorldImpl} from "../lib/world.js";
 import {FLOATS_PER_INSTANCE} from "../materials/layout2d.js";
+import {AIFighter} from "./components/com_ai_fighter.js";
 import {AnimateSprite} from "./components/com_animate_sprite.js";
 import {Camera2D} from "./components/com_camera2d.js";
 import {Children} from "./components/com_children.js";
@@ -7,6 +8,7 @@ import {Collide2D} from "./components/com_collide2d.js";
 import {ControlAlways2D} from "./components/com_control_always2d.js";
 import {ControlPlayer} from "./components/com_control_player.js";
 import {Draw} from "./components/com_draw.js";
+import {Health} from "./components/com_health.js";
 import {Lifespan} from "./components/com_lifespan.js";
 import {LocalTransform2D} from "./components/com_local_transform2d.js";
 import {Move2D} from "./components/com_move2d.js";
@@ -21,6 +23,7 @@ import {Toggle} from "./components/com_toggle.js";
 import {Trigger} from "./components/com_trigger.js";
 
 const enum Component {
+    AIFighter,
     AnimateSprite,
     Camera2D,
     Collide2D,
@@ -29,6 +32,7 @@ const enum Component {
     Children,
     Dirty,
     Draw,
+    Health,
     Lifespan,
     LocalTransform2D,
     Move2D,
@@ -45,6 +49,7 @@ const enum Component {
 
 export const enum Has {
     None = 0,
+    AIFighter = 1 << Component.AIFighter,
     AnimateSprite = 1 << Component.AnimateSprite,
     Camera2D = 1 << Component.Camera2D,
     Collide2D = 1 << Component.Collide2D,
@@ -53,6 +58,7 @@ export const enum Has {
     Children = 1 << Component.Children,
     Dirty = 1 << Component.Dirty,
     Draw = 1 << Component.Draw,
+    Health = 1 << Component.Health,
     Lifespan = 1 << Component.Lifespan,
     LocalTransform2D = 1 << Component.LocalTransform2D,
     Move2D = 1 << Component.Move2D,
@@ -73,6 +79,7 @@ export class World extends WorldImpl {
     Width = 24;
     Height = 16;
 
+    AIFighter: Array<AIFighter> = [];
     AnimateSprite: Array<AnimateSprite> = [];
     Camera2D: Array<Camera2D> = [];
     Collide2D: Array<Collide2D> = [];
@@ -80,6 +87,7 @@ export class World extends WorldImpl {
     ControlPlayer: Array<ControlPlayer> = [];
     Children: Array<Children> = [];
     Draw: Array<Draw> = [];
+    Health: Array<Health> = [];
     Lifespan: Array<Lifespan> = [];
     LocalTransform2D: Array<LocalTransform2D> = [];
     Move2D: Array<Move2D> = [];
