@@ -1,4 +1,5 @@
 import {Game} from "../game.js";
+import {Has} from "../world.js";
 
 export interface AIFighter {
     State: AIState;
@@ -18,6 +19,7 @@ export const enum AIState {
 
 export function ai_fighter(target_entity: number = -1) {
     return (game: Game, entity: number) => {
+        game.World.Signature[entity] |= Has.AIFighter;
         game.World.AIFighter[entity] = {
             State: AIState.Circling,
             LastStateChange: game.Running,

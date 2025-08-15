@@ -10,6 +10,7 @@ export interface Health {
 
 export function health(max: number = 3) {
     return (game: Game, entity: number) => {
+        game.World.Signature[entity] |= Has.Health;
         game.World.Health[entity] = {
             Max: max,
             Current: max,
@@ -24,7 +25,7 @@ export function damage_entity(game: Game, entity: number, amount: number) {
     if (health_data && health_data.IsAlive) {
         health_data.Current = Math.max(0, health_data.Current - amount);
         health_data.LastDamageTime = game.Running;
-        
+
         if (health_data.Current <= 0) {
             health_data.IsAlive = false;
         }
