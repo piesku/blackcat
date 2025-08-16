@@ -34,6 +34,7 @@ import {sys_toggle} from "./systems/sys_toggle.js";
 import {sys_transform2d} from "./systems/sys_transform2d.js";
 import {sys_trigger2d} from "./systems/sys_trigger2d.js";
 import {sys_ui} from "./systems/sys_ui.js";
+import {sys_weapons} from "./systems/sys_weapons.js";
 import {UpgradeType, WEAPON_UPGRADES} from "./upgrades/types.js";
 import {Has, World} from "./world.js";
 
@@ -98,6 +99,9 @@ export class Game extends Game3D {
         // AI.
         sys_ai_fighter(this, delta);
         sys_control_always2d(this, delta);
+
+        // Weapons.
+        sys_weapons(this, delta);
 
         // Game logic.
         sys_combat(this, delta);
