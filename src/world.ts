@@ -23,7 +23,6 @@ import {Toggle} from "./components/com_toggle.js";
 import {Trigger} from "./components/com_trigger.js";
 import {Weapon} from "./components/com_weapon.js";
 import {Projectile} from "./components/com_projectile.js";
-import {UpgradeInventory} from "./components/com_upgrade_inventory.js";
 
 const enum Component {
     AIFighter,
@@ -49,7 +48,6 @@ const enum Component {
     Task,
     Toggle,
     Trigger,
-    UpgradeInventory,
     Weapon,
 }
 
@@ -78,7 +76,6 @@ export const enum Has {
     Task = 1 << Component.Task,
     Toggle = 1 << Component.Toggle,
     Trigger = 1 << Component.Trigger,
-    UpgradeInventory = 1 << Component.UpgradeInventory,
     Weapon = 1 << Component.Weapon,
 }
 
@@ -110,6 +107,5 @@ export class World extends WorldImpl {
     Task: Array<Task> = [];
     Toggle: Array<Toggle> = [];
     Trigger: Array<Trigger> = [];
-    UpgradeInventory: Array<UpgradeInventory> = [];
     Weapon: Array<Weapon> = [];
 }

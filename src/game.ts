@@ -46,17 +46,49 @@ export const REAL_UNIT_SIZE = 48;
 export interface GameState {
     currentLevel: number; // 1-33 duels
     playerUpgrades: UpgradeType[]; // Player's accumulated upgrades
+    opponentUpgrades: UpgradeType[]; // Current opponent's upgrades
     population: number; // Narrative countdown (8 billion -> 1)
     isNewRun: boolean; // Fresh start vs resumed
 }
 
 export function createDefaultGameState(): GameState {
     return {
-        currentLevel: 1,
-        playerUpgrades: [WEAPON_UPGRADES[0]], // Default: battle axe
+        currentLevel: 3, // Current arena level
+        playerUpgrades: [WEAPON_UPGRADES[0], WEAPON_UPGRADES[1], WEAPON_UPGRADES[3]], // battle_axe, pistol, throwing_knives
+        opponentUpgrades: generateOpponentUpgrades(3), // Level 3 opponent upgrades
         population: 8_000_000_000,
         isNewRun: true,
     };
+}
+
+function generateOpponentUpgrades(arenaLevel: number): UpgradeType[] {
+    // Only include weapons we have blueprints for
+    let availableWeapons = WEAPON_UPGRADES.filter((weapon) =>
+        [
+            "battle_axe",
+            "baseball_bat",
+            "pistol",
+            "shotgun",
+            "sniper_rifle",
+            "throwing_knives",
+        ].includes(weapon.id),
+    );
+    let opponentWeapons: UpgradeType[] = [];
+
+    // Number of weapons based on arena level (min 1, max based on available weapons)
+    let weaponCount = Math.min(arenaLevel, availableWeapons.length);
+
+    // Randomly select weapons without duplicates
+    for (let i = 0; i < weaponCount; i++) {
+        let randomIndex = Math.floor(Math.random() * availableWeapons.length);
+        let selectedWeapon = availableWeapons[randomIndex];
+        opponentWeapons.push(selectedWeapon);
+
+        // Remove selected weapon to avoid duplicates
+        availableWeapons.splice(randomIndex, 1);
+    }
+
+    return opponentWeapons;
 }
 
 export class Game extends Game3D {

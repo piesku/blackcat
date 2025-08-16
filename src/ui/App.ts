@@ -17,21 +17,19 @@ function getAIStateName(state: AIState): string {
 }
 
 export function App(game: Game) {
-    // Find entities with upgrade inventories and collect their stats
-    let playerUpgrades: string[] = [];
-    let opponentUpgrades: string[] = [];
+    // Get upgrades from game state
+    let playerUpgrades = game.State.playerUpgrades.map(upgrade => upgrade.name);
+    let opponentUpgrades = game.State.opponentUpgrades.map(upgrade => upgrade.name);
+    
+    // Find entities with AI and health to get their stats
     let playerHP = "?";
     let opponentHP = "?";
     let playerAIState = "Unknown";
     let opponentAIState = "Unknown";
     
+    let fighterCount = 0;
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
-        if (game.World.Signature[entity] & Has.UpgradeInventory) {
-            let inventory = game.World.UpgradeInventory[entity];
-            if (!inventory) continue;
-            
-            let upgradeNames = inventory.Weapons.map(weapon => getUpgradeDisplayName(weapon));
-            
+        if (game.World.Signature[entity] & Has.AIFighter) {
             // Get health info
             let healthInfo = "?/?";
             if (game.World.Signature[entity] & Has.Health) {
@@ -43,23 +41,20 @@ export function App(game: Game) {
             
             // Get AI state info
             let aiStateInfo = "Unknown";
-            if (game.World.Signature[entity] & Has.AIFighter) {
-                let ai = game.World.AIFighter[entity];
-                if (ai) {
-                    aiStateInfo = getAIStateName(ai.State);
-                }
+            let ai = game.World.AIFighter[entity];
+            if (ai) {
+                aiStateInfo = getAIStateName(ai.State);
             }
             
-            // First entity with upgrades = player, second = opponent (simple heuristic)
-            if (playerUpgrades.length === 0) {
-                playerUpgrades = upgradeNames;
+            // First fighter = player, second = opponent (simple heuristic)
+            if (fighterCount === 0) {
                 playerHP = healthInfo;
                 playerAIState = aiStateInfo;
-            } else if (opponentUpgrades.length === 0) {
-                opponentUpgrades = upgradeNames;
+            } else if (fighterCount === 1) {
                 opponentHP = healthInfo;
                 opponentAIState = aiStateInfo;
             }
+            fighterCount++;
         }
     }
 
