@@ -10,10 +10,6 @@ export function blueprint_camera(_game: Game) {
     return [
         spatial_node2d(),
         local_transform2d(),
-        children([
-            spatial_node2d(),
-            local_transform2d(),
-            camera2d([0, 0])
-        ])
+        children([spatial_node2d(), local_transform2d(), camera2d([0, 0])]),
     ];
 }

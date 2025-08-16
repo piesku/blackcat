@@ -24,7 +24,7 @@ function update(game: Game, entity: Entity, delta: number) {
 
     // Count down duration
     shake.Duration -= delta;
-    
+
     if (shake.Duration <= 0) {
         // Stop shaking by removing the Shake component
         game.World.Signature[entity] &= ~Has.Shake;
@@ -36,6 +36,6 @@ function update(game: Game, entity: Entity, delta: number) {
         local.Translation[0] = (Math.random() - 0.5) * shake.Radius * 2;
         local.Translation[1] = (Math.random() - 0.5) * shake.Radius * 2;
     }
-    
+
     game.World.Signature[entity] |= Has.Dirty;
 }
