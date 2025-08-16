@@ -14,18 +14,21 @@ import {Has} from "../world.js";
 
 export interface Shake {
     Radius: number;
+    Duration: number;
 }
 
 /**
  * Add `Shake` to an entity.
  *
  * @param radius The radius of the shake, in local units.
+ * @param duration The duration of the shake, in seconds. Defaults to Infinity.
  */
-export function shake(radius: number) {
+export function shake(radius: number, duration: number = Infinity) {
     return (game: Game, entity: Entity) => {
         game.World.Signature[entity] |= Has.Shake;
         game.World.Shake[entity] = {
             Radius: radius,
+            Duration: duration,
         };
     };
 }

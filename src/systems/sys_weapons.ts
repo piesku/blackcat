@@ -4,6 +4,7 @@ import {vec2_length, vec2_normalize, vec2_subtract} from "../../lib/vec2.js";
 import {AIState} from "../components/com_ai_fighter.js";
 import {query_down} from "../components/com_children.js";
 import {damage_entity} from "../components/com_health.js";
+import {shake} from "../components/com_shake.js";
 import {Weapon, WeaponKind, WeaponMelee, WeaponRanged} from "../components/com_weapon.js";
 import {Game} from "../game.js";
 import {blueprint_projectile} from "../scenes/blu_projectile.js";
@@ -168,9 +169,11 @@ function execute_melee_attack(
     }
 
     // Add screen shake for impact
-    if (game.World.Signature[target_entity] & Has.Shake) {
-        let shake = game.World.Shake[target_entity];
-        shake.Radius = Math.max(shake.Radius, weapon.Damage * 0.5);
+    let camera_entity = game.Cameras[0];
+    if (camera_entity !== undefined) {
+        let shake_radius = 0.5; // Fixed radius for all shakes
+        let shake_duration = 0.2; // 200ms shake
+        shake(shake_radius, shake_duration)(game, camera_entity);
     }
 }
 
@@ -250,9 +253,11 @@ function apply_knockback(
 ) {
     // TODO: Implement proper knockback physics
     // For now, just add extra screen shake
-    if (game.World.Signature[target_entity] & Has.Shake) {
-        let shake = game.World.Shake[target_entity];
-        shake.Radius = Math.max(shake.Radius, knockback_force);
+    let camera_entity = game.Cameras[0];
+    if (camera_entity !== undefined) {
+        let shake_radius = 0.5; // Fixed radius for all shakes
+        let shake_duration = 0.3; // 300ms shake for knockback
+        shake(shake_radius, shake_duration)(game, camera_entity);
     }
 }
 

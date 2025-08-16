@@ -1,4 +1,5 @@
 import {damage_entity} from "../components/com_health.js";
+import {shake} from "../components/com_shake.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
@@ -36,9 +37,11 @@ export function sys_projectile(game: Game, _delta: number) {
                 );
 
                 // Add screen shake for impact
-                if (game.World.Signature[target_entity] & Has.Shake) {
-                    let shake = game.World.Shake[target_entity];
-                    shake.Radius = Math.max(shake.Radius, projectile.Damage * 0.3);
+                let camera_entity = game.Cameras[0];
+                if (camera_entity !== undefined) {
+                    let shake_radius = 0.5; // Fixed radius for all shakes
+                    let shake_duration = 0.15; // 150ms shake for projectile hit
+                    shake(shake_radius, shake_duration)(game, camera_entity);
                 }
 
                 // Destroy the projectile after hitting a target

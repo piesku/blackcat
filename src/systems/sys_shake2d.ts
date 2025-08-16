@@ -13,16 +13,29 @@ const QUERY = Has.LocalTransform2D | Has.Shake;
 export function sys_shake2d(game: Game, delta: number) {
     for (let i = 0; i < game.World.Signature.length; i++) {
         if ((game.World.Signature[i] & QUERY) == QUERY) {
-            update(game, i);
+            update(game, i, delta);
         }
     }
 }
 
-function update(game: Game, entity: Entity) {
+function update(game: Game, entity: Entity, delta: number) {
     let shake = game.World.Shake[entity];
     let local = game.World.LocalTransform2D[entity];
 
-    local.Translation[0] = (Math.random() - 0.5) * shake.Radius * 2;
-    local.Translation[1] = (Math.random() - 0.5) * shake.Radius * 2;
+    // Count down duration
+    shake.Duration -= delta;
+    
+    if (shake.Duration <= 0) {
+        // Stop shaking by removing the Shake component
+        game.World.Signature[entity] &= ~Has.Shake;
+        // Reset position to [0, 0]
+        local.Translation[0] = 0;
+        local.Translation[1] = 0;
+    } else {
+        // Continue shaking
+        local.Translation[0] = (Math.random() - 0.5) * shake.Radius * 2;
+        local.Translation[1] = (Math.random() - 0.5) * shake.Radius * 2;
+    }
+    
     game.World.Signature[entity] |= Has.Dirty;
 }

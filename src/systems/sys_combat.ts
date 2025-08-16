@@ -1,4 +1,5 @@
 import {damage_entity} from "../components/com_health.js";
+import {shake} from "../components/com_shake.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
@@ -35,9 +36,11 @@ export function sys_combat(game: Game, delta: number) {
                     );
 
                     // Add screen shake for dramatic effect
-                    if (game.World.Signature[entity] & Has.Shake) {
-                        let shake = game.World.Shake[entity];
-                        shake.Radius = Math.max(shake.Radius, 2.0);
+                    let camera_entity = game.Cameras[0];
+                    if (camera_entity !== undefined) {
+                        let shake_radius = 0.5; // Fixed radius for all shakes
+                        let shake_duration = 0.4; // 400ms shake for collision
+                        shake(shake_radius, shake_duration)(game, camera_entity);
                     }
 
                     // If health reaches 0, disable movement
