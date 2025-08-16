@@ -128,6 +128,7 @@ The project builds upon the structure provided by Goodluck and extends it with s
 
 - **Separation of Concerns:** The ECS architecture naturally promotes the separation of data (components) from logic (systems).
 - **Use of TypeScript:** Provides type safety and improves code readability. All main game logic files are `.ts` files.
+- **Discriminated Unions:** TypeScript's discriminated union pattern is used extensively for type-safe polymorphic data structures (see TypeScript Patterns section below).
 - **Modularity:** The code is divided into logical modules (e.g., `lib`, `src/components`, `src/systems`, `src/scenes`), which facilitates project management and development.
 - **In-code Documentation:** Many component and system files contain JSDoc comments explaining their purpose and usage (e.g., `com_camera2d.ts`, `sys_transform2d.ts`). HTML files describing the Goodluck framework are also available.
 - **Emphasis on Performance:**
@@ -143,7 +144,106 @@ The project builds upon the structure provided by Goodluck and extends it with s
 
 ---
 
-## 8. Summary for New Collaborators and AI Agents
+## TypeScript Patterns
+
+### Discriminated Unions for Type Safety
+
+The project makes extensive use of TypeScript's discriminated union pattern for creating type-safe polymorphic data structures. This pattern eliminates the need for defensive programming and provides compile-time guarantees about property access.
+
+#### Pattern Structure
+
+```typescript
+// Define the discriminator
+export const enum WeaponKind {
+    Melee,
+    Ranged,
+}
+
+// Define specific interfaces with discriminator property
+export interface WeaponMelee {
+    Kind: WeaponKind.Melee;  // Discriminator
+    Damage: number;
+    Range: number;
+    Cooldown: number;
+    LastAttackTime: number;
+    Knockback: number;        // Melee-specific property
+    Arc: number;              // Melee-specific property
+}
+
+export interface WeaponRanged {
+    Kind: WeaponKind.Ranged;  // Discriminator
+    Damage: number;
+    Range: number;
+    Cooldown: number;
+    LastAttackTime: number;
+    ProjectileSpeed: number;  // Ranged-specific property
+    ProjectileCount: number;  // Ranged-specific property
+    Spread: number;           // Ranged-specific property
+}
+
+// Create the union type
+export type Weapon = WeaponMelee | WeaponRanged;
+```
+
+#### Automatic Type Narrowing in Switch Statements
+
+TypeScript automatically narrows the union type within each case block, eliminating the need for type guards:
+
+```typescript
+// ❌ OLD: Defensive programming with type guards
+function execute_melee_attack(weapon: Weapon) {
+    if (weapon.Kind !== WeaponKind.Melee) return; // Unnecessary guard
+    
+    // Now we can access melee properties...
+    if (weapon.Knockback > 0) { /* ... */ }
+}
+
+// ✅ NEW: Use discriminated union pattern
+switch (weapon.Kind) {
+    case WeaponKind.Melee:
+        // TypeScript knows weapon is WeaponMelee here
+        execute_melee_attack(weapon); // No type guard needed!
+        break;
+    case WeaponKind.Ranged:
+        // TypeScript knows weapon is WeaponRanged here
+        execute_ranged_attack(weapon); // No type guard needed!
+        break;
+}
+
+function execute_melee_attack(weapon: WeaponMelee) {
+    // Direct access to melee properties - TypeScript enforces correctness
+    if (weapon.Knockback > 0) { /* ... */ }
+    // weapon.ProjectileCount; // ❌ Compile error - property doesn't exist
+}
+
+function execute_ranged_attack(weapon: WeaponRanged) {
+    // Direct access to ranged properties - TypeScript enforces correctness
+    for (let i = 0; i < weapon.ProjectileCount; i++) { /* ... */ }
+    // weapon.Knockback; // ❌ Compile error - property doesn't exist
+}
+```
+
+#### Benefits
+
+1. **Compile-time Safety**: TypeScript catches property access errors at build time
+2. **No Runtime Overhead**: No defensive type checking needed at runtime
+3. **IntelliSense Support**: IDEs provide accurate autocomplete for each specific type
+4. **Maintainability**: Adding new properties to specific weapon types is safe and explicit
+5. **Refactoring Safety**: Changes to discriminated union members are caught by the compiler
+
+#### Usage in Game Development
+
+This pattern is particularly useful for:
+- **Component variants** (different types of AI, weapons, abilities)
+- **Event systems** (different event types with different payloads)
+- **State machines** (different states with state-specific data)
+- **Serialization** (different data formats with type-specific handling)
+
+The discriminated union pattern exemplifies TypeScript's strength in providing zero-cost abstractions that improve code safety without runtime performance penalties.
+
+---
+
+## Summary for New Collaborators and AI Agents
 
 This project is built on the Goodluck framework, which uses an Entity-Component-System architecture. Key concepts include:
 

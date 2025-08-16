@@ -26,6 +26,7 @@ import {sys_physics2d_bounds} from "./systems/sys_physics2d_bounds.js";
 import {sys_physics2d_integrate} from "./systems/sys_physics2d_integrate.js";
 import {sys_physics2d_resolve} from "./systems/sys_physics2d_resolve.js";
 import {sys_poll} from "./systems/sys_poll.js";
+import {sys_projectile} from "./systems/sys_projectile.js";
 import {sys_render2d} from "./systems/sys_render2d.js";
 import {sys_render2d_animate} from "./systems/sys_render2d_animate.js";
 import {sys_resize2d} from "./systems/sys_resize2d.js";
@@ -106,6 +107,7 @@ export class Game extends Game3D {
 
         // Game logic.
         sys_combat(this, delta);
+        sys_projectile(this, delta);
         sys_move2d(this, delta);
         sys_arena_bounds(this, delta);
         sys_lifespan(this, delta);
@@ -134,4 +136,5 @@ export const enum Layer {
     Terrain = 1,
     Player = 2,
     Object = 4,
+    Projectile = 8,
 }

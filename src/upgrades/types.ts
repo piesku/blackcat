@@ -48,7 +48,49 @@ export const WEAPON_UPGRADES: UpgradeType[] = [
         name: "Throwing Knives",
         description: "Multiple projectiles with spread pattern",
     },
+    {
+        id: "shotgun",
+        category: UpgradeCategory.Weapon,
+        name: "Shotgun",
+        description: "Spread shot ranged weapon with multiple projectiles",
+    },
+    {
+        id: "sniper_rifle",
+        category: UpgradeCategory.Weapon,
+        name: "Sniper Rifle",
+        description: "High-damage, long-range precision weapon",
+    },
+    {
+        id: "dual_pistols",
+        category: UpgradeCategory.Weapon,
+        name: "Dual Pistols",
+        description: "Rapid-fire dual wielded pistols",
+    },
+    {
+        id: "chainsaw",
+        category: UpgradeCategory.Weapon,
+        name: "Chainsaw",
+        description: "Continuous damage melee weapon",
+    },
+    {
+        id: "crossbow",
+        category: UpgradeCategory.Weapon,
+        name: "Crossbow",
+        description: "Silent ranged weapon with piercing bolts",
+    },
+    {
+        id: "grenade_launcher",
+        category: UpgradeCategory.Weapon,
+        name: "Grenade Launcher",
+        description: "Explosive area-of-effect ranged weapon",
+    },
 ];
 
 // All upgrades registry (weapons only for now)
 export const ALL_UPGRADES: UpgradeType[] = [...WEAPON_UPGRADES];
+
+// Utility function to get upgrade display name by ID
+export function getUpgradeDisplayName(upgradeId: string): string {
+    const upgrade = ALL_UPGRADES.find(u => u.id === upgradeId);
+    return upgrade?.name || upgradeId;
+}

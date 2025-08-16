@@ -1,10 +1,12 @@
+import {instantiate} from "../../lib/game.js";
 import {Vec2} from "../../lib/math.js";
-import {vec2_length, vec2_subtract} from "../../lib/vec2.js";
+import {vec2_length, vec2_normalize, vec2_subtract} from "../../lib/vec2.js";
 import {AIState} from "../components/com_ai_fighter.js";
 import {query_down} from "../components/com_children.js";
 import {damage_entity} from "../components/com_health.js";
-import {Weapon, WeaponKind} from "../components/com_weapon.js";
+import {Weapon, WeaponKind, WeaponMelee, WeaponRanged} from "../components/com_weapon.js";
 import {Game} from "../game.js";
+import {blueprint_projectile} from "../scenes/blu_projectile.js";
 import {Has} from "../world.js";
 
 const QUERY = Has.Children; // Entities that might have weapon children
@@ -145,11 +147,9 @@ function execute_melee_attack(
     game: Game,
     wielder_entity: number,
     target_entity: number,
-    weapon: Weapon,
+    weapon: WeaponMelee,
     _distance: number,
 ) {
-    if (weapon.Kind !== WeaponKind.Melee) return;
-
     let target_health = game.World.Health[target_entity];
     let health_before = target_health.Current;
 
@@ -163,7 +163,6 @@ function execute_melee_attack(
         `[MELEE] Entity ${wielder_entity} -> ${target_entity}: ${weapon.Damage} damage, HP ${health_before.toFixed(1)} -> ${health_after.toFixed(1)} (${is_alive ? "alive" : "DEAD"})`,
     );
 
-    // Apply knockback if the weapon has it
     if (weapon.Knockback > 0) {
         apply_knockback(game, wielder_entity, target_entity, weapon.Knockback);
     }
@@ -179,22 +178,67 @@ function execute_ranged_attack(
     game: Game,
     wielder_entity: number,
     target_entity: number,
-    weapon: Weapon,
+    weapon: WeaponRanged,
 ) {
-    if (weapon.Kind !== WeaponKind.Ranged) return;
+    let wielder_transform = game.World.LocalTransform2D[wielder_entity];
+    let target_transform = game.World.LocalTransform2D[target_entity];
+    if (!wielder_transform || !target_transform) return;
 
-    let target_health = game.World.Health[target_entity];
-    let health_before = target_health.Current;
+    // Calculate direction to target
+    let to_target: Vec2 = [0, 0];
+    vec2_subtract(to_target, target_transform.Translation, wielder_transform.Translation);
+    vec2_normalize(to_target, to_target);
 
-    // TODO: Implement projectile spawning for ranged weapons
-    // For now, just do instant damage like melee
-    damage_entity(game, target_entity, weapon.Damage);
+    // Spawn projectiles based on weapon stats
+    for (let i = 0; i < weapon.ProjectileCount; i++) {
+        // Calculate spread for multiple projectiles
+        let spread_angle = 0;
+        if (weapon.ProjectileCount > 1) {
+            let total_spread = weapon.Spread * (weapon.ProjectileCount - 1);
+            spread_angle = -total_spread / 2 + weapon.Spread * i;
+        }
 
-    let health_after = target_health.Current;
-    let is_alive = target_health.IsAlive;
+        // Apply spread to direction
+        let projectile_direction: Vec2 = [to_target[0], to_target[1]];
+        if (spread_angle !== 0) {
+            let cos_angle = Math.cos(spread_angle);
+            let sin_angle = Math.sin(spread_angle);
+            let x = projectile_direction[0] * cos_angle - projectile_direction[1] * sin_angle;
+            let y = projectile_direction[0] * sin_angle + projectile_direction[1] * cos_angle;
+            projectile_direction[0] = x;
+            projectile_direction[1] = y;
+        }
+
+        // Create projectile entity
+        let projectile_entity = instantiate(
+            game,
+            blueprint_projectile(
+                game,
+                weapon.Damage,
+                wielder_entity,
+                weapon.Range,
+                weapon.ProjectileSpeed,
+            ),
+        );
+
+        // Set projectile position (slightly offset from wielder)
+        let projectile_transform = game.World.LocalTransform2D[projectile_entity];
+        if (projectile_transform) {
+            projectile_transform.Translation[0] =
+                wielder_transform.Translation[0] + to_target[0] * 0.5;
+            projectile_transform.Translation[1] =
+                wielder_transform.Translation[1] + to_target[1] * 0.5;
+        }
+
+        // Set projectile movement direction using control_always2d
+        let control = game.World.ControlAlways2D[projectile_entity];
+        if (control) {
+            control.Direction = [projectile_direction[0], projectile_direction[1]];
+        }
+    }
 
     console.log(
-        `[RANGED] Entity ${wielder_entity} -> ${target_entity}: ${weapon.Damage} damage, HP ${health_before.toFixed(1)} -> ${health_after.toFixed(1)} (${is_alive ? "alive" : "DEAD"})`,
+        `[RANGED] Entity ${wielder_entity} fired ${weapon.ProjectileCount} projectile(s) toward target ${target_entity}`,
     );
 }
 
