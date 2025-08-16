@@ -3,7 +3,7 @@ import {Has} from "../world.js";
 
 export const enum WeaponKind {
     Melee,
-    Ranged
+    Ranged,
 }
 
 export interface WeaponMelee {
@@ -29,7 +29,13 @@ export interface WeaponRanged {
 
 export type Weapon = WeaponMelee | WeaponRanged;
 
-export function weapon_melee(damage: number, range: number, cooldown: number, knockback: number = 1.0, arc: number = Math.PI / 3) {
+export function weapon_melee(
+    damage: number,
+    range: number,
+    cooldown: number,
+    knockback: number = 1.0,
+    arc: number = Math.PI / 3,
+) {
     return (game: Game, entity: number) => {
         game.World.Signature[entity] |= Has.Weapon;
         game.World.Weapon[entity] = {
@@ -39,12 +45,19 @@ export function weapon_melee(damage: number, range: number, cooldown: number, kn
             Cooldown: cooldown,
             LastAttackTime: 0,
             Knockback: knockback,
-            Arc: arc
+            Arc: arc,
         };
     };
 }
 
-export function weapon_ranged(damage: number, range: number, cooldown: number, projectileSpeed: number = 5.0, projectileCount: number = 1, spread: number = 0.1) {
+export function weapon_ranged(
+    damage: number,
+    range: number,
+    cooldown: number,
+    projectileSpeed: number = 5.0,
+    projectileCount: number = 1,
+    spread: number = 0.1,
+) {
     return (game: Game, entity: number) => {
         game.World.Signature[entity] |= Has.Weapon;
         game.World.Weapon[entity] = {
@@ -55,7 +68,7 @@ export function weapon_ranged(damage: number, range: number, cooldown: number, p
             LastAttackTime: 0,
             ProjectileSpeed: projectileSpeed,
             ProjectileCount: projectileCount,
-            Spread: spread
+            Spread: spread,
         };
     };
 }

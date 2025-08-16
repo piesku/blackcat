@@ -77,7 +77,7 @@ export function attach_to_parent(game: Game, child_entity: Entity, parent_entity
             Children: [],
         };
     }
-    
+
     // Add child to parent's children array
     game.World.Children[parent_entity].Children.push(child_entity);
 }
