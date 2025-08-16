@@ -15,6 +15,7 @@ export const enum AIState {
     Attacking,
     Retreating,
     Stunned,
+    Pursuing,
 }
 
 export function ai_fighter(target_entity: number = -1) {

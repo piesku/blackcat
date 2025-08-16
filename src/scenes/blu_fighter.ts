@@ -16,7 +16,7 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
         render2d("13"),
         animate_sprite({13: Math.random(), 14: Math.random()}),
         health(5),
-        move2d(2, 0), // Movement controlled by AI (2 units/sec, no rotation)
+        move2d(12, 0), // Movement controlled by AI (12 units/sec, no rotation)
         ai_fighter(-1), // AI will find target automatically
     ];
 }
