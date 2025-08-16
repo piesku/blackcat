@@ -21,6 +21,7 @@ import {Spawn} from "./components/com_spawn.js";
 import {Task} from "./components/com_task.js";
 import {Toggle} from "./components/com_toggle.js";
 import {Trigger} from "./components/com_trigger.js";
+import {Weapon} from "./components/com_weapon.js";
 
 const enum Component {
     AIFighter,
@@ -45,6 +46,7 @@ const enum Component {
     Task,
     Toggle,
     Trigger,
+    Weapon,
 }
 
 export const enum Has {
@@ -71,6 +73,7 @@ export const enum Has {
     Task = 1 << Component.Task,
     Toggle = 1 << Component.Toggle,
     Trigger = 1 << Component.Trigger,
+    Weapon = 1 << Component.Weapon,
 }
 
 export class World extends WorldImpl {
@@ -100,4 +103,5 @@ export class World extends WorldImpl {
     Task: Array<Task> = [];
     Toggle: Array<Toggle> = [];
     Trigger: Array<Trigger> = [];
+    Weapon: Array<Weapon> = [];
 }

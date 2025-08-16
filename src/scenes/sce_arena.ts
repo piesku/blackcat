@@ -2,7 +2,8 @@ import {instantiate} from "../../lib/game.js";
 import {draw_arc, draw_rect} from "../components/com_draw.js";
 import {local_transform2d, set_position} from "../components/com_local_transform2d.js";
 import {spatial_node2d} from "../components/com_spatial_node2d.js";
-import {Game, WORLD_CAPACITY} from "../game.js";
+import {Game, GameState, WORLD_CAPACITY} from "../game.js";
+import {apply_upgrades} from "../upgrades/manager.js";
 import {World} from "../world.js";
 import {blueprint_camera} from "./blu_camera.js";
 import {blueprint_fighter} from "./blu_fighter.js";
@@ -39,14 +40,20 @@ export function scene_arena(game: Game) {
     ]);
 
     // Player fighter (left side)
-    instantiate(game, [
+    let player = instantiate(game, [
         ...blueprint_fighter(game, true),
         set_position(ARENA_WIDTH / 2 - 4, ARENA_HEIGHT / 2),
     ]);
 
-    // Opponent fighter (right side)
-    instantiate(game, [
+    // Opponent fighter (right side)  
+    let opponent = instantiate(game, [
         ...blueprint_fighter(game, false),
         set_position(ARENA_WIDTH / 2 + 4, ARENA_HEIGHT / 2),
     ]);
+
+    // Apply upgrades from game state
+    apply_upgrades(game, player, game.State.playerUpgrades);
+    
+    // Give opponent no upgrades for now (TODO: randomize based on level)
+    apply_upgrades(game, opponent, []);
 }

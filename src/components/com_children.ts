@@ -63,6 +63,26 @@ export function* query_down(world: World, entity: Entity, mask: Has): IterableIt
 }
 
 /**
+ * Attach a child entity to a parent entity.
+ *
+ * @param game Game instance.
+ * @param child_entity The entity to attach as a child.
+ * @param parent_entity The entity to attach the child to.
+ */
+export function attach_to_parent(game: Game, child_entity: Entity, parent_entity: Entity) {
+    // Ensure parent has Children component
+    if (!(game.World.Signature[parent_entity] & Has.Children)) {
+        game.World.Signature[parent_entity] |= Has.Children;
+        game.World.Children[parent_entity] = {
+            Children: [],
+        };
+    }
+    
+    // Add child to parent's children array
+    game.World.Children[parent_entity].Children.push(child_entity);
+}
+
+/**
  * Delete the entity with all its descendants.
  *
  * @param world World object which stores the component data.

@@ -157,34 +157,44 @@ ability_black_cat() {
 ### New Components
 
 ```typescript
-// Upgrade inventory tracking
-interface UpgradeInventory {
-    Weapons: WeaponType[];
-    Armor: ArmorType[];
-    Abilities: AbilityType[];
-    Companions: number[]; // Entity IDs of companion entities
+// Weapon union type with discriminated union
+export const enum WeaponKind {
+    Melee,
+    Ranged,
 }
 
-// Weapon components
-interface WeaponStats {
+export interface WeaponMelee {
+    Kind: WeaponKind.Melee;
     Damage: number;
     Range: number;
     Cooldown: number;
-    Type: WeaponType;
-}
-
-interface WeaponMelee extends WeaponStats {
+    LastAttackTime: number;
     Knockback: number;
     Arc: number; // Attack arc in radians
 }
 
-interface WeaponRanged extends WeaponStats {
+export interface WeaponRanged {
+    Kind: WeaponKind.Ranged;
+    Damage: number;
+    Range: number;
+    Cooldown: number;
+    LastAttackTime: number;
     ProjectileSpeed: number;
     ProjectileCount: number;
-    Spread: number;
+    Spread: number; // Spread angle in radians
 }
 
-// Enhanced health for armor
+export type Weapon = WeaponMelee | WeaponRanged;
+
+// Game state
+export interface GameState {
+    currentLevel: number; // 1-33 duels
+    playerUpgrades: UpgradeType[]; // Player's accumulated upgrades
+    population: number; // Narrative countdown (8 billion -> 1)
+    isNewRun: boolean; // Fresh start vs resumed
+}
+
+// Enhanced health for armor (TODO)
 interface Health {
     Current: number;
     Max: number;
@@ -200,7 +210,7 @@ interface Health {
 ### New Systems
 
 ```typescript
-sys_upgrade_manager(game, delta); // Manages upgrade application and removal
+apply_upgrades(game, entity, upgrades); // Applies upgrades to an entity
 sys_weapons(game, delta); // Handles weapon activation and cooldowns
 sys_abilities(game, delta); // Processes ability effects and triggers
 sys_companions(game, delta); // Manages companion AI and lifecycle

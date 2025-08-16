@@ -34,13 +34,31 @@ import {sys_toggle} from "./systems/sys_toggle.js";
 import {sys_transform2d} from "./systems/sys_transform2d.js";
 import {sys_trigger2d} from "./systems/sys_trigger2d.js";
 import {sys_ui} from "./systems/sys_ui.js";
+import {UpgradeType, WEAPON_UPGRADES} from "./upgrades/types.js";
 import {Has, World} from "./world.js";
 
 export const WORLD_CAPACITY = 65_536; // = 4MB of InstanceData.
 export const REAL_UNIT_SIZE = 48;
 
+export interface GameState {
+    currentLevel: number; // 1-33 duels
+    playerUpgrades: UpgradeType[]; // Player's accumulated upgrades
+    population: number; // Narrative countdown (8 billion -> 1)
+    isNewRun: boolean; // Fresh start vs resumed
+}
+
+export function createDefaultGameState(): GameState {
+    return {
+        currentLevel: 1,
+        playerUpgrades: [WEAPON_UPGRADES[0]], // Default: battle axe
+        population: 8_000_000_000,
+        isNewRun: true,
+    };
+}
+
 export class Game extends Game3D {
     World = new World(WORLD_CAPACITY);
+    State: GameState = createDefaultGameState();
 
     MaterialRender2D = mat_render2d(this.Gl, Has.Render2D, Has.SpatialNode2D);
     Spritesheet = create_spritesheet_from(this.Gl, document.querySelector("img")!);
