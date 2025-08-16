@@ -169,11 +169,10 @@ function execute_melee_attack(
     }
 
     // Add screen shake for impact
-    let camera_entity = game.Cameras[0];
-    if (camera_entity !== undefined) {
+    if (game.Camera !== undefined) {
         let shake_radius = 0.5; // Fixed radius for all shakes
         let shake_duration = 0.2; // 200ms shake
-        shake(shake_radius, shake_duration)(game, camera_entity);
+        shake(shake_radius, shake_duration)(game, game.Camera);
     }
 }
 
@@ -253,11 +252,10 @@ function apply_knockback(
 ) {
     // TODO: Implement proper knockback physics
     // For now, just add extra screen shake
-    let camera_entity = game.Cameras[0];
-    if (camera_entity !== undefined) {
+    if (game.Camera !== undefined) {
         let shake_radius = 0.5; // Fixed radius for all shakes
         let shake_duration = 0.3; // 300ms shake for knockback
-        shake(shake_radius, shake_duration)(game, camera_entity);
+        shake(shake_radius, shake_duration)(game, game.Camera);
     }
 }
 

@@ -34,13 +34,12 @@ export function sys_render2d(game: Game, delta: number) {
     game.Gl.bindBuffer(GL_ARRAY_BUFFER, game.InstanceBuffer);
     game.Gl.bufferData(GL_ARRAY_BUFFER, game.World.InstanceData, GL_STREAM_DRAW);
 
-    for (let camera_entity of game.Cameras) {
-        let camera = game.World.Camera2D[camera_entity];
+    if (game.Camera !== undefined) {
+        let camera = game.World.Camera2D[game.Camera];
         game.Gl.bindFramebuffer(GL_FRAMEBUFFER, null);
         game.Gl.viewport(0, 0, camera.ViewportWidth, camera.ViewportHeight);
         game.Gl.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         render_all(game, camera);
-        break;
     }
 }
 

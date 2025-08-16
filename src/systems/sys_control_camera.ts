@@ -10,14 +10,13 @@ const pointer_position: Vec2 = [0, 0];
 let wheel_y_clamped = 0;
 
 export function sys_control_camera(game: Game, delta: number) {
-    let camera_entity = game.Cameras[0];
-    if (camera_entity === undefined) {
+    if (game.Camera === undefined) {
         // This system requires the main camera to exist.
         return;
     }
 
-    let camera = game.World.Camera2D[camera_entity];
-    let camera_local = game.World.LocalTransform2D[camera_entity];
+    let camera = game.World.Camera2D[game.Camera];
+    let camera_local = game.World.LocalTransform2D[game.Camera];
 
     if (game.InputDelta["WheelY"]) {
         let cur_zoom = 4 ** (wheel_y_clamped / -500);
@@ -44,7 +43,7 @@ export function sys_control_camera(game: Game, delta: number) {
 
             camera_local.Translation[0] += offset[0];
             camera_local.Translation[1] += offset[1];
-            game.World.Signature[camera_entity] |= Has.Dirty;
+            game.World.Signature[game.Camera] |= Has.Dirty;
         }
     }
 
@@ -52,7 +51,7 @@ export function sys_control_camera(game: Game, delta: number) {
         document.body.classList.add("grabbing");
         camera_local.Translation[0] -= game.InputDelta["MouseX"] / game.UnitSize;
         camera_local.Translation[1] += game.InputDelta["MouseY"] / game.UnitSize;
-        game.World.Signature[camera_entity] |= Has.Dirty;
+        game.World.Signature[game.Camera] |= Has.Dirty;
     }
 
     if (game.InputDelta["Mouse0"] === -1) {

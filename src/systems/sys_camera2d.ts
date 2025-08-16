@@ -12,7 +12,7 @@ import {Has} from "../world.js";
 const QUERY = Has.SpatialNode2D | Has.Camera2D;
 
 export function sys_camera2d(game: Game, delta: number) {
-    game.Cameras = [];
+    game.Camera = undefined;
 
     for (let ent = 0; ent < game.World.Signature.length; ent++) {
         if ((game.World.Signature[ent] & QUERY) === QUERY) {
@@ -22,7 +22,8 @@ export function sys_camera2d(game: Game, delta: number) {
             mat2d_multiply(camera.Pv, camera.Projection.Projection, camera_node.Self);
             mat2d_copy(camera.World, camera_node.World);
 
-            game.Cameras.push(ent);
+            game.Camera = ent;
+            return;
         }
     }
 }

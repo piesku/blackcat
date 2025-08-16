@@ -37,11 +37,10 @@ export function sys_projectile(game: Game, _delta: number) {
                 );
 
                 // Add screen shake for impact
-                let camera_entity = game.Cameras[0];
-                if (camera_entity !== undefined) {
+                if (game.Camera !== undefined) {
                     let shake_radius = 0.5; // Fixed radius for all shakes
                     let shake_duration = 0.15; // 150ms shake for projectile hit
-                    shake(shake_radius, shake_duration)(game, camera_entity);
+                    shake(shake_radius, shake_duration)(game, game.Camera);
                 }
 
                 // Destroy the projectile after hitting a target

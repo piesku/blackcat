@@ -259,7 +259,7 @@ export abstract class Game3D extends GameImpl {
     Gl = this.SceneCanvas.getContext("webgl2")!;
 
     Audio = new AudioContext();
-    Cameras: Array<Entity> = [];
+    Camera?: Entity;
     Targets: Record<string, RenderTarget> = {};
 
     constructor() {

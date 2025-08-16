@@ -11,12 +11,11 @@ import {Has} from "../world.js";
 const QUERY = Has.SpatialNode2D | Has.Draw;
 
 export function sys_draw2d(game: Game, delta: number) {
-    let camera_entity = game.Cameras[0];
-    if (camera_entity === undefined) {
+    if (game.Camera === undefined) {
         return;
     }
 
-    let camera = game.World.Camera2D[camera_entity];
+    let camera = game.World.Camera2D[game.Camera];
 
     let ctx = game.BackgroundContext;
     ctx.resetTransform();

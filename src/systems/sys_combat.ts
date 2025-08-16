@@ -36,11 +36,10 @@ export function sys_combat(game: Game, delta: number) {
                     );
 
                     // Add screen shake for dramatic effect
-                    let camera_entity = game.Cameras[0];
-                    if (camera_entity !== undefined) {
+                    if (game.Camera !== undefined) {
                         let shake_radius = 0.5; // Fixed radius for all shakes
                         let shake_duration = 0.4; // 400ms shake for collision
-                        shake(shake_radius, shake_duration)(game, camera_entity);
+                        shake(shake_radius, shake_duration)(game, game.Camera);
                     }
 
                     // If health reaches 0, disable movement
