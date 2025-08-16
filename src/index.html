@@ -22,7 +22,7 @@
         import "./index.js";
 
         window.toggle = function toggle(button) {
-            if (game.Running) {
+            if (game.IsRunning) {
                 game.Stop();
                 button.textContent = "resume";
             } else {

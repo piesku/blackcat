@@ -14,7 +14,7 @@ const step = 1 / 60;
  * registers event listeners for input handling.
  */
 export abstract class GameImpl {
-    protected FrameId = 0;
+    IsRunning = 0;
     private Milliseconds = 0;
     Time = 0; // Game time in seconds (for gameplay systems)
 
@@ -160,7 +160,7 @@ export abstract class GameImpl {
             let delta = (now - last) / 1000;
             last = now;
 
-            this.FrameId = requestAnimationFrame(tick);
+            this.IsRunning = requestAnimationFrame(tick);
 
             this.FrameSetup(delta);
             this.FrameUpdate(delta);
@@ -171,8 +171,8 @@ export abstract class GameImpl {
     }
 
     Stop() {
-        cancelAnimationFrame(this.FrameId);
-        this.FrameId = 0;
+        cancelAnimationFrame(this.IsRunning);
+        this.IsRunning = 0;
     }
 
     FrameSetup(delta: number) {
@@ -307,10 +307,10 @@ export abstract class GameXR extends Game3D {
 
             if (frame) {
                 this.XrFrame = frame;
-                this.FrameId = this.XrFrame.session.requestAnimationFrame(tick);
+                this.IsRunning = this.XrFrame.session.requestAnimationFrame(tick);
             } else {
                 this.XrFrame = undefined;
-                this.FrameId = requestAnimationFrame(tick);
+                this.IsRunning = requestAnimationFrame(tick);
             }
 
             this.FrameSetup(delta);
@@ -319,19 +319,19 @@ export abstract class GameXR extends Game3D {
         };
 
         if (this.XrSession) {
-            this.FrameId = this.XrSession.requestAnimationFrame(tick);
+            this.IsRunning = this.XrSession.requestAnimationFrame(tick);
         } else {
-            this.FrameId = requestAnimationFrame(tick);
+            this.IsRunning = requestAnimationFrame(tick);
         }
     }
 
     override Stop() {
         if (this.XrSession) {
-            this.XrSession.cancelAnimationFrame(this.FrameId);
+            this.XrSession.cancelAnimationFrame(this.IsRunning);
         } else {
-            cancelAnimationFrame(this.FrameId);
+            cancelAnimationFrame(this.IsRunning);
         }
-        this.FrameId = 0;
+        this.IsRunning = 0;
     }
 
     async EnterXR() {
