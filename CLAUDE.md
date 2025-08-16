@@ -10,6 +10,8 @@ This is "33 Duels", a fast-paced micro-roguelike auto-battler built on the Goodl
 
 ### Local Development
 
+Assume that the local dev server is already running. If it isn't, you can start it with the following commands:
+
 ```bash
 npm install       # Install dependencies
 npm start         # Start dev server at http://localhost:1234
