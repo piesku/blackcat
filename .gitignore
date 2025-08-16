@@ -1,6 +1,7 @@
 .DS_Store
 .claude
 .vscode/*.log
+.playwright-mcp
 
 node_modules
 *.js

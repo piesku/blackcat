@@ -4,7 +4,7 @@ import {Has} from "../world.js";
 export interface Health {
     Max: number;
     Current: number;
-    LastDamageTime: number;
+    LastDamageTime: number; // Game time in seconds when last damage occurred
     IsAlive: boolean;
 }
 
@@ -24,7 +24,7 @@ export function damage_entity(game: Game, entity: number, amount: number) {
     let health_data = game.World.Health[entity];
     if (health_data && health_data.IsAlive) {
         health_data.Current = Math.max(0, health_data.Current - amount);
-        health_data.LastDamageTime = game.Now;
+        health_data.LastDamageTime = game.Time; // Use game time in seconds
 
         if (health_data.Current <= 0) {
             health_data.IsAlive = false;

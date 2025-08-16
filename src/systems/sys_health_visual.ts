@@ -19,8 +19,8 @@ export function sys_health_visual(game: Game, _delta: number) {
             }
 
             // Flash red when recently damaged
-            if (game.Now - health.LastDamageTime < 300) {
-                let flash_intensity = 1.0 - (game.Now - health.LastDamageTime) / 300;
+            if (game.Time - health.LastDamageTime < 0.3) {
+                let flash_intensity = 1.0 - (game.Time - health.LastDamageTime) / 0.3;
                 render.Color[0] = 1.0;
                 render.Color[1] = 1.0 - flash_intensity * 0.8;
                 render.Color[2] = 1.0 - flash_intensity * 0.8;

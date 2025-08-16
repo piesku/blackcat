@@ -1,6 +1,6 @@
 import {Vec2} from "../../lib/math.js";
 import {vec2_add, vec2_length, vec2_normalize, vec2_scale, vec2_subtract} from "../../lib/vec2.js";
-import {AIState} from "../components/com_ai_fighter.js";
+import {AIFighter, AIState} from "../components/com_ai_fighter.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
@@ -103,13 +103,13 @@ function update_ai_state(game: Game, entity: number, distance: number, delta: nu
 
     // Check for low health -> retreat
     if (health.Current <= LOW_HEALTH_THRESHOLD && ai.State !== AIState.Retreating) {
-        change_state(ai, AIState.Retreating, game.Now);
+        change_state(ai, AIState.Retreating, game.Time);
         return;
     }
 
     // Check for recent damage -> stunned briefly
-    if (game.Now - health.LastDamageTime < 300 && ai.State !== AIState.Stunned) {
-        change_state(ai, AIState.Stunned, game.Now);
+    if (game.Time - health.LastDamageTime < 0.3 && ai.State !== AIState.Stunned) {
+        change_state(ai, AIState.Stunned, game.Time);
         return;
     }
 
@@ -120,7 +120,7 @@ function update_ai_state(game: Game, entity: number, distance: number, delta: nu
                 console.log(
                     `[AI] Entity initiating DASH ATTACK at distance ${distance.toFixed(2)}`,
                 );
-                change_state(ai, AIState.Attacking, game.Now);
+                change_state(ai, AIState.Attacking, game.Time);
                 ai.AttackCooldown = 2.0 + Math.random() * 1.5; // 2-3.5 second cooldown
             }
             // Randomly change circle direction for dynamic movement
@@ -137,27 +137,27 @@ function update_ai_state(game: Game, entity: number, distance: number, delta: nu
                 console.log(
                     `[AI] Entity ending dash attack (timer: ${ai.StateTimer.toFixed(2)}, distance: ${distance.toFixed(2)})`,
                 );
-                change_state(ai, AIState.Circling, game.Now);
+                change_state(ai, AIState.Circling, game.Time);
             }
             break;
 
         case AIState.Retreating:
             // Return to circling when at safe distance and health recovered
             if (distance > RETREAT_DISTANCE && health.Current > LOW_HEALTH_THRESHOLD) {
-                change_state(ai, AIState.Circling, game.Now);
+                change_state(ai, AIState.Circling, game.Time);
             }
             break;
 
         case AIState.Stunned:
             // Short stun duration
             if (ai.StateTimer > 0.3) {
-                change_state(ai, AIState.Circling, game.Now);
+                change_state(ai, AIState.Circling, game.Time);
             }
             break;
     }
 }
 
-function change_state(ai: any, new_state: AIState, time: number) {
+function change_state(ai: AIFighter, new_state: AIState, time: number) {
     let old_state_name = getAIStateName(ai.State);
     let new_state_name = getAIStateName(new_state);
 

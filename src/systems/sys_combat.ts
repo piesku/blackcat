@@ -3,7 +3,7 @@ import {Game} from "../game.js";
 import {Has} from "../world.js";
 
 const QUERY = Has.Health | Has.Collide2D | Has.LocalTransform2D;
-const DAMAGE_COOLDOWN = 2000; // 2 seconds between collision damage instances (reduced priority) - in milliseconds
+const DAMAGE_COOLDOWN = 2.0; // 2 seconds between collision damage instances (reduced priority)
 
 export function sys_combat(game: Game, delta: number) {
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
@@ -25,7 +25,7 @@ export function sys_combat(game: Game, delta: number) {
 
                 // Only damage if enough time has passed since last damage
                 // Reduced collision damage since weapons are now primary damage source
-                if (game.Now - health.LastDamageTime > DAMAGE_COOLDOWN) {
+                if (game.Time - health.LastDamageTime > DAMAGE_COOLDOWN) {
                     let health_before = health.Current;
                     damage_entity(game, entity, 0.5); // Reduced from 1 to 0.5
                     let health_after = health.Current;

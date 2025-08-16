@@ -14,8 +14,9 @@ const step = 1 / 60;
  * registers event listeners for input handling.
  */
 export abstract class GameImpl {
-    Running = 0;
-    Now = 0;
+    protected FrameId = 0;
+    private Milliseconds = 0;
+    Time = 0; // Game time in seconds (for gameplay systems)
 
     abstract World: WorldImpl;
 
@@ -159,7 +160,7 @@ export abstract class GameImpl {
             let delta = (now - last) / 1000;
             last = now;
 
-            this.Running = requestAnimationFrame(tick);
+            this.FrameId = requestAnimationFrame(tick);
 
             this.FrameSetup(delta);
             this.FrameUpdate(delta);
@@ -170,12 +171,13 @@ export abstract class GameImpl {
     }
 
     Stop() {
-        cancelAnimationFrame(this.Running);
-        this.Running = 0;
+        cancelAnimationFrame(this.FrameId);
+        this.FrameId = 0;
     }
 
     FrameSetup(delta: number) {
-        this.Now = performance.now();
+        this.Milliseconds = performance.now();
+        this.Time += delta; // Accumulate game time in seconds
 
         let mouse_distance =
             Math.abs(this.InputDelta["MouseX"]) + Math.abs(this.InputDelta["MouseY"]);
@@ -227,7 +229,7 @@ export abstract class GameImpl {
             this.InputDelta[name] = 0;
         }
 
-        let update = performance.now() - this.Now;
+        let update = performance.now() - this.Milliseconds;
         if (update_span) {
             update_span.textContent = update.toFixed(1);
         }
@@ -305,10 +307,10 @@ export abstract class GameXR extends Game3D {
 
             if (frame) {
                 this.XrFrame = frame;
-                this.Running = this.XrFrame.session.requestAnimationFrame(tick);
+                this.FrameId = this.XrFrame.session.requestAnimationFrame(tick);
             } else {
                 this.XrFrame = undefined;
-                this.Running = requestAnimationFrame(tick);
+                this.FrameId = requestAnimationFrame(tick);
             }
 
             this.FrameSetup(delta);
@@ -317,19 +319,19 @@ export abstract class GameXR extends Game3D {
         };
 
         if (this.XrSession) {
-            this.Running = this.XrSession.requestAnimationFrame(tick);
+            this.FrameId = this.XrSession.requestAnimationFrame(tick);
         } else {
-            this.Running = requestAnimationFrame(tick);
+            this.FrameId = requestAnimationFrame(tick);
         }
     }
 
     override Stop() {
         if (this.XrSession) {
-            this.XrSession.cancelAnimationFrame(this.Running);
+            this.XrSession.cancelAnimationFrame(this.FrameId);
         } else {
-            cancelAnimationFrame(this.Running);
+            cancelAnimationFrame(this.FrameId);
         }
-        this.Running = 0;
+        this.FrameId = 0;
     }
 
     async EnterXR() {
