@@ -5,12 +5,12 @@ import {Game} from "../game.js";
 import {Has} from "../world.js";
 
 const QUERY = Has.AIFighter | Has.LocalTransform2D | Has.Health | Has.Move2D;
-const CIRCLE_DISTANCE = 2.0;        // Wider circling for dramatic buildup
-const DASH_TRIGGER_DISTANCE = 2.5;  // Start considering dash attacks within this range
-const DASH_TARGET_DISTANCE = 0.8;   // Dash to this close distance  
+const CIRCLE_DISTANCE = 2.0; // Wider circling for dramatic buildup
+const DASH_TRIGGER_DISTANCE = 2.5; // Start considering dash attacks within this range
+const DASH_TARGET_DISTANCE = 0.8; // Dash to this close distance
 const RETREAT_DISTANCE = 4.0;
 const LOW_HEALTH_THRESHOLD = 1;
-const DASH_SPEED_MULTIPLIER = 3.0;   // How much faster dash movement is
+const DASH_SPEED_MULTIPLIER = 3.0; // How much faster dash movement is
 
 export function sys_ai_fighter(game: Game, delta: number) {
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
@@ -108,7 +108,7 @@ function update_ai_state(game: Game, entity: number, distance: number, delta: nu
     }
 
     // Check for recent damage -> stunned briefly
-    if (game.Now - health.LastDamageTime < 0.3 && ai.State !== AIState.Stunned) {
+    if (game.Now - health.LastDamageTime < 300 && ai.State !== AIState.Stunned) {
         change_state(ai, AIState.Stunned, game.Now);
         return;
     }
@@ -117,12 +117,14 @@ function update_ai_state(game: Game, entity: number, distance: number, delta: nu
         case AIState.Circling:
             // Dash attack trigger: within range, cooldown ready, and random chance
             if (distance < DASH_TRIGGER_DISTANCE && ai.AttackCooldown <= 0 && Math.random() < 0.3) {
-                console.log(`[AI] Entity initiating DASH ATTACK at distance ${distance.toFixed(2)}`);
+                console.log(
+                    `[AI] Entity initiating DASH ATTACK at distance ${distance.toFixed(2)}`,
+                );
                 change_state(ai, AIState.Attacking, game.Now);
                 ai.AttackCooldown = 2.0 + Math.random() * 1.5; // 2-3.5 second cooldown
             }
             // Randomly change circle direction for dynamic movement
-            else if (ai.StateTimer > (1.0 + Math.random() * 1.5) && Math.random() < 0.5) {
+            else if (ai.StateTimer > 1.0 + Math.random() * 1.5 && Math.random() < 0.5) {
                 ai.CircleDirection *= -1;
                 ai.StateTimer = 0;
                 console.log(`[AI] Entity changing circle direction`);
@@ -132,7 +134,9 @@ function update_ai_state(game: Game, entity: number, distance: number, delta: nu
         case AIState.Attacking:
             // Stop attacking after dash duration or if target moved away
             if (ai.StateTimer > 1.2 || distance > DASH_TRIGGER_DISTANCE) {
-                console.log(`[AI] Entity ending dash attack (timer: ${ai.StateTimer.toFixed(2)}, distance: ${distance.toFixed(2)})`);
+                console.log(
+                    `[AI] Entity ending dash attack (timer: ${ai.StateTimer.toFixed(2)}, distance: ${distance.toFixed(2)})`,
+                );
                 change_state(ai, AIState.Circling, game.Now);
             }
             break;
@@ -156,9 +160,9 @@ function update_ai_state(game: Game, entity: number, distance: number, delta: nu
 function change_state(ai: any, new_state: AIState, time: number) {
     let old_state_name = getAIStateName(ai.State);
     let new_state_name = getAIStateName(new_state);
-    
+
     console.log(`[AI] State change: ${old_state_name} -> ${new_state_name}`);
-    
+
     ai.State = new_state;
     ai.LastStateChange = time;
     ai.StateTimer = 0;
@@ -166,11 +170,16 @@ function change_state(ai: any, new_state: AIState, time: number) {
 
 function getAIStateName(state: AIState): string {
     switch (state) {
-        case AIState.Circling: return "Circling";
-        case AIState.Attacking: return "Attacking";
-        case AIState.Retreating: return "Retreating";
-        case AIState.Stunned: return "Stunned";
-        default: return "Unknown";
+        case AIState.Circling:
+            return "Circling";
+        case AIState.Attacking:
+            return "Attacking";
+        case AIState.Retreating:
+            return "Retreating";
+        case AIState.Stunned:
+            return "Stunned";
+        default:
+            return "Unknown";
     }
 }
 
@@ -183,7 +192,7 @@ function circle_movement(out: Vec2, to_target: Vec2, distance: number, direction
         target_distance = CIRCLE_DISTANCE * 0.7; // Get closer but not too close
         console.log(`[AI] Spiraling inward to distance ${target_distance.toFixed(2)}`);
     }
-    
+
     let distance_factor = (distance - target_distance) / target_distance;
 
     // Normalize to_target

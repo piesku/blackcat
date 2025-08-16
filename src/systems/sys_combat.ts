@@ -1,9 +1,9 @@
 import {damage_entity} from "../components/com_health.js";
 import {Game} from "../game.js";
-import {Has, World} from "../world.js";
+import {Has} from "../world.js";
 
 const QUERY = Has.Health | Has.Collide2D | Has.LocalTransform2D;
-const DAMAGE_COOLDOWN = 2.0; // 2 seconds between collision damage instances (reduced priority)
+const DAMAGE_COOLDOWN = 2000; // 2 seconds between collision damage instances (reduced priority) - in milliseconds
 
 export function sys_combat(game: Game, delta: number) {
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
@@ -29,8 +29,10 @@ export function sys_combat(game: Game, delta: number) {
                     let health_before = health.Current;
                     damage_entity(game, entity, 0.5); // Reduced from 1 to 0.5
                     let health_after = health.Current;
-                    
-                    console.log(`[COLLISION] Entity ${entity} <-> ${other_entity}: 0.5 damage, HP ${health_before.toFixed(1)} -> ${health_after.toFixed(1)} (${health.IsAlive ? 'alive' : 'DEAD'})`);
+
+                    console.log(
+                        `[COLLISION] Entity ${entity} <-> ${other_entity}: 0.5 damage, HP ${health_before.toFixed(1)} -> ${health_after.toFixed(1)} (${health.IsAlive ? "alive" : "DEAD"})`,
+                    );
 
                     // Add screen shake for dramatic effect
                     if (game.World.Signature[entity] & Has.Shake) {
