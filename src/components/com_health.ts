@@ -24,7 +24,7 @@ export function damage_entity(game: Game, entity: number, amount: number) {
     let health_data = game.World.Health[entity];
     if (health_data && health_data.IsAlive) {
         health_data.Current = Math.max(0, health_data.Current - amount);
-        health_data.LastDamageTime = game.Running;
+        health_data.LastDamageTime = game.Now;
 
         if (health_data.Current <= 0) {
             health_data.IsAlive = false;

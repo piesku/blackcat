@@ -22,7 +22,7 @@ export function ai_fighter(target_entity: number = -1) {
         game.World.Signature[entity] |= Has.AIFighter;
         game.World.AIFighter[entity] = {
             State: AIState.Circling,
-            LastStateChange: game.Running,
+            LastStateChange: game.Now,
             StateTimer: Math.random() * 2.0, // Random initial delay 0-2 seconds
             TargetEntity: target_entity,
             CircleDirection: Math.random() > 0.5 ? 1 : -1,

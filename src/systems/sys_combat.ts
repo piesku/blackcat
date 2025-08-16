@@ -25,7 +25,7 @@ export function sys_combat(game: Game, delta: number) {
 
                 // Only damage if enough time has passed since last damage
                 // Reduced collision damage since weapons are now primary damage source
-                if (game.Running - health.LastDamageTime > DAMAGE_COOLDOWN) {
+                if (game.Now - health.LastDamageTime > DAMAGE_COOLDOWN) {
                     let health_before = health.Current;
                     damage_entity(game, entity, 0.5); // Reduced from 1 to 0.5
                     let health_after = health.Current;

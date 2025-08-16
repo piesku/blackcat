@@ -103,13 +103,13 @@ function update_ai_state(game: Game, entity: number, distance: number, delta: nu
 
     // Check for low health -> retreat
     if (health.Current <= LOW_HEALTH_THRESHOLD && ai.State !== AIState.Retreating) {
-        change_state(ai, AIState.Retreating, game.Running);
+        change_state(ai, AIState.Retreating, game.Now);
         return;
     }
 
     // Check for recent damage -> stunned briefly
-    if (game.Running - health.LastDamageTime < 0.3 && ai.State !== AIState.Stunned) {
-        change_state(ai, AIState.Stunned, game.Running);
+    if (game.Now - health.LastDamageTime < 0.3 && ai.State !== AIState.Stunned) {
+        change_state(ai, AIState.Stunned, game.Now);
         return;
     }
 
@@ -118,7 +118,7 @@ function update_ai_state(game: Game, entity: number, distance: number, delta: nu
             // Dash attack trigger: within range, cooldown ready, and random chance
             if (distance < DASH_TRIGGER_DISTANCE && ai.AttackCooldown <= 0 && Math.random() < 0.3) {
                 console.log(`[AI] Entity initiating DASH ATTACK at distance ${distance.toFixed(2)}`);
-                change_state(ai, AIState.Attacking, game.Running);
+                change_state(ai, AIState.Attacking, game.Now);
                 ai.AttackCooldown = 2.0 + Math.random() * 1.5; // 2-3.5 second cooldown
             }
             // Randomly change circle direction for dynamic movement
@@ -133,21 +133,21 @@ function update_ai_state(game: Game, entity: number, distance: number, delta: nu
             // Stop attacking after dash duration or if target moved away
             if (ai.StateTimer > 1.2 || distance > DASH_TRIGGER_DISTANCE) {
                 console.log(`[AI] Entity ending dash attack (timer: ${ai.StateTimer.toFixed(2)}, distance: ${distance.toFixed(2)})`);
-                change_state(ai, AIState.Circling, game.Running);
+                change_state(ai, AIState.Circling, game.Now);
             }
             break;
 
         case AIState.Retreating:
             // Return to circling when at safe distance and health recovered
             if (distance > RETREAT_DISTANCE && health.Current > LOW_HEALTH_THRESHOLD) {
-                change_state(ai, AIState.Circling, game.Running);
+                change_state(ai, AIState.Circling, game.Now);
             }
             break;
 
         case AIState.Stunned:
             // Short stun duration
             if (ai.StateTimer > 0.3) {
-                change_state(ai, AIState.Circling, game.Running);
+                change_state(ai, AIState.Circling, game.Now);
             }
             break;
     }
