@@ -12,12 +12,12 @@ export function blueprint_throwing_knives(game: Game) {
         render2d("20"), // Use a knife sprite
         collide2d(false, Layer.None, Layer.None, [0.2, 0.2]),
         weapon_ranged(
-            1.5,    // damage
-            6,      // range
-            2.0,    // cooldown
-            8,      // projectile speed
-            3,      // projectile count (throws 3 knives)
-            0.3     // spread (fan pattern)
+            1.5, // damage
+            6, // range
+            2.0, // cooldown
+            8, // projectile speed
+            3, // projectile count (throws 3 knives)
+            0.3, // spread (fan pattern)
         ),
     ];
 }

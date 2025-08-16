@@ -66,13 +66,22 @@ export function sys_ai_fighter(game: Game, delta: number) {
             if (target_move && (target_move.Direction[0] !== 0 || target_move.Direction[1] !== 0)) {
                 // Calculate target's movement direction relative to us
                 let target_movement: Vec2 = [target_move.Direction[0], target_move.Direction[1]];
-                let dot_product = target_movement[0] * to_target[0] + target_movement[1] * to_target[1];
+                let dot_product =
+                    target_movement[0] * to_target[0] + target_movement[1] * to_target[1];
                 // If dot product is negative, target is moving away from us
                 is_target_retreating = dot_product < -0.3; // Threshold to avoid false positives
             }
 
             // Update AI state based on conditions
-            update_ai_state(game, entity, distance, delta, scaled_distances, speed_scale, is_target_retreating);
+            update_ai_state(
+                game,
+                entity,
+                distance,
+                delta,
+                scaled_distances,
+                speed_scale,
+                is_target_retreating,
+            );
 
             // Execute behavior based on current state
             let movement: Vec2 = [0, 0];
@@ -116,7 +125,7 @@ export function sys_ai_fighter(game: Game, delta: number) {
 function is_target_valid(game: Game, target_entity: number): boolean {
     if (target_entity === -1) return false;
     if (!(game.World.Signature[target_entity] & Has.Health)) return false;
-    
+
     let target_health = game.World.Health[target_entity];
     return target_health && target_health.IsAlive;
 }

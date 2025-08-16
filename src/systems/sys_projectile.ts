@@ -9,19 +9,19 @@ export function sys_projectile(game: Game, _delta: number) {
         if ((game.World.Signature[entity] & QUERY) === QUERY) {
             let projectile = game.World.Projectile[entity];
             let collider = game.World.Collide2D[entity];
-            
+
             if (!projectile || !collider) continue;
 
             // Check for collisions with valid targets
             for (let collision of collider.Collisions) {
                 let target_entity = collision.Other;
-                
+
                 // Skip if projectile hit its owner
                 if (target_entity === projectile.OwnerEntity) continue;
-                
+
                 // Skip if target has no health
                 if (!(game.World.Signature[target_entity] & Has.Health)) continue;
-                
+
                 let target_health = game.World.Health[target_entity];
                 if (!target_health.IsAlive) continue;
 
@@ -32,7 +32,7 @@ export function sys_projectile(game: Game, _delta: number) {
                 let is_alive = target_health.IsAlive;
 
                 console.log(
-                    `[PROJECTILE] Entity ${entity} hit target ${target_entity}: ${projectile.Damage} damage, HP ${health_before.toFixed(1)} -> ${health_after.toFixed(1)} (${is_alive ? "alive" : "DEAD"})`
+                    `[PROJECTILE] Entity ${entity} hit target ${target_entity}: ${projectile.Damage} damage, HP ${health_before.toFixed(1)} -> ${health_after.toFixed(1)} (${is_alive ? "alive" : "DEAD"})`,
                 );
 
                 // Add screen shake for impact

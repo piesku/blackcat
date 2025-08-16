@@ -12,12 +12,12 @@ export function blueprint_sniper_rifle(game: Game) {
         render2d("22"), // Use a sniper sprite
         collide2d(false, Layer.None, Layer.None, [1.0, 0.3]),
         weapon_ranged(
-            5,      // damage (very high)
-            15,     // range (very long)
-            3.5,    // cooldown (very slow)
-            20,     // projectile speed (very fast)
-            1,      // projectile count (single shot)
-            0.01    // spread (pinpoint accuracy)
+            5, // damage (very high)
+            15, // range (very long)
+            3.5, // cooldown (very slow)
+            20, // projectile speed (very fast)
+            1, // projectile count (single shot)
+            0.01, // spread (pinpoint accuracy)
         ),
     ];
 }

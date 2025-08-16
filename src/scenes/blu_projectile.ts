@@ -8,10 +8,16 @@ import {render2d} from "../components/com_render2d.js";
 import {spatial_node2d} from "../components/com_spatial_node2d.js";
 import {Game, Layer} from "../game.js";
 
-export function blueprint_projectile(game: Game, damage: number, owner_entity: number, max_range: number, speed: number) {
+export function blueprint_projectile(
+    game: Game,
+    damage: number,
+    owner_entity: number,
+    max_range: number,
+    speed: number,
+) {
     // Calculate lifespan based on range and speed
     let lifespan_seconds = max_range / speed;
-    
+
     return [
         spatial_node2d(),
         local_transform2d(undefined, 0, [0.2, 0.2]), // Small projectile

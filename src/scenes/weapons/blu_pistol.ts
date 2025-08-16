@@ -12,12 +12,12 @@ export function blueprint_pistol(game: Game) {
         render2d("18"), // Use a gun sprite
         collide2d(false, Layer.None, Layer.None, [0.3, 0.3]),
         weapon_ranged(
-            2,      // damage
-            8,      // range  
-            1.5,    // cooldown (seconds)
-            12,     // projectile speed
-            1,      // projectile count
-            0.05    // spread (tight accuracy)
+            2, // damage
+            8, // range
+            1.5, // cooldown (seconds)
+            12, // projectile speed
+            1, // projectile count
+            0.05, // spread (tight accuracy)
         ),
     ];
 }

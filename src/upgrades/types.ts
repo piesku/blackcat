@@ -91,6 +91,6 @@ export const ALL_UPGRADES: UpgradeType[] = [...WEAPON_UPGRADES];
 
 // Utility function to get upgrade display name by ID
 export function getUpgradeDisplayName(upgradeId: string): string {
-    const upgrade = ALL_UPGRADES.find(u => u.id === upgradeId);
+    const upgrade = ALL_UPGRADES.find((u) => u.id === upgradeId);
     return upgrade?.name || upgradeId;
 }

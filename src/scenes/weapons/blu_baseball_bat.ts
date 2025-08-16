@@ -12,11 +12,11 @@ export function blueprint_baseball_bat(game: Game) {
         render2d("19"), // Use a bat sprite
         collide2d(false, Layer.None, Layer.None, [0.8, 0.3]),
         weapon_melee(
-            2.5,            // damage
-            1.5,            // range
-            2.0,            // cooldown
-            3.0,            // knockback (high)
-            Math.PI / 2     // arc (wide swing)
+            2.5, // damage
+            1.5, // range
+            2.0, // cooldown
+            3.0, // knockback (high)
+            Math.PI / 2, // arc (wide swing)
         ),
     ];
 }

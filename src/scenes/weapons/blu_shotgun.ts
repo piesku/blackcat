@@ -12,12 +12,12 @@ export function blueprint_shotgun(game: Game) {
         render2d("21"), // Use a shotgun sprite
         collide2d(false, Layer.None, Layer.None, [0.7, 0.3]),
         weapon_ranged(
-            1.0,    // damage per pellet
-            4,      // range (shorter than pistol)
-            2.5,    // cooldown (slow)
-            10,     // projectile speed
-            5,      // projectile count (5 pellets)
-            0.5     // spread (wide cone)
+            1.0, // damage per pellet
+            4, // range (shorter than pistol)
+            2.5, // cooldown (slow)
+            10, // projectile speed
+            5, // projectile count (5 pellets)
+            0.5, // spread (wide cone)
         ),
     ];
 }
