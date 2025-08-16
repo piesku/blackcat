@@ -29,20 +29,7 @@ npm run ts:check  # Type check without emitting files
 npm run ts:watch  # Watch mode for type checking
 ```
 
-### Building
-
-```bash
-npm run build     # Development build with esbuild
-make -C play      # Optimized production build (creates play/index.html)
-make -C play index.zip  # Create ZIP file (requires 7zip and advancecomp)
-```
-
-### Cleanup
-
-```bash
-npm run clean     # Remove generated JS and map files
-make -C play clean  # Clean production build artifacts
-```
+Always run `npm test` before committing changes to ensure code quality.
 
 ## Architecture
 
