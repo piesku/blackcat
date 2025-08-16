@@ -10,6 +10,7 @@ import {
 import {setup_render2d_buffers} from "../materials/layout2d.js";
 import {mat_render2d} from "../materials/mat_render2d.js";
 import {sys_ai_fighter} from "./systems/sys_ai_fighter.js";
+import {sys_arena_bounds} from "./systems/sys_arena_bounds.js";
 import {sys_camera2d} from "./systems/sys_camera2d.js";
 import {sys_collide2d} from "./systems/sys_collide2d.js";
 import {sys_combat} from "./systems/sys_combat.js";
@@ -106,6 +107,7 @@ export class Game extends Game3D {
         // Game logic.
         sys_combat(this, delta);
         sys_move2d(this, delta);
+        sys_arena_bounds(this, delta);
         sys_lifespan(this, delta);
         sys_shake2d(this, delta);
         sys_toggle(this, delta);
