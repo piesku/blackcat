@@ -17,31 +17,47 @@ export function ArenaView(game: Game): string {
         >
             <!-- Player info (left side) -->
             <div
-                style="position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 5px; color: white; font-family: monospace; font-size: 12px;"
+                style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.8); padding: 8px; border-radius: 5px; color: white; font-family: monospace; font-size: clamp(10px, 2.5vw, 12px); max-width: 35vw;"
             >
-                <div style="color: #4CAF50; font-weight: bold; margin-bottom: 5px;">PLAYER</div>
-                <div style="color: #FFF; margin-bottom: 3px;">HP: ${playerHP}</div>
-                <div style="color: #FFD700; margin-bottom: 8px;">${playerAIState}</div>
-                ${playerUpgrades.map((upgrade: string) => `<div>• ${upgrade}</div>`).join("")}
-                ${playerUpgrades.length === 0 ? '<div style="color: #666;">No upgrades</div>' : ""}
+                <div style="color: #4CAF50; font-weight: bold; margin-bottom: 3px;">PLAYER</div>
+                <div style="color: #FFF; margin-bottom: 2px;">HP: ${playerHP}</div>
+                <div style="color: #FFD700; margin-bottom: 5px; font-size: clamp(8px, 2vw, 10px);">
+                    ${playerAIState}
+                </div>
+                ${playerUpgrades
+                    .map(
+                        (upgrade: string) =>
+                            `<div style="font-size: clamp(8px, 2vw, 10px);">• ${upgrade}</div>`,
+                    )
+                    .join("")}
+                ${playerUpgrades.length === 0
+                    ? '<div style="color: #666; font-size: clamp(8px, 2vw, 10px);">No upgrades</div>'
+                    : ""}
             </div>
 
             <!-- Opponent info (right side) -->
             <div
-                style="position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 5px; color: white; font-family: monospace; font-size: 12px; text-align: right;"
+                style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 8px; border-radius: 5px; color: white; font-family: monospace; font-size: clamp(10px, 2.5vw, 12px); text-align: right; max-width: 35vw;"
             >
-                <div style="color: #F44336; font-weight: bold; margin-bottom: 5px;">OPPONENT</div>
-                <div style="color: #FFF; margin-bottom: 3px;">HP: ${opponentHP}</div>
-                <div style="color: #FFD700; margin-bottom: 8px;">${opponentAIState}</div>
-                ${opponentUpgrades.map((upgrade: string) => `<div>• ${upgrade}</div>`).join("")}
+                <div style="color: #F44336; font-weight: bold; margin-bottom: 3px;">OPPONENT</div>
+                <div style="color: #FFF; margin-bottom: 2px;">HP: ${opponentHP}</div>
+                <div style="color: #FFD700; margin-bottom: 5px; font-size: clamp(8px, 2vw, 10px);">
+                    ${opponentAIState}
+                </div>
+                ${opponentUpgrades
+                    .map(
+                        (upgrade: string) =>
+                            `<div style="font-size: clamp(8px, 2vw, 10px);">• ${upgrade}</div>`,
+                    )
+                    .join("")}
                 ${opponentUpgrades.length === 0
-                    ? '<div style="color: #666;">No upgrades</div>'
+                    ? '<div style="color: #666; font-size: clamp(8px, 2vw, 10px);">No upgrades</div>'
                     : ""}
             </div>
 
             <!-- Game title -->
             <div
-                style="position: absolute; top: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); padding: 10px; border-radius: 5px; color: white; font-family: monospace; font-weight: bold;"
+                style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); padding: 8px 12px; border-radius: 5px; color: white; font-family: monospace; font-weight: bold; font-size: clamp(10px, 3vw, 14px); white-space: nowrap;"
             >
                 33 DUELS - Arena ${game.State.currentLevel}
             </div>
