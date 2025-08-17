@@ -26,6 +26,9 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
                 // Final victory - show special ending
                 game.SetView(GameView.Victory, {isFinalVictory: true});
             } else {
+                // Generate next opponent's upgrades for preview in upgrade selection
+                game.State.opponentUpgrades = generateOpponentUpgrades(game.State.currentLevel);
+
                 // Regular victory - show victory screen
                 game.SetView(GameView.Victory);
             }
@@ -41,9 +44,7 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
             // Add upgrade to player collection
             game.State.playerUpgrades.push(selectedUpgrade);
 
-            // Generate new opponent upgrades
-            game.State.opponentUpgrades = generateOpponentUpgrades(game.State.currentLevel);
-
+            // Opponent upgrades are already generated during victory
             // Switch to arena and start new duel
             game.SetView(GameView.Arena);
             scene_arena(game);
