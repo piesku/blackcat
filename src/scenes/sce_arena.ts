@@ -56,7 +56,5 @@ export function scene_arena(game: Game) {
 
     // Apply upgrades from game state
     apply_upgrades(game, player, game.State.playerUpgrades);
-
-    // Give opponent no upgrades for now (TODO: randomize based on level)
-    apply_upgrades(game, opponent, []);
+    apply_upgrades(game, opponent, game.State.opponentUpgrades);
 }

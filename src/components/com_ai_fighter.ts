@@ -8,6 +8,7 @@ export interface AIFighter {
     TargetEntity: number;
     CircleDirection: number; // 1 or -1 for clockwise/counterclockwise
     AttackCooldown: number;
+    IsPlayer: boolean; // True for player fighters, false for opponents
 }
 
 export const enum AIState {
@@ -18,7 +19,7 @@ export const enum AIState {
     Pursuing,
 }
 
-export function ai_fighter(target_entity: number = -1) {
+export function ai_fighter(target_entity: number = -1, is_player: boolean = false) {
     return (game: Game, entity: number) => {
         game.World.Signature[entity] |= Has.AIFighter;
         game.World.AIFighter[entity] = {
@@ -28,6 +29,7 @@ export function ai_fighter(target_entity: number = -1) {
             TargetEntity: target_entity,
             CircleDirection: Math.random() > 0.5 ? 1 : -1,
             AttackCooldown: Math.random() * 1.0, // Random initial attack delay 0-1 second
+            IsPlayer: is_player,
         };
     };
 }

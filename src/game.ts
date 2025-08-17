@@ -19,6 +19,7 @@ import {sys_control_camera} from "./systems/sys_control_camera.js";
 import {sys_control_keyboard} from "./systems/sys_control_keyboard.js";
 import {sys_control_mouse} from "./systems/sys_control_mouse.js";
 import {sys_draw2d} from "./systems/sys_draw2d.js";
+import {sys_duel_manager} from "./systems/sys_duel_manager.js";
 import {sys_health} from "./systems/sys_health.js";
 import {sys_health_visual} from "./systems/sys_health_visual.js";
 import {sys_lifespan} from "./systems/sys_lifespan.js";
@@ -37,12 +38,20 @@ import {sys_toggle} from "./systems/sys_toggle.js";
 import {sys_transform2d} from "./systems/sys_transform2d.js";
 import {sys_trigger2d} from "./systems/sys_trigger2d.js";
 import {sys_ui} from "./systems/sys_ui.js";
+import {sys_victory_timer} from "./systems/sys_victory_timer.js";
 import {sys_weapons} from "./systems/sys_weapons.js";
-import {UpgradeType, WEAPON_UPGRADES, ARMOR_UPGRADES, ALL_UPGRADES} from "./upgrades/types.js";
+import {ALL_UPGRADES, ARMOR_UPGRADES, UpgradeType, WEAPON_UPGRADES} from "./upgrades/types.js";
 import {Has, World} from "./world.js";
 
 export const WORLD_CAPACITY = 65_536; // = 4MB of InstanceData.
 export const REAL_UNIT_SIZE = 48;
+
+export const enum GameView {
+    UpgradeSelection,
+    Arena,
+    Victory,
+    Defeat,
+}
 
 export interface GameState {
     currentLevel: number; // 1-33 duels
@@ -102,6 +111,8 @@ function generateOpponentUpgrades(arenaLevel: number): UpgradeType[] {
 export class Game extends Game3D {
     World = new World(WORLD_CAPACITY);
     State: GameState = createDefaultGameState();
+    CurrentView: GameView = GameView.Arena; // Start in arena for now
+    ViewData?: any; // View-specific data
 
     MaterialRender2D = mat_render2d(this.Gl, Has.Render2D, Has.SpatialNode2D);
     Spritesheet = create_spritesheet_from(this.Gl, document.querySelector("img")!);
@@ -119,6 +130,11 @@ export class Game extends Game3D {
         this.Gl.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         setup_render2d_buffers(this.Gl, this.InstanceBuffer);
+    }
+
+    SetView(view: GameView, data?: any) {
+        this.CurrentView = view;
+        this.ViewData = data;
     }
 
     override FrameUpdate(delta: number) {
@@ -148,6 +164,7 @@ export class Game extends Game3D {
         // Game logic.
         sys_combat(this, delta);
         sys_health(this, delta); // Process damage after combat and weapons
+        sys_duel_manager(this, delta); // Check for victory/defeat after health processing
         sys_projectile(this, delta);
         sys_move2d(this, delta);
         sys_arena_bounds(this, delta);
@@ -168,6 +185,9 @@ export class Game extends Game3D {
         sys_draw2d(this, delta);
         sys_render2d_animate(this, delta);
         sys_render2d(this, delta);
+
+        // UI and timers.
+        sys_victory_timer(this, delta);
         sys_ui(this, delta);
     }
 }

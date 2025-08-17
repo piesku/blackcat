@@ -20,7 +20,7 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
         animate_sprite({13: Math.random(), 14: Math.random()}),
         health(25), // Increased from 15 to 25 for longer, more interesting battles
         move2d(2, 0), // Movement controlled by AI (2 units/sec, no rotation)
-        ai_fighter(-1), // AI will find target automatically
+        ai_fighter(-1, is_player), // AI will find target automatically
         children(), // Weapons will be added by apply_upgrades
 
         // Apply upgrades after entity creation using callback component
