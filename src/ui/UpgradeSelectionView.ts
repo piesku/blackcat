@@ -1,6 +1,6 @@
 import {html} from "../../lib/html.js";
 import {Game} from "../game.js";
-import {dispatch, Action} from "../actions.js";
+import {Action} from "../actions.js";
 import {ALL_UPGRADES, UpgradeType} from "../upgrades/types.js";
 
 export function UpgradeSelectionView(game: Game): string {
@@ -84,25 +84,56 @@ export function UpgradeSelectionView(game: Game): string {
                     .join("")}
             </div>
 
-            <!-- Opponent preview -->
-            <div
-                style="background: rgba(255,0,0,0.1); border: 1px solid #F44336; border-radius: 5px; padding: 15px; margin-top: 20px;"
-            >
+            <!-- Player and Opponent loadouts -->
+            <div style="display: flex; gap: 40px; margin-top: 20px;">
+                <!-- Player loadout -->
                 <div
-                    style="color: #F44336; font-weight: bold; margin-bottom: 10px; text-align: center;"
+                    style="background: rgba(0,255,0,0.1); border: 1px solid #4CAF50; border-radius: 5px; padding: 15px; min-width: 250px;"
                 >
-                    OPPONENT LOADOUT
+                    <div
+                        style="color: #4CAF50; font-weight: bold; margin-bottom: 10px; text-align: center;"
+                    >
+                        YOUR LOADOUT
+                    </div>
+                    <div
+                        style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;"
+                    >
+                        ${game.State.playerUpgrades.length > 0
+                            ? game.State.playerUpgrades
+                                  .map(
+                                      (upgrade: UpgradeType) => `
+                                <span style="background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 3px; font-size: 12px;">
+                                    ${upgrade.name}
+                                </span>
+                            `,
+                                  )
+                                  .join("")
+                            : '<span style="color: #666; font-style: italic;">No upgrades yet</span>'}
+                    </div>
                 </div>
-                <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-                    ${game.State.opponentUpgrades
-                        .map(
-                            (upgrade: UpgradeType) => `
-                        <span style="background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 3px; font-size: 12px;">
-                            ${upgrade.name}
-                        </span>
-                    `,
-                        )
-                        .join("")}
+
+                <!-- Opponent loadout -->
+                <div
+                    style="background: rgba(255,0,0,0.1); border: 1px solid #F44336; border-radius: 5px; padding: 15px; min-width: 250px;"
+                >
+                    <div
+                        style="color: #F44336; font-weight: bold; margin-bottom: 10px; text-align: center;"
+                    >
+                        OPPONENT LOADOUT
+                    </div>
+                    <div
+                        style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;"
+                    >
+                        ${game.State.opponentUpgrades
+                            .map(
+                                (upgrade: UpgradeType) => `
+                            <span style="background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 3px; font-size: 12px;">
+                                ${upgrade.name}
+                            </span>
+                        `,
+                            )
+                            .join("")}
+                    </div>
                 </div>
             </div>
         </div>
