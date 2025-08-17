@@ -80,10 +80,10 @@ The AI system is built around the `AIFighter` component and the `sys_ai_fighter`
 - Moves directly away from target at reduced speed (0.8x multiplier)
 - Triggered when health ≤ 1 HP
 - Strategic positioning rather than frantic escape
-- Maintains distance until health recovers
+- Timeout protection: maximum 3.0 seconds to prevent stalemates
 
 **Transitions:**
-- → **Circling**: When at safe distance AND health > low threshold
+- → **Circling**: When at safe distance AND health > low threshold OR timeout expires
 - → **Stunned**: When taking damage
 
 ### 6. Stunned 😵

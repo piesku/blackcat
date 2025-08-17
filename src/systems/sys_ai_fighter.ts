@@ -318,8 +318,17 @@ function update_ai_state(
             break;
 
         case AIState.Retreating:
-            // Return to circling when at safe distance and health recovered
-            if (distance > scaled_distances.retreat && health.Current > LOW_HEALTH_THRESHOLD) {
+            // Return to circling when at safe distance and health recovered, OR after timeout
+            let retreat_timeout = 3.0 * time_scale; // Max 3 seconds in retreat to prevent stalemates
+            if (
+                (distance > scaled_distances.retreat && health.Current > LOW_HEALTH_THRESHOLD) ||
+                ai.StateTimer > retreat_timeout
+            ) {
+                if (ai.StateTimer > retreat_timeout) {
+                    console.log(
+                        `[AI] Entity ${entity} ending retreat due to timeout (${ai.StateTimer.toFixed(2)}s)`,
+                    );
+                }
                 change_state(ai, AIState.Circling, game.Time);
             }
             break;
