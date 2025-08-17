@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+# Pre-commit hook that runs prettier on TypeScript files
+#
+
+echo "Running prettier on TypeScript files..."
+
+# Run prettier
+npm run pretty
+
+# Check if prettier made any changes
+if ! git diff --quiet; then
+    echo "Prettier made formatting changes. Please review and commit them:"
+    git diff --name-only
+    echo ""
+    echo "You can add the changes with: git add ."
+    echo "Then commit again."
+    exit 1
+fi
+
+echo "✓ All files are properly formatted!"
+exit 0

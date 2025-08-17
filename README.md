@@ -19,7 +19,19 @@ To run locally, install the dependencies and start the local dev server:
 
 Then, open http://localhost:1234 in the browser.
 
-In VS Code, Ctrl+Shift+B will show the available build tasks, including `npm start`, and F5 will open the browser.
+### VS Code
+
+VS Code is configured to automatically start the esbuild dev server and TypeScript type checking when you open the folder. You can see these background tasks running in the terminal panel.
+
+Ctrl+Shift+B will show all available build tasks, and F5 will open the browser.
+
+### Setting up Git Hooks
+
+To ensure code quality and consistent formatting, configure git to use the shared hooks:
+
+    git config core.hooksPath scripts/hooks
+
+This will enable a pre-commit hook that automatically runs `prettier` on TypeScript files before each commit.
 
 ## Building
 
@@ -32,4 +44,3 @@ The default target will create a single HTML file, `play/index.html`, will all r
 If you have the 7-Zip command line utility installed (`p7zip-full` on Ubuntu), you can build the ZIP file by running:
 
     make -C play index.zip
-

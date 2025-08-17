@@ -15,7 +15,7 @@
     "scripts": {
         "clean": "find . -type d -name node_modules -prune -o \\( -name '*.js' -o -name '*.js.map' \\) -exec rm {} +",
         "lint": "prettier --check \"**/*.ts\"",
-        "pretty": "prettier --write \"**/*.ts\"",
+        "pretty": "prettier --write --log-level silent \"**/*.ts\"",
         "start": "esbuild */index.ts --define:DEBUG=true --target=es2020 --preserve-symlinks --bundle --sourcemap --outdir=. --outbase=. --color=false --servedir=. --serve=1234",
         "build": "esbuild */index.ts --define:DEBUG=true --target=es2020 --preserve-symlinks --bundle --sourcemap --outdir=. --outbase=. --color=false",
         "test": "npm run lint && npm run ts:check",

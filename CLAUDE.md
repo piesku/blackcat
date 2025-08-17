@@ -31,6 +31,16 @@ npm run ts:watch  # Watch mode for type checking
 
 Always run `npm test` before committing changes to ensure code quality.
 
+### Git Hooks
+
+To automatically enforce code formatting before commits, set up the shared git hooks:
+
+```bash
+git config core.hooksPath scripts/hooks
+```
+
+This enables a pre-commit hook that runs `prettier` on all TypeScript files before each commit. If formatting changes are needed, the commit will be blocked until you review and add the changes.
+
 ## Architecture
 
 ### Entity-Component-System (ECS)
