@@ -8,9 +8,10 @@ The AI system is built around the `AIFighter` component and the `sys_ai_fighter`
 
 ### Core Components
 
-- **Component**: `com_ai_fighter.ts` - Defines AI state and properties
+- **Component**: `com_ai_fighter.ts` - Defines AI state and personality properties
 - **System**: `sys_ai_fighter.ts` - Implements state machine logic
-- **States**: Five distinct behavioral states with clear transitions
+- **States**: Seven distinct behavioral states with clear transitions
+- **Personality System**: Aggressiveness and Patience traits affect behavior
 
 ## AI States
 
@@ -25,31 +26,46 @@ The AI system is built around the `AIFighter` component and the `sys_ai_fighter`
 
 **Transitions:**
 - → **Pursuing**: When target starts retreating
-- → **Attacking**: When within dash range + random chance + cooldown ready
+- → **Preparing**: When within dash range + personality-based timing + cooldown ready
 - → **Retreating**: When health drops to low threshold
 - → **Stunned**: When taking damage
+- → **Separating**: When too close to target (entity priority system)
 
 ### 2. Pursuing 🏃‍♂️
 **Aggressive chase state** - Direct pursuit of retreating targets with no circling.
 
 **Behavior:**
 - Moves directly toward retreating target
-- 1.2x movement speed multiplier for faster pursuit
+- Speed multiplied by Aggressiveness personality trait (1.2x base)
 - Shorter attack cooldowns (1.0-1.5s vs 2.0-3.5s)
 - No circular movement - pure aggression
 
 **Transitions:**
-- → **Attacking**: When close enough to strike
+- → **Preparing**: When close enough to strike (starts attack preparation)
 - → **Circling**: When target stops retreating
 - → **Stunned**: When taking damage
 
-### 3. Attacking ⚔️
+### 3. Preparing ⚡
+**Wind-up state** - Telegraphs incoming dash attacks with dramatic buildup.
+
+**Behavior:**
+- Slight oscillating movement toward target direction
+- Duration scales with Aggressiveness (more aggressive = faster preparation)
+- Base preparation time: 0.8 seconds (scaled by speed)
+- Stores attack direction for consistent dash targeting
+
+**Transitions:**
+- → **Attacking**: After preparation duration completes
+- → **Stunned**: When taking damage
+- → **Retreating**: When health drops to low threshold
+
+### 4. Attacking ⚔️
 **Combat engagement state** - High-speed dash attacks toward the target.
 
 **Behavior:**
-- Direct movement toward target at high speed
-- Speed multiplier capped to prevent overshooting at high base speeds
-- Duration scales inversely with movement speed
+- Direct movement toward target at dramatic high speed
+- Speed multiplier scales with Aggressiveness personality trait
+- Duration: 1.5 + (0.5 * Aggressiveness) seconds, scaled by speed
 - Activates weapon systems when in range
 
 **Transitions:**
@@ -57,19 +73,20 @@ The AI system is built around the `AIFighter` component and the `sys_ai_fighter`
 - → **Stunned**: When taking damage
 - → **Retreating**: When health drops to low threshold
 
-### 4. Retreating 🛡️
+### 5. Retreating 🛡️
 **Defensive state** - Moves away from threats when health is low.
 
 **Behavior:**
-- Moves directly away from target
+- Moves directly away from target at reduced speed (0.8x multiplier)
 - Triggered when health ≤ 1 HP
+- Strategic positioning rather than frantic escape
 - Maintains distance until health recovers
 
 **Transitions:**
 - → **Circling**: When at safe distance AND health > low threshold
 - → **Stunned**: When taking damage
 
-### 5. Stunned 😵
+### 6. Stunned 😵
 **Temporary incapacitation** - Brief immobilization after taking damage.
 
 **Behavior:**
@@ -81,6 +98,19 @@ The AI system is built around the `AIFighter` component and the `sys_ai_fighter`
 - → **Circling**: After stun duration expires (unless other conditions apply)
 - → **Retreating**: If health is low when stun ends
 
+### 7. Separating 🔄
+**Collision avoidance state** - Active separation when fighters get too close.
+
+**Behavior:**
+- Asymmetric priority system: only higher entity ID enters this state
+- Pushes away from target with strong separation forces
+- Timeout protection: maximum 2.0 seconds in this state
+- Uses random direction fallback if separation forces cancel out
+
+**Transitions:**
+- → **Circling**: When adequately separated OR timeout expires
+- → **Stunned**: When taking damage
+
 ## Speed Scaling System
 
 The AI system automatically adapts to different movement speeds to maintain consistent gameplay feel:
@@ -90,9 +120,10 @@ All distance thresholds scale proportionally with movement speed:
 ```typescript
 let speed_scale = move.MoveSpeed / BASE_MOVE_SPEED; // BASE_MOVE_SPEED = 2.0
 let scaled_distances = {
-    circle: BASE_CIRCLE_DISTANCE * speed_scale,           // 2.0 → 6.0 at 3x speed
-    dash_trigger: BASE_DASH_TRIGGER_DISTANCE * speed_scale, // 2.5 → 7.5 at 3x speed
-    retreat: BASE_RETREAT_DISTANCE * speed_scale          // 4.0 → 12.0 at 3x speed
+    circle: BASE_CIRCLE_DISTANCE * speed_scale,           // 2.5 → 7.5 at 3x speed
+    dash_trigger: BASE_DASH_TRIGGER_DISTANCE * speed_scale * ai.Aggressiveness, // 4.5 → 13.5 at 3x speed
+    retreat: BASE_RETREAT_DISTANCE * speed_scale,         // 5.0 → 15.0 at 3x speed
+    separation: BASE_SEPARATION_DISTANCE * speed_scale    // 1.2 → 3.6 at 3x speed
 };
 ```
 
@@ -107,12 +138,13 @@ This ensures that:
 - Combat pacing remains consistent
 - AI responsiveness scales appropriately
 
-### Dash Speed Capping
-Attack movement speed is capped to prevent overshooting:
+### Dash Speed Scaling
+Attack movement speed scales with personality and prevents overshooting:
 ```typescript
-let effective_multiplier = Math.min(
-    BASE_DASH_SPEED_MULTIPLIER, 
-    BASE_DASH_SPEED_MULTIPLIER / Math.sqrt(speed_scale)
+let effective_multiplier = BASE_DASH_SPEED_MULTIPLIER * ai.Aggressiveness;
+effective_multiplier = Math.min(
+    effective_multiplier, 
+    BASE_DASH_SPEED_MULTIPLIER * 1.5 / Math.sqrt(speed_scale)
 );
 ```
 
@@ -131,6 +163,26 @@ When retreat is detected:
 - No more defensive circling - pure aggression
 - Faster movement and shorter cooldowns
 
+## Personality System
+
+Each fighter has unique personality traits that affect their behavior:
+
+### Aggressiveness (0.5-2.0)
+- **Affects**: Attack frequency, dash trigger distance, dash speed, pursuit speed
+- **Player Default**: 1.0 (balanced for upgrade system)
+- **Opponent Range**: 0.5-2.0 (randomized for variety)
+
+### Patience (0.7-2.0) 
+- **Affects**: How long they circle before attacking, attack cooldown duration
+- **Player Default**: 1.0 (balanced for upgrade system)  
+- **Opponent Range**: 0.7-2.0 (randomized for variety)
+
+### Deterministic Randomness
+- Uses sequential random numbers from `lib/random.ts`
+- Player fighters have consistent default traits
+- Opponent fighters use procedural variation
+- Same initial seed = identical duel outcomes
+
 ## Victory Behavior
 
 When no valid targets remain (all enemies defeated):
@@ -145,17 +197,25 @@ stateDiagram-v2
     [*] --> Circling
     
     Circling --> Pursuing : Target retreating
-    Circling --> Attacking : In range + cooldown ready
+    Circling --> Preparing : In range + personality timing
+    Circling --> Separating : Too close (higher entity ID)
     Circling --> Retreating : Low health
     Circling --> Stunned : Damage taken
     
-    Pursuing --> Attacking : Close enough to strike
+    Pursuing --> Preparing : Close enough to strike
     Pursuing --> Circling : Target stops retreating
     Pursuing --> Stunned : Damage taken
+    
+    Preparing --> Attacking : Preparation complete
+    Preparing --> Stunned : Damage taken
+    Preparing --> Retreating : Low health
     
     Attacking --> Circling : Attack complete/target away
     Attacking --> Stunned : Damage taken
     Attacking --> Retreating : Low health
+    
+    Separating --> Circling : Separated OR timeout
+    Separating --> Stunned : Damage taken
     
     Retreating --> Circling : Safe distance + health recovered
     Retreating --> Stunned : Damage taken
@@ -168,11 +228,13 @@ stateDiagram-v2
 
 | Parameter | Base Value | Description |
 |-----------|------------|-------------|
-| `BASE_CIRCLE_DISTANCE` | 2.0 | Preferred circling radius |
-| `BASE_DASH_TRIGGER_DISTANCE` | 2.5 | Attack initiation range |
-| `BASE_RETREAT_DISTANCE` | 4.0 | Safe retreat distance |
+| `BASE_CIRCLE_DISTANCE` | 2.5 | Preferred circling radius |
+| `BASE_DASH_TRIGGER_DISTANCE` | 4.5 | Attack initiation range (much longer!) |
+| `BASE_SEPARATION_DISTANCE` | 1.2 | Minimum separation to prevent lock-ins |
+| `BASE_RETREAT_DISTANCE` | 5.0 | Safe retreat distance |
+| `BASE_PREPARE_DURATION` | 0.8 | Wind-up time for dash attacks |
 | `LOW_HEALTH_THRESHOLD` | 1 | Health trigger for retreat |
-| `BASE_DASH_SPEED_MULTIPLIER` | 3.0 | Attack speed boost |
+| `BASE_DASH_SPEED_MULTIPLIER` | 4.0 | Attack speed boost (increased) |
 | `BASE_MOVE_SPEED` | 2.0 | Reference speed for scaling |
 
 ## Implementation Notes
@@ -180,7 +242,29 @@ stateDiagram-v2
 - All states check for target validity (alive enemies)
 - State changes are logged for debugging
 - Attack cooldowns prevent spam behavior
-- Random elements add unpredictability
+- Personality traits add variety while maintaining determinism
+- Asymmetric separation prevents collision deadlocks
 - System designed for hackability and easy modification
+- Uses lib/random.ts for deterministic behavior
+- Player fighters use consistent defaults for upgrade system
 
-The AI state machine provides engaging, dynamic combat that feels responsive at any movement speed while maintaining clear, predictable behavior patterns that players can learn and counter.
+## Collision Avoidance System
+
+The enhanced collision system prevents lock-ins and jiggling:
+
+### Asymmetric Priority
+- Only higher entity ID enters "Separating" state
+- Lower entity ID stays in "Circling" but moves cooperatively away
+- Prevents both fighters from entering separation simultaneously
+
+### Timeout Protection
+- Maximum 2.0 seconds in separating state
+- Automatic return to circling if separation fails
+- Emergency random movement if forces cancel out
+
+### Separation Forces
+- Calculated based on distance to all nearby entities
+- Applied to all movement states for smooth avoidance
+- Normalized and scaled for consistent behavior
+
+The AI state machine provides engaging, dramatic combat with cinematic long-range attacks, proper spacing, and zero deadlocks while maintaining clear, predictable behavior patterns that players can learn and counter.
