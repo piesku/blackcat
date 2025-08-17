@@ -12,13 +12,18 @@ import {Game, Layer} from "../game.js";
 import {apply_upgrades} from "../upgrades/manager.js";
 
 export function blueprint_fighter(game: Game, is_player: boolean) {
+    // Calculate health based on arena level: base 2 + 2 per arena level
+    let baseHealth = 2;
+    let arenaLevelBonus = (game.State.currentLevel - 1) * 2; // Level 1 = base health, Level 2 = +2, etc.
+    let totalHealth = baseHealth + arenaLevelBonus;
+
     return [
         spatial_node2d(),
         local_transform2d(undefined, 0, [1, 1]),
         collide2d(true, Layer.Object, Layer.Terrain | Layer.Object, [1, 1]),
         render2d("13"),
         animate_sprite({13: Math.random(), 14: Math.random()}),
-        health(2),
+        health(totalHealth),
         move2d(4, 0),
         ai_fighter(-1, is_player), // AI will find target automatically
         children(), // Weapons will be added by apply_upgrades

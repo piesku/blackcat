@@ -1,6 +1,6 @@
 import {html} from "../../lib/html.js";
-import {Game, GameView} from "../game.js";
 import {Action} from "../actions.js";
+import {Game, GameView} from "../game.js";
 
 export function VictoryView(game: Game): string {
     let isFinalVictory = game.ViewData?.isFinalVictory;
@@ -20,10 +20,28 @@ export function VictoryView(game: Game): string {
             <div style="font-size: clamp(16px, 4vw, 20px); margin-bottom: 10px;">
                 Arena ${game.State.currentLevel - 1} Complete
             </div>
-            <div style="font-size: clamp(12px, 3vw, 16px); color: #CCC; margin-bottom: 30px;">
+            <div style="font-size: clamp(12px, 3vw, 16px); color: #CCC; margin-bottom: 15px;">
                 Population: ${game.State.population.toLocaleString()}
             </div>
 
+            ${!isFinalVictory
+                ? `
+                <!-- HP gain notification -->
+                <div style="
+                    background: rgba(76, 175, 80, 0.2); 
+                    border: 1px solid #4CAF50; 
+                    border-radius: 5px; 
+                    padding: 10px 15px; 
+                    margin-bottom: 20px; 
+                    font-size: clamp(12px, 3vw, 16px); 
+                    color: #4CAF50; 
+                    font-weight: bold;
+                    max-width: 300px;
+                ">
+                    🏥 You gain +2 HP!
+                </div>
+                `
+                : ""}
             ${!isFinalVictory
                 ? `
                 <!-- Continue button -->
