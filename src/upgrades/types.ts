@@ -86,8 +86,36 @@ export const WEAPON_UPGRADES: UpgradeType[] = [
     },
 ];
 
-// All upgrades registry (weapons only for now)
-export const ALL_UPGRADES: UpgradeType[] = [...WEAPON_UPGRADES];
+// Armor upgrade definitions
+export const ARMOR_UPGRADES: UpgradeType[] = [
+    {
+        id: "scrap_armor",
+        category: UpgradeCategory.Armor,
+        name: "Scrap Armor",
+        description: "Ignores the first damage instance you take in combat",
+    },
+    {
+        id: "spiked_vest",
+        category: UpgradeCategory.Armor,
+        name: "Spiked Vest",
+        description: "Reflects 1 damage back to attackers",
+    },
+    {
+        id: "bonus_hp",
+        category: UpgradeCategory.Armor,
+        name: "+2 HP",
+        description: "Increases maximum health by 2 points",
+    },
+    {
+        id: "damage_reduction",
+        category: UpgradeCategory.Armor,
+        name: "Reinforced Plating",
+        description: "Reduces all damage taken by 25%",
+    },
+];
+
+// All upgrades registry
+export const ALL_UPGRADES: UpgradeType[] = [...WEAPON_UPGRADES, ...ARMOR_UPGRADES];
 
 // Utility function to get upgrade display name by ID
 export function getUpgradeDisplayName(upgradeId: string): string {

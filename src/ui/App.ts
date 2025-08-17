@@ -1,7 +1,6 @@
 import {html} from "../../lib/html.js";
 import {AIState} from "../components/com_ai_fighter.js";
 import {Game} from "../game.js";
-import {getUpgradeDisplayName} from "../upgrades/types.js";
 import {Has} from "../world.js";
 
 // Helper function to get AI state name
@@ -74,8 +73,7 @@ export function App(game: Game) {
             >
                 <div style="color: #4CAF50; font-weight: bold; margin-bottom: 5px;">PLAYER</div>
                 <div style="color: #FFF; margin-bottom: 3px;">HP: ${playerHP}</div>
-                <div style="color: #FFD700; margin-bottom: 8px;">State: ${playerAIState}</div>
-                <div style="color: #CCC; font-size: 10px; margin-bottom: 3px;">WEAPONS:</div>
+                <div style="color: #FFD700; margin-bottom: 8px;">${playerAIState}</div>
                 ${playerUpgrades.map((upgrade) => `<div>• ${upgrade}</div>`).join("")}
                 ${playerUpgrades.length === 0 ? '<div style="color: #666;">No upgrades</div>' : ""}
             </div>
@@ -86,8 +84,7 @@ export function App(game: Game) {
             >
                 <div style="color: #F44336; font-weight: bold; margin-bottom: 5px;">OPPONENT</div>
                 <div style="color: #FFF; margin-bottom: 3px;">HP: ${opponentHP}</div>
-                <div style="color: #FFD700; margin-bottom: 8px;">State: ${opponentAIState}</div>
-                <div style="color: #CCC; font-size: 10px; margin-bottom: 3px;">WEAPONS:</div>
+                <div style="color: #FFD700; margin-bottom: 8px;">${opponentAIState}</div>
                 ${opponentUpgrades.map((upgrade) => `<div>• ${upgrade}</div>`).join("")}
                 ${opponentUpgrades.length === 0
                     ? '<div style="color: #666;">No upgrades</div>'

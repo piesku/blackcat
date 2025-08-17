@@ -1,11 +1,26 @@
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
+export interface DamageInstance {
+    Amount: number;
+    Source: number; // Entity ID that caused the damage
+    Type?: string; // Optional damage type for special effects
+}
+
 export interface Health {
     Max: number;
     Current: number;
     LastDamageTime: number; // Game time in seconds when last damage occurred
     IsAlive: boolean;
+
+    // Armor properties for upgrades
+    IgnoreFirstDamage?: boolean; // Scrap Armor - ignores first damage instance
+    ReflectDamage?: number; // Spiked Vest - reflects damage back to attacker
+    DamageReduction?: number; // Percentage damage reduction (0.0 to 1.0)
+    FirstDamageIgnored?: boolean; // Internal flag tracking if first damage was used
+
+    // Pending damage instances
+    PendingDamage: DamageInstance[];
 }
 
 export function health(max: number = 3) {
@@ -16,25 +31,7 @@ export function health(max: number = 3) {
             Current: max,
             LastDamageTime: 0,
             IsAlive: true,
+            PendingDamage: [],
         };
     };
-}
-
-export function damage_entity(game: Game, entity: number, amount: number) {
-    let health_data = game.World.Health[entity];
-    if (health_data && health_data.IsAlive) {
-        health_data.Current = Math.max(0, health_data.Current - amount);
-        health_data.LastDamageTime = game.Time; // Use game time in seconds
-
-        if (health_data.Current <= 0) {
-            health_data.IsAlive = false;
-        }
-    }
-}
-
-export function heal_entity(game: Game, entity: number, amount: number) {
-    let health_data = game.World.Health[entity];
-    if (health_data && health_data.IsAlive) {
-        health_data.Current = Math.min(health_data.Max, health_data.Current + amount);
-    }
 }

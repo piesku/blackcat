@@ -1,4 +1,3 @@
-import {damage_entity} from "../components/com_health.js";
 import {shake} from "../components/com_shake.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
@@ -26,14 +25,15 @@ export function sys_projectile(game: Game, _delta: number) {
                 let target_health = game.World.Health[target_entity];
                 if (!target_health.IsAlive) continue;
 
-                // Deal damage to target
-                let health_before = target_health.Current;
-                damage_entity(game, target_entity, projectile.Damage);
-                let health_after = target_health.Current;
-                let is_alive = target_health.IsAlive;
+                // Add damage to pending queue instead of applying directly
+                target_health.PendingDamage.push({
+                    Amount: projectile.Damage,
+                    Source: projectile.OwnerEntity,
+                    Type: "projectile",
+                });
 
                 console.log(
-                    `[PROJECTILE] Entity ${entity} hit target ${target_entity}: ${projectile.Damage} damage, HP ${health_before.toFixed(1)} -> ${health_after.toFixed(1)} (${is_alive ? "alive" : "DEAD"})`,
+                    `[PROJECTILE] Entity ${entity} hit target ${target_entity}: adding ${projectile.Damage} projectile damage to pending queue`,
                 );
 
                 // Add screen shake for impact

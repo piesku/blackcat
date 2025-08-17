@@ -1,4 +1,3 @@
-import {damage_entity} from "../components/com_health.js";
 import {shake} from "../components/com_shake.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
@@ -27,12 +26,15 @@ export function sys_combat(game: Game, delta: number) {
                 // Only damage if enough time has passed since last damage
                 // Reduced collision damage since weapons are now primary damage source
                 if (game.Time - health.LastDamageTime > DAMAGE_COOLDOWN) {
-                    let health_before = health.Current;
-                    damage_entity(game, entity, 0.5); // Reduced from 1 to 0.5
-                    let health_after = health.Current;
+                    let damage_amount = 0.5; // Reduced from 1 to 0.5
+                    health.PendingDamage.push({
+                        Amount: damage_amount,
+                        Source: other_entity,
+                        Type: "collision",
+                    });
 
                     console.log(
-                        `[COLLISION] Entity ${entity} <-> ${other_entity}: 0.5 damage, HP ${health_before.toFixed(1)} -> ${health_after.toFixed(1)} (${health.IsAlive ? "alive" : "DEAD"})`,
+                        `[COLLISION] Entity ${entity} <-> ${other_entity}: adding ${damage_amount} collision damage to pending queue`,
                     );
 
                     // Add screen shake for dramatic effect
@@ -42,10 +44,7 @@ export function sys_combat(game: Game, delta: number) {
                         shake(shake_radius, shake_duration)(game, game.Camera);
                     }
 
-                    // If health reaches 0, disable movement
-                    if (!health.IsAlive && game.World.Signature[entity] & Has.ControlAlways2D) {
-                        game.World.Signature[entity] &= ~Has.ControlAlways2D;
-                    }
+                    // Note: Death handling is now done in sys_health after damage processing
                 }
             }
         }

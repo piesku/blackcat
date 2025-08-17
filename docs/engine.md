@@ -243,6 +243,83 @@ The discriminated union pattern exemplifies TypeScript's strength in providing z
 
 ---
 
+## ECS Design Patterns
+
+### Component Data Locality and Aggregation
+
+When designing components, prefer **aggregating related data** within a single component rather than splitting it across multiple components. This improves data locality, reduces ECS complexity, and leads to cleaner code.
+
+#### ❌ Anti-Pattern: Over-Componentization
+
+```typescript
+// DON'T: Split related data across multiple components
+interface Health {
+    Max: number;
+    Current: number;
+    IsAlive: boolean;
+}
+
+interface PendingDamage {  // ❌ Separate component for related data
+    Instances: DamageInstance[];
+}
+
+// This requires:
+// - Extra component in World arrays
+// - Additional Has.PendingDamage signature 
+// - Helper functions like add_damage()
+// - More complex system queries (Has.Health | Has.PendingDamage)
+```
+
+#### ✅ Best Practice: Aggregate Related Data
+
+```typescript
+// DO: Keep related data together in a single component
+interface Health {
+    Max: number;
+    Current: number;
+    IsAlive: boolean;
+    
+    // Armor properties (upgrade system)
+    IgnoreFirstDamage?: boolean;
+    ReflectDamage?: number;
+    DamageReduction?: number;
+    
+    // Pending damage instances (processing system)
+    PendingDamage: DamageInstance[];  // ✅ Part of health data
+}
+
+// Systems can write directly to the component:
+health.PendingDamage.push({
+    Amount: damage,
+    Source: attacker_entity,
+    Type: "projectile"
+});
+```
+
+#### When to Use Multiple Components vs. Single Component
+
+**Use separate components when:**
+- Data has **different lifecycles** (e.g., `Transform` vs `Lifespan`)
+- Components are **truly independent** (e.g., `Render2D` vs `Collide2D`)
+- You need **optional/conditional** behavior (e.g., `Weapon` only on some entities)
+
+**Keep data in one component when:**
+- Data is **logically related** (health + damage processing)
+- Data is **always used together** (position + rotation + scale in `Transform`)
+- Separating would require **artificial coordination** between components
+
+#### Benefits of Data Aggregation
+
+1. **Better Data Locality**: Related data is stored contiguously in memory
+2. **Simpler ECS Structure**: Fewer component arrays to manage
+3. **Direct Access**: No need for helper functions or indirection
+4. **Cleaner Queries**: Systems need fewer component signatures
+5. **Fewer Files**: Less code to maintain and fewer imports
+
+This pattern reflects Goodluck's principle of **minimal abstractions** – avoid creating complexity where simple, direct solutions work better.
+
+---
+
 ## Summary for New Collaborators and AI Agents
 
 This project is built on the Goodluck framework, which uses an Entity-Component-System architecture. Key concepts include:

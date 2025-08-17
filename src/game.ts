@@ -19,6 +19,7 @@ import {sys_control_camera} from "./systems/sys_control_camera.js";
 import {sys_control_keyboard} from "./systems/sys_control_keyboard.js";
 import {sys_control_mouse} from "./systems/sys_control_mouse.js";
 import {sys_draw2d} from "./systems/sys_draw2d.js";
+import {sys_health} from "./systems/sys_health.js";
 import {sys_health_visual} from "./systems/sys_health_visual.js";
 import {sys_lifespan} from "./systems/sys_lifespan.js";
 import {sys_move2d} from "./systems/sys_move2d.js";
@@ -37,7 +38,7 @@ import {sys_transform2d} from "./systems/sys_transform2d.js";
 import {sys_trigger2d} from "./systems/sys_trigger2d.js";
 import {sys_ui} from "./systems/sys_ui.js";
 import {sys_weapons} from "./systems/sys_weapons.js";
-import {UpgradeType, WEAPON_UPGRADES} from "./upgrades/types.js";
+import {UpgradeType, WEAPON_UPGRADES, ARMOR_UPGRADES, ALL_UPGRADES} from "./upgrades/types.js";
 import {Has, World} from "./world.js";
 
 export const WORLD_CAPACITY = 65_536; // = 4MB of InstanceData.
@@ -53,42 +54,49 @@ export interface GameState {
 
 export function createDefaultGameState(): GameState {
     return {
-        currentLevel: 3, // Current arena level
-        playerUpgrades: [WEAPON_UPGRADES[0], WEAPON_UPGRADES[1], WEAPON_UPGRADES[3]], // battle_axe, pistol, throwing_knives
-        opponentUpgrades: generateOpponentUpgrades(3), // Level 3 opponent upgrades
+        currentLevel: 5, // Current arena level - bumped to 5 for more interesting combat
+        playerUpgrades: [
+            WEAPON_UPGRADES[0], // battle_axe
+            WEAPON_UPGRADES[1], // pistol
+            WEAPON_UPGRADES[3], // throwing_knives
+            ARMOR_UPGRADES[0], // scrap_armor
+            ARMOR_UPGRADES[2], // bonus_hp
+        ],
+        opponentUpgrades: generateOpponentUpgrades(5), // Level 5 opponent upgrades
         population: 8_000_000_000,
         isNewRun: true,
     };
 }
 
 function generateOpponentUpgrades(arenaLevel: number): UpgradeType[] {
-    // Only include weapons we have blueprints for
-    let availableWeapons = WEAPON_UPGRADES.filter((weapon) =>
-        [
+    // Filter to only implemented upgrades (weapons we have blueprints for + all armor)
+    let availableUpgrades = ALL_UPGRADES.filter((upgrade) => {
+        // Include all armor upgrades
+        if (upgrade.category === "armor") return true;
+
+        // Only include weapons we have blueprints for
+        return [
             "battle_axe",
             "baseball_bat",
             "pistol",
             "shotgun",
             "sniper_rifle",
             "throwing_knives",
-        ].includes(weapon.id),
-    );
-    let opponentWeapons: UpgradeType[] = [];
+        ].includes(upgrade.id);
+    });
 
-    // Number of weapons based on arena level (min 1, max based on available weapons)
-    let weaponCount = Math.min(arenaLevel, availableWeapons.length);
+    let selectedUpgrades: UpgradeType[] = [];
+    let upgradeCount = arenaLevel; // Simple: arena level = number of upgrades
 
-    // Randomly select weapons without duplicates
-    for (let i = 0; i < weaponCount; i++) {
-        let randomIndex = Math.floor(Math.random() * availableWeapons.length);
-        let selectedWeapon = availableWeapons[randomIndex];
-        opponentWeapons.push(selectedWeapon);
-
-        // Remove selected weapon to avoid duplicates
-        availableWeapons.splice(randomIndex, 1);
+    // Randomly select upgrades without duplicates
+    for (let i = 0; i < upgradeCount && availableUpgrades.length > 0; i++) {
+        let randomIndex = Math.floor(Math.random() * availableUpgrades.length);
+        let selectedUpgrade = availableUpgrades[randomIndex];
+        selectedUpgrades.push(selectedUpgrade);
+        availableUpgrades.splice(randomIndex, 1);
     }
 
-    return opponentWeapons;
+    return selectedUpgrades;
 }
 
 export class Game extends Game3D {
@@ -139,6 +147,7 @@ export class Game extends Game3D {
 
         // Game logic.
         sys_combat(this, delta);
+        sys_health(this, delta); // Process damage after combat and weapons
         sys_projectile(this, delta);
         sys_move2d(this, delta);
         sys_arena_bounds(this, delta);

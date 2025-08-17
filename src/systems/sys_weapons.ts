@@ -3,7 +3,6 @@ import {Vec2} from "../../lib/math.js";
 import {vec2_length, vec2_normalize, vec2_subtract} from "../../lib/vec2.js";
 import {AIState} from "../components/com_ai_fighter.js";
 import {query_down} from "../components/com_children.js";
-import {damage_entity} from "../components/com_health.js";
 import {shake} from "../components/com_shake.js";
 import {Weapon, WeaponKind, WeaponMelee, WeaponRanged} from "../components/com_weapon.js";
 import {Game} from "../game.js";
@@ -151,17 +150,16 @@ function execute_melee_attack(
     weapon: WeaponMelee,
     _distance: number,
 ) {
+    // Add damage to pending queue instead of applying directly
     let target_health = game.World.Health[target_entity];
-    let health_before = target_health.Current;
-
-    // Deal damage to target
-    damage_entity(game, target_entity, weapon.Damage);
-
-    let health_after = target_health.Current;
-    let is_alive = target_health.IsAlive;
+    target_health.PendingDamage.push({
+        Amount: weapon.Damage,
+        Source: wielder_entity,
+        Type: "melee",
+    });
 
     console.log(
-        `[MELEE] Entity ${wielder_entity} -> ${target_entity}: ${weapon.Damage} damage, HP ${health_before.toFixed(1)} -> ${health_after.toFixed(1)} (${is_alive ? "alive" : "DEAD"})`,
+        `[MELEE] Entity ${wielder_entity} -> ${target_entity}: adding ${weapon.Damage} melee damage to pending queue`,
     );
 
     if (weapon.Knockback > 0) {
