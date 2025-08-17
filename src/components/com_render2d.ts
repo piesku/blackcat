@@ -12,8 +12,8 @@ import {Vec4} from "../../lib/math.js";
 import {clamp} from "../../lib/number.js";
 import {Entity} from "../../lib/world.js";
 import {FLOATS_PER_INSTANCE} from "../../materials/layout2d.js";
+import {atlas} from "../../sprites/atlas.js";
 import {Game} from "../game.js";
-import {atlas} from "../sprites/atlas.js";
 import {Has} from "../world.js";
 
 export interface Render2D {
