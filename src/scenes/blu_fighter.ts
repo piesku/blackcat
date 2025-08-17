@@ -18,8 +18,8 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
         collide2d(true, Layer.Object, Layer.Terrain | Layer.Object, [1, 1]),
         render2d("13"),
         animate_sprite({13: Math.random(), 14: Math.random()}),
-        health(25), // Increased from 15 to 25 for longer, more interesting battles
-        move2d(2, 0), // Movement controlled by AI (2 units/sec, no rotation)
+        health(2),
+        move2d(4, 0),
         ai_fighter(-1, is_player), // AI will find target automatically
         children(), // Weapons will be added by apply_upgrades
 

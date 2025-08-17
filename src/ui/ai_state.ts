@@ -4,6 +4,8 @@ export function getAIStateName(state: AIState): string {
     switch (state) {
         case AIState.Circling:
             return "Circling";
+        case AIState.Preparing:
+            return "Preparing";
         case AIState.Attacking:
             return "Attacking";
         case AIState.Retreating:
@@ -12,6 +14,8 @@ export function getAIStateName(state: AIState): string {
             return "Stunned";
         case AIState.Pursuing:
             return "Pursuing";
+        case AIState.Separating:
+            return "Separating";
         default:
             return "Unknown";
     }
