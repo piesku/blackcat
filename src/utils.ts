@@ -1,5 +1,13 @@
-import {ALL_UPGRADES, UpgradeType} from "./upgrades/types.js";
+import {ALL_UPGRADES, UpgradeType, WEAPON_UPGRADES, ARMOR_UPGRADES} from "./upgrades/types.js";
 import {set_seed, integer} from "../lib/random.js";
+
+export interface GameState {
+    currentLevel: number; // 1-33 duels
+    playerUpgrades: UpgradeType[]; // Player's accumulated upgrades
+    opponentUpgrades: UpgradeType[]; // Current opponent's upgrades
+    population: number; // Narrative countdown (8 billion -> 1)
+    isNewRun: boolean; // Fresh start vs resumed
+}
 
 export function generateOpponentUpgrades(arenaLevel: number): UpgradeType[] {
     // Use seeded random for consistent upgrades per arena level
@@ -41,4 +49,30 @@ export function generateOpponentUpgrades(arenaLevel: number): UpgradeType[] {
 export function calculatePopulation(level: number): number {
     // Exponential decay: each victory halves the population
     return Math.max(1, Math.floor(8_000_000_000 / Math.pow(2, level - 1)));
+}
+
+export function createDefaultGameState(): GameState {
+    return {
+        currentLevel: 5, // Current arena level - bumped to 5 for more interesting combat
+        playerUpgrades: [
+            WEAPON_UPGRADES[0], // battle_axe
+            WEAPON_UPGRADES[1], // pistol
+            WEAPON_UPGRADES[3], // throwing_knives
+            ARMOR_UPGRADES[0], // scrap_armor
+            ARMOR_UPGRADES[2], // bonus_hp
+        ],
+        opponentUpgrades: generateOpponentUpgrades(5), // Level 5 opponent upgrades
+        population: 8_000_000_000,
+        isNewRun: true,
+    };
+}
+
+export function createFreshGameState(): GameState {
+    return {
+        currentLevel: 1,
+        playerUpgrades: [],
+        opponentUpgrades: generateOpponentUpgrades(1),
+        population: 8_000_000_000,
+        isNewRun: true,
+    };
 }

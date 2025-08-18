@@ -2,7 +2,7 @@ import {Game, GameView} from "./game.js";
 import {scene_arena} from "./scenes/sce_arena.js";
 import {UpgradeType} from "./upgrades/types.js";
 import {save_game_state, clear_game_state} from "./store.js";
-import {generateOpponentUpgrades, calculatePopulation} from "./utils.js";
+import {generateOpponentUpgrades, calculatePopulation, createFreshGameState} from "./utils.js";
 
 export const enum Action {
     NoOp,
@@ -75,13 +75,7 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
         }
         case Action.RestartRun: {
             // Reset to new run state
-            game.State = {
-                currentLevel: 1,
-                playerUpgrades: [],
-                opponentUpgrades: generateOpponentUpgrades(1),
-                population: 8_000_000_000,
-                isNewRun: true,
-            };
+            game.State = createFreshGameState();
 
             // Clear save state
             clear_game_state();

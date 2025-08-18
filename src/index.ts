@@ -1,5 +1,6 @@
 import {dispatch, Action} from "./actions.js";
-import {Game, GameView, createDefaultGameState} from "./game.js";
+import {Game, GameView} from "./game.js";
+import {createDefaultGameState} from "./utils.js";
 import {load_game_state, has_game_state} from "./store.js";
 
 async function initializeGame() {
