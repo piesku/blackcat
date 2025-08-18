@@ -5,17 +5,18 @@ This document outlines how upgrade storage, persistence, and instantiation work 
 ## Overview
 
 The game requires two distinct upgrade management systems:
-- **Player Upgrades**: Persistent across duels, stored in IndexedDB, accumulate over 33 levels
-- **Opponent Upgrades**: Procedurally generated based on arena level, never persisted
+- **Player Upgrades**: Persistent across duels, stored in localStorage, accumulate over 33 levels  
+- **Opponent Upgrades**: Procedurally generated based on arena level using seeded randomization, never persisted
 
 ## Game State Structure
 
 ### Core Game State
 ```typescript
-// src/store.ts - New file for persistence
+// src/state.ts - Game state utilities and types
 interface GameState {
     currentLevel: number;           // 1-33 duels
-    playerUpgrades: UpgradeType[];  // Persistent across duels
+    playerUpgrades: UpgradeType[];  // Player's accumulated upgrades
+    opponentUpgrades: UpgradeType[]; // Current opponent's upgrades (for seeded generation)
     population: number;             // Narrative countdown (8 billion -> 1)
     isNewRun: boolean;              // Fresh start vs resumed
 }
@@ -52,25 +53,95 @@ function calculatePopulation(level: number): number {
 
 ## Storage & Persistence
 
-### Player Upgrades - IndexedDB Persistence
+### ✅ Implemented: localStorage-Based Persistence
 
 **Storage Location**: 
-- Stored in `GameState.playerUpgrades` array
-- Persisted to IndexedDB after each duel victory
-- Loaded when resuming runs or starting the game
+- Game state stored in browser localStorage under key "blackcat_gamestate"
+- Simple JSON serialization for cross-browser compatibility
+- Persists player upgrades, current level, population count, and opponent upgrades
 
 **Persistence Triggers**:
-- After selecting upgrade following victory
-- At the start of each new duel (auto-save)
-- When player closes/refreshes browser
+- After duel victory (before upgrade selection screen)
+- State clears automatically on defeat or manual restart
+- Final victory (level 33+) automatically clears save data
 
-### Opponent Upgrades - Procedural Generation
+**Resume Experience**:
+- Players can refresh/close browser and resume exactly where they left off
+- Game correctly starts in upgrade selection screen when resuming
+- Players can try different upgrades against the same opponent if they reload
+
+### Opponent Upgrades - Seeded Generation
 
 **Generation Strategy**:
-- Created dynamically in `sce_arena.ts` based on `currentLevel`
-- Never stored or persisted anywhere
-- Randomized each time the arena loads
-- Same number of upgrades as player (fair but unpredictable)
+- Uses `lib/random` with `set_seed()` for consistent opponent loadouts
+- Seed based on arena level: `arenaLevel * 12345 + 67890`
+- Same arena level always produces the same opponent upgrades
+- Ensures fair and predictable gameplay across resume sessions
+
+**Implementation**:
+```typescript
+// src/state.ts
+export function generateOpponentUpgrades(arenaLevel: number): UpgradeType[] {
+    // Use seeded random for consistent upgrades per arena level
+    set_seed(arenaLevel * 12345 + 67890);
+    
+    let availableUpgrades = ALL_UPGRADES.filter((upgrade) => {
+        if (upgrade.category === "armor") return true;
+        return ["battle_axe", "baseball_bat", "pistol", "shotgun", "sniper_rifle", "throwing_knives"].includes(upgrade.id);
+    });
+    
+    // Shuffle array using Fisher-Yates with lib/random
+    let shufflableUpgrades = shuffle(availableUpgrades);
+    
+    let selectedUpgrades: UpgradeType[] = [];
+    let upgradeCount = arenaLevel;
+    
+    // Select first N upgrades from shuffled array (no duplicates)
+    for (let i = 0; i < upgradeCount && i < shufflableUpgrades.length; i++) {
+        selectedUpgrades.push(shufflableUpgrades[i]);
+    }
+    
+    return selectedUpgrades;
+}
+```
+
+### localStorage Integration
+
+**Storage API**:
+```typescript
+// src/store.ts - Simple localStorage wrapper
+export function save_game_state(state: GameState): void {
+    try {
+        localStorage.setItem("blackcat_gamestate", JSON.stringify(state));
+        console.log("Game state saved successfully");
+    } catch (error) {
+        console.error("Failed to save game state:", error);
+    }
+}
+
+export function load_game_state(): GameState | null {
+    try {
+        const stored = localStorage.getItem("blackcat_gamestate");
+        if (stored) {
+            const state = JSON.parse(stored);
+            console.log("Game state loaded successfully", state);
+            return state;
+        }
+    } catch (error) {
+        console.error("Failed to load game state:", error);
+    }
+    return null;
+}
+
+export function has_game_state(): boolean {
+    return localStorage.getItem("blackcat_gamestate") !== null;
+}
+
+export function clear_game_state(): void {
+    localStorage.removeItem("blackcat_gamestate");
+    console.log("Game state cleared");
+}
+```
 
 ## Instantiation Flow
 
@@ -501,3 +572,32 @@ export class SessionGameStore {
 - **Validation**: Always validate loaded state for corruption/tampering
 
 This architecture provides a robust foundation for persistent player progression while maintaining the chaotic randomness that makes each duel unpredictable.
+
+## ✅ Implemented Features (Completed)
+
+### Game State Persistence System
+
+The persistence system has been fully implemented with the following components:
+
+**Technical Implementation**:
+- `src/store.ts` - Simple localStorage wrapper for game state persistence
+- `src/state.ts` - Shared utilities for opponent generation and population calculation  
+- Enhanced `src/actions.ts` - Persistence triggers in DuelVictory, state clearing in DuelDefeat/RestartRun
+- `lib/random.ts` - Added `shuffle()` function for consistent opponent generation
+- Updated `src/index.ts` - Synchronous game initialization with state loading
+
+**Key Features**:
+1. ✅ **Automatic State Persistence** - Game state automatically saves after duel victories using localStorage
+2. ✅ **Seamless Resume Experience** - Players can refresh/close browser and resume from upgrade selection
+3. ✅ **Consistent Opponent Generation** - Seeded opponent upgrades using `lib/random` for predictable gameplay
+4. ✅ **Smart State Management** - State clears on defeat/victory, saves before upgrade selection
+
+**Usage**:
+```javascript
+// Game automatically saves after each duel victory
+// Players can close/refresh browser and resume from upgrade selection
+// Same arena level always produces same opponent loadout
+// Manual save clearing via: dispatch(game, Action.ClearSave);
+```
+
+The implementation uses the existing `lib/random` seeded generation for consistency and provides console logging for debugging. All existing game mechanics remain unchanged while adding robust persistence capabilities.

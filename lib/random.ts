@@ -20,3 +20,13 @@ export function float(min = 0, max = 1) {
 export function element<T>(arr: Array<T>) {
     return arr[integer(0, arr.length - 1)];
 }
+
+export function shuffle<T>(arr: Array<T>): Array<T> {
+    // Fisher-Yates shuffle algorithm
+    let shuffled = [...arr];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        let j = integer(0, i);
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}

@@ -42,6 +42,7 @@ import {sys_victory_timer} from "./systems/sys_victory_timer.js";
 import {sys_weapons} from "./systems/sys_weapons.js";
 import {ALL_UPGRADES, ARMOR_UPGRADES, UpgradeType, WEAPON_UPGRADES} from "./upgrades/types.js";
 import {Has, World} from "./world.js";
+import {generateOpponentUpgrades, createFreshGameState, GameState} from "./state.js";
 
 export const WORLD_CAPACITY = 65_536; // = 4MB of InstanceData.
 export const REAL_UNIT_SIZE = 48;
@@ -53,64 +54,9 @@ export const enum GameView {
     Defeat,
 }
 
-export interface GameState {
-    currentLevel: number; // 1-33 duels
-    playerUpgrades: UpgradeType[]; // Player's accumulated upgrades
-    opponentUpgrades: UpgradeType[]; // Current opponent's upgrades
-    population: number; // Narrative countdown (8 billion -> 1)
-    isNewRun: boolean; // Fresh start vs resumed
-}
-
-export function createDefaultGameState(): GameState {
-    return {
-        currentLevel: 5, // Current arena level - bumped to 5 for more interesting combat
-        playerUpgrades: [
-            WEAPON_UPGRADES[0], // battle_axe
-            WEAPON_UPGRADES[1], // pistol
-            WEAPON_UPGRADES[3], // throwing_knives
-            ARMOR_UPGRADES[0], // scrap_armor
-            ARMOR_UPGRADES[2], // bonus_hp
-        ],
-        opponentUpgrades: generateOpponentUpgrades(5), // Level 5 opponent upgrades
-        population: 8_000_000_000,
-        isNewRun: true,
-    };
-}
-
-function generateOpponentUpgrades(arenaLevel: number): UpgradeType[] {
-    // Filter to only implemented upgrades (weapons we have blueprints for + all armor)
-    let availableUpgrades = ALL_UPGRADES.filter((upgrade) => {
-        // Include all armor upgrades
-        if (upgrade.category === "armor") return true;
-
-        // Only include weapons we have blueprints for
-        return [
-            "battle_axe",
-            "baseball_bat",
-            "pistol",
-            "shotgun",
-            "sniper_rifle",
-            "throwing_knives",
-        ].includes(upgrade.id);
-    });
-
-    let selectedUpgrades: UpgradeType[] = [];
-    let upgradeCount = arenaLevel; // Simple: arena level = number of upgrades
-
-    // Randomly select upgrades without duplicates
-    for (let i = 0; i < upgradeCount && availableUpgrades.length > 0; i++) {
-        let randomIndex = Math.floor(Math.random() * availableUpgrades.length);
-        let selectedUpgrade = availableUpgrades[randomIndex];
-        selectedUpgrades.push(selectedUpgrade);
-        availableUpgrades.splice(randomIndex, 1);
-    }
-
-    return selectedUpgrades;
-}
-
 export class Game extends Game3D {
     World = new World(WORLD_CAPACITY);
-    State: GameState = createDefaultGameState();
+    State: GameState = createFreshGameState();
     CurrentView: GameView = GameView.Arena; // Start in arena for now
     ViewData?: any; // View-specific data
 
