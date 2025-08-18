@@ -6,8 +6,8 @@ export function getAIStateName(state: AIState): string {
             return "Circling";
         case AIState.Preparing:
             return "Preparing";
-        case AIState.Attacking:
-            return "Attacking";
+        case AIState.Dashing:
+            return "Dashing";
         case AIState.Retreating:
             return "Retreating";
         case AIState.Stunned:

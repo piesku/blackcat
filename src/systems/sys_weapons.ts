@@ -1,5 +1,6 @@
 import {instantiate} from "../../lib/game.js";
 import {Vec2} from "../../lib/math.js";
+import {float} from "../../lib/random.js";
 import {vec2_length, vec2_normalize, vec2_subtract} from "../../lib/vec2.js";
 import {AIState} from "../components/com_ai_fighter.js";
 import {query_down} from "../components/com_children.js";
@@ -7,6 +8,7 @@ import {shake} from "../components/com_shake.js";
 import {Weapon, WeaponKind, WeaponMelee, WeaponRanged} from "../components/com_weapon.js";
 import {Game} from "../game.js";
 import {blueprint_projectile} from "../scenes/blu_projectile.js";
+import {getAIStateName} from "../ui/ai_state.js";
 import {Has} from "../world.js";
 
 const QUERY = Has.Children; // Entities that might have weapon children
@@ -26,7 +28,7 @@ export function sys_weapons(game: Game, delta: number) {
                     weapon.LastAttackTime = Math.max(0, weapon.LastAttackTime - delta);
                 }
 
-                // Check if parent is in attacking state and weapon is ready
+                // Check if weapon should activate based on AI state and weapon type
                 if (should_activate_weapon(game, entity, weapon)) {
                     activate_weapon(game, entity, weapon_entity, weapon);
                 }
@@ -36,7 +38,7 @@ export function sys_weapons(game: Game, delta: number) {
 }
 
 function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapon): boolean {
-    // Check if parent has AI fighter component and is in attacking state
+    // Check if parent has AI fighter component
     if (!(game.World.Signature[parent_entity] & Has.AIFighter)) {
         return false;
     }
@@ -44,11 +46,24 @@ function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapo
     let ai = game.World.AIFighter[parent_entity];
     if (!ai) return false;
 
-    let should_activate = ai.State === AIState.Attacking && weapon.LastAttackTime <= 0;
+    let should_activate = false;
+
+    // Ranged weapons can activate in Circling, Pursuing, and Dashing states
+    if (weapon.Kind === WeaponKind.Ranged) {
+        should_activate =
+            (ai.State === AIState.Circling ||
+                ai.State === AIState.Pursuing ||
+                ai.State === AIState.Dashing) &&
+            weapon.LastAttackTime <= 0;
+    }
+    // Melee weapons still only activate in Dashing state
+    else if (weapon.Kind === WeaponKind.Melee) {
+        should_activate = ai.State === AIState.Dashing && weapon.LastAttackTime <= 0;
+    }
 
     if (should_activate) {
         console.log(
-            `[WEAPON] Entity ${parent_entity} activating weapon (AI State: ${getAIStateName(ai.State)}, Cooldown: ${weapon.LastAttackTime.toFixed(2)})`,
+            `[WEAPON] Entity ${parent_entity} activating ${weapon.Kind === WeaponKind.Ranged ? "ranged" : "melee"} weapon (AI State: ${getAIStateName(ai.State)}, Cooldown: ${weapon.LastAttackTime.toFixed(2)})`,
         );
     }
 
@@ -189,6 +204,15 @@ function execute_ranged_attack(
     vec2_subtract(to_target, target_transform.Translation, wielder_transform.Translation);
     vec2_normalize(to_target, to_target);
 
+    // Apply scatter (aiming inaccuracy) - random angle deviation
+    let scatter_angle = float(-1, 1) * weapon.Scatter;
+    let cos_scatter = Math.cos(scatter_angle);
+    let sin_scatter = Math.sin(scatter_angle);
+    let scattered_x = to_target[0] * cos_scatter - to_target[1] * sin_scatter;
+    let scattered_y = to_target[0] * sin_scatter + to_target[1] * cos_scatter;
+    to_target[0] = scattered_x;
+    to_target[1] = scattered_y;
+
     // Spawn projectiles based on weapon stats
     for (let i = 0; i < weapon.ProjectileCount; i++) {
         // Calculate spread for multiple projectiles
@@ -238,7 +262,7 @@ function execute_ranged_attack(
     }
 
     console.log(
-        `[RANGED] Entity ${wielder_entity} fired ${weapon.ProjectileCount} projectile(s) toward target ${target_entity}`,
+        `[RANGED] Entity ${wielder_entity} fired ${weapon.ProjectileCount} projectile(s) toward target ${target_entity} with scatter ${scatter_angle.toFixed(3)}`,
     );
 }
 
@@ -254,20 +278,5 @@ function apply_knockback(
         let shake_radius = 0.5; // Fixed radius for all shakes
         let shake_duration = 0.3; // 300ms shake for knockback
         shake(shake_radius, shake_duration)(game, game.Camera);
-    }
-}
-
-function getAIStateName(state: AIState): string {
-    switch (state) {
-        case AIState.Circling:
-            return "Circling";
-        case AIState.Attacking:
-            return "Attacking";
-        case AIState.Retreating:
-            return "Retreating";
-        case AIState.Stunned:
-            return "Stunned";
-        default:
-            return "Unknown";
     }
 }

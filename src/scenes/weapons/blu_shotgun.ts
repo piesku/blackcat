@@ -17,7 +17,9 @@ export function blueprint_shotgun(game: Game) {
             2.5, // cooldown (slow)
             10, // projectile speed
             5, // projectile count (5 pellets)
-            0.5, // spread (wide cone)
+            0.5, // spread (wide cone between multiple projectiles)
+            0.15, // scatter (moderate inaccuracy)
+            0.9, // initial timeout
         ),
     ];
 }

@@ -23,7 +23,7 @@ export interface AIFighter {
 export const enum AIState {
     Circling,
     Preparing, // New: Wind-up state before dash attack
-    Attacking,
+    Dashing,
     Retreating,
     Stunned,
     Pursuing,
