@@ -1,5 +1,6 @@
 import {instantiate} from "../../lib/game.js";
 import {Vec2} from "../../lib/math.js";
+import {float} from "../../lib/random.js";
 import {vec2_length, vec2_normalize, vec2_subtract} from "../../lib/vec2.js";
 import {AIState} from "../components/com_ai_fighter.js";
 import {query_down} from "../components/com_children.js";
@@ -204,7 +205,7 @@ function execute_ranged_attack(
     vec2_normalize(to_target, to_target);
 
     // Apply scatter (aiming inaccuracy) - random angle deviation
-    let scatter_angle = (Math.random() - 0.5) * 2 * weapon.Scatter;
+    let scatter_angle = float(-1, 1) * weapon.Scatter;
     let cos_scatter = Math.cos(scatter_angle);
     let sin_scatter = Math.sin(scatter_angle);
     let scattered_x = to_target[0] * cos_scatter - to_target[1] * sin_scatter;
