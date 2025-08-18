@@ -1,6 +1,5 @@
 import {dispatch, Action} from "./actions.js";
 import {Game, GameView} from "./game.js";
-import {createDefaultGameState} from "./utils.js";
 import {load_game_state, has_game_state} from "./store.js";
 
 async function initializeGame() {
@@ -29,15 +28,6 @@ async function initializeGame() {
         );
     } else {
         // Start fresh run
-        game.State = {
-            currentLevel: 1,
-            playerUpgrades: [],
-            opponentUpgrades: [],
-            population: 8_000_000_000,
-            isNewRun: true,
-        };
-
-        // Generate opponent upgrades for level 1
         dispatch(game, Action.RestartRun);
 
         console.log("Started new game");

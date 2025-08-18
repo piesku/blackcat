@@ -1,5 +1,5 @@
 import {ALL_UPGRADES, UpgradeType, WEAPON_UPGRADES, ARMOR_UPGRADES} from "./upgrades/types.js";
-import {set_seed, integer} from "../lib/random.js";
+import {set_seed, integer, shuffle} from "../lib/random.js";
 
 export interface GameState {
     currentLevel: number; // 1-33 duels
@@ -26,14 +26,7 @@ export function generateOpponentUpgrades(arenaLevel: number): UpgradeType[] {
     });
 
     // Shuffle array using Fisher-Yates with lib/random
-    let shufflableUpgrades = [...availableUpgrades];
-    for (let i = shufflableUpgrades.length - 1; i > 0; i--) {
-        let j = integer(0, i);
-        [shufflableUpgrades[i], shufflableUpgrades[j]] = [
-            shufflableUpgrades[j],
-            shufflableUpgrades[i],
-        ];
-    }
+    let shufflableUpgrades = shuffle(availableUpgrades);
 
     let selectedUpgrades: UpgradeType[] = [];
     let upgradeCount = arenaLevel;
@@ -49,22 +42,6 @@ export function generateOpponentUpgrades(arenaLevel: number): UpgradeType[] {
 export function calculatePopulation(level: number): number {
     // Exponential decay: each victory halves the population
     return Math.max(1, Math.floor(8_000_000_000 / Math.pow(2, level - 1)));
-}
-
-export function createDefaultGameState(): GameState {
-    return {
-        currentLevel: 5, // Current arena level - bumped to 5 for more interesting combat
-        playerUpgrades: [
-            WEAPON_UPGRADES[0], // battle_axe
-            WEAPON_UPGRADES[1], // pistol
-            WEAPON_UPGRADES[3], // throwing_knives
-            ARMOR_UPGRADES[0], // scrap_armor
-            ARMOR_UPGRADES[2], // bonus_hp
-        ],
-        opponentUpgrades: generateOpponentUpgrades(5), // Level 5 opponent upgrades
-        population: 8_000_000_000,
-        isNewRun: true,
-    };
 }
 
 export function createFreshGameState(): GameState {

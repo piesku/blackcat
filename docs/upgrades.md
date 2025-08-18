@@ -366,6 +366,28 @@ sys_companions(game, delta); // Manages companion AI and lifecycle
 2. ✅ **Advanced Armor** - Scrap Armor, Spiked Vest with special effects implemented
 3. ✅ **Centralized Damage Processing** - `sys_health` with damage accumulation and armor calculations
 
+### ✅ Phase 2.5: Game State Persistence (COMPLETED)
+
+1. ✅ **Automatic State Persistence** - Game state automatically saves after duel victories using localStorage
+2. ✅ **Seamless Resume Experience** - Players can refresh/close browser and resume from upgrade selection
+3. ✅ **Consistent Opponent Generation** - Seeded opponent upgrades using `lib/random` for predictable gameplay
+4. ✅ **Smart State Management** - State clears on defeat/victory, saves before upgrade selection
+
+**Technical Implementation**:
+- `src/store.ts` - Simple localStorage wrapper for game state persistence
+- `src/utils.ts` - Shared utilities for opponent generation and population calculation  
+- Enhanced `src/actions.ts` - Persistence triggers in DuelVictory, state clearing in DuelDefeat/RestartRun
+- `lib/random.ts` - Added `shuffle()` function for consistent opponent generation
+- Updated `src/index.ts` - Synchronous game initialization with state loading
+
+**Usage**:
+```javascript
+// Game automatically saves after each duel victory
+// Players can close/refresh browser and resume from upgrade selection
+// Same arena level always produces same opponent loadout
+// Manual save clearing via: dispatch(game, Action.ClearSave);
+```
+
 ### 🚧 Phase 3: Trait Modifiers (TODO - HIGH PRIORITY)
 
 1. **Basic Trait Modifiers** - Simple personality adjustments (+/- Aggressiveness/Patience)
