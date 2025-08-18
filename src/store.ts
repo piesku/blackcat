@@ -1,4 +1,4 @@
-import {GameState} from "./utils.js";
+import {GameState} from "./state.js";
 
 const enum Storage {
     CurrentRun = "com.piesku.blackcat.1",

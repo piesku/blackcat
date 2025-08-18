@@ -2,7 +2,7 @@ import {Game, GameView} from "./game.js";
 import {scene_arena} from "./scenes/sce_arena.js";
 import {UpgradeType} from "./upgrades/types.js";
 import {save_game_state, clear_game_state} from "./store.js";
-import {generateOpponentUpgrades, calculatePopulation, createFreshGameState} from "./utils.js";
+import {generateOpponentUpgrades, calculatePopulation, createFreshGameState} from "./state.js";
 
 export const enum Action {
     NoOp,

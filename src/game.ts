@@ -42,7 +42,7 @@ import {sys_victory_timer} from "./systems/sys_victory_timer.js";
 import {sys_weapons} from "./systems/sys_weapons.js";
 import {ALL_UPGRADES, ARMOR_UPGRADES, UpgradeType, WEAPON_UPGRADES} from "./upgrades/types.js";
 import {Has, World} from "./world.js";
-import {generateOpponentUpgrades, createFreshGameState, GameState} from "./utils.js";
+import {generateOpponentUpgrades, createFreshGameState, GameState} from "./state.js";
 
 export const WORLD_CAPACITY = 65_536; // = 4MB of InstanceData.
 export const REAL_UNIT_SIZE = 48;
