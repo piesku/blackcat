@@ -40,7 +40,10 @@ export function generateOpponentUpgrades(arenaLevel: number): UpgradeType[] {
     return selectedUpgrades;
 }
 
-export function generatePlayerUpgradeChoices(arenaLevel: number, playerUpgrades: UpgradeType[]): UpgradeType[] {
+export function generatePlayerUpgradeChoices(
+    arenaLevel: number,
+    playerUpgrades: UpgradeType[],
+): UpgradeType[] {
     // Use seeded random for consistent upgrade choices per arena level (different seed than opponent)
     set_seed(arenaLevel * 54321 + 98765);
 

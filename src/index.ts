@@ -21,11 +21,6 @@ async function initializeGame() {
         game.State = savedState;
         game.State.isNewRun = false; // Mark as resumed
 
-        // Migration: ensure availableUpgradeChoices exists for older save states
-        if (!game.State.availableUpgradeChoices || game.State.availableUpgradeChoices.length === 0) {
-            game.State.availableUpgradeChoices = generatePlayerUpgradeChoices(game.State.currentLevel, game.State.playerUpgrades);
-        }
-
         // Start on upgrade selection screen when resuming
         game.SetView(GameView.UpgradeSelection);
 

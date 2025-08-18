@@ -8,10 +8,6 @@ export function UpgradeSelectionView(game: Game): string {
     // This prevents players from re-rolling choices by reloading the page
     let choices = game.State.availableUpgradeChoices;
 
-    // Store choices in global for onclick access
-    // @ts-ignore
-    window.upgradeChoices = choices;
-
     return html`
         <style>
             @media (min-width: 900px) {
@@ -78,7 +74,7 @@ export function UpgradeSelectionView(game: Game): string {
                     .map(
                         (upgrade: UpgradeType, index: number) => `
                     <div 
-                        onclick="window.$(${Action.UpgradeSelected}, window.upgradeChoices[${index}])"
+                        onclick="window.$(${Action.UpgradeSelected}, ${index})"
                         class="upgrade-card"
                         style="
                             background: rgba(255,255,255,0.1); 
