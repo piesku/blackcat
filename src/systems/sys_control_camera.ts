@@ -16,7 +16,15 @@ export function sys_control_camera(game: Game, delta: number) {
     }
 
     let camera = game.World.Camera2D[game.Camera];
-    let camera_local = game.World.LocalTransform2D[game.Camera];
+    let camera_node = game.World.SpatialNode2D[game.Camera];
+
+    // For zoom/pan, we want to modify the parent's transform,
+    // because the child's transform may be overridden by shake system
+    if (DEBUG && camera_node.Parent === undefined) {
+        throw new Error("Camera must have a parent entity for zoom/pan controls to work correctly");
+    }
+    let control_entity = camera_node.Parent!;
+    let camera_local = game.World.LocalTransform2D[control_entity];
 
     if (game.InputDelta["WheelY"]) {
         let cur_zoom = 4 ** (wheel_y_clamped / -500);
@@ -43,7 +51,7 @@ export function sys_control_camera(game: Game, delta: number) {
 
             camera_local.Translation[0] += offset[0];
             camera_local.Translation[1] += offset[1];
-            game.World.Signature[game.Camera] |= Has.Dirty;
+            game.World.Signature[control_entity] |= Has.Dirty;
         }
     }
 
@@ -51,7 +59,7 @@ export function sys_control_camera(game: Game, delta: number) {
         document.body.classList.add("grabbing");
         camera_local.Translation[0] -= game.InputDelta["MouseX"] / game.UnitSize;
         camera_local.Translation[1] += game.InputDelta["MouseY"] / game.UnitSize;
-        game.World.Signature[game.Camera] |= Has.Dirty;
+        game.World.Signature[control_entity] |= Has.Dirty;
     }
 
     if (game.InputDelta["Mouse0"] === -1) {
