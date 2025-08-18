@@ -4,30 +4,13 @@ import {Action} from "../actions.js";
 import {ALL_UPGRADES, UpgradeType} from "../upgrades/types.js";
 
 export function UpgradeSelectionView(game: Game): string {
-    // Cache upgrade choices in ViewData to prevent regeneration every frame
-    if (!game.ViewData?.upgradeChoices) {
-        // Generate 3 random upgrade choices excluding already owned upgrades
-        let availableUpgrades = ALL_UPGRADES.filter(
-            (upgrade) => !game.State.playerUpgrades.some((owned) => owned.id === upgrade.id),
-        );
+    // Use persisted upgrade choices from game state instead of generating new ones
+    // This prevents players from re-rolling choices by reloading the page
+    let choices = game.State.availableUpgradeChoices;
 
-        let choices: UpgradeType[] = [];
-        for (let i = 0; i < 3 && availableUpgrades.length > 0; i++) {
-            let randomIndex = Math.floor(Math.random() * availableUpgrades.length);
-            choices.push(availableUpgrades.splice(randomIndex, 1)[0]);
-        }
-
-        if (!game.ViewData) {
-            game.ViewData = {};
-        }
-        game.ViewData.upgradeChoices = choices;
-
-        // Store choices in global for onclick access
-        // @ts-ignore
-        window.upgradeChoices = choices;
-    }
-
-    let choices = game.ViewData.upgradeChoices;
+    // Store choices in global for onclick access
+    // @ts-ignore
+    window.upgradeChoices = choices;
 
     return html`
         <style>

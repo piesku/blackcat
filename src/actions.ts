@@ -2,7 +2,7 @@ import {Game, GameView} from "./game.js";
 import {scene_arena} from "./scenes/sce_arena.js";
 import {UpgradeType} from "./upgrades/types.js";
 import {save_game_state, clear_game_state} from "./store.js";
-import {generateOpponentUpgrades, calculatePopulation, createFreshGameState} from "./state.js";
+import {generateOpponentUpgrades, generatePlayerUpgradeChoices, calculatePopulation, createFreshGameState} from "./state.js";
 
 export const enum Action {
     NoOp,
@@ -32,6 +32,9 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
             } else {
                 // Generate next opponent's upgrades for preview in upgrade selection
                 game.State.opponentUpgrades = generateOpponentUpgrades(game.State.currentLevel);
+
+                // Generate player's upgrade choices for the next selection (deterministic, can't be re-rolled)
+                game.State.availableUpgradeChoices = generatePlayerUpgradeChoices(game.State.currentLevel, game.State.playerUpgrades);
 
                 // Save state before showing upgrade selection so player always comes back to selection screen
                 save_game_state(game.State);

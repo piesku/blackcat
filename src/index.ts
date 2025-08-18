@@ -1,6 +1,7 @@
 import {dispatch, Action} from "./actions.js";
 import {Game, GameView} from "./game.js";
 import {load_game_state, has_game_state} from "./store.js";
+import {generatePlayerUpgradeChoices} from "./state.js";
 
 async function initializeGame() {
     let game = new Game();
@@ -19,6 +20,11 @@ async function initializeGame() {
         // Resume from saved state
         game.State = savedState;
         game.State.isNewRun = false; // Mark as resumed
+
+        // Migration: ensure availableUpgradeChoices exists for older save states
+        if (!game.State.availableUpgradeChoices || game.State.availableUpgradeChoices.length === 0) {
+            game.State.availableUpgradeChoices = generatePlayerUpgradeChoices(game.State.currentLevel, game.State.playerUpgrades);
+        }
 
         // Start on upgrade selection screen when resuming
         game.SetView(GameView.UpgradeSelection);
