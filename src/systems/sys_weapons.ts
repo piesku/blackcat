@@ -26,7 +26,7 @@ export function sys_weapons(game: Game, delta: number) {
                     weapon.LastAttackTime = Math.max(0, weapon.LastAttackTime - delta);
                 }
 
-                // Check if parent is in attacking state and weapon is ready
+                // Check if weapon should activate based on AI state and weapon type
                 if (should_activate_weapon(game, entity, weapon)) {
                     activate_weapon(game, entity, weapon_entity, weapon);
                 }
@@ -36,7 +36,7 @@ export function sys_weapons(game: Game, delta: number) {
 }
 
 function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapon): boolean {
-    // Check if parent has AI fighter component and is in attacking state
+    // Check if parent has AI fighter component
     if (!(game.World.Signature[parent_entity] & Has.AIFighter)) {
         return false;
     }
@@ -44,11 +44,24 @@ function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapo
     let ai = game.World.AIFighter[parent_entity];
     if (!ai) return false;
 
-    let should_activate = ai.State === AIState.Attacking && weapon.LastAttackTime <= 0;
+    let should_activate = false;
+
+    // Ranged weapons can activate in Circling, Pursuing, and Dashing states
+    if (weapon.Kind === WeaponKind.Ranged) {
+        should_activate =
+            (ai.State === AIState.Circling ||
+                ai.State === AIState.Pursuing ||
+                ai.State === AIState.Dashing) &&
+            weapon.LastAttackTime <= 0;
+    }
+    // Melee weapons still only activate in Dashing state
+    else if (weapon.Kind === WeaponKind.Melee) {
+        should_activate = ai.State === AIState.Dashing && weapon.LastAttackTime <= 0;
+    }
 
     if (should_activate) {
         console.log(
-            `[WEAPON] Entity ${parent_entity} activating weapon (AI State: ${getAIStateName(ai.State)}, Cooldown: ${weapon.LastAttackTime.toFixed(2)})`,
+            `[WEAPON] Entity ${parent_entity} activating ${weapon.Kind === WeaponKind.Ranged ? "ranged" : "melee"} weapon (AI State: ${getAIStateName(ai.State)}, Cooldown: ${weapon.LastAttackTime.toFixed(2)})`,
         );
     }
 
@@ -261,12 +274,18 @@ function getAIStateName(state: AIState): string {
     switch (state) {
         case AIState.Circling:
             return "Circling";
-        case AIState.Attacking:
-            return "Attacking";
+        case AIState.Preparing:
+            return "Preparing";
+        case AIState.Pursuing:
+            return "Pursuing";
+        case AIState.Dashing:
+            return "Dashing";
         case AIState.Retreating:
             return "Retreating";
         case AIState.Stunned:
             return "Stunned";
+        case AIState.Separating:
+            return "Separating";
         default:
             return "Unknown";
     }

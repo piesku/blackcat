@@ -42,7 +42,7 @@ export function sys_ai_fighter(game: Game, delta: number) {
                 ai.TargetEntity = find_nearest_enemy(game, entity);
                 if (ai.TargetEntity === -1) {
                     // No valid targets - stop moving completely (prepare for victory animation)
-                    if (ai.State === AIState.Attacking) {
+                    if (ai.State === AIState.Dashing) {
                         change_state(ai, AIState.Circling, game.Time);
                     }
                     // Stop all movement when victorious
@@ -127,7 +127,7 @@ export function sys_ai_fighter(game: Game, delta: number) {
                     vec2_normalize(movement, to_target);
                     vec2_scale(movement, movement, 1.2 * ai.Aggressiveness); // Personality affects pursuit speed
                     break;
-                case AIState.Attacking:
+                case AIState.Dashing:
                     attack_movement(movement, to_target, speed_scale, ai.Aggressiveness);
                     break;
                 case AIState.Retreating:
@@ -269,9 +269,9 @@ function update_ai_state(
             // Attack immediately when close enough
             if (distance < scaled_distances.dash_trigger && ai.AttackCooldown <= 0) {
                 console.log(
-                    `[AI] Entity attacking from PURSUING state at distance ${distance.toFixed(2)}`,
+                    `[AI] Entity dashing from PURSUING state at distance ${distance.toFixed(2)}`,
                 );
-                change_state(ai, AIState.Attacking, game.Time);
+                change_state(ai, AIState.Dashing, game.Time);
                 ai.AttackCooldown = (1.0 + Math.random() * 0.5) * time_scale; // Shorter cooldown for pursued targets
             }
             // Return to circling if target stops retreating
@@ -288,11 +288,11 @@ function update_ai_state(
                 console.log(
                     `[AI] Entity launching DASH ATTACK after ${prepare_duration.toFixed(2)}s preparation`,
                 );
-                change_state(ai, AIState.Attacking, game.Time);
+                change_state(ai, AIState.Dashing, game.Time);
             }
             break;
 
-        case AIState.Attacking:
+        case AIState.Dashing:
             // Longer, more dramatic dash duration
             let attack_duration = (1.5 + 0.5 * ai.Aggressiveness) * time_scale;
             if (ai.StateTimer > attack_duration || distance > scaled_distances.dash_trigger * 1.5) {
@@ -361,8 +361,8 @@ function getAIStateName(state: AIState): string {
             return "Preparing";
         case AIState.Pursuing:
             return "Pursuing";
-        case AIState.Attacking:
-            return "Attacking";
+        case AIState.Dashing:
+            return "Dashing";
         case AIState.Retreating:
             return "Retreating";
         case AIState.Stunned:

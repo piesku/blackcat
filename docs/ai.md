@@ -23,6 +23,7 @@ The AI system is built around the `AIFighter` component and the `sys_ai_fighter`
 - Maintains optimal engagement distance
 - Randomly changes direction for unpredictability
 - Occasionally spirals inward for dramatic tension
+- **Can activate ranged weapons when in range**
 
 **Transitions:**
 - → **Pursuing**: When target starts retreating
@@ -39,6 +40,7 @@ The AI system is built around the `AIFighter` component and the `sys_ai_fighter`
 - Speed multiplied by Aggressiveness personality trait (1.2x base)
 - Shorter attack cooldowns (1.0-1.5s vs 2.0-3.5s)
 - No circular movement - pure aggression
+- **Can activate ranged weapons when in range**
 
 **Transitions:**
 - → **Preparing**: When close enough to strike (starts attack preparation)
@@ -55,21 +57,21 @@ The AI system is built around the `AIFighter` component and the `sys_ai_fighter`
 - Stores attack direction for consistent dash targeting
 
 **Transitions:**
-- → **Attacking**: After preparation duration completes
+- → **Dashing**: After preparation duration completes
 - → **Stunned**: When taking damage
 - → **Retreating**: When health drops to low threshold
 
-### 4. Attacking ⚔️
+### 4. Dashing ⚔️
 **Combat engagement state** - High-speed dash attacks toward the target.
 
 **Behavior:**
 - Direct movement toward target at dramatic high speed
 - Speed multiplier scales with Aggressiveness personality trait
 - Duration: 1.5 + (0.5 * Aggressiveness) seconds, scaled by speed
-- Activates weapon systems when in range
+- Activates melee weapon systems when in range
 
 **Transitions:**
-- → **Circling**: After attack duration expires or target moves away
+- → **Circling**: After dash duration expires or target moves away
 - → **Stunned**: When taking damage
 - → **Retreating**: When health drops to low threshold
 
@@ -206,13 +208,13 @@ stateDiagram-v2
     Pursuing --> Circling : Target stops retreating
     Pursuing --> Stunned : Damage taken
     
-    Preparing --> Attacking : Preparation complete
+    Preparing --> Dashing : Preparation complete
     Preparing --> Stunned : Damage taken
     Preparing --> Retreating : Low health
     
-    Attacking --> Circling : Attack complete/target away
-    Attacking --> Stunned : Damage taken
-    Attacking --> Retreating : Low health
+    Dashing --> Circling : Dash complete/target away
+    Dashing --> Stunned : Damage taken
+    Dashing --> Retreating : Low health
     
     Separating --> Circling : Separated OR timeout
     Separating --> Stunned : Damage taken
