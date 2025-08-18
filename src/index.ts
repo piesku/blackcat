@@ -1,24 +1,15 @@
 import {dispatch, Action} from "./actions.js";
 import {Game, GameView, createDefaultGameState} from "./game.js";
-import {createGameStore} from "./store.js";
+import {load_game_state, has_game_state} from "./store.js";
 
 async function initializeGame() {
     let game = new Game();
 
-    // Initialize storage
-    try {
-        game.Store = await createGameStore();
-        console.log("Game store initialized successfully");
-    } catch (e) {
-        console.error("Failed to initialize game store:", e);
-        // Continue without persistence
-    }
-
     // Try to load saved state
     let savedState = null;
-    if (game.Store) {
+    if (has_game_state()) {
         try {
-            savedState = await game.Store.loadGameState();
+            savedState = load_game_state();
         } catch (e) {
             console.error("Failed to load saved state:", e);
         }
@@ -60,5 +51,5 @@ async function initializeGame() {
     window.game = game;
 }
 
-// Initialize the game asynchronously
+// Initialize the game
 initializeGame().catch(console.error);

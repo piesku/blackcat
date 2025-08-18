@@ -42,8 +42,7 @@ import {sys_victory_timer} from "./systems/sys_victory_timer.js";
 import {sys_weapons} from "./systems/sys_weapons.js";
 import {ALL_UPGRADES, ARMOR_UPGRADES, UpgradeType, WEAPON_UPGRADES} from "./upgrades/types.js";
 import {Has, World} from "./world.js";
-import {GameStore} from "./store.js";
-import {createSeededRandom} from "./random.js";
+import {generateOpponentUpgrades} from "./utils.js";
 
 export const WORLD_CAPACITY = 65_536; // = 4MB of InstanceData.
 export const REAL_UNIT_SIZE = 48;
@@ -79,47 +78,11 @@ export function createDefaultGameState(): GameState {
     };
 }
 
-function generateOpponentUpgrades(arenaLevel: number): UpgradeType[] {
-    // Use seeded random for consistent upgrades per arena level
-    let rng = createSeededRandom(arenaLevel);
-
-    // Filter to only implemented upgrades (weapons we have blueprints for + all armor)
-    let availableUpgrades = ALL_UPGRADES.filter((upgrade) => {
-        // Include all armor upgrades
-        if (upgrade.category === "armor") return true;
-
-        // Only include weapons we have blueprints for
-        return [
-            "battle_axe",
-            "baseball_bat",
-            "pistol",
-            "shotgun",
-            "sniper_rifle",
-            "throwing_knives",
-        ].includes(upgrade.id);
-    });
-
-    // Create a copy to avoid modifying the original array
-    let shufflableUpgrades = [...availableUpgrades];
-    rng.shuffle(shufflableUpgrades);
-
-    let selectedUpgrades: UpgradeType[] = [];
-    let upgradeCount = arenaLevel; // Simple: arena level = number of upgrades
-
-    // Select first N upgrades from shuffled array (no duplicates)
-    for (let i = 0; i < upgradeCount && i < shufflableUpgrades.length; i++) {
-        selectedUpgrades.push(shufflableUpgrades[i]);
-    }
-
-    return selectedUpgrades;
-}
-
 export class Game extends Game3D {
     World = new World(WORLD_CAPACITY);
     State: GameState = createDefaultGameState();
     CurrentView: GameView = GameView.Arena; // Start in arena for now
     ViewData?: any; // View-specific data
-    Store?: GameStore; // Game state persistence
 
     MaterialRender2D = mat_render2d(this.Gl, Has.Render2D, Has.SpatialNode2D);
     Spritesheet = create_spritesheet_from(this.Gl, document.querySelector("img")!);

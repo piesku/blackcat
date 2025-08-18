@@ -1,7 +1,8 @@
 import {Game, GameView} from "./game.js";
 import {scene_arena} from "./scenes/sce_arena.js";
-import {ALL_UPGRADES, UpgradeType} from "./upgrades/types.js";
-import {createSeededRandom} from "./random.js";
+import {UpgradeType} from "./upgrades/types.js";
+import {save_game_state, clear_game_state} from "./store.js";
+import {generateOpponentUpgrades, calculatePopulation} from "./utils.js";
 
 export const enum Action {
     NoOp,
@@ -26,18 +27,14 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
             // Check for final victory
             if (game.State.currentLevel > 33) {
                 // Final victory - clear save and show special ending
-                if (game.Store) {
-                    game.Store.clearGameState().catch(console.error);
-                }
+                clear_game_state();
                 game.SetView(GameView.Victory, {isFinalVictory: true});
             } else {
                 // Generate next opponent's upgrades for preview in upgrade selection
                 game.State.opponentUpgrades = generateOpponentUpgrades(game.State.currentLevel);
 
-                // Save state after victory
-                if (game.Store) {
-                    game.Store.saveGameState(game.State).catch(console.error);
-                }
+                // Save state before showing upgrade selection so player always comes back to selection screen
+                save_game_state(game.State);
 
                 // Regular victory - show victory screen
                 game.SetView(GameView.Victory);
@@ -46,9 +43,7 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
         }
         case Action.DuelDefeat: {
             // Clear save state on defeat
-            if (game.Store) {
-                game.Store.clearGameState().catch(console.error);
-            }
+            clear_game_state();
             game.SetView(GameView.Defeat);
             break;
         }
@@ -58,10 +53,8 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
             // Add upgrade to player collection
             game.State.playerUpgrades.push(selectedUpgrade);
 
-            // Save state after upgrade selection
-            if (game.Store) {
-                game.Store.saveGameState(game.State).catch(console.error);
-            }
+            // No need to save after upgrade selection - already saved before upgrade selection screen
+            // This allows player to try different upgrades against same opponent if they reload
 
             // Opponent upgrades are already generated during victory
             // Switch to arena and start new duel
@@ -91,9 +84,7 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
             };
 
             // Clear save state
-            if (game.Store) {
-                game.Store.clearGameState().catch(console.error);
-            }
+            clear_game_state();
 
             // Start with upgrade selection
             game.SetView(GameView.UpgradeSelection);
@@ -101,46 +92,8 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
         }
         case Action.ClearSave: {
             // Clear save state on demand
-            if (game.Store) {
-                game.Store.clearGameState().catch(console.error);
-            }
+            clear_game_state();
             break;
         }
     }
-}
-
-function calculatePopulation(level: number): number {
-    // Exponential decay: each victory halves the population
-    return Math.max(1, Math.floor(8_000_000_000 / Math.pow(2, level - 1)));
-}
-
-function generateOpponentUpgrades(arenaLevel: number): UpgradeType[] {
-    // Use seeded random for consistent upgrades per arena level
-    let rng = createSeededRandom(arenaLevel);
-
-    let availableUpgrades = ALL_UPGRADES.filter((upgrade) => {
-        if (upgrade.category === "armor") return true;
-        return [
-            "battle_axe",
-            "baseball_bat",
-            "pistol",
-            "shotgun",
-            "sniper_rifle",
-            "throwing_knives",
-        ].includes(upgrade.id);
-    });
-
-    // Create a copy to avoid modifying the original array
-    let shufflableUpgrades = [...availableUpgrades];
-    rng.shuffle(shufflableUpgrades);
-
-    let selectedUpgrades: UpgradeType[] = [];
-    let upgradeCount = arenaLevel;
-
-    // Select first N upgrades from shuffled array (no duplicates)
-    for (let i = 0; i < upgradeCount && i < shufflableUpgrades.length; i++) {
-        selectedUpgrades.push(shufflableUpgrades[i]);
-    }
-
-    return selectedUpgrades;
 }
