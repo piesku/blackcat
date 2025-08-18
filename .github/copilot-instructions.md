@@ -166,7 +166,7 @@ npm run ts:check  # Type check without emitting files
 - Always run `npm test` before committing changes
 - Use git hooks for automatic formatting: `git config core.hooksPath scripts/hooks`
 - Test both development and production builds
-- Use Playwright MCP for testing changes and behavior (most convenient testing approach)
+- Use Playwright MCP for testing changes and behavior
 - Follow existing patterns and code organization
 - Maintain system execution order dependencies
 
