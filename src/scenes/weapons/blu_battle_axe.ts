@@ -15,6 +15,7 @@ export function blueprint_battle_axe(game: Game) {
             1.5, // cooldown: 1.5 seconds between attacks
             2.0, // knockback: strong knockback
             Math.PI / 4, // arc: 45 degree attack arc
+            0.3, // initial timeout
         ),
     ];
 }

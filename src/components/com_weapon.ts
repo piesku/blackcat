@@ -24,7 +24,8 @@ export interface WeaponRanged {
     LastAttackTime: number;
     ProjectileSpeed: number;
     ProjectileCount: number;
-    Spread: number; // Spread angle in radians
+    Spread: number; // Spread angle in radians between multiple projectiles
+    Scatter: number; // Random scatter angle in radians for aiming inaccuracy
 }
 
 export type Weapon = WeaponMelee | WeaponRanged;
@@ -35,6 +36,7 @@ export function weapon_melee(
     cooldown: number,
     knockback: number = 1.0,
     arc: number = Math.PI / 3,
+    initialTimeout: number = 0.3,
 ) {
     return (game: Game, entity: number) => {
         game.World.Signature[entity] |= Has.Weapon;
@@ -43,7 +45,7 @@ export function weapon_melee(
             Damage: damage,
             Range: range,
             Cooldown: cooldown,
-            LastAttackTime: 0,
+            LastAttackTime: initialTimeout,
             Knockback: knockback,
             Arc: arc,
         };
@@ -57,6 +59,8 @@ export function weapon_ranged(
     projectileSpeed: number = 5.0,
     projectileCount: number = 1,
     spread: number = 0.1,
+    scatter: number = 0.05,
+    initialTimeout: number = 0.5,
 ) {
     return (game: Game, entity: number) => {
         game.World.Signature[entity] |= Has.Weapon;
@@ -65,10 +69,11 @@ export function weapon_ranged(
             Damage: damage,
             Range: range,
             Cooldown: cooldown,
-            LastAttackTime: 0,
+            LastAttackTime: initialTimeout,
             ProjectileSpeed: projectileSpeed,
             ProjectileCount: projectileCount,
             Spread: spread,
+            Scatter: scatter,
         };
     };
 }

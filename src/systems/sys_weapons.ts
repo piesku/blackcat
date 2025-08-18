@@ -203,6 +203,15 @@ function execute_ranged_attack(
     vec2_subtract(to_target, target_transform.Translation, wielder_transform.Translation);
     vec2_normalize(to_target, to_target);
 
+    // Apply scatter (aiming inaccuracy) - random angle deviation
+    let scatter_angle = (Math.random() - 0.5) * 2 * weapon.Scatter;
+    let cos_scatter = Math.cos(scatter_angle);
+    let sin_scatter = Math.sin(scatter_angle);
+    let scattered_x = to_target[0] * cos_scatter - to_target[1] * sin_scatter;
+    let scattered_y = to_target[0] * sin_scatter + to_target[1] * cos_scatter;
+    to_target[0] = scattered_x;
+    to_target[1] = scattered_y;
+
     // Spawn projectiles based on weapon stats
     for (let i = 0; i < weapon.ProjectileCount; i++) {
         // Calculate spread for multiple projectiles
@@ -252,7 +261,7 @@ function execute_ranged_attack(
     }
 
     console.log(
-        `[RANGED] Entity ${wielder_entity} fired ${weapon.ProjectileCount} projectile(s) toward target ${target_entity}`,
+        `[RANGED] Entity ${wielder_entity} fired ${weapon.ProjectileCount} projectile(s) toward target ${target_entity} with scatter ${scatter_angle.toFixed(3)}`,
     );
 }
 

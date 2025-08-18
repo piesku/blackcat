@@ -17,7 +17,9 @@ export function blueprint_throwing_knives(game: Game) {
             2.0, // cooldown
             8, // projectile speed
             3, // projectile count (throws 3 knives)
-            0.3, // spread (fan pattern)
+            0.3, // spread (fan pattern between multiple projectiles)
+            0.12, // scatter (higher inaccuracy for throwing)
+            0.8, // initial timeout
         ),
     ];
 }

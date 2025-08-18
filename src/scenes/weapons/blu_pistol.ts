@@ -17,7 +17,9 @@ export function blueprint_pistol(game: Game) {
             1.5, // cooldown (seconds)
             12, // projectile speed
             1, // projectile count
-            0.05, // spread (tight accuracy)
+            0.05, // spread (tight accuracy between multiple shots)
+            0.05, // scatter (moderate aiming inaccuracy)
+            0.7, // initial timeout (moderate delay)
         ),
     ];
 }

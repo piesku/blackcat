@@ -17,6 +17,7 @@ export function blueprint_baseball_bat(game: Game) {
             2.0, // cooldown
             3.0, // knockback (high)
             Math.PI / 2, // arc (wide swing)
+            0.4, // initial timeout
         ),
     ];
 }
