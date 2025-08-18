@@ -3,7 +3,8 @@ import {Action} from "../actions.js";
 import {Game, GameView} from "../game.js";
 
 export function VictoryView(game: Game): string {
-    let isFinalVictory = game.ViewData?.isFinalVictory;
+    let isFinalVictory = game.VictoryData?.IsFinalVictory || false;
+    let timeRemaining = game.VictoryData?.TimeRemaining || 0;
 
     return html`
         <div
@@ -67,7 +68,7 @@ export function VictoryView(game: Game): string {
                 
                 <!-- Auto-advance note -->
                 <div style="font-size: clamp(10px, 2.5vw, 12px); color: #CCC;">
-                    Auto-advancing in 5 seconds...
+                    Auto-advancing in ${Math.ceil(timeRemaining)} seconds...
                 </div>
             `
                 : `

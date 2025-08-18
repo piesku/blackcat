@@ -1,4 +1,4 @@
-import {Game, GameView} from "./game.js";
+import {Game, GameView, VictoryData} from "./game.js";
 import {scene_arena} from "./scenes/sce_arena.js";
 import {UpgradeType} from "./upgrades/types.js";
 import {save_game_state, clear_game_state} from "./store.js";
@@ -33,7 +33,7 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
             if (game.State.currentLevel > 33) {
                 // Final victory - clear save and show special ending
                 clear_game_state();
-                game.SetView(GameView.Victory, {isFinalVictory: true});
+                game.SetView(GameView.Victory, {IsFinalVictory: true, TimeRemaining: Infinity});
             } else {
                 // Generate next opponent's upgrades for preview in upgrade selection
                 game.State.opponentUpgrades = generateOpponentUpgrades(game.State.currentLevel);
@@ -47,8 +47,8 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
                 // Save state before showing upgrade selection so player always comes back to selection screen
                 save_game_state(game.State);
 
-                // Regular victory - show victory screen
-                game.SetView(GameView.Victory);
+                // Regular victory - show victory screen with 5-second countdown
+                game.SetView(GameView.Victory, {IsFinalVictory: false, TimeRemaining: 5.0});
             }
             break;
         }
@@ -75,14 +75,8 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
             break;
         }
         case Action.ViewTransition: {
-            let transitionPayload = payload as {view: GameView; data?: any};
-
-            // Clear cached upgrade choices when transitioning to upgrade selection
-            if (transitionPayload.view === GameView.UpgradeSelection) {
-                game.SetView(transitionPayload.view, {}); // Clear ViewData for fresh upgrade choices
-            } else {
-                game.SetView(transitionPayload.view, transitionPayload.data);
-            }
+            let transitionPayload = payload as {view: GameView};
+            game.SetView(transitionPayload.view);
             break;
         }
         case Action.RestartRun: {

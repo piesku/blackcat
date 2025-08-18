@@ -54,11 +54,16 @@ export const enum GameView {
     Defeat,
 }
 
+export interface VictoryData {
+    IsFinalVictory: boolean;
+    TimeRemaining: number;
+}
+
 export class Game extends Game3D {
     World = new World(WORLD_CAPACITY);
     State: GameState = createFreshGameState();
     CurrentView: GameView = GameView.Arena; // Start in arena for now
-    ViewData?: any; // View-specific data
+    VictoryData?: VictoryData;
 
     MaterialRender2D = mat_render2d(this.Gl, Has.Render2D, Has.SpatialNode2D);
     Spritesheet = create_spritesheet_from(this.Gl, document.querySelector("img")!);
@@ -78,9 +83,9 @@ export class Game extends Game3D {
         setup_render2d_buffers(this.Gl, this.InstanceBuffer);
     }
 
-    SetView(view: GameView, data?: any) {
+    SetView(view: GameView, VictoryData?: VictoryData) {
         this.CurrentView = view;
-        this.ViewData = data;
+        this.VictoryData = VictoryData;
     }
 
     override FrameUpdate(delta: number) {
