@@ -83,11 +83,19 @@ export function sys_example(game: Game, delta: number) {
 - Compose entities from mixins in `src/scenes/`
 - Instantiate through scene functions like `scene_arena()`
 
+### UI, Views, Actions & Dispatch
+- **Views**: Game uses view-based architecture with `GameView` enum (UpgradeSelection, Arena, Victory, Defeat)
+- **UI Components**: Each view has its own component (`ArenaView.ts`, `UpgradeSelectionView.ts`, etc.)
+- **App Router**: `App.ts` switches between views based on `game.CurrentView`
+- **Actions**: Centralized through `Action` enum in `actions.ts` (DuelVictory, DuelDefeat, UpgradeSelected, etc.)
+- **Dispatch**: Use `dispatch(game, action, payload?)` function for state transitions and game logic
+- **State Management**: Game state stored in `game.State` and view data in `game.ViewData`
+
 ## Code Style Guidelines
 
 ### TypeScript
 - Use interfaces for components (data structures)
-- Prefer `const` and `let` over `var`
+- Use `const` for UPPERCASE_CONSTANTS, otherwise prefer `let` over `var`
 - Use discriminated unions for type-safe polymorphism
 - Add JSDoc comments for complex functions and components
 
@@ -95,7 +103,7 @@ export function sys_example(game: Game, delta: number) {
 - Components: `com_transform2d.ts`, interface `Transform2D`
 - Systems: `sys_render2d.ts`, function `sys_render2d()`
 - Files: snake_case for filenames, PascalCase for types
-- Variables: camelCase for local variables
+- Variables: snake_case for local variables
 
 ### Performance Patterns
 - Use `out` parameters in math functions to avoid allocations
@@ -158,6 +166,7 @@ npm run ts:check  # Type check without emitting files
 - Always run `npm test` before committing changes
 - Use git hooks for automatic formatting: `git config core.hooksPath scripts/hooks`
 - Test both development and production builds
+- Use Playwright MCP for testing changes and behavior (most convenient testing approach)
 - Follow existing patterns and code organization
 - Maintain system execution order dependencies
 
