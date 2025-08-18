@@ -7,6 +7,7 @@ import {shake} from "../components/com_shake.js";
 import {Weapon, WeaponKind, WeaponMelee, WeaponRanged} from "../components/com_weapon.js";
 import {Game} from "../game.js";
 import {blueprint_projectile} from "../scenes/blu_projectile.js";
+import {getAIStateName} from "../ui/ai_state.js";
 import {Has} from "../world.js";
 
 const QUERY = Has.Children; // Entities that might have weapon children
@@ -267,26 +268,5 @@ function apply_knockback(
         let shake_radius = 0.5; // Fixed radius for all shakes
         let shake_duration = 0.3; // 300ms shake for knockback
         shake(shake_radius, shake_duration)(game, game.Camera);
-    }
-}
-
-function getAIStateName(state: AIState): string {
-    switch (state) {
-        case AIState.Circling:
-            return "Circling";
-        case AIState.Preparing:
-            return "Preparing";
-        case AIState.Pursuing:
-            return "Pursuing";
-        case AIState.Dashing:
-            return "Dashing";
-        case AIState.Retreating:
-            return "Retreating";
-        case AIState.Stunned:
-            return "Stunned";
-        case AIState.Separating:
-            return "Separating";
-        default:
-            return "Unknown";
     }
 }
