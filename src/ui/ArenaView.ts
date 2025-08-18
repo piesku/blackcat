@@ -2,6 +2,7 @@ import {html} from "../../lib/html.js";
 import {Game} from "../game.js";
 import {UpgradeType} from "../upgrades/types.js";
 import {getFighterStats} from "./entity_queries.js";
+import {dispatch, Action} from "../actions.js";
 
 export function ArenaView(game: Game): string {
     // Get upgrades from game state
@@ -55,11 +56,18 @@ export function ArenaView(game: Game): string {
                     : ""}
             </div>
 
-            <!-- Game title -->
+            <!-- Game title and restart button -->
             <div
-                style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); padding: 8px 12px; border-radius: 5px; color: white; font-family: monospace; font-weight: bold; font-size: clamp(10px, 3vw, 14px); white-space: nowrap;"
+                style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); padding: 8px 12px; border-radius: 5px; color: white; font-family: monospace; font-weight: bold; font-size: clamp(10px, 3vw, 14px); white-space: nowrap; display: flex; align-items: center; gap: 12px;"
             >
-                33 DUELS - Arena ${game.State.currentLevel}
+                <span>33 DUELS - Arena ${game.State.currentLevel}</span>
+                <button
+                    onclick="window.$(5)"
+                    style="background: #F44336; color: white; border: none; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: clamp(8px, 2vw, 10px); cursor: pointer; pointer-events: auto;"
+                    title="Restart run from level 1"
+                >
+                    RESTART
+                </button>
             </div>
         </div>
     `;

@@ -1,7 +1,6 @@
-import {dispatch, Action} from "./actions.js";
+import {Action, dispatch} from "./actions.js";
 import {Game, GameView} from "./game.js";
-import {load_game_state, has_game_state} from "./store.js";
-import {generatePlayerUpgradeChoices} from "./state.js";
+import {has_game_state, load_game_state} from "./store.js";
 
 async function initializeGame() {
     let game = new Game();

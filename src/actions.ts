@@ -36,12 +36,16 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
                 game.SetView(GameView.Victory, {IsFinalVictory: true, TimeRemaining: Infinity});
             } else {
                 // Generate next opponent's upgrades for preview in upgrade selection
-                game.State.opponentUpgrades = generateOpponentUpgrades(game.State.currentLevel);
+                game.State.opponentUpgrades = generateOpponentUpgrades(
+                    game.State.currentLevel,
+                    game.State.runSeed,
+                );
 
                 // Generate player's upgrade choices for the next selection (deterministic, can't be re-rolled)
                 game.State.availableUpgradeChoices = generatePlayerUpgradeChoices(
                     game.State.currentLevel,
                     game.State.playerUpgrades,
+                    game.State.runSeed,
                 );
 
                 // Save state before showing upgrade selection so player always comes back to selection screen

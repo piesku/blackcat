@@ -8,11 +8,12 @@ export interface GameState {
     availableUpgradeChoices: UpgradeType[]; // Player's available upgrade choices for selection
     population: number; // Narrative countdown (8 billion -> 1)
     isNewRun: boolean; // Fresh start vs resumed
+    runSeed: number; // Unique seed for this run, regenerated for each new run
 }
 
-export function generateOpponentUpgrades(arenaLevel: number): UpgradeType[] {
-    // Use seeded random for consistent upgrades per arena level
-    set_seed(arenaLevel * 12345 + 67890);
+export function generateOpponentUpgrades(arenaLevel: number, runSeed: number): UpgradeType[] {
+    // Use seeded random for consistent upgrades per arena level within a run
+    set_seed(runSeed + arenaLevel * 12345);
 
     let availableUpgrades = ALL_UPGRADES.filter((upgrade) => {
         if (upgrade.category === "armor") return true;
@@ -43,9 +44,10 @@ export function generateOpponentUpgrades(arenaLevel: number): UpgradeType[] {
 export function generatePlayerUpgradeChoices(
     arenaLevel: number,
     playerUpgrades: UpgradeType[],
+    runSeed: number,
 ): UpgradeType[] {
     // Use seeded random for consistent upgrade choices per arena level (different seed than opponent)
-    set_seed(arenaLevel * 54321 + 98765);
+    set_seed(runSeed + arenaLevel * 54321 + 98765);
 
     // Generate 3 random upgrade choices excluding already owned upgrades
     let availableUpgrades = ALL_UPGRADES.filter(
@@ -70,12 +72,15 @@ export function calculatePopulation(level: number): number {
 
 export function createFreshGameState(): GameState {
     let initialPlayerUpgrades: UpgradeType[] = [];
+    let runSeed = Math.floor(Math.random() * 1000000); // Generate random run seed
+
     return {
         currentLevel: 1,
         playerUpgrades: initialPlayerUpgrades,
-        opponentUpgrades: generateOpponentUpgrades(1),
-        availableUpgradeChoices: generatePlayerUpgradeChoices(1, initialPlayerUpgrades),
+        opponentUpgrades: generateOpponentUpgrades(1, runSeed),
+        availableUpgradeChoices: generatePlayerUpgradeChoices(1, initialPlayerUpgrades, runSeed),
         population: 8_000_000_000,
         isNewRun: true,
+        runSeed: runSeed,
     };
 }
