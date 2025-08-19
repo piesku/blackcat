@@ -8,8 +8,8 @@ import {Children} from "./components/com_children.js";
 import {Collide2D} from "./components/com_collide2d.js";
 import {ControlAlways2D} from "./components/com_control_always2d.js";
 import {ControlPlayer} from "./components/com_control_player.js";
+import {DealDamage} from "./components/com_deal_damage.js";
 import {Draw} from "./components/com_draw.js";
-import {FireZone} from "./components/com_fire_zone.js";
 import {Health} from "./components/com_health.js";
 import {Lifespan} from "./components/com_lifespan.js";
 import {LocalTransform2D} from "./components/com_local_transform2d.js";
@@ -24,7 +24,6 @@ import {Task} from "./components/com_task.js";
 import {Toggle} from "./components/com_toggle.js";
 import {Trigger} from "./components/com_trigger.js";
 import {Weapon} from "./components/com_weapon.js";
-import {Projectile} from "./components/com_projectile.js";
 
 const enum Component {
     AIFighter,
@@ -35,15 +34,14 @@ const enum Component {
     ControlAlways2D,
     ControlPlayer,
     Children,
+    DealDamage,
     Dirty,
     Draw,
-    FireZone,
     Health,
     Lifespan,
     LocalTransform2D,
     Move2D,
     Named,
-    Projectile,
     Render2D,
     RigidBody2D,
     Shake,
@@ -65,15 +63,14 @@ export const enum Has {
     ControlAlways2D = 1 << Component.ControlAlways2D,
     ControlPlayer = 1 << Component.ControlPlayer,
     Children = 1 << Component.Children,
+    DealDamage = 1 << Component.DealDamage,
     Dirty = 1 << Component.Dirty,
     Draw = 1 << Component.Draw,
-    FireZone = 1 << Component.FireZone,
     Health = 1 << Component.Health,
     Lifespan = 1 << Component.Lifespan,
     LocalTransform2D = 1 << Component.LocalTransform2D,
     Move2D = 1 << Component.Move2D,
     Named = 1 << Component.Named,
-    Projectile = 1 << Component.Projectile,
     Render2D = 1 << Component.Render2D,
     RigidBody2D = 1 << Component.RigidBody2D,
     Shake = 1 << Component.Shake,
@@ -99,14 +96,13 @@ export class World extends WorldImpl {
     ControlAlways2D: Array<ControlAlways2D> = [];
     ControlPlayer: Array<ControlPlayer> = [];
     Children: Array<Children> = [];
+    DealDamage: Array<DealDamage> = [];
     Draw: Array<Draw> = [];
-    FireZone: Array<FireZone> = [];
     Health: Array<Health> = [];
     Lifespan: Array<Lifespan> = [];
     LocalTransform2D: Array<LocalTransform2D> = [];
     Move2D: Array<Move2D> = [];
     Named: Array<Named> = [];
-    Projectile: Array<Projectile> = [];
     Render2D: Array<Render2D> = [];
     RigidBody2D: Array<RigidBody2D> = [];
     Shake: Array<Shake> = [];

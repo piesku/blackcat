@@ -20,7 +20,6 @@ export interface Boomerang {
     Phase: BoomerangPhase;
     MaxRange: number; // How far it travels before returning
     Speed: number;
-    HitEntities: Set<number>; // Entities hit during both phases
 }
 
 /**
@@ -45,7 +44,6 @@ export function boomerang(
             Phase: BoomerangPhase.Outward,
             MaxRange: max_range,
             Speed: speed,
-            HitEntities: new Set<number>(),
         };
     };
 }

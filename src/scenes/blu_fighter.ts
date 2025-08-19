@@ -3,6 +3,7 @@ import {animate_sprite} from "../components/com_animate_sprite.js";
 import {callback} from "../components/com_callback.js";
 import {children} from "../components/com_children.js";
 import {collide2d} from "../components/com_collide2d.js";
+import {DamageType, deal_damage} from "../components/com_deal_damage.js";
 import {health} from "../components/com_health.js";
 import {local_transform2d} from "../components/com_local_transform2d.js";
 import {move2d} from "../components/com_move2d.js";
@@ -28,10 +29,18 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
         ai_fighter(-1, is_player), // AI will find target automatically
         children(), // Weapons will be added by apply_upgrades
 
-        // Apply upgrades after entity creation using callback component
+        // Apply upgrades after entity creation
         callback((game: Game, entity: number) => {
             let gameUpgrades = is_player ? game.State.playerUpgrades : game.State.opponentUpgrades;
             apply_upgrades(game, entity, gameUpgrades);
+
+            // Fighter-vs-fighter collision damage (low damage, long cooldown)
+            // Applied after entity creation so we can use the entity as its own source
+            deal_damage(0.5, entity, DamageType.Hand2Hand, {
+                cooldown: 2.0,
+                shake_duration: 0.4,
+                destroy_on_hit: false, // Fighters don't destroy themselves on collision
+            })(game, entity);
         }),
     ];
 }

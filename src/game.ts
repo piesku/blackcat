@@ -9,19 +9,19 @@ import {
 } from "../lib/webgl.js";
 import {setup_render2d_buffers} from "../materials/layout2d.js";
 import {mat_render2d} from "../materials/mat_render2d.js";
+import {createFreshGameState, GameState} from "./state.js";
 import {sys_ai_fighter} from "./systems/sys_ai_fighter.js";
 import {sys_arena_bounds} from "./systems/sys_arena_bounds.js";
 import {sys_boomerang} from "./systems/sys_boomerang.js";
 import {sys_camera2d} from "./systems/sys_camera2d.js";
 import {sys_collide2d} from "./systems/sys_collide2d.js";
-import {sys_combat} from "./systems/sys_combat.js";
 import {sys_control_always2d} from "./systems/sys_control_always2d.js";
 import {sys_control_camera} from "./systems/sys_control_camera.js";
 import {sys_control_keyboard} from "./systems/sys_control_keyboard.js";
 import {sys_control_mouse} from "./systems/sys_control_mouse.js";
+import {sys_deal_damage} from "./systems/sys_deal_damage.js";
 import {sys_draw2d} from "./systems/sys_draw2d.js";
 import {sys_duel_manager} from "./systems/sys_duel_manager.js";
-import {sys_fire_zone} from "./systems/sys_fire_zone.js";
 import {sys_health} from "./systems/sys_health.js";
 import {sys_health_visual} from "./systems/sys_health_visual.js";
 import {sys_lifespan} from "./systems/sys_lifespan.js";
@@ -30,7 +30,6 @@ import {sys_physics2d_bounds} from "./systems/sys_physics2d_bounds.js";
 import {sys_physics2d_integrate} from "./systems/sys_physics2d_integrate.js";
 import {sys_physics2d_resolve} from "./systems/sys_physics2d_resolve.js";
 import {sys_poll} from "./systems/sys_poll.js";
-import {sys_projectile} from "./systems/sys_projectile.js";
 import {sys_render2d} from "./systems/sys_render2d.js";
 import {sys_render2d_animate} from "./systems/sys_render2d_animate.js";
 import {sys_resize2d} from "./systems/sys_resize2d.js";
@@ -42,9 +41,7 @@ import {sys_trigger2d} from "./systems/sys_trigger2d.js";
 import {sys_ui} from "./systems/sys_ui.js";
 import {sys_victory_timer} from "./systems/sys_victory_timer.js";
 import {sys_weapons} from "./systems/sys_weapons.js";
-import {ALL_UPGRADES, ARMOR_UPGRADES, UpgradeType, WEAPON_UPGRADES} from "./upgrades/types.js";
 import {Has, World} from "./world.js";
-import {generateOpponentUpgrades, createFreshGameState, GameState} from "./state.js";
 
 export const WORLD_CAPACITY = 65_536; // = 4MB of InstanceData.
 export const REAL_UNIT_SIZE = 48;
@@ -113,14 +110,12 @@ export class Game extends Game3D {
 
         // Weapons.
         sys_weapons(this, delta);
-        sys_fire_zone(this, delta);
         sys_boomerang(this, delta);
 
-        // Game logic.
-        sys_combat(this, delta);
-        sys_health(this, delta); // Process damage after combat and weapons
+        // Unified damage system (replaces sys_combat, sys_projectile, sys_fire_zone).
+        sys_deal_damage(this, delta);
+        sys_health(this, delta); // Process damage after all damage dealers
         sys_duel_manager(this, delta); // Check for victory/defeat after health processing
-        sys_projectile(this, delta);
         sys_move2d(this, delta);
         sys_arena_bounds(this, delta);
         sys_lifespan(this, delta);

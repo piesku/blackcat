@@ -16,37 +16,7 @@ export function sys_boomerang(game: Game, delta: number) {
 
             if (!boomerang || !transform || !control || !collider) continue;
 
-            // Handle collisions (damage enemies on both outward and return paths)
-            for (let collision of collider.Collisions) {
-                let target_entity = collision.Other;
-
-                // Skip if hit its thrower
-                if (target_entity === boomerang.ThrowerEntity) continue;
-
-                // Skip if target has no health
-                if (!(game.World.Signature[target_entity] & Has.Health)) continue;
-
-                let target_health = game.World.Health[target_entity];
-                if (!target_health.IsAlive) continue;
-
-                // Skip if already hit this entity (boomerang can only hit each entity once)
-                if (boomerang.HitEntities.has(target_entity)) continue;
-
-                // Add to hit list first
-                boomerang.HitEntities.add(target_entity);
-
-                // Add damage - different damage for outward vs return path
-                let damage_amount = boomerang.Phase === BoomerangPhase.Outward ? 2 : 1;
-                target_health.PendingDamage.push({
-                    Amount: damage_amount,
-                    Source: boomerang.ThrowerEntity,
-                    Type: "boomerang",
-                });
-
-                console.log(
-                    `[BOOMERANG] Entity ${entity} (${boomerang.Phase === BoomerangPhase.Outward ? "outward" : "returning"}) hit target ${target_entity} for ${damage_amount} damage`,
-                );
-            }
+            // Damage is now handled by sys_damage_dealer via DamageDealer component
 
             // Update boomerang movement based on phase
             if (boomerang.Phase === BoomerangPhase.Outward) {
