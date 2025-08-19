@@ -6,7 +6,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is "33 Duels", a fast-paced micro-roguelike auto-battler built on the Goodluck game engine. The project uses an Entity-Component-System (ECS) architecture and is designed for extreme hackability and performance.
 
-Find out more about the game design and the implementation details in `docs/`.
+Find out more about the game design and the code architecture in the `docs/` directory:
+
+- Game design document: @docs/design.md
+- Overview of the Goodluck engine: @docs/engine.md
+- Upgrade system design: @docs/upgrades.md
+- Fighter AI state machine: @docs/ai.md
+- Game flow and progression: @docs/flow.md
+- Game state management: @docs/state.md
 
 ## Development Commands
 
