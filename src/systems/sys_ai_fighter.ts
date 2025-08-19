@@ -203,8 +203,18 @@ function update_ai_state(
     // Scale time-based durations inversely with speed to maintain consistent behavior
     let time_scale = 1.0 / Math.sqrt(speed_scale); // Square root to moderate the scaling
 
-    // Check for low health -> retreat
-    if (health.Current <= LOW_HEALTH_THRESHOLD && ai.State !== AIState.Retreating) {
+    // Reset retreat flag when health recovers
+    if (health.Current > LOW_HEALTH_THRESHOLD) {
+        ai.HasRetreatedAtLowHealth = false;
+    }
+
+    // Check for low health -> retreat (only if haven't retreated yet at this health level)
+    if (
+        health.Current <= LOW_HEALTH_THRESHOLD &&
+        ai.State !== AIState.Retreating &&
+        !ai.HasRetreatedAtLowHealth
+    ) {
+        ai.HasRetreatedAtLowHealth = true; // Mark that we've retreated at this health level
         change_state(ai, AIState.Retreating, game.Time);
         return;
     }

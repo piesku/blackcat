@@ -83,6 +83,13 @@ The AI system is built around the `AIFighter` component and the `sys_ai_fighter`
 - Triggered when health ≤ 1 HP
 - Strategic positioning rather than frantic escape
 - Timeout protection: maximum 3.0 seconds to prevent stalemates
+- **One-time per health episode**: Uses `HasRetreatedAtLowHealth` flag to prevent infinite cycling
+
+**Retreat Cycling Prevention:**
+- `HasRetreatedAtLowHealth` flag prevents multiple retreats at same health level
+- Flag set to `true` when entering retreat state
+- Flag reset to `false` when health recovers above threshold
+- Ensures strategic retreat behavior without state oscillation
 
 **Transitions:**
 - → **Circling**: When at safe distance AND health > low threshold OR timeout expires
@@ -201,7 +208,7 @@ stateDiagram-v2
     Circling --> Pursuing : Target retreating
     Circling --> Preparing : In range + personality timing
     Circling --> Separating : Too close (higher entity ID)
-    Circling --> Retreating : Low health
+    Circling --> Retreating : Low health (once per episode)
     Circling --> Stunned : Damage taken
     
     Pursuing --> Preparing : Close enough to strike
@@ -210,11 +217,11 @@ stateDiagram-v2
     
     Preparing --> Dashing : Preparation complete
     Preparing --> Stunned : Damage taken
-    Preparing --> Retreating : Low health
+    Preparing --> Retreating : Low health (once per episode)
     
     Dashing --> Circling : Dash complete/target away
     Dashing --> Stunned : Damage taken
-    Dashing --> Retreating : Low health
+    Dashing --> Retreating : Low health (once per episode)
     
     Separating --> Circling : Separated OR timeout
     Separating --> Stunned : Damage taken
@@ -249,6 +256,7 @@ stateDiagram-v2
 - System designed for hackability and easy modification
 - Uses lib/random.ts for deterministic behavior
 - Player fighters use consistent defaults for upgrade system
+- **Retreat cycling prevention**: `HasRetreatedAtLowHealth` flag ensures fighters only retreat once per health episode, preventing infinite state oscillation when health remains at low threshold
 
 ## Collision Avoidance System
 

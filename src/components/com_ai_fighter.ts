@@ -18,6 +18,7 @@ export interface AIFighter {
     // New state data
     PrepareDirection: [number, number]; // Direction for preparing dash attack
     SeparationForce: [number, number]; // Collision avoidance force
+    HasRetreatedAtLowHealth: boolean; // Prevents repeated retreating at same health level
 }
 
 export const enum AIState {
@@ -72,6 +73,7 @@ export function ai_fighter(target_entity: number = -1, is_player: boolean = fals
             // State vectors
             PrepareDirection: [0, 0],
             SeparationForce: [0, 0],
+            HasRetreatedAtLowHealth: false,
         };
     };
 }
