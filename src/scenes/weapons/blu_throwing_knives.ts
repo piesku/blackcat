@@ -10,7 +10,7 @@ export function blueprint_throwing_knives(game: Game) {
         spatial_node2d(),
         local_transform2d(),
         render2d("20"), // Use a knife sprite
-        collide2d(false, Layer.None, Layer.None, [0.2, 0.2]),
+        collide2d(false, Layer.None, Layer.None, 0.1),
         weapon_ranged(
             1.5, // damage
             6, // range

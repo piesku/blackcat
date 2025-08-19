@@ -23,7 +23,7 @@ export function blueprint_boomerang_projectile(
         spatial_node2d(),
         local_transform2d(undefined, 0, [0.4, 0.4]), // Medium size for boomerang
         render2d("24"), // Use boomerang sprite
-        collide2d(true, Layer.Projectile, Layer.Object | Layer.Terrain, [0.2, 0.2]),
+        collide2d(true, Layer.Projectile, Layer.Object | Layer.Terrain, 0.1),
         move2d(speed, 0),
         control_always2d([0, 0], 0), // Will be set by boomerang system
         boomerang(thrower_entity, target_position, max_range, speed),

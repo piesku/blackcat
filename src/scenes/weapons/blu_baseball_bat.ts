@@ -10,7 +10,7 @@ export function blueprint_baseball_bat(game: Game) {
         spatial_node2d(),
         local_transform2d(),
         render2d("19"), // Use a bat sprite
-        collide2d(false, Layer.None, Layer.None, [0.8, 0.3]),
+        collide2d(false, Layer.None, Layer.None, 0.4),
         weapon_melee(
             2.5, // damage
             1.5, // range

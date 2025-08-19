@@ -12,7 +12,7 @@ export function blueprint_crossbow(game: Game) {
         local_transform2d(),
         render2d("22"), // Use crossbow sprite
         named("crossbow"), // Name for identification
-        collide2d(false, Layer.None, Layer.None, [0.3, 0.3]),
+        collide2d(false, Layer.None, Layer.None, 0.15),
         weapon_ranged(
             3, // damage: high damage per bolt
             10, // range: long range

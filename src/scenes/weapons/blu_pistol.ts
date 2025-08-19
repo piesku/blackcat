@@ -10,7 +10,7 @@ export function blueprint_pistol(game: Game) {
         spatial_node2d(),
         local_transform2d(),
         render2d("18"), // Use a gun sprite
-        collide2d(false, Layer.None, Layer.None, [0.3, 0.3]),
+        collide2d(false, Layer.None, Layer.None, 0.15),
         weapon_ranged(
             2, // damage
             8, // range

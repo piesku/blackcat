@@ -3,7 +3,7 @@
  *
  * Detect collisions between static and dynamic [colliders](com_collide2d.html).
  *
- * Collision detection is done using axis-aligned bounding boxes (AABB).
+ * Collision detection is done using circles for simplified 2D collision detection.
  *
  * Static vs. dynamic collision detection is O(n*m). All dynamic colliders are
  * checked against all static colliders. This works great for a small number of
@@ -17,18 +17,14 @@
  * Static vs. static collisions are not checked at all.
  */
 
-import {
-    compute_aabb_without_rotation_scale,
-    intersect_aabb,
-    penetrate_aabb,
-} from "../../lib/aabb2d.js";
+import {compute_circle_position, intersect_circle, penetrate_circle} from "../../lib/circle2d.js";
 import {Collide2D} from "../components/com_collide2d.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
 const QUERY = Has.SpatialNode2D | Has.Collide2D;
 
-export function sys_collide2d(game: Game, delta: number) {
+export function sys_collide2d(game: Game, _delta: number) {
     // Collect all colliders.
     let static_colliders: Array<Collide2D> = [];
     let dynamic_colliders: Array<Collide2D> = [];
@@ -42,9 +38,9 @@ export function sys_collide2d(game: Game, delta: number) {
             collider.Collisions = [];
             if (collider.New) {
                 collider.New = false;
-                compute_aabb_without_rotation_scale(node.World, collider);
+                compute_circle_position(node.World, collider);
             } else if (collider.Dynamic) {
-                compute_aabb_without_rotation_scale(node.World, collider);
+                compute_circle_position(node.World, collider);
                 dynamic_colliders.push(collider);
             } else {
                 static_colliders.push(collider);
@@ -78,8 +74,8 @@ function check_collisions(collider: Collide2D, colliders: Array<Collide2D>, leng
         let collider_can_intersect = collider.Mask & other.Layers;
         let other_can_intersect = other.Mask & collider.Layers;
         if (collider_can_intersect || other_can_intersect) {
-            if (intersect_aabb(collider, other)) {
-                let hit = penetrate_aabb(collider, other);
+            if (intersect_circle(collider, other)) {
+                let hit = penetrate_circle(collider, other);
                 if (collider_can_intersect) {
                     collider.Collisions.push({
                         Other: other.EntityId,

@@ -12,7 +12,7 @@ export function blueprint_boomerang_weapon(game: Game) {
         local_transform2d(),
         render2d("25"), // Use boomerang weapon sprite
         named("boomerang"), // Name for identification
-        collide2d(false, Layer.None, Layer.None, [0.3, 0.3]),
+        collide2d(false, Layer.None, Layer.None, 0.15),
         weapon_ranged(
             2, // damage: moderate damage (+ return hit)
             8, // range: medium range

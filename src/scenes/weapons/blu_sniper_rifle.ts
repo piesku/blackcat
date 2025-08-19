@@ -10,7 +10,7 @@ export function blueprint_sniper_rifle(game: Game) {
         spatial_node2d(),
         local_transform2d(),
         render2d("22"), // Use a sniper sprite
-        collide2d(false, Layer.None, Layer.None, [1.0, 0.3]),
+        collide2d(false, Layer.None, Layer.None, 0.5),
         weapon_ranged(
             3.5, // damage (reduced from 5 for better balance)
             15, // range (very long)

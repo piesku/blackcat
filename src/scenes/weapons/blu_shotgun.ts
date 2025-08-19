@@ -10,7 +10,7 @@ export function blueprint_shotgun(game: Game) {
         spatial_node2d(),
         local_transform2d(),
         render2d("21"), // Use a shotgun sprite
-        collide2d(false, Layer.None, Layer.None, [0.7, 0.3]),
+        collide2d(false, Layer.None, Layer.None, 0.35),
         weapon_ranged(
             1.0, // damage per pellet
             4, // range (shorter than pistol)

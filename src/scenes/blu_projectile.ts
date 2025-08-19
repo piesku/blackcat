@@ -22,7 +22,7 @@ export function blueprint_projectile(
         spatial_node2d(),
         local_transform2d(undefined, 0, [0.2, 0.2]), // Small projectile
         render2d("17"), // Use a bullet/projectile sprite
-        collide2d(true, Layer.Projectile, Layer.Object | Layer.Terrain, [0.1, 0.1]),
+        collide2d(true, Layer.Projectile, Layer.Object | Layer.Terrain, 0.05),
         move2d(speed, 0),
         control_always2d([0, 0], 0), // Will be set by weapon system
         projectile(damage, owner_entity),
