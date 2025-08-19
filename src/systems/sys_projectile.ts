@@ -25,15 +25,24 @@ export function sys_projectile(game: Game, _delta: number) {
                 let target_health = game.World.Health[target_entity];
                 if (!target_health.IsAlive) continue;
 
+                // For piercing projectiles, skip if already hit this entity
+                if (
+                    projectile.IsPiercing &&
+                    projectile.HitEntities &&
+                    projectile.HitEntities.has(target_entity)
+                ) {
+                    continue;
+                }
+
                 // Add damage to pending queue instead of applying directly
                 target_health.PendingDamage.push({
                     Amount: projectile.Damage,
                     Source: projectile.OwnerEntity,
-                    Type: "projectile",
+                    Type: projectile.IsPiercing ? "piercing" : "projectile",
                 });
 
                 console.log(
-                    `[PROJECTILE] Entity ${entity} hit target ${target_entity}: adding ${projectile.Damage} projectile damage to pending queue`,
+                    `[PROJECTILE] Entity ${entity} hit target ${target_entity}: adding ${projectile.Damage} ${projectile.IsPiercing ? "piercing" : "projectile"} damage to pending queue`,
                 );
 
                 // Add screen shake for impact
@@ -43,9 +52,15 @@ export function sys_projectile(game: Game, _delta: number) {
                     shake(shake_radius, shake_duration)(game, game.Camera);
                 }
 
-                // Destroy the projectile after hitting a target
-                game.World.Signature[entity] = 0;
-                break; // Only hit one target per projectile
+                // Handle piercing vs normal projectiles
+                if (projectile.IsPiercing && projectile.HitEntities) {
+                    // Add to hit list and continue
+                    projectile.HitEntities.add(target_entity);
+                } else {
+                    // Destroy the projectile after hitting a target (non-piercing)
+                    game.World.Signature[entity] = 0;
+                    break;
+                }
             }
         }
     }

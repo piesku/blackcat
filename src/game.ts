@@ -11,6 +11,7 @@ import {setup_render2d_buffers} from "../materials/layout2d.js";
 import {mat_render2d} from "../materials/mat_render2d.js";
 import {sys_ai_fighter} from "./systems/sys_ai_fighter.js";
 import {sys_arena_bounds} from "./systems/sys_arena_bounds.js";
+import {sys_boomerang} from "./systems/sys_boomerang.js";
 import {sys_camera2d} from "./systems/sys_camera2d.js";
 import {sys_collide2d} from "./systems/sys_collide2d.js";
 import {sys_combat} from "./systems/sys_combat.js";
@@ -20,6 +21,7 @@ import {sys_control_keyboard} from "./systems/sys_control_keyboard.js";
 import {sys_control_mouse} from "./systems/sys_control_mouse.js";
 import {sys_draw2d} from "./systems/sys_draw2d.js";
 import {sys_duel_manager} from "./systems/sys_duel_manager.js";
+import {sys_fire_zone} from "./systems/sys_fire_zone.js";
 import {sys_health} from "./systems/sys_health.js";
 import {sys_health_visual} from "./systems/sys_health_visual.js";
 import {sys_lifespan} from "./systems/sys_lifespan.js";
@@ -111,6 +113,8 @@ export class Game extends Game3D {
 
         // Weapons.
         sys_weapons(this, delta);
+        sys_fire_zone(this, delta);
+        sys_boomerang(this, delta);
 
         // Game logic.
         sys_combat(this, delta);

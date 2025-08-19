@@ -73,10 +73,22 @@ export const WEAPON_UPGRADES: UpgradeType[] = [
         description: "Continuous damage melee weapon",
     },
     {
+        id: "flamethrower",
+        category: UpgradeCategory.Weapon,
+        name: "Flamethrower",
+        description: "Creates persistent fire zones that damage enemies",
+    },
+    {
         id: "crossbow",
         category: UpgradeCategory.Weapon,
         name: "Crossbow",
         description: "Silent ranged weapon with piercing bolts",
+    },
+    {
+        id: "boomerang",
+        category: UpgradeCategory.Weapon,
+        name: "Boomerang",
+        description: "Returns to thrower, can hit on both paths",
     },
     {
         id: "grenade_launcher",
