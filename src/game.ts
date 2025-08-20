@@ -22,6 +22,9 @@ import {sys_control_mouse} from "./systems/sys_control_mouse.js";
 import {sys_deal_damage} from "./systems/sys_deal_damage.js";
 import {sys_draw2d} from "./systems/sys_draw2d.js";
 import {sys_duel_manager} from "./systems/sys_duel_manager.js";
+import {sys_emit_particles} from "./systems/sys_emit_particles.js";
+import {sys_grenade} from "./systems/sys_grenade.js";
+import {sys_particles} from "./systems/sys_particles.js";
 import {sys_health} from "./systems/sys_health.js";
 import {sys_health_visual} from "./systems/sys_health_visual.js";
 import {sys_lifespan} from "./systems/sys_lifespan.js";
@@ -33,6 +36,7 @@ import {sys_poll} from "./systems/sys_poll.js";
 import {sys_render2d} from "./systems/sys_render2d.js";
 import {sys_render2d_animate} from "./systems/sys_render2d_animate.js";
 import {sys_resize2d} from "./systems/sys_resize2d.js";
+import {sys_shadow_trail} from "./systems/sys_shadow_trail.js";
 import {sys_shake2d} from "./systems/sys_shake2d.js";
 import {sys_spawn2d} from "./systems/sys_spawn2d.js";
 import {sys_toggle} from "./systems/sys_toggle.js";
@@ -111,6 +115,12 @@ export class Game extends Game3D {
         // Weapons.
         sys_weapons(this, delta);
         sys_boomerang(this, delta);
+        sys_grenade(this, delta);
+
+        // Particle systems.
+        sys_emit_particles(this, delta);
+        sys_particles(this, delta);
+        sys_shadow_trail(this, delta);
 
         // Unified damage system (replaces sys_combat, sys_projectile, sys_fire_zone).
         sys_deal_damage(this, delta);

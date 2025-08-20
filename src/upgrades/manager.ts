@@ -1,5 +1,6 @@
 import {instantiate} from "../../lib/game.js";
 import {attach_to_parent} from "../components/com_children.js";
+import {shadow_trail} from "../components/com_shadow_trail.js";
 import {Game} from "../game.js";
 import {blueprint_baseball_bat} from "../scenes/weapons/blu_baseball_bat.js";
 import {blueprint_battle_axe} from "../scenes/weapons/blu_battle_axe.js";
@@ -7,6 +8,7 @@ import {blueprint_boomerang_weapon} from "../scenes/weapons/blu_boomerang_weapon
 import {blueprint_chainsaw} from "../scenes/weapons/blu_chainsaw.js";
 import {blueprint_crossbow} from "../scenes/weapons/blu_crossbow.js";
 import {blueprint_flamethrower} from "../scenes/weapons/blu_flamethrower.js";
+import {blueprint_grenade_launcher} from "../scenes/weapons/blu_grenade_launcher.js";
 import {blueprint_pistol} from "../scenes/weapons/blu_pistol.js";
 import {blueprint_shotgun} from "../scenes/weapons/blu_shotgun.js";
 import {blueprint_sniper_rifle} from "../scenes/weapons/blu_sniper_rifle.js";
@@ -31,6 +33,11 @@ export function apply_upgrades(game: Game, entity: number, upgrades: UpgradeType
     // Weapons (adds child entities)
     for (let weapon of categorized.weapons) {
         apply_weapon_upgrade(game, entity, weapon);
+    }
+
+    // Abilities (modifies entity behavior)
+    for (let ability of categorized.abilities) {
+        apply_ability_upgrade(game, entity, ability);
     }
 
     // TODO: Add other categories as we implement them
@@ -100,6 +107,11 @@ function apply_weapon_upgrade(game: Game, entity: number, upgrade: UpgradeType) 
             attach_to_parent(game, weapon_entity, entity);
             break;
 
+        case "grenade_launcher":
+            weapon_entity = instantiate(game, blueprint_grenade_launcher(game));
+            attach_to_parent(game, weapon_entity, entity);
+            break;
+
         default:
             console.warn(`Unknown weapon upgrade: ${upgrade.id}`);
             break;
@@ -126,6 +138,19 @@ function apply_armor_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
 
         default:
             console.warn(`Unknown armor upgrade: ${upgrade.id}`);
+            break;
+    }
+}
+
+function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
+    switch (upgrade.id) {
+        case "shadow_trail":
+            shadow_trail(8.0, 1.0)(game, entity); // 8 particles/sec, normal intensity
+            console.log(`Applied shadow trail to entity ${entity}`);
+            break;
+
+        default:
+            console.warn(`Unknown ability upgrade: ${upgrade.id}`);
             break;
     }
 }

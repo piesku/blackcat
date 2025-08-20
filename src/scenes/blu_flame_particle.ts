@@ -1,0 +1,45 @@
+import {collide2d} from "../components/com_collide2d.js";
+import {DamageType, deal_damage} from "../components/com_deal_damage.js";
+import {lifespan} from "../components/com_lifespan.js";
+import {local_transform2d} from "../components/com_local_transform2d.js";
+import {move2d} from "../components/com_move2d.js";
+import {particle, ParticleType} from "../components/com_particle.js";
+import {render2d} from "../components/com_render2d.js";
+import {Vec2} from "../../lib/math.js";
+import {Layer} from "../game.js";
+
+export function blueprint_flame_particle(
+    damage: number = 1,
+    source: number = -1,
+    direction: Vec2 = [1, 0],
+    speed: number = 4.0,
+    lifetime: number = 0.8,
+) {
+    return [
+        // NO spatial_node2d() - enables fast path for particles!
+        local_transform2d([0, 0], 0, [0.1, 0.1]), // Start small
+        render2d("24"), // Flame sprite
+        move2d(speed, 0), // No rotation for particles
+
+        // Flame particle physics and behavior
+        particle(ParticleType.Flame, direction, speed, lifetime, {
+            gravity: [0, -1.0], // Gentle upward drift (flames rise)
+            spread: 0.3, // More turbulence for realistic flame motion
+            initialScale: [0.1, 0.1],
+            finalScale: [0.2, 0.2], // Flames grow as they burn
+            fadeOut: 0.4, // Long fade out
+            damping: 0.9, // Decelerate over time
+            destroyOnHit: true,
+        }),
+
+        // Collision and damage
+        collide2d(true, Layer.Object, Layer.Object, 0.1),
+        deal_damage(damage, source, DamageType.Fire, {
+            cooldown: 0.0,
+            shake_duration: 0.05,
+            destroy_on_hit: true,
+        }),
+
+        lifespan(lifetime),
+    ];
+}

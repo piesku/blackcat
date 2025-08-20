@@ -4,11 +4,13 @@ import {float} from "../../lib/random.js";
 import {vec2_length, vec2_normalize, vec2_subtract} from "../../lib/vec2.js";
 import {AIState} from "../components/com_ai_fighter.js";
 import {query_down} from "../components/com_children.js";
+import {EmitParticles} from "../components/com_emit_particles.js";
 import {shake} from "../components/com_shake.js";
 import {Weapon, WeaponKind, WeaponMelee, WeaponRanged} from "../components/com_weapon.js";
 import {Game} from "../game.js";
 import {blueprint_boomerang_projectile} from "../scenes/blu_boomerang.js";
-import {blueprint_fire_zone} from "../scenes/blu_fire_zone.js";
+import {blueprint_flame_particle} from "../scenes/blu_flame_particle.js";
+import {blueprint_grenade} from "../scenes/blu_grenade.js";
 import {blueprint_piercing_projectile} from "../scenes/blu_piercing_projectile.js";
 import {blueprint_projectile} from "../scenes/blu_projectile.js";
 import {getAIStateName} from "../ui/ai_state.js";
@@ -138,7 +140,16 @@ function activate_weapon(
             let weapon_name = get_weapon_name(game, weapon_entity);
             switch (weapon_name) {
                 case "flamethrower":
-                    execute_flamethrower_attack(game, wielder_entity, target_entity, weapon);
+                    execute_flamethrower_attack(
+                        game,
+                        wielder_entity,
+                        target_entity,
+                        weapon,
+                        weapon_entity,
+                    );
+                    break;
+                case "grenade_launcher":
+                    execute_grenade_launcher_attack(game, wielder_entity, target_entity, weapon);
                     break;
                 case "crossbow":
                     execute_crossbow_attack(game, wielder_entity, target_entity, weapon);
@@ -335,6 +346,7 @@ function execute_flamethrower_attack(
     wielder_entity: number,
     target_entity: number,
     weapon: WeaponRanged,
+    weapon_entity: number,
 ) {
     let wielder_transform = game.World.LocalTransform2D[wielder_entity];
     let target_transform = game.World.LocalTransform2D[target_entity];
@@ -345,35 +357,33 @@ function execute_flamethrower_attack(
     vec2_subtract(to_target, target_transform.Translation, wielder_transform.Translation);
     vec2_normalize(to_target, to_target);
 
-    // Create fire zone at a distance in front of the wielder
-    let fire_zone_distance = 2.0; // Distance from wielder to fire zone
-    let fire_zone_position: Vec2 = [
-        wielder_transform.Translation[0] + to_target[0] * fire_zone_distance,
-        wielder_transform.Translation[1] + to_target[1] * fire_zone_distance,
-    ];
+    // Find and activate the particle emitter on the weapon
+    let emitter = game.World.EmitParticles[weapon_entity];
+    if (emitter) {
+        // Set emission direction toward target
+        emitter.Direction[0] = to_target[0];
+        emitter.Direction[1] = to_target[1];
 
-    // Create fire zone entity
-    let fire_zone_entity = instantiate(
-        game,
-        blueprint_fire_zone(
-            game,
-            weapon.Damage, // Fire zone damage
-            1.8, // Fire zone radius
-            4.0, // Duration (4 seconds)
-            wielder_entity, // Source entity
-        ),
-    );
+        // Update particle creator to use correct damage and source
+        emitter.Creator = (_game: Game, direction: Vec2, speed: number) =>
+            blueprint_flame_particle(
+                weapon.Damage, // Use weapon damage
+                wielder_entity, // Source entity
+                direction,
+                speed,
+                0.8, // particle lifetime
+            );
 
-    // Set fire zone position
-    let fire_zone_transform = game.World.LocalTransform2D[fire_zone_entity];
-    if (fire_zone_transform) {
-        fire_zone_transform.Translation[0] = fire_zone_position[0];
-        fire_zone_transform.Translation[1] = fire_zone_position[1];
+        // Activate the emitter
+        emitter.Active = true;
+        emitter.Age = 0; // Reset age for new burst
+
+        console.log(
+            `[FLAMETHROWER] Entity ${wielder_entity} activated particle emitter toward target ${target_entity}`,
+        );
+    } else {
+        console.warn(`[FLAMETHROWER] Entity ${weapon_entity} missing EmitParticles component`);
     }
-
-    console.log(
-        `[FLAMETHROWER] Entity ${wielder_entity} created fire zone ${fire_zone_entity} at position (${fire_zone_position[0].toFixed(2)}, ${fire_zone_position[1].toFixed(2)})`,
-    );
 }
 
 function execute_crossbow_attack(
@@ -430,6 +440,51 @@ function execute_crossbow_attack(
     );
 }
 
+function execute_grenade_launcher_attack(
+    game: Game,
+    wielder_entity: number,
+    target_entity: number,
+    weapon: WeaponRanged,
+) {
+    let wielder_transform = game.World.LocalTransform2D[wielder_entity];
+    let target_transform = game.World.LocalTransform2D[target_entity];
+    if (!wielder_transform || !target_transform) return;
+
+    // Calculate relative target position
+    let target_position: Vec2 = [
+        target_transform.Translation[0] - wielder_transform.Translation[0],
+        target_transform.Translation[1] - wielder_transform.Translation[1],
+    ];
+
+    // Create grenade projectile entity
+    let grenade_entity = instantiate(
+        game,
+        blueprint_grenade(
+            game,
+            weapon.Damage,
+            wielder_entity,
+            weapon.Range,
+            weapon.ProjectileSpeed,
+            target_position,
+        ),
+    );
+
+    // Set grenade starting position (slightly offset from wielder)
+    let grenade_transform = game.World.LocalTransform2D[grenade_entity];
+    if (grenade_transform) {
+        let to_target: Vec2 = [0, 0];
+        vec2_subtract(to_target, target_transform.Translation, wielder_transform.Translation);
+        vec2_normalize(to_target, to_target);
+
+        grenade_transform.Translation[0] = wielder_transform.Translation[0] + to_target[0] * 0.5;
+        grenade_transform.Translation[1] = wielder_transform.Translation[1] + to_target[1] * 0.5;
+    }
+
+    console.log(
+        `[GRENADE_LAUNCHER] Entity ${wielder_entity} fired grenade ${grenade_entity} toward target ${target_entity}`,
+    );
+}
+
 function execute_boomerang_attack(
     game: Game,
     wielder_entity: number,
@@ -472,8 +527,8 @@ function execute_boomerang_attack(
 function apply_knockback(
     game: Game,
     _source_entity: number,
-    target_entity: number,
-    knockback_force: number,
+    _target_entity: number,
+    _knockback_force: number,
 ) {
     // TODO: Implement proper knockback physics
     // For now, just add extra screen shake

@@ -76,7 +76,7 @@ export const WEAPON_UPGRADES: UpgradeType[] = [
         id: "flamethrower",
         category: UpgradeCategory.Weapon,
         name: "Flamethrower",
-        description: "Creates persistent fire zones that damage enemies",
+        description: "Emits a cone of flame particles that damage enemies",
     },
     {
         id: "crossbow",
@@ -126,8 +126,22 @@ export const ARMOR_UPGRADES: UpgradeType[] = [
     },
 ];
 
+// Ability upgrade definitions
+export const ABILITY_UPGRADES: UpgradeType[] = [
+    {
+        id: "shadow_trail",
+        category: UpgradeCategory.Ability,
+        name: "Shadow Trail",
+        description: "Movement leaves damaging shadow particles behind you",
+    },
+];
+
 // All upgrades registry
-export const ALL_UPGRADES: UpgradeType[] = [...WEAPON_UPGRADES, ...ARMOR_UPGRADES];
+export const ALL_UPGRADES: UpgradeType[] = [
+    ...WEAPON_UPGRADES,
+    ...ARMOR_UPGRADES,
+    ...ABILITY_UPGRADES,
+];
 
 // Utility function to get upgrade display name by ID
 export function getUpgradeDisplayName(upgradeId: string): string {
