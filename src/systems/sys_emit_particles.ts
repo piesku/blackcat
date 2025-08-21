@@ -28,8 +28,7 @@ function update_emitter(game: Game, entity: Entity, delta: number) {
 
     DEBUG: if (!emitter || !spatial_node) throw new Error("missing component");
 
-    if (emitter.Duration < 0) {
-        emitter.Duration = 0;
+    if (emitter.Duration <= 0) {
         return;
     }
 
@@ -43,6 +42,10 @@ function update_emitter(game: Game, entity: Entity, delta: number) {
 
         // Get emitter's world position
         mat2d_get_translation(world_position, spatial_node.World);
+
+        console.log(
+            `[${Date.now()}] [EMITTER] Entity ${entity} emitting ${emitter.BurstCount} particles (duration: ${emitter.Duration.toFixed(2)}s remaining)`,
+        );
 
         // Emit burst of particles
         for (let i = 0; i < emitter.BurstCount; i++) {

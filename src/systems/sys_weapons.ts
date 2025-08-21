@@ -67,7 +67,7 @@ function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapo
 
     if (should_activate) {
         console.log(
-            `[WEAPON] Entity ${parent_entity} activating ${weapon.Kind === WeaponKind.Ranged ? "ranged" : "melee"} weapon (AI State: ${getAIStateName(ai.State)}, Cooldown: ${weapon.LastAttackTime.toFixed(2)})`,
+            `[${Date.now()}] [WEAPON] Entity ${parent_entity} activating ${weapon.Kind === WeaponKind.Ranged ? "ranged" : "melee"} weapon (AI State: ${getAIStateName(ai.State)}, Cooldown: ${weapon.LastAttackTime.toFixed(2)})`,
         );
     }
 
@@ -353,30 +353,28 @@ function execute_flamethrower_attack(
 
     // Find and activate the particle emitter on the weapon
     let emitter = game.World.EmitParticles[weapon_entity];
-    if (emitter) {
-        // Set emission direction toward target
-        emitter.Direction[0] = to_target[0];
-        emitter.Direction[1] = to_target[1];
+    DEBUG: if (!emitter) throw new Error("missing component");
 
-        // Update particle creator to use correct damage and source
-        emitter.Creator = (_game: Game, direction: Vec2, speed: number) =>
-            blueprint_flame_particle(
-                weapon.Damage, // Use weapon damage
-                wielder_entity, // Source entity
-                direction,
-                speed,
-                0.8, // particle lifetime
-            );
+    // Set emission direction toward target
+    emitter.Direction[0] = to_target[0];
+    emitter.Direction[1] = to_target[1];
 
-        // Activate the emitter by setting duration
-        emitter.Duration = 1.0;
-
-        console.log(
-            `[FLAMETHROWER] Entity ${wielder_entity} activated particle emitter toward target ${target_entity}`,
+    // Update particle creator to use correct damage and source
+    emitter.Creator = (_game: Game, direction: Vec2, speed: number) =>
+        blueprint_flame_particle(
+            weapon.Damage, // Use weapon damage
+            wielder_entity, // Source entity
+            direction,
+            speed,
+            0.8, // particle lifetime
         );
-    } else {
-        console.warn(`[FLAMETHROWER] Entity ${weapon_entity} missing EmitParticles component`);
-    }
+
+    // Activate the emitter by setting duration
+    emitter.Duration = 1.0;
+
+    console.log(
+        `[${Date.now()}] [FLAMETHROWER] Entity ${wielder_entity} activated particle emitter toward target ${target_entity}`,
+    );
 }
 
 function execute_crossbow_attack(

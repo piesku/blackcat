@@ -18,7 +18,7 @@ export function blueprint_flame_particle(
     return [
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d([0, 0], 0, [0.1, 0.1]), // Start small
-        render2d("24"), // Flame sprite
+        render2d("34"), // Flame sprite
 
         // Physics integration via RigidBody2D (replaces move2d)
         rigid_body2d(RigidKind.Dynamic, 0, 0.1, [0, 1.0]), // Custom gravity: gentle upward drift (flames rise)
