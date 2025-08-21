@@ -19,13 +19,11 @@ export interface EmitParticles {
     SpeedMin: number; // Minimum particle speed
     SpeedMax: number; // Maximum particle speed
 
-    // Duration control (similar to Shake component)
-    Duration: number; // How long to emit particles (Infinity = infinite)
-    Age: number; // How long this emitter has been active
+    // Duration control - countdown timer (emitter is active when Duration > 0)
+    Duration: number; // Time remaining (counts down to 0, Infinity = infinite)
 
     // Emission pattern
     BurstCount: number; // How many particles to emit at once (1 = single particles)
-    Active: boolean; // Whether emitter is currently active
 }
 
 export function emit_particles(
@@ -38,7 +36,6 @@ export function emit_particles(
         speedMax: number;
         duration: number;
         burstCount: number;
-        active: boolean;
     }> = {},
 ) {
     return (game: Game, entity: Entity) => {
@@ -52,11 +49,9 @@ export function emit_particles(
             SpeedMin: options.speedMin || 3.0,
             SpeedMax: options.speedMax || 3.0,
 
-            Duration: options.duration ?? Infinity, // Default: infinite
-            Age: 0,
+            Duration: options.duration ?? Infinity, // Default: infinite (countdown timer)
 
             BurstCount: options.burstCount || 1,
-            Active: options.active ?? true,
         };
 
         game.World.EmitParticles[entity] = emitter;

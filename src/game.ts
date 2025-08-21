@@ -17,18 +17,16 @@ import {sys_camera2d} from "./systems/sys_camera2d.js";
 import {sys_collide2d} from "./systems/sys_collide2d.js";
 import {sys_control_always2d} from "./systems/sys_control_always2d.js";
 import {sys_control_camera} from "./systems/sys_control_camera.js";
-import {sys_control_keyboard} from "./systems/sys_control_keyboard.js";
-import {sys_control_mouse} from "./systems/sys_control_mouse.js";
 import {sys_deal_damage} from "./systems/sys_deal_damage.js";
 import {sys_draw2d} from "./systems/sys_draw2d.js";
 import {sys_duel_manager} from "./systems/sys_duel_manager.js";
 import {sys_emit_particles} from "./systems/sys_emit_particles.js";
 import {sys_grenade} from "./systems/sys_grenade.js";
-import {sys_particles} from "./systems/sys_particles.js";
 import {sys_health} from "./systems/sys_health.js";
 import {sys_health_visual} from "./systems/sys_health_visual.js";
 import {sys_lifespan} from "./systems/sys_lifespan.js";
 import {sys_move2d} from "./systems/sys_move2d.js";
+import {sys_particles} from "./systems/sys_particles.js";
 import {sys_physics2d_bounds} from "./systems/sys_physics2d_bounds.js";
 import {sys_physics2d_integrate} from "./systems/sys_physics2d_integrate.js";
 import {sys_physics2d_resolve} from "./systems/sys_physics2d_resolve.js";
@@ -104,8 +102,6 @@ export class Game extends Game3D {
         sys_trigger2d(this, delta);
 
         // Player input.
-        sys_control_keyboard(this, delta);
-        sys_control_mouse(this, delta);
         sys_control_camera(this, delta);
 
         // AI.

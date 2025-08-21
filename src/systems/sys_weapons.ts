@@ -4,7 +4,6 @@ import {float} from "../../lib/random.js";
 import {vec2_length, vec2_normalize, vec2_subtract} from "../../lib/vec2.js";
 import {AIState} from "../components/com_ai_fighter.js";
 import {query_down} from "../components/com_children.js";
-import {EmitParticles} from "../components/com_emit_particles.js";
 import {shake} from "../components/com_shake.js";
 import {Weapon, WeaponKind, WeaponMelee, WeaponRanged} from "../components/com_weapon.js";
 import {Game} from "../game.js";
@@ -374,9 +373,8 @@ function execute_flamethrower_attack(
                 0.8, // particle lifetime
             );
 
-        // Activate the emitter
-        emitter.Active = true;
-        emitter.Age = 0; // Reset age for new burst
+        // Activate the emitter by setting duration
+        emitter.Duration = 1.0;
 
         console.log(
             `[FLAMETHROWER] Entity ${wielder_entity} activated particle emitter toward target ${target_entity}`,
@@ -478,6 +476,14 @@ function execute_grenade_launcher_attack(
 
         grenade_transform.Translation[0] = wielder_transform.Translation[0] + to_target[0] * 0.5;
         grenade_transform.Translation[1] = wielder_transform.Translation[1] + to_target[1] * 0.5;
+    }
+
+    // Set initial velocity for trajectory (after all components are set up)
+    let grenade_behavior = game.World.GrenadeBehavior[grenade_entity];
+    let rigid_body = game.World.RigidBody2D[grenade_entity];
+    if (grenade_behavior && rigid_body) {
+        rigid_body.VelocityLinear[0] = grenade_behavior.InitialVelocity[0];
+        rigid_body.VelocityLinear[1] = grenade_behavior.InitialVelocity[1];
     }
 
     console.log(

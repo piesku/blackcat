@@ -1,9 +1,11 @@
 /**
  * # sys_physics_integrate
  *
- * The first step of the physics simulation: integrate the [rigid
- * body](com_rigid_body2d.html)'s acceleration and velocity, and update the
- * entity's transform.
+ * Agnostic physics integration system that applies:
+ * - Per-entity gravity (stored in RigidBody2D.Gravity)
+ * - External acceleration forces
+ * - Drag/damping
+ * - Velocity-based movement
  */
 
 import {Vec2} from "../../lib/math.js";
@@ -14,7 +16,6 @@ import {Game} from "../game.js";
 import {Has} from "../world.js";
 
 const QUERY = Has.LocalTransform2D | Has.RigidBody2D;
-export const GRAVITY = -66;
 
 export function sys_physics2d_integrate(game: Game, delta: number) {
     for (let ent = 0; ent < game.World.Signature.length; ent++) {
@@ -32,11 +33,14 @@ function update(game: Game, entity: Entity, delta: number) {
     let rigid_body = game.World.RigidBody2D[entity];
 
     if (rigid_body.Kind === RigidKind.Dynamic) {
-        // Compute change to velocity due to the gravity.
-        rigid_body.VelocityLinear[1] += GRAVITY * delta;
-        // Compute change to velocity due to external forces.
+        // Apply per-entity gravity
+        rigid_body.VelocityLinear[0] += rigid_body.Gravity[0] * delta;
+        rigid_body.VelocityLinear[1] += rigid_body.Gravity[1] * delta;
+
+        // Compute change to velocity due to external forces (set by other systems).
         vec2_scale(rigid_body.Acceleration, rigid_body.Acceleration, delta);
         vec2_add(rigid_body.VelocityLinear, rigid_body.VelocityLinear, rigid_body.Acceleration);
+
         // Compute and apply drag.
         vec2_scale(velocity_drag, rigid_body.VelocityLinear, -rigid_body.Drag);
         vec2_add(rigid_body.VelocityLinear, rigid_body.VelocityLinear, velocity_drag);

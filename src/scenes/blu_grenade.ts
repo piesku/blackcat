@@ -1,10 +1,9 @@
 import {collide2d} from "../components/com_collide2d.js";
-import {control_always2d} from "../components/com_control_always2d.js";
 import {grenade_behavior} from "../components/com_grenade_behavior.js";
 import {lifespan} from "../components/com_lifespan.js";
 import {local_transform2d} from "../components/com_local_transform2d.js";
-import {move2d} from "../components/com_move2d.js";
 import {render2d} from "../components/com_render2d.js";
+import {rigid_body2d, RigidKind} from "../components/com_rigid_body2d.js";
 import {spatial_node2d} from "../components/com_spatial_node2d.js";
 import {Vec2} from "../../lib/math.js";
 import {Game, Layer} from "../game.js";
@@ -27,8 +26,9 @@ export function blueprint_grenade(
         spatial_node2d(),
         local_transform2d([0, 0], 0, [0.3, 0.3]), // Small grenade
         render2d("23"), // Using sprite 23 for grenade
-        move2d(speed * 0.5, 0), // Base movement speed (modified by trajectory), no rotation
-        control_always2d([0, 0], 0), // Will be updated by grenade system
+
+        // Physics integration via RigidBody2D (replaces move2d and control_always2d)
+        rigid_body2d(RigidKind.Dynamic, 0.3, 0.01, [0, -9.8]), // Standard gravity for grenades
 
         // Small collision radius for the grenade itself
         collide2d(true, Layer.Object, Layer.Object, 0.2),

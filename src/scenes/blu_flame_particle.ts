@@ -2,9 +2,9 @@ import {collide2d} from "../components/com_collide2d.js";
 import {DamageType, deal_damage} from "../components/com_deal_damage.js";
 import {lifespan} from "../components/com_lifespan.js";
 import {local_transform2d} from "../components/com_local_transform2d.js";
-import {move2d} from "../components/com_move2d.js";
 import {particle, ParticleType} from "../components/com_particle.js";
 import {render2d} from "../components/com_render2d.js";
+import {rigid_body2d, RigidKind} from "../components/com_rigid_body2d.js";
 import {Vec2} from "../../lib/math.js";
 import {Layer} from "../game.js";
 
@@ -19,11 +19,12 @@ export function blueprint_flame_particle(
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d([0, 0], 0, [0.1, 0.1]), // Start small
         render2d("24"), // Flame sprite
-        move2d(speed, 0), // No rotation for particles
+
+        // Physics integration via RigidBody2D (replaces move2d)
+        rigid_body2d(RigidKind.Dynamic, 0, 0.1, [0, 1.0]), // Custom gravity: gentle upward drift (flames rise)
 
         // Flame particle physics and behavior
         particle(ParticleType.Flame, direction, speed, lifetime, {
-            gravity: [0, -1.0], // Gentle upward drift (flames rise)
             spread: 0.3, // More turbulence for realistic flame motion
             initialScale: [0.1, 0.1],
             finalScale: [0.2, 0.2], // Flames grow as they burn

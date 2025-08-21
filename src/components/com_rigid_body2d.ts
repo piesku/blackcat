@@ -23,6 +23,7 @@ export interface RigidBody2D {
     Kind: RigidKind;
     Drag: number;
     Bounciness: number;
+    Gravity: Vec2; // Per-entity gravity (allows custom gravity per entity)
     Acceleration: Vec2;
     VelocityLinear: Vec2;
     VelocityResolved: Vec2;
@@ -36,14 +37,21 @@ export interface RigidBody2D {
  * @param kind The type of the rigid body (static, dynamic).
  * @param bounciness Bounciness factor (0 = no bounce, 1 = full bounce).
  * @param drag Drag factor (0 = no drag, 1 = entity never moves).
+ * @param gravity Custom gravity for this entity (defaults to standard downward gravity).
  */
-export function rigid_body2d(kind: RigidKind, bounciness = 1, drag = 0.001) {
+export function rigid_body2d(
+    kind: RigidKind,
+    bounciness = 1,
+    drag = 0.001,
+    gravity: Vec2 = [0, -66],
+) {
     return (game: Game, entity: Entity) => {
         game.World.Signature[entity] |= Has.RigidBody2D;
         game.World.RigidBody2D[entity] = {
             Kind: kind,
             Drag: clamp(0, 1, drag),
             Bounciness: clamp(0, 1, bounciness),
+            Gravity: [gravity[0], gravity[1]], // Copy to avoid shared references
             Acceleration: [0, 0],
             VelocityLinear: [0, 0],
             VelocityResolved: [0, 0],

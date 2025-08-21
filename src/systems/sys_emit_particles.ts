@@ -28,19 +28,14 @@ function update_emitter(game: Game, entity: Entity, delta: number) {
 
     if (!emitter || !spatial_node) return;
 
-    // Check if emitter is active and not expired
-    if (!emitter.Active) return;
-
-    emitter.Age += delta;
-
-    // Check if emitter has expired
-    if (emitter.Age >= emitter.Duration) {
-        emitter.Active = false;
+    if (emitter.Duration < 0) {
+        emitter.Duration = 0;
         return;
     }
 
-    // Update emission timing
+    emitter.Duration -= delta;
     emitter.SinceLast += delta;
+
     let emission_interval = 1.0 / emitter.Frequency;
 
     if (emitter.SinceLast >= emission_interval) {
@@ -83,5 +78,13 @@ function emit_single_particle(game: Game, emitter: EmitParticles, position: Vec2
     let particle_blueprint = emitter.Creator(game, emission_direction, speed);
 
     // Instantiate particle at emitter position
-    instantiate(game, [...particle_blueprint, copy_position(position)]);
+    let particle_entity = instantiate(game, [...particle_blueprint, copy_position(position)]);
+
+    // Set initial velocity after all components are set up
+    let particle = game.World.Particle[particle_entity];
+    let rigid_body = game.World.RigidBody2D[particle_entity];
+    if (particle && rigid_body) {
+        rigid_body.VelocityLinear[0] = emission_direction[0] * speed;
+        rigid_body.VelocityLinear[1] = emission_direction[1] * speed;
+    }
 }

@@ -40,9 +40,8 @@ export function blueprint_flamethrower(game: Game) {
                 spread: Math.PI / 4, // 45 degree cone spread
                 speedMin: 3.0,
                 speedMax: 5.0,
-                duration: 0.6, // Emit for 0.6 seconds per activation
+                duration: 0, // Start inactive (0 duration), will be activated by weapon system
                 burstCount: 2, // 2 particles per emission
-                active: false, // Start inactive, will be activated by weapon system
             },
         ),
     ];

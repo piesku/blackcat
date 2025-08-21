@@ -1,35 +1,24 @@
 import {instantiate} from "../../lib/game.js";
-import {vec2_length, vec2_subtract} from "../../lib/vec2.js";
+import {vec2_length} from "../../lib/vec2.js";
 import {blueprint_fire_zone} from "../scenes/blu_fire_zone.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
-const QUERY = Has.GrenadeBehavior | Has.LocalTransform2D | Has.ControlAlways2D;
+const QUERY = Has.GrenadeBehavior | Has.LocalTransform2D | Has.RigidBody2D;
 
 export function sys_grenade(game: Game, delta: number) {
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
         if ((game.World.Signature[entity] & QUERY) === QUERY) {
             let grenade = game.World.GrenadeBehavior[entity];
             let transform = game.World.LocalTransform2D[entity];
-            let control = game.World.ControlAlways2D[entity];
+            let rigid_body = game.World.RigidBody2D[entity];
 
-            if (!grenade || !transform || !control) continue;
+            if (!grenade || !transform || !rigid_body) continue;
 
-            // Update flight time
+            // Update flight time (domain-specific logic)
             grenade.FlightTime += delta;
 
-            // Calculate current position using parabolic trajectory
-            let t = grenade.FlightTime;
-            let velocity_x = grenade.InitialVelocity[0];
-            let velocity_y = grenade.InitialVelocity[1] - grenade.Gravity * t;
-
-            // Update control direction to follow trajectory
-            if (control.Direction) {
-                control.Direction[0] = velocity_x;
-                control.Direction[1] = velocity_y;
-            }
-
-            // Check if grenade should explode (reached target time or position)
+            // Check if grenade should explode
             let distance_to_target = vec2_length([
                 transform.Translation[0] - grenade.TargetPosition[0],
                 transform.Translation[1] - grenade.TargetPosition[1],
