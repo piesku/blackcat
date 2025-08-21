@@ -24,13 +24,11 @@
     },
     "devDependencies": {
         "esbuild": "0.25",
+        "playwright": "1.54",
         "prettier": "3.6",
         "typescript": "5.9"
     },
     "engines": {
         "node": ">=18"
-    },
-    "dependencies": {
-        "playwright": "^1.54.2"
     }
 }

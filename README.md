@@ -25,6 +25,14 @@ VS Code is configured to automatically start the esbuild dev server and TypeScri
 
 Ctrl+Shift+B will show all available build tasks, and F5 will open the browser.
 
+### Claude Code
+
+Claude will automatically read `CLUADE.md` and all the files in the `docs/` directory to learn about the project and its structure.
+
+To enable Playwright integration, run:
+
+    claude mcp add playwright npx '@playwright/mcp@latest'
+
 ### Setting up Git Hooks
 
 To ensure code quality and consistent formatting, configure git to use the shared hooks:
