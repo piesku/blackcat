@@ -1,9 +1,9 @@
-import {lifespan} from "../components/com_lifespan.js";
-import {local_transform2d} from "../components/com_local_transform2d.js";
-import {particle, ParticleType} from "../components/com_particle.js";
-import {render2d} from "../components/com_render2d.js";
-import {rigid_body2d, RigidKind} from "../components/com_rigid_body2d.js";
-import {Vec2} from "../../lib/math.js";
+import {Vec2} from "../../../lib/math.js";
+import {lifespan} from "../../components/com_lifespan.js";
+import {local_transform2d} from "../../components/com_local_transform2d.js";
+import {particle, ParticleType} from "../../components/com_particle.js";
+import {render2d} from "../../components/com_render2d.js";
+import {rigid_body2d, RigidKind} from "../../components/com_rigid_body2d.js";
 
 export function blueprint_shadow_particle(
     direction: Vec2 = [0, 0],

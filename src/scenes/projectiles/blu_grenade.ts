@@ -1,12 +1,12 @@
-import {collide2d} from "../components/com_collide2d.js";
-import {grenade_behavior} from "../components/com_grenade_behavior.js";
-import {lifespan} from "../components/com_lifespan.js";
-import {local_transform2d} from "../components/com_local_transform2d.js";
-import {render2d} from "../components/com_render2d.js";
-import {rigid_body2d, RigidKind} from "../components/com_rigid_body2d.js";
-import {spatial_node2d} from "../components/com_spatial_node2d.js";
-import {Vec2} from "../../lib/math.js";
-import {Game, Layer} from "../game.js";
+import {Vec2} from "../../../lib/math.js";
+import {collide2d} from "../../components/com_collide2d.js";
+import {grenade_behavior} from "../../components/com_grenade_behavior.js";
+import {lifespan} from "../../components/com_lifespan.js";
+import {local_transform2d} from "../../components/com_local_transform2d.js";
+import {render2d} from "../../components/com_render2d.js";
+import {rigid_body2d, RigidKind} from "../../components/com_rigid_body2d.js";
+import {spatial_node2d} from "../../components/com_spatial_node2d.js";
+import {Game, Layer} from "../../game.js";
 
 export function blueprint_grenade(
     game: Game,

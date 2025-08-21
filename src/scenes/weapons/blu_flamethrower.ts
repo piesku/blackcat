@@ -4,8 +4,8 @@ import {named} from "../../components/com_named.js";
 import {render2d} from "../../components/com_render2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {weapon_ranged} from "../../components/com_weapon.js";
-import {blueprint_flame_particle} from "../blu_flame_particle.js";
 import {Game} from "../../game.js";
+import {blueprint_flame_particle} from "../particles/blu_flame_particle.js";
 
 export function blueprint_flamethrower(game: Game) {
     return [

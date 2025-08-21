@@ -7,11 +7,11 @@ import {query_down} from "../components/com_children.js";
 import {shake} from "../components/com_shake.js";
 import {Weapon, WeaponKind, WeaponMelee, WeaponRanged} from "../components/com_weapon.js";
 import {Game} from "../game.js";
-import {blueprint_boomerang_projectile} from "../scenes/blu_boomerang.js";
-import {blueprint_flame_particle} from "../scenes/blu_flame_particle.js";
-import {blueprint_grenade} from "../scenes/blu_grenade.js";
-import {blueprint_piercing_projectile} from "../scenes/blu_piercing_projectile.js";
-import {blueprint_projectile} from "../scenes/blu_projectile.js";
+import {blueprint_flame_particle} from "../scenes/particles/blu_flame_particle.js";
+import {blueprint_boomerang_projectile} from "../scenes/projectiles/blu_boomerang.js";
+import {blueprint_grenade} from "../scenes/projectiles/blu_grenade.js";
+import {blueprint_piercing_projectile} from "../scenes/projectiles/blu_piercing_projectile.js";
+import {blueprint_projectile} from "../scenes/projectiles/blu_projectile.js";
 import {getAIStateName} from "../ui/ai_state.js";
 import {Has} from "../world.js";
 
@@ -316,6 +316,7 @@ function execute_ranged_attack(
                 wielder_entity,
                 weapon.Range,
                 weapon.ProjectileSpeed,
+                projectile_direction,
             ),
         );
 
@@ -326,12 +327,6 @@ function execute_ranged_attack(
                 wielder_transform.Translation[0] + to_target[0] * 0.5;
             projectile_transform.Translation[1] =
                 wielder_transform.Translation[1] + to_target[1] * 0.5;
-        }
-
-        // Set projectile movement direction using control_always2d
-        let control = game.World.ControlAlways2D[projectile_entity];
-        if (control) {
-            control.Direction = [projectile_direction[0], projectile_direction[1]];
         }
     }
 
@@ -417,6 +412,7 @@ function execute_crossbow_attack(
             wielder_entity,
             weapon.Range,
             weapon.ProjectileSpeed,
+            to_target,
         ),
     );
 
@@ -425,12 +421,6 @@ function execute_crossbow_attack(
     if (projectile_transform) {
         projectile_transform.Translation[0] = wielder_transform.Translation[0] + to_target[0] * 0.5;
         projectile_transform.Translation[1] = wielder_transform.Translation[1] + to_target[1] * 0.5;
-    }
-
-    // Set projectile movement direction using control_always2d
-    let control = game.World.ControlAlways2D[projectile_entity];
-    if (control) {
-        control.Direction = [to_target[0], to_target[1]];
     }
 
     console.log(

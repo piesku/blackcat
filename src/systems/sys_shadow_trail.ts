@@ -3,7 +3,7 @@ import {mat2d_get_translation} from "../../lib/mat2d.js";
 import {Vec2} from "../../lib/math.js";
 import {copy_position} from "../components/com_local_transform2d.js";
 import {Game} from "../game.js";
-import {blueprint_shadow_particle} from "../scenes/blu_shadow_particle.js";
+import {blueprint_shadow_particle} from "../scenes/particles/blu_shadow_particle.js";
 import {Has} from "../world.js";
 
 const QUERY = Has.ShadowTrail | Has.SpatialNode2D | Has.Move2D;

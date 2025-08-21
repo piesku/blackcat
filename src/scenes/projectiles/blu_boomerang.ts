@@ -1,14 +1,14 @@
-import {Vec2} from "../../lib/math.js";
-import {boomerang} from "../components/com_boomerang.js";
-import {collide2d} from "../components/com_collide2d.js";
-import {control_always2d} from "../components/com_control_always2d.js";
-import {DamageType, deal_damage} from "../components/com_deal_damage.js";
-import {lifespan} from "../components/com_lifespan.js";
-import {local_transform2d} from "../components/com_local_transform2d.js";
-import {move2d} from "../components/com_move2d.js";
-import {render2d} from "../components/com_render2d.js";
-import {spatial_node2d} from "../components/com_spatial_node2d.js";
-import {Game, Layer} from "../game.js";
+import {Vec2} from "../../../lib/math.js";
+import {boomerang} from "../../components/com_boomerang.js";
+import {collide2d} from "../../components/com_collide2d.js";
+import {control_always2d} from "../../components/com_control_always2d.js";
+import {DamageType, deal_damage} from "../../components/com_deal_damage.js";
+import {lifespan} from "../../components/com_lifespan.js";
+import {local_transform2d} from "../../components/com_local_transform2d.js";
+import {move2d} from "../../components/com_move2d.js";
+import {render2d} from "../../components/com_render2d.js";
+import {spatial_node2d} from "../../components/com_spatial_node2d.js";
+import {Game, Layer} from "../../game.js";
 
 export function blueprint_boomerang_projectile(
     game: Game,
