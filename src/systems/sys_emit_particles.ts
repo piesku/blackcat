@@ -26,7 +26,7 @@ function update_emitter(game: Game, entity: Entity, delta: number) {
     let emitter = game.World.EmitParticles[entity];
     let spatial_node = game.World.SpatialNode2D[entity];
 
-    if (!emitter || !spatial_node) return;
+    DEBUG: if (!emitter || !spatial_node) throw new Error("missing component");
 
     if (emitter.Duration < 0) {
         emitter.Duration = 0;

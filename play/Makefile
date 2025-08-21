@@ -16,6 +16,8 @@ game.esbuild.js: $(SOURCES)
 	npx esbuild ../$(EXAMPLE)/index.ts \
 		--preserve-symlinks \
 		--define:DEBUG=false \
+		--drop:console \
+		--drop-labels=DEBUG \
 		--target=es2022 \
 		--bundle \
 		--analyze \

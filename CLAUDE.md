@@ -16,6 +16,7 @@ Find out more about the game design and the code architecture in the `docs/` dir
 - Fighter AI state machine: @docs/ai.md
 - Game flow and progression: @docs/flow.md
 - Game state management: @docs/state.md
+- Bundle build system and size optimization: @docs/bundle.md
 
 ## Development Commands
 

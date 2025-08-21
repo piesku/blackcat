@@ -14,7 +14,8 @@ export function sys_boomerang(game: Game, delta: number) {
             let control = game.World.ControlAlways2D[entity];
             let collider = game.World.Collide2D[entity];
 
-            if (!boomerang || !transform || !control || !collider) continue;
+            DEBUG: if (!boomerang || !transform || !control || !collider)
+                throw new Error("missing component");
 
             // Damage is now handled by sys_damage_dealer via DamageDealer component
 

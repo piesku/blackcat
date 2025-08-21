@@ -93,7 +93,7 @@ function activate_weapon(
 
     // Get wielder's position and target
     let wielder_transform = game.World.LocalTransform2D[wielder_entity];
-    if (!wielder_transform) return;
+    DEBUG: if (!wielder_transform) throw new Error("missing component");
 
     // Find target (opponent)
     let target_entity = find_weapon_target(game, wielder_entity, weapon);
@@ -103,7 +103,7 @@ function activate_weapon(
     }
 
     let target_transform = game.World.LocalTransform2D[target_entity];
-    if (!target_transform) return;
+    DEBUG: if (!target_transform) throw new Error("missing component");
 
     // Calculate distance to target
     let to_target: Vec2 = [0, 0];
@@ -271,7 +271,7 @@ function execute_ranged_attack(
 ) {
     let wielder_transform = game.World.LocalTransform2D[wielder_entity];
     let target_transform = game.World.LocalTransform2D[target_entity];
-    if (!wielder_transform || !target_transform) return;
+    DEBUG: if (!wielder_transform || !target_transform) throw new Error("missing component");
 
     // Calculate direction to target
     let to_target: Vec2 = [0, 0];
@@ -349,7 +349,7 @@ function execute_flamethrower_attack(
 ) {
     let wielder_transform = game.World.LocalTransform2D[wielder_entity];
     let target_transform = game.World.LocalTransform2D[target_entity];
-    if (!wielder_transform || !target_transform) return;
+    DEBUG: if (!wielder_transform || !target_transform) throw new Error("missing component");
 
     // Calculate direction to target
     let to_target: Vec2 = [0, 0];
@@ -392,7 +392,7 @@ function execute_crossbow_attack(
 ) {
     let wielder_transform = game.World.LocalTransform2D[wielder_entity];
     let target_transform = game.World.LocalTransform2D[target_entity];
-    if (!wielder_transform || !target_transform) return;
+    DEBUG: if (!wielder_transform || !target_transform) throw new Error("missing component");
 
     // Calculate direction to target
     let to_target: Vec2 = [0, 0];
@@ -446,7 +446,7 @@ function execute_grenade_launcher_attack(
 ) {
     let wielder_transform = game.World.LocalTransform2D[wielder_entity];
     let target_transform = game.World.LocalTransform2D[target_entity];
-    if (!wielder_transform || !target_transform) return;
+    DEBUG: if (!wielder_transform || !target_transform) throw new Error("missing component");
 
     // Calculate relative target position
     let target_position: Vec2 = [
@@ -499,7 +499,7 @@ function execute_boomerang_attack(
 ) {
     let wielder_transform = game.World.LocalTransform2D[wielder_entity];
     let target_transform = game.World.LocalTransform2D[target_entity];
-    if (!wielder_transform || !target_transform) return;
+    DEBUG: if (!wielder_transform || !target_transform) throw new Error("missing component");
 
     // Create boomerang projectile entity
     let boomerang_entity = instantiate(

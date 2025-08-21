@@ -20,10 +20,10 @@ export function sys_control_camera(game: Game, delta: number) {
 
     // For zoom/pan, we want to modify the parent's transform,
     // because the child's transform may be overridden by shake system
-    if (DEBUG && camera_node.Parent === undefined) {
+    DEBUG: if (camera_node.Parent === undefined) {
         throw new Error("Camera must have a parent entity for zoom/pan controls to work correctly");
     }
-    let control_entity = camera_node.Parent!;
+    let control_entity = camera_node.Parent;
     let camera_local = game.World.LocalTransform2D[control_entity];
 
     if (game.InputDelta["WheelY"]) {

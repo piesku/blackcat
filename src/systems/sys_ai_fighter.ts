@@ -486,7 +486,7 @@ function calculate_separation_force(
     ai.SeparationForce[1] = 0;
 
     let transform = game.World.LocalTransform2D[entity];
-    if (!transform) return;
+    DEBUG: if (!transform) throw new Error("missing component");
 
     // Check all other entities for collision avoidance
     for (let other = 0; other < game.World.Signature.length; other++) {
