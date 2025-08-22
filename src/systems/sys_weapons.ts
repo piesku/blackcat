@@ -359,14 +359,8 @@ function execute_flamethrower_attack(
     spawner.Direction[0] = to_target[0];
     spawner.Direction[1] = to_target[1];
 
-    // Update creator to use correct damage and source
-    spawner.Creator = (_game: Game, direction: Vec2, speed: number) =>
-        blueprint_flame_particle(
-            weapon.Damage, // Use weapon damage
-            wielder_entity, // Source entity
-            direction,
-            speed,
-        );
+    // Update blueprint to use correct damage and source
+    spawner.Blueprint = blueprint_flame_particle(weapon.Damage, wielder_entity);
 
     // Activate the spawner by setting duration
     spawner.Duration = 1.0;

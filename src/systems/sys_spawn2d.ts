@@ -80,9 +80,8 @@ function spawn_single_entity(game: Game, spawn: any, position: Vec2) {
     // Random speed within range
     let speed = float(spawn.SpeedMin, spawn.SpeedMax);
 
-    // Create entity with calculated direction and speed
-    let blueprint = spawn.Creator(game, spawn_direction, speed);
-    let spawned_entity = instantiate(game, [...blueprint, copy_position(position)]);
+    // Create entity using blueprint
+    let spawned_entity = instantiate(game, [...spawn.Blueprint, copy_position(position)]);
 
     // Set initial velocity after all components are set up
     let rigid_body = game.World.RigidBody2D[spawned_entity];

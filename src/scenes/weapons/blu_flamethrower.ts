@@ -26,13 +26,7 @@ export function blueprint_flamethrower(game: Game) {
 
         // Spawner for flame cone effect
         spawn(
-            (game, direction, speed) =>
-                blueprint_flame_particle(
-                    1, // damage per particle
-                    -1, // source will be set by weapon system
-                    direction,
-                    speed,
-                ),
+            blueprint_flame_particle(1, -1), // damage=1, source=-1 (set by weapon system)
             12, // frequency: 12 particles per second (rapid fire)
             {
                 direction: [1, 0], // Forward direction (will be overridden by weapon system)

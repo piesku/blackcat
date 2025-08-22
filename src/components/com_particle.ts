@@ -15,10 +15,6 @@ export const enum ParticleType {
 
 export interface Particle {
     Type: ParticleType;
-    Direction: Vec2; // Movement direction
-    Speed: number; // Base speed
-    InitialSpeed: number; // Speed at creation (for deceleration effects)
-    Gravity: Vec2; // Acceleration (x, y) - allows for wind effects
     Spread: number; // Random spread factor for turbulence
 
     // Visual properties that change over time
@@ -38,10 +34,7 @@ export interface Particle {
 
 export function particle(
     type: ParticleType = ParticleType.Generic,
-    direction: Vec2 = [1, 0],
-    speed: number = 3.0,
     options: Partial<{
-        gravity: Vec2;
         spread: number;
         initialScale: Vec2;
         finalScale: Vec2;
@@ -56,10 +49,6 @@ export function particle(
     return (game: Game, entity: Entity) => {
         let p: Particle = {
             Type: type,
-            Direction: [direction[0], direction[1]],
-            Speed: speed,
-            InitialSpeed: speed,
-            Gravity: options.gravity || [0, 0],
             Spread: options.spread || 0.1,
 
             InitialScale: options.initialScale || [0.15, 0.15],

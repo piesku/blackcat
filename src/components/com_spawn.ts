@@ -11,12 +11,8 @@ import {Entity} from "../../lib/world.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
-interface Creator {
-    (game: Game, direction: Vec2, speed: number): Blueprint<Game>;
-}
-
 export interface Spawn {
-    Creator: Creator;
+    Blueprint: Blueprint<Game>;
     Interval: number;
     SinceLast: number;
     Direction: Vec2; // Base emission direction (in parent's space)
@@ -30,12 +26,12 @@ export interface Spawn {
 /**
  * Spawn blueprints with directional and speed control.
  *
- * @param creator The function that accepts direction and speed parameters.
+ * @param blueprint The blueprint to spawn.
  * @param frequency Spawns per second.
  * @param options Spawning options.
  */
 export function spawn(
-    creator: Creator,
+    blueprint: Blueprint<Game>,
     frequency: number,
     options: Partial<{
         direction: Vec2;
@@ -48,7 +44,7 @@ export function spawn(
 ) {
     return (game: Game, entity: Entity) => {
         const spawner: Spawn = {
-            Creator: creator,
+            Blueprint: blueprint,
             Interval: 1.0 / frequency,
             SinceLast: 0,
             Direction: options.direction || [0, 1], // Default: upward
