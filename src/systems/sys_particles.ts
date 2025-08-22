@@ -70,11 +70,9 @@ function update_particle_visuals(
         }
     }
 
-    // Interpolate scale from initial to final
-    let scale_x =
-        particle.InitialScale[0] + (particle.FinalScale[0] - particle.InitialScale[0]) * age_factor;
-    let scale_y =
-        particle.InitialScale[1] + (particle.FinalScale[1] - particle.InitialScale[1]) * age_factor;
+    // Interpolate scale from current to final using age factor
+    let scale_x = transform.Scale[0] + (particle.FinalScale[0] - transform.Scale[0]) * age_factor;
+    let scale_y = transform.Scale[1] + (particle.FinalScale[1] - transform.Scale[1]) * age_factor;
 
     // Apply visual changes
     transform.Scale[0] = scale_x;

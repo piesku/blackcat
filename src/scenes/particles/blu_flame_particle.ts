@@ -19,7 +19,6 @@ export function blueprint_flame_particle(damage: number = 1, source: number = -1
         // Flame particle physics and behavior
         particle(ParticleType.Flame, {
             spread: 0.3, // More turbulence for realistic flame motion
-            initialScale: [0.1, 0.1],
             finalScale: [0.5, 0.5], // Flames grow as they burn
             fadeOut: 0.4, // Long fade out
         }),

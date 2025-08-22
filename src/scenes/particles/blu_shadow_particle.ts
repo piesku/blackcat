@@ -16,7 +16,6 @@ export function blueprint_shadow_particle() {
         // Shadow particle physics and behavior
         particle(ParticleType.Shadow, {
             spread: 0.1, // Minimal drift
-            initialScale: [0.4, 0.4],
             finalScale: [0.05, 0.05], // Shrink over time
             fadeIn: 0.1, // Quick fade in
             fadeOut: 1.5, // Long fade out for trailing effect
