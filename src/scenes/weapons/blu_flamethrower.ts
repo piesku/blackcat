@@ -32,7 +32,6 @@ export function blueprint_flamethrower(game: Game) {
                     -1, // source will be set by weapon system
                     direction,
                     speed,
-                    0.8, // particle lifetime
                 ),
             12, // frequency: 12 particles per second (rapid fire)
             {

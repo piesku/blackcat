@@ -20,8 +20,6 @@ export interface Particle {
     InitialSpeed: number; // Speed at creation (for deceleration effects)
     Gravity: Vec2; // Acceleration (x, y) - allows for wind effects
     Spread: number; // Random spread factor for turbulence
-    Age: number; // Time since creation
-    Lifetime: number; // Total lifetime
 
     // Visual properties that change over time
     InitialScale: Vec2; // Starting scale
@@ -42,7 +40,6 @@ export function particle(
     type: ParticleType = ParticleType.Generic,
     direction: Vec2 = [1, 0],
     speed: number = 3.0,
-    lifetime: number = 1.0,
     options: Partial<{
         gravity: Vec2;
         spread: number;
@@ -64,8 +61,6 @@ export function particle(
             InitialSpeed: speed,
             Gravity: options.gravity || [0, 0],
             Spread: options.spread || 0.1,
-            Age: 0,
-            Lifetime: lifetime,
 
             InitialScale: options.initialScale || [0.15, 0.15],
             FinalScale: options.finalScale || [0.05, 0.05],

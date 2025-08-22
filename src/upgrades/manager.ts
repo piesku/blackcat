@@ -147,7 +147,7 @@ function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType)
     switch (upgrade.id) {
         case "shadow_trail":
             spawn(
-                (game, direction, speed) => blueprint_shadow_particle(game, direction, speed, 1.0),
+                (_game, direction, speed) => blueprint_shadow_particle(direction, speed),
                 8.0, // 8 particles per second
                 {
                     direction: [0, 0], // Stationary shadows

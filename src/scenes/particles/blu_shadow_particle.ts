@@ -4,17 +4,8 @@ import {local_transform2d} from "../../components/com_local_transform2d.js";
 import {particle, ParticleType} from "../../components/com_particle.js";
 import {render2d} from "../../components/com_render2d.js";
 import {rigid_body2d, RigidKind} from "../../components/com_rigid_body2d.js";
-import {Game} from "../../game.js";
 
-export function blueprint_shadow_particle(
-    _game: Game,
-    direction: Vec2,
-    speed: number,
-    intensity: number = 1.0,
-) {
-    // Calculate lifetime based on intensity
-    let lifetime = 1.5 + intensity * 0.5; // 1.5-2.0s for normal intensity range
-
+export function blueprint_shadow_particle(direction: Vec2, speed: number) {
     return [
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d([0, 0], 0, [0.2, 0.2]), // Start medium size
@@ -24,7 +15,7 @@ export function blueprint_shadow_particle(
         rigid_body2d(RigidKind.Dynamic, 0, 0.02, [0, 0]), // No gravity for shadows
 
         // Shadow particle physics and behavior
-        particle(ParticleType.Shadow, direction, speed, lifetime, {
+        particle(ParticleType.Shadow, direction, speed, {
             spread: 0.1, // Minimal drift
             initialScale: [0.2, 0.2],
             finalScale: [0.05, 0.05], // Shrink over time
@@ -34,6 +25,6 @@ export function blueprint_shadow_particle(
             destroyOnHit: false, // Shadows don't interact
         }),
 
-        lifespan(lifetime),
+        lifespan(2),
     ];
 }

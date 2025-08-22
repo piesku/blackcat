@@ -366,7 +366,6 @@ function execute_flamethrower_attack(
             wielder_entity, // Source entity
             direction,
             speed,
-            0.8, // particle lifetime
         );
 
     // Activate the spawner by setting duration

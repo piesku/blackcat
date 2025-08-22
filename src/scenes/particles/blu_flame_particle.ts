@@ -13,7 +13,6 @@ export function blueprint_flame_particle(
     source: number = -1,
     direction: Vec2 = [1, 0],
     speed: number = 4.0,
-    lifetime: number = 0.8,
 ) {
     return [
         // NO spatial_node2d() - enables fast path for particles!
@@ -24,7 +23,7 @@ export function blueprint_flame_particle(
         rigid_body2d(RigidKind.Dynamic, 0, 0.1, [0, 1.0]), // Custom gravity: gentle upward drift (flames rise)
 
         // Flame particle physics and behavior
-        particle(ParticleType.Flame, direction, speed, lifetime, {
+        particle(ParticleType.Flame, direction, speed, {
             spread: 0.3, // More turbulence for realistic flame motion
             initialScale: [0.1, 0.1],
             finalScale: [0.2, 0.2], // Flames grow as they burn
@@ -41,6 +40,6 @@ export function blueprint_flame_particle(
             destroy_on_hit: true,
         }),
 
-        lifespan(lifetime),
+        lifespan(0.8),
     ];
 }
