@@ -1,7 +1,8 @@
 import {instantiate} from "../../lib/game.js";
 import {attach_to_parent} from "../components/com_children.js";
-import {shadow_trail} from "../components/com_shadow_trail.js";
+import {spawn} from "../components/com_spawn.js";
 import {Game} from "../game.js";
+import {blueprint_shadow_particle} from "../scenes/particles/blu_shadow_particle.js";
 import {blueprint_baseball_bat} from "../scenes/weapons/blu_baseball_bat.js";
 import {blueprint_battle_axe} from "../scenes/weapons/blu_battle_axe.js";
 import {blueprint_boomerang_weapon} from "../scenes/weapons/blu_boomerang_weapon.js";
@@ -145,7 +146,18 @@ function apply_armor_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
 function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
     switch (upgrade.id) {
         case "shadow_trail":
-            shadow_trail(8.0, 1.0)(game, entity); // 8 particles/sec, normal intensity
+            spawn(
+                (game, direction, speed) => blueprint_shadow_particle(game, direction, speed, 1.0),
+                8.0, // 8 particles per second
+                {
+                    direction: [0, 0], // Stationary shadows
+                    spread: 0, // No spread for trails
+                    speedMin: 0.2, // Very slow drift
+                    speedMax: 0.2,
+                    duration: Infinity, // Infinite duration - always active
+                    burstCount: 1, // Single particle per emission
+                },
+            )(game, entity);
             console.log(`Applied shadow trail to entity ${entity}`);
             break;
 

@@ -57,3 +57,7 @@ AI agents should use Playwright to verify changes by testing the running game in
     - Ensure no console errors appear
 
 This visual verification complements code testing and catches rendering/interaction issues that unit tests might miss.
+
+## Memories
+
+- Wait for my explicit approval before committing your changes.

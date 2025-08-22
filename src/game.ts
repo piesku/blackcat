@@ -33,7 +33,6 @@ import {sys_poll} from "./systems/sys_poll.js";
 import {sys_render2d} from "./systems/sys_render2d.js";
 import {sys_render2d_animate} from "./systems/sys_render2d_animate.js";
 import {sys_resize2d} from "./systems/sys_resize2d.js";
-import {sys_shadow_trail} from "./systems/sys_shadow_trail.js";
 import {sys_shake2d} from "./systems/sys_shake2d.js";
 import {sys_spawn2d} from "./systems/sys_spawn2d.js";
 import {sys_toggle} from "./systems/sys_toggle.js";
@@ -114,7 +113,6 @@ export class Game extends Game3D {
 
         // Particle systems.
         sys_particles(this, delta);
-        sys_shadow_trail(this, delta);
 
         // Unified damage system (replaces sys_combat, sys_projectile, sys_fire_zone).
         sys_deal_damage(this, delta);
