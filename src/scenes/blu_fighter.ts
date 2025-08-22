@@ -22,7 +22,7 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
     return [
         spatial_node2d(),
         local_transform2d(undefined, 0, [1, 1]),
-        collide2d(true, Layer.Object, Layer.Terrain | Layer.Object, 0.5),
+        collide2d(true, Layer.Player, Layer.Terrain | Layer.Player, 0.5),
         render2d("13"),
         animate_sprite({13: Math.random(), 14: Math.random()}),
         health(totalHealth),

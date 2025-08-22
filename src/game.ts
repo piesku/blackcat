@@ -142,4 +142,5 @@ export const enum Layer {
     Player = 2,
     Object = 4,
     Projectile = 8,
+    Particle = 16,
 }

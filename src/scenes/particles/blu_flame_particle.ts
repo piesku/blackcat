@@ -23,14 +23,14 @@ export function blueprint_flame_particle(damage: number = 1, source: number = -1
             fadeOut: 0.4, // Long fade out
         }),
 
-        // Collision and damage
-        collide2d(true, Layer.Object, Layer.Object, 0.1),
+        // Collision and damage - particles collide with fighters and terrain but not each other
+        collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.1),
         deal_damage(damage, source, DamageType.Fire, {
             cooldown: 0.0,
             shake_duration: 0.05,
             destroy_on_hit: true,
         }),
 
-        lifespan(4),
+        lifespan(8),
     ];
 }

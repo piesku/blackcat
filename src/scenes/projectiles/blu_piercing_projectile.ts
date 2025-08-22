@@ -24,7 +24,7 @@ export function blueprint_piercing_projectile(
         spatial_node2d(),
         local_transform2d(undefined, 0, [0.3, 0.3]), // Slightly larger for piercing bolt
         render2d("23"), // Use crossbow bolt sprite
-        collide2d(true, Layer.Projectile, Layer.Object | Layer.Terrain, 0.075),
+        collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.075),
         move2d(speed, 0),
         control_always2d(direction, 0),
         deal_damage(damage, owner_entity, DamageType.Piercing, {

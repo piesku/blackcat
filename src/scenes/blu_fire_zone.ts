@@ -19,7 +19,7 @@ export function blueprint_fire_zone(
         render2d("20"), // Using sprite 20 for fire effect
 
         // Fire zone collision detection with large radius
-        collide2d(true, Layer.Object, Layer.Object, radius),
+        collide2d(true, Layer.Object, Layer.Player, radius),
 
         // Fire zone damage - continuous area effect
         deal_damage(damage, source, DamageType.Fire, {

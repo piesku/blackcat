@@ -34,7 +34,7 @@ export function blueprint_flamethrower(game: Game) {
                 speedMin: 3.0,
                 speedMax: 5.0,
                 duration: 0, // Start inactive (0 duration), will be activated by weapon system
-                burstCount: 2, // 2 particles per emission
+                burstCount: 1, // 2 particles per emission
             },
         ),
     ];
