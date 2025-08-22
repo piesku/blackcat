@@ -1,9 +1,11 @@
+import {query_down} from "../components/com_children.js";
+import {DrawKind} from "../components/com_draw.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
 const QUERY = Has.Health;
 
-export function sys_health(game: Game, delta: number) {
+export function sys_health(game: Game, _delta: number) {
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
         if ((game.World.Signature[entity] & QUERY) === QUERY) {
             let health = game.World.Health[entity];
@@ -76,6 +78,9 @@ export function sys_health(game: Game, delta: number) {
 
             // Clear processed damage
             health.PendingDamage.length = 0;
+
+            // Update healthbar
+            update_healthbar(game, entity);
         }
     }
 }
@@ -102,4 +107,41 @@ function calculate_armor_reduction(health: any, incoming_damage: number): number
     }
 
     return final_damage;
+}
+
+function update_healthbar(game: Game, entity: number) {
+    let health = game.World.Health[entity];
+
+    for (let healthbar_entity of query_down(game.World, entity, Has.Draw)) {
+        let healthbar_draw = game.World.Draw[healthbar_entity];
+        let healthbar_transform = game.World.LocalTransform2D[healthbar_entity];
+
+        if (healthbar_draw && healthbar_transform) {
+            // Calculate health percentage
+            let health_percentage = health.Max > 0 ? health.Current / health.Max : 0;
+
+            // Update healthbar width based on health percentage
+            healthbar_transform.Scale[0] = health_percentage; // Scale from 0 to 1
+
+            // Offset the healthbar to the left so it shrinks from the right side
+            // When scale is 1.0, offset is 0. When scale is 0.5, offset is -0.25, etc.
+            let max_width = 1; // From blueprint: draw_rect width is 1
+            let offset_x = -(max_width * (1 - health_percentage)) / 2;
+            healthbar_transform.Translation[0] = offset_x;
+
+            // Type-safe access to DrawRect properties
+            if (healthbar_draw.Kind === DrawKind.Rect) {
+                healthbar_draw.Width = max_width * health_percentage; // Scale the draw width too
+
+                // Update healthbar color based on health percentage
+                if (health_percentage > 0.6) {
+                    healthbar_draw.Color = "#00ff00"; // Green
+                } else if (health_percentage > 0.3) {
+                    healthbar_draw.Color = "#ffff00"; // Yellow
+                } else {
+                    healthbar_draw.Color = "#ff0000"; // Red
+                }
+            }
+        }
+    }
 }

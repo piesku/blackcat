@@ -21,7 +21,6 @@ import {sys_draw2d} from "./systems/sys_draw2d.js";
 import {sys_duel_manager} from "./systems/sys_duel_manager.js";
 import {sys_grenade} from "./systems/sys_grenade.js";
 import {sys_health} from "./systems/sys_health.js";
-import {sys_health_visual} from "./systems/sys_health_visual.js";
 import {sys_lifespan} from "./systems/sys_lifespan.js";
 import {sys_move2d} from "./systems/sys_move2d.js";
 import {sys_particles} from "./systems/sys_particles.js";
@@ -127,7 +126,6 @@ export class Game extends Game3D {
         sys_camera2d(this, delta);
 
         // Rendering.
-        sys_health_visual(this, delta);
         sys_draw2d(this, delta);
         sys_render2d_animate(this, delta);
         sys_render2d(this, delta);

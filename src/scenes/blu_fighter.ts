@@ -1,3 +1,4 @@
+import {blueprint_healthbar} from "../blueprints/blu_healthbar.js";
 import {ai_fighter} from "../components/com_ai_fighter.js";
 import {animate_sprite} from "../components/com_animate_sprite.js";
 import {callback} from "../components/com_callback.js";
@@ -27,7 +28,7 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
         health(totalHealth),
         move2d(4, 0),
         ai_fighter(-1, is_player), // AI will find target automatically
-        children(), // Weapons will be added by apply_upgrades
+        children(blueprint_healthbar()), // Add healthbar, weapons will be added by apply_upgrades
 
         // Apply upgrades after entity creation
         callback((game: Game, entity: number) => {
