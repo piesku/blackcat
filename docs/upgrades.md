@@ -8,32 +8,39 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 ## Complete Upgrade Categories (48 Total)
 
-### 1. Weapons (10 upgrades) - Child Entity Approach ✅
+### 1. Weapons (14 upgrades) - Ranged Focus with Particle Effects ✅
 
-**Strategy**: Implement weapons as child entities attached to fighters.
+**Strategy**: Ranged weapons using particle spawn system for spectacular visual effects. Inspired by Liero classics.
 
-**Current Implemented** (6):
+**Ranged Weapons** (14):
 
-- Battle Axe - Melee weapon, short range, high damage
-- Baseball Bat - Melee with knockback effect
-- Pistol - Single projectile weapon
-- Shotgun - Multiple projectiles with spread
-- Sniper Rifle - High damage, long range
-- Throwing Knives - Multiple projectiles with spread
+- **Flamethrower** ✅ - Fire cone with persistent flame particles
+- **Minigun** - High ROF bullet spray with shell casing particles
+- **Shotgun** ✅ - Multi-pellet spread with spark particles
+- **Explosives** - Thrown bombs that explode on timeout with debris
+- **Spikeballs** - Bouncing projectiles with metal spark trails
+- **Rifle** - Enhanced pistol with muzzle flash and bullet trail
+- **Proxy Mine** - Contact mines that stick to arena and explode
+- **Bazooka** - Heavy rockets with explosion particles and area damage
+- **Mortar** - High-arc shells that explode on contact/timeout
+- **Larpa** - Rockets leaving falling particle damage trails
+- **Chiquita Bomb** - Timeout bomb spawning multiple banana sub-bombs
+- **Hoover Crack** - Spinning particle emitter dealing continuous damage
+- **Mini Rockets** - Rapid-fire rocket barrage with small explosions
+- **Zimm** - Bouncing ball weapon ricocheting off arena walls
+- **Boomerang** - Returning projectile that deals damage on the way out and back
 
-**New Additions** (4):
+**Removed Melee Weapons**:
 
-- **Chainsaw** - Continuous damage melee weapon with DOT (damage over time) effect
-- **Flamethrower** - Ranged weapon creating fire zones that persist
-- **Crossbow** - Piercing projectile that goes through multiple enemies
-- **Boomerang** - Returns to thrower, can hit on both paths
+- Battle Axe, Baseball Bat, Chainsaw (moved to traits/abilities as combat modifiers)
 
 **Implementation**:
 
-- Weapons trigger during AI `AIState.Attacking`
-- Child entity inherits parent's transform
-- Weapon components: `WeaponMelee`, `WeaponRanged`, `WeaponStats`
-- Combat system checks for weapon children during attacks
+- Weapons as child entities using `spatial_node2d()` attachment
+- Particle effects via `spawn()` component with `blueprint_*_particle()`
+- Weapon stats via `weapon_ranged()` component
+- Complex behaviors: timeout explosions, bouncing, area effects, trails
+- Visual impact: Every weapon creates spectacular particle displays
 
 ### 2. Armor/Defense (10 upgrades) - Component Enhancement ✅
 
@@ -66,7 +73,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 **Strategy**: New components for ability tracking + system modifications for ability effects.
 
-**Passive Abilities** (6):
+**Passive Abilities** (9):
 
 - **Ricochet** - Bullets bounce once off arena walls
 - **Shadow Trail** - Movement leaves damaging trail behind you
@@ -74,13 +81,14 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Double Shot** - Fire an additional projectile with each attack
 - **Vampiric** - Heal 1 HP for every 2 damage you deal
 - **Phase Walk** - Brief invincibility when dashing (0.3s)
+- **Battle Axe Mastery** - Melee attacks deal +2 damage and have wider arc
+- **Baseball Bat Swing** - Melee attacks knock back enemies 2x distance
+- **Chainsaw Fury** - Melee attacks hit 3 times rapidly with DOT effect
 
-**Triggered Abilities** (4):
+**Triggered Abilities** (2):
 
-- **Combo Strike** - Every 3rd consecutive hit deals double damage
-- **Berserker Mode** - +50% attack speed and movement when below 25% HP
-- **Revenge Strike** - Next attack deals double damage after taking damage
 - **Second Wind** - When reaching 1 HP, instantly heal to 50% max HP (once per fight)
+- **Shock Wave** - Hitting an enemy while dashing releases a damaging shock wave
 
 **Implementation**:
 
@@ -106,11 +114,14 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Regeneration** - Heal 1 HP every 5 seconds during combat
 - **Last Stand** - Take 50% less damage when at 1 HP
 
-**Behavior Traits** (3):
+**Behavior Traits** (6):
 
 - **Berserker** - +100% aggressiveness, +50% damage, -1 max health
 - **Assassin** - Lower aggressiveness but first attack each fight deals double damage
 - **Brawler** - Higher aggressiveness, shorter dash range but +1 damage to melee attacks
+- **Combo Fighter** - Every 3rd consecutive hit deals double damage
+- **Berserker Mode** - +50% attack speed and movement when below 25% HP
+- **Revenge Strike** - Next attack deals double damage after taking damage
 
 **Implementation**:
 
@@ -150,12 +161,12 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 ## Upgrade Distribution Summary
 
-**Total Upgrades: 48** (Player will see 33 out of 48 in a single run)
+**Total Upgrades: 53** (Player will see 33 out of 53 in a single run)
 
-- **Weapons**: 10 upgrades (6 implemented + 4 new)
+- **Weapons**: 14 upgrades (2 implemented + 12 new ranged weapons)
 - **Armor/Defense**: 10 upgrades (4 implemented + 6 new)
-- **Abilities**: 10 upgrades (6 passive + 4 triggered)
-- **Traits**: 10 upgrades (4 speed + 3 health + 3 behavior)
+- **Abilities**: 11 upgrades (9 passive + 2 triggered)
+- **Traits**: 10 upgrades (4 speed + 3 health + 6 behavior)
 - **Companions**: 8 upgrades (Mr. Black, Mr. Orange, Mr. Pink, etc.)
 
 **Implementation Strategy**:
@@ -201,4 +212,4 @@ export const enum UpgradeCategory {
     - Add 4 new weapons (Chainsaw, Flamethrower, Crossbow, Boomerang)
     - Add 6 new armor types (Shield Generator, Reactive Plating, etc.)
 
-**Current Status**: ✅ Weapons (6/10) and Armor (4/10) systems implemented and tested.
+**Current Status**: ✅ Weapons (2/14), Armor (4/10) systems implemented. Particle system ready for weapon effects.

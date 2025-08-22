@@ -18,12 +18,11 @@ export function generateOpponentUpgrades(arenaLevel: number, runSeed: number): U
     let availableUpgrades = ALL_UPGRADES.filter((upgrade) => {
         if (upgrade.category === "armor") return true;
         return [
-            "battle_axe",
-            "baseball_bat",
-            "pistol",
+            "flamethrower",
             "shotgun",
             "sniper_rifle",
-            "throwing_knives",
+            "grenade_launcher",
+            "boomerang",
         ].includes(upgrade.id);
     });
 

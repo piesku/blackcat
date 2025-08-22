@@ -4,13 +4,11 @@ import {float} from "../../lib/random.js";
 import {vec2_length, vec2_normalize, vec2_subtract} from "../../lib/vec2.js";
 import {AIState} from "../components/com_ai_fighter.js";
 import {query_down} from "../components/com_children.js";
-import {shake} from "../components/com_shake.js";
-import {Weapon, WeaponKind, WeaponMelee, WeaponRanged} from "../components/com_weapon.js";
+import {Weapon} from "../components/com_weapon.js";
 import {Game} from "../game.js";
 import {blueprint_flame_particle} from "../scenes/particles/blu_flame_particle.js";
 import {blueprint_boomerang_projectile} from "../scenes/projectiles/blu_boomerang.js";
 import {blueprint_grenade} from "../scenes/projectiles/blu_grenade.js";
-import {blueprint_piercing_projectile} from "../scenes/projectiles/blu_piercing_projectile.js";
 import {blueprint_projectile} from "../scenes/projectiles/blu_projectile.js";
 import {getAIStateName} from "../ui/ai_state.js";
 import {Has} from "../world.js";
@@ -50,24 +48,16 @@ function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapo
     let ai = game.World.AIFighter[parent_entity];
     if (!ai) return false;
 
-    let should_activate = false;
-
-    // Ranged weapons can activate in Circling, Pursuing, and Dashing states
-    if (weapon.Kind === WeaponKind.Ranged) {
-        should_activate =
-            (ai.State === AIState.Circling ||
-                ai.State === AIState.Pursuing ||
-                ai.State === AIState.Dashing) &&
-            weapon.LastAttackTime <= 0;
-    }
-    // Melee weapons still only activate in Dashing state
-    else if (weapon.Kind === WeaponKind.Melee) {
-        should_activate = ai.State === AIState.Dashing && weapon.LastAttackTime <= 0;
-    }
+    // All weapons are ranged - can activate in Circling, Pursuing, and Dashing states
+    let should_activate =
+        (ai.State === AIState.Circling ||
+            ai.State === AIState.Pursuing ||
+            ai.State === AIState.Dashing) &&
+        weapon.LastAttackTime <= 0;
 
     if (should_activate) {
         console.log(
-            `[${Date.now()}] [WEAPON] Entity ${parent_entity} activating ${weapon.Kind === WeaponKind.Ranged ? "ranged" : "melee"} weapon (AI State: ${getAIStateName(ai.State)}, Cooldown: ${weapon.LastAttackTime.toFixed(2)})`,
+            `[${Date.now()}] [WEAPON] Entity ${parent_entity} activating ranged weapon (AI State: ${getAIStateName(ai.State)}, Cooldown: ${weapon.LastAttackTime.toFixed(2)})`,
         );
     }
 
@@ -122,44 +112,20 @@ function activate_weapon(
         `[WEAPON] Entity ${wielder_entity} attacking target ${target_entity} at range ${distance.toFixed(2)}`,
     );
 
-    // Apply weapon-specific effects
-    switch (weapon.Kind) {
-        case WeaponKind.Melee:
-            let melee_weapon_name = get_weapon_name(game, weapon_entity);
-            switch (melee_weapon_name) {
-                case "chainsaw":
-                    execute_chainsaw_attack(game, wielder_entity, target_entity, weapon, distance);
-                    break;
-                default:
-                    execute_melee_attack(game, wielder_entity, target_entity, weapon, distance);
-                    break;
-            }
+    // Apply weapon-specific effects based on weapon name
+    let weapon_name = get_weapon_name(game, weapon_entity);
+    switch (weapon_name) {
+        case "flamethrower":
+            execute_flamethrower_attack(game, wielder_entity, target_entity, weapon, weapon_entity);
             break;
-        case WeaponKind.Ranged:
-            let weapon_name = get_weapon_name(game, weapon_entity);
-            switch (weapon_name) {
-                case "flamethrower":
-                    execute_flamethrower_attack(
-                        game,
-                        wielder_entity,
-                        target_entity,
-                        weapon,
-                        weapon_entity,
-                    );
-                    break;
-                case "grenade_launcher":
-                    execute_grenade_launcher_attack(game, wielder_entity, target_entity, weapon);
-                    break;
-                case "crossbow":
-                    execute_crossbow_attack(game, wielder_entity, target_entity, weapon);
-                    break;
-                case "boomerang":
-                    execute_boomerang_attack(game, wielder_entity, target_entity, weapon);
-                    break;
-                default:
-                    execute_ranged_attack(game, wielder_entity, target_entity, weapon);
-                    break;
-            }
+        case "grenade_launcher":
+            execute_grenade_launcher_attack(game, wielder_entity, target_entity, weapon);
+            break;
+        case "boomerang":
+            execute_boomerang_attack(game, wielder_entity, target_entity, weapon);
+            break;
+        default:
+            execute_ranged_attack(game, wielder_entity, target_entity, weapon);
             break;
     }
 }
@@ -201,73 +167,11 @@ function find_weapon_target(game: Game, wielder_entity: number, weapon: Weapon):
     return nearest_entity;
 }
 
-function execute_melee_attack(
-    game: Game,
-    wielder_entity: number,
-    target_entity: number,
-    weapon: WeaponMelee,
-    _distance: number,
-) {
-    // Add damage to pending queue instead of applying directly
-    let target_health = game.World.Health[target_entity];
-    target_health.PendingDamage.push({
-        Amount: weapon.Damage,
-        Source: wielder_entity,
-        Type: "melee",
-    });
-
-    console.log(
-        `[MELEE] Entity ${wielder_entity} -> ${target_entity}: adding ${weapon.Damage} melee damage to pending queue`,
-    );
-
-    if (weapon.Knockback > 0) {
-        apply_knockback(game, wielder_entity, target_entity, weapon.Knockback);
-    }
-
-    // Add screen shake for impact
-    if (game.Camera !== undefined) {
-        let shake_radius = 0.5; // Fixed radius for all shakes
-        let shake_duration = 0.2; // 200ms shake
-        shake(shake_radius, shake_duration)(game, game.Camera);
-    }
-}
-
-function execute_chainsaw_attack(
-    game: Game,
-    wielder_entity: number,
-    target_entity: number,
-    weapon: WeaponMelee,
-    _distance: number,
-) {
-    // Chainsaw works like regular melee but with continuous damage feel
-    let target_health = game.World.Health[target_entity];
-    target_health.PendingDamage.push({
-        Amount: weapon.Damage,
-        Source: wielder_entity,
-        Type: "chainsaw",
-    });
-
-    console.log(
-        `[CHAINSAW] Entity ${wielder_entity} -> ${target_entity}: adding ${weapon.Damage} chainsaw damage to pending queue`,
-    );
-
-    if (weapon.Knockback > 0) {
-        apply_knockback(game, wielder_entity, target_entity, weapon.Knockback);
-    }
-
-    // Add stronger screen shake for chainsaw impact
-    if (game.Camera !== undefined) {
-        let shake_radius = 0.6; // Slightly stronger shake
-        let shake_duration = 0.25; // Longer shake for chainsaw
-        shake(shake_radius, shake_duration)(game, game.Camera);
-    }
-}
-
 function execute_ranged_attack(
     game: Game,
     wielder_entity: number,
     target_entity: number,
-    weapon: WeaponRanged,
+    weapon: Weapon,
 ) {
     let wielder_transform = game.World.LocalTransform2D[wielder_entity];
     let target_transform = game.World.LocalTransform2D[target_entity];
@@ -339,7 +243,7 @@ function execute_flamethrower_attack(
     game: Game,
     wielder_entity: number,
     target_entity: number,
-    weapon: WeaponRanged,
+    weapon: Weapon,
     weapon_entity: number,
 ) {
     let wielder_transform = game.World.LocalTransform2D[wielder_entity];
@@ -370,60 +274,11 @@ function execute_flamethrower_attack(
     );
 }
 
-function execute_crossbow_attack(
-    game: Game,
-    wielder_entity: number,
-    target_entity: number,
-    weapon: WeaponRanged,
-) {
-    let wielder_transform = game.World.LocalTransform2D[wielder_entity];
-    let target_transform = game.World.LocalTransform2D[target_entity];
-    DEBUG: if (!wielder_transform || !target_transform) throw new Error("missing component");
-
-    // Calculate direction to target
-    let to_target: Vec2 = [0, 0];
-    vec2_subtract(to_target, target_transform.Translation, wielder_transform.Translation);
-    vec2_normalize(to_target, to_target);
-
-    // Apply scatter (crossbow is very accurate, minimal scatter)
-    let scatter_angle = float(-1, 1) * weapon.Scatter;
-    let cos_scatter = Math.cos(scatter_angle);
-    let sin_scatter = Math.sin(scatter_angle);
-    let scattered_x = to_target[0] * cos_scatter - to_target[1] * sin_scatter;
-    let scattered_y = to_target[0] * sin_scatter + to_target[1] * cos_scatter;
-    to_target[0] = scattered_x;
-    to_target[1] = scattered_y;
-
-    // Create piercing projectile entity
-    let projectile_entity = instantiate(
-        game,
-        blueprint_piercing_projectile(
-            game,
-            weapon.Damage,
-            wielder_entity,
-            weapon.Range,
-            weapon.ProjectileSpeed,
-            to_target,
-        ),
-    );
-
-    // Set projectile position (slightly offset from wielder)
-    let projectile_transform = game.World.LocalTransform2D[projectile_entity];
-    if (projectile_transform) {
-        projectile_transform.Translation[0] = wielder_transform.Translation[0] + to_target[0] * 0.5;
-        projectile_transform.Translation[1] = wielder_transform.Translation[1] + to_target[1] * 0.5;
-    }
-
-    console.log(
-        `[CROSSBOW] Entity ${wielder_entity} fired piercing bolt ${projectile_entity} toward target ${target_entity}`,
-    );
-}
-
 function execute_grenade_launcher_attack(
     game: Game,
     wielder_entity: number,
     target_entity: number,
-    weapon: WeaponRanged,
+    weapon: Weapon,
 ) {
     let wielder_transform = game.World.LocalTransform2D[wielder_entity];
     let target_transform = game.World.LocalTransform2D[target_entity];
@@ -476,7 +331,7 @@ function execute_boomerang_attack(
     game: Game,
     wielder_entity: number,
     target_entity: number,
-    weapon: WeaponRanged,
+    weapon: Weapon,
 ) {
     let wielder_transform = game.World.LocalTransform2D[wielder_entity];
     let target_transform = game.World.LocalTransform2D[target_entity];
@@ -509,19 +364,4 @@ function execute_boomerang_attack(
     console.log(
         `[BOOMERANG] Entity ${wielder_entity} threw boomerang ${boomerang_entity} toward target ${target_entity}`,
     );
-}
-
-function apply_knockback(
-    game: Game,
-    _source_entity: number,
-    _target_entity: number,
-    _knockback_force: number,
-) {
-    // TODO: Implement proper knockback physics
-    // For now, just add extra screen shake
-    if (game.Camera !== undefined) {
-        let shake_radius = 0.5; // Fixed radius for all shakes
-        let shake_duration = 0.3; // 300ms shake for knockback
-        shake(shake_radius, shake_duration)(game, game.Camera);
-    }
 }

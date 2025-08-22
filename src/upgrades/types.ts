@@ -22,31 +22,13 @@ export interface GameState {
     isNewRun: boolean; // Fresh start vs resumed
 }
 
-// Weapon upgrade definitions
+// Weapon upgrade definitions - Ranged only, particle-focused
 export const WEAPON_UPGRADES: UpgradeType[] = [
     {
-        id: "battle_axe",
+        id: "flamethrower",
         category: UpgradeCategory.Weapon,
-        name: "Battle Axe",
-        description: "Heavy melee weapon with high damage and short range",
-    },
-    {
-        id: "pistol",
-        category: UpgradeCategory.Weapon,
-        name: "Single-Shot Pistol",
-        description: "Ranged weapon that fires bullets at enemies",
-    },
-    {
-        id: "baseball_bat",
-        category: UpgradeCategory.Weapon,
-        name: "Baseball Bat",
-        description: "Melee weapon with knockback effect",
-    },
-    {
-        id: "throwing_knives",
-        category: UpgradeCategory.Weapon,
-        name: "Throwing Knives",
-        description: "Multiple projectiles with spread pattern",
+        name: "Flamethrower",
+        description: "Emits a cone of flame particles that damage enemies",
     },
     {
         id: "shotgun",
@@ -57,44 +39,20 @@ export const WEAPON_UPGRADES: UpgradeType[] = [
     {
         id: "sniper_rifle",
         category: UpgradeCategory.Weapon,
-        name: "Sniper Rifle",
-        description: "High-damage, long-range precision weapon",
+        name: "Rifle",
+        description: "High-damage, long-range precision weapon with muzzle flash",
     },
     {
-        id: "dual_pistols",
+        id: "grenade_launcher",
         category: UpgradeCategory.Weapon,
-        name: "Dual Pistols",
-        description: "Rapid-fire dual wielded pistols",
-    },
-    {
-        id: "chainsaw",
-        category: UpgradeCategory.Weapon,
-        name: "Chainsaw",
-        description: "Continuous damage melee weapon",
-    },
-    {
-        id: "flamethrower",
-        category: UpgradeCategory.Weapon,
-        name: "Flamethrower",
-        description: "Emits a cone of flame particles that damage enemies",
-    },
-    {
-        id: "crossbow",
-        category: UpgradeCategory.Weapon,
-        name: "Crossbow",
-        description: "Silent ranged weapon with piercing bolts",
+        name: "Mortar",
+        description: "High-arc explosive shells with area damage",
     },
     {
         id: "boomerang",
         category: UpgradeCategory.Weapon,
         name: "Boomerang",
-        description: "Returns to thrower, can hit on both paths",
-    },
-    {
-        id: "grenade_launcher",
-        category: UpgradeCategory.Weapon,
-        name: "Grenade Launcher",
-        description: "Explosive area-of-effect ranged weapon",
+        description: "Returning projectile that deals damage on the way out and back",
     },
 ];
 

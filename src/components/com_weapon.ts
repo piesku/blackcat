@@ -1,23 +1,8 @@
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
-export const enum WeaponKind {
-    Melee,
-    Ranged,
-}
-
-export interface WeaponMelee {
-    Kind: WeaponKind.Melee;
-    Damage: number;
-    Range: number;
-    Cooldown: number;
-    LastAttackTime: number;
-    Knockback: number;
-    Arc: number; // Attack arc in radians
-}
-
-export interface WeaponRanged {
-    Kind: WeaponKind.Ranged;
+// Simplified weapon component - ranged only
+export interface Weapon {
     Damage: number;
     Range: number;
     Cooldown: number;
@@ -26,30 +11,6 @@ export interface WeaponRanged {
     ProjectileCount: number;
     Spread: number; // Spread angle in radians between multiple projectiles
     Scatter: number; // Random scatter angle in radians for aiming inaccuracy
-}
-
-export type Weapon = WeaponMelee | WeaponRanged;
-
-export function weapon_melee(
-    damage: number,
-    range: number,
-    cooldown: number,
-    knockback: number = 1.0,
-    arc: number = Math.PI / 3,
-    initialTimeout: number = 0.3,
-) {
-    return (game: Game, entity: number) => {
-        game.World.Signature[entity] |= Has.Weapon;
-        game.World.Weapon[entity] = {
-            Kind: WeaponKind.Melee,
-            Damage: damage,
-            Range: range,
-            Cooldown: cooldown,
-            LastAttackTime: initialTimeout,
-            Knockback: knockback,
-            Arc: arc,
-        };
-    };
 }
 
 export function weapon_ranged(
@@ -65,7 +26,6 @@ export function weapon_ranged(
     return (game: Game, entity: number) => {
         game.World.Signature[entity] |= Has.Weapon;
         game.World.Weapon[entity] = {
-            Kind: WeaponKind.Ranged,
             Damage: damage,
             Range: range,
             Cooldown: cooldown,
