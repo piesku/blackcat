@@ -351,16 +351,16 @@ function execute_flamethrower_attack(
     vec2_subtract(to_target, target_transform.Translation, wielder_transform.Translation);
     vec2_normalize(to_target, to_target);
 
-    // Find and activate the particle emitter on the weapon
-    let emitter = game.World.EmitParticles[weapon_entity];
-    DEBUG: if (!emitter) throw new Error("missing component");
+    // Find and activate the spawner on the weapon
+    let spawner = game.World.Spawn[weapon_entity];
+    DEBUG: if (!spawner) throw new Error("missing component");
 
-    // Set emission direction toward target
-    emitter.Direction[0] = to_target[0];
-    emitter.Direction[1] = to_target[1];
+    // Set spawn direction toward target
+    spawner.Direction[0] = to_target[0];
+    spawner.Direction[1] = to_target[1];
 
-    // Update particle creator to use correct damage and source
-    emitter.Creator = (_game: Game, direction: Vec2, speed: number) =>
+    // Update creator to use correct damage and source
+    spawner.Creator = (_game: Game, direction: Vec2, speed: number) =>
         blueprint_flame_particle(
             weapon.Damage, // Use weapon damage
             wielder_entity, // Source entity
@@ -369,11 +369,11 @@ function execute_flamethrower_attack(
             0.8, // particle lifetime
         );
 
-    // Activate the emitter by setting duration
-    emitter.Duration = 1.0;
+    // Activate the spawner by setting duration
+    spawner.Duration = 1.0;
 
     console.log(
-        `[${Date.now()}] [FLAMETHROWER] Entity ${wielder_entity} activated particle emitter toward target ${target_entity}`,
+        `[${Date.now()}] [FLAMETHROWER] Entity ${wielder_entity} activated spawner toward target ${target_entity}`,
     );
 }
 

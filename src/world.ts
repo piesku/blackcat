@@ -11,7 +11,6 @@ import {ControlAlways2D} from "./components/com_control_always2d.js";
 import {ControlPlayer} from "./components/com_control_player.js";
 import {DealDamage} from "./components/com_deal_damage.js";
 import {Draw} from "./components/com_draw.js";
-import {EmitParticles} from "./components/com_emit_particles.js";
 import {Health} from "./components/com_health.js";
 import {Lifespan} from "./components/com_lifespan.js";
 import {LocalTransform2D} from "./components/com_local_transform2d.js";
@@ -42,7 +41,6 @@ const enum Component {
     DealDamage,
     Dirty,
     Draw,
-    EmitParticles,
     Health,
     Lifespan,
     LocalTransform2D,
@@ -75,7 +73,6 @@ export const enum Has {
     DealDamage = 1 << Component.DealDamage,
     Dirty = 1 << Component.Dirty,
     Draw = 1 << Component.Draw,
-    EmitParticles = 1 << Component.EmitParticles,
     Health = 1 << Component.Health,
     Lifespan = 1 << Component.Lifespan,
     LocalTransform2D = 1 << Component.LocalTransform2D,
@@ -111,7 +108,6 @@ export class World extends WorldImpl {
     Children: Array<Children> = [];
     DealDamage: Array<DealDamage> = [];
     Draw: Array<Draw> = [];
-    EmitParticles: Array<EmitParticles> = [];
     Health: Array<Health> = [];
     Lifespan: Array<Lifespan> = [];
     LocalTransform2D: Array<LocalTransform2D> = [];

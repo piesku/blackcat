@@ -20,7 +20,6 @@ import {sys_control_camera} from "./systems/sys_control_camera.js";
 import {sys_deal_damage} from "./systems/sys_deal_damage.js";
 import {sys_draw2d} from "./systems/sys_draw2d.js";
 import {sys_duel_manager} from "./systems/sys_duel_manager.js";
-import {sys_emit_particles} from "./systems/sys_emit_particles.js";
 import {sys_grenade} from "./systems/sys_grenade.js";
 import {sys_health} from "./systems/sys_health.js";
 import {sys_health_visual} from "./systems/sys_health_visual.js";
@@ -114,7 +113,6 @@ export class Game extends Game3D {
         sys_grenade(this, delta);
 
         // Particle systems.
-        sys_emit_particles(this, delta);
         sys_particles(this, delta);
         sys_shadow_trail(this, delta);
 

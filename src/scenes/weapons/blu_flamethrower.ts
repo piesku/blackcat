@@ -1,8 +1,8 @@
-import {emit_particles} from "../../components/com_emit_particles.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
 import {named} from "../../components/com_named.js";
 import {render2d} from "../../components/com_render2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
+import {spawn} from "../../components/com_spawn.js";
 import {weapon_ranged} from "../../components/com_weapon.js";
 import {Game} from "../../game.js";
 import {blueprint_flame_particle} from "../particles/blu_flame_particle.js";
@@ -24,8 +24,8 @@ export function blueprint_flamethrower(game: Game) {
             0.5, // initial timeout
         ),
 
-        // Particle emitter for flame cone effect
-        emit_particles(
+        // Spawner for flame cone effect
+        spawn(
             (game, direction, speed) =>
                 blueprint_flame_particle(
                     1, // damage per particle
