@@ -36,7 +36,7 @@ export interface RigidBody2D {
  *
  * @param kind The type of the rigid body (static, dynamic).
  * @param bounciness Bounciness factor (0 = no bounce, 1 = full bounce).
- * @param drag Drag factor (0 = no drag, 1 = entity never moves).
+ * @param drag Exponential damping factor (0 = no damping, 1 = stops immediately).
  * @param gravity Custom gravity for this entity (defaults to standard downward gravity).
  */
 export function rigid_body2d(

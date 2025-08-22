@@ -11,19 +11,17 @@ export function blueprint_shadow_particle() {
         render2d("25"), // Shadow sprite (dark/transparent)
 
         // Physics integration via RigidBody2D (replaces move2d)
-        rigid_body2d(RigidKind.Dynamic, 0, 0.02, [0, 0]), // No gravity for shadows
+        rigid_body2d(RigidKind.Dynamic, 0, 0.9, [0, 0]), // No gravity for shadows
 
         // Shadow particle physics and behavior
         particle(ParticleType.Shadow, {
             spread: 0.1, // Minimal drift
-            initialScale: [0.2, 0.2],
+            initialScale: [0.4, 0.4],
             finalScale: [0.05, 0.05], // Shrink over time
             fadeIn: 0.1, // Quick fade in
             fadeOut: 1.5, // Long fade out for trailing effect
-            damping: 0.98, // Very slow deceleration
-            destroyOnHit: false, // Shadows don't interact
         }),
 
-        lifespan(2),
+        lifespan(4),
     ];
 }

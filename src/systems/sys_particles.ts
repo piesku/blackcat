@@ -1,5 +1,4 @@
 import {float} from "../../lib/random.js";
-import {vec2_scale} from "../../lib/vec2.js";
 import {Lifespan} from "../components/com_lifespan.js";
 import {LocalTransform2D} from "../components/com_local_transform2d.js";
 import {Particle} from "../components/com_particle.js";
@@ -23,7 +22,7 @@ export function sys_particles(game: Game, delta: number) {
                 throw new Error("missing component");
 
             // Apply particle-specific physics by modifying rigid body acceleration
-            update_particle_physics(particle, rigid_body, delta);
+            update_particle_physics(particle, rigid_body);
 
             // Handle visual effects
             update_particle_visuals(game, entity, particle, transform, lifespan);
@@ -34,7 +33,7 @@ export function sys_particles(game: Game, delta: number) {
     }
 }
 
-function update_particle_physics(particle: Particle, rigid_body: RigidBody2D, delta: number) {
+function update_particle_physics(particle: Particle, rigid_body: RigidBody2D) {
     // Apply spread/turbulence for natural motion using acceleration
     if (particle.Spread > 0) {
         let spread_x = float(-particle.Spread, particle.Spread);
@@ -43,11 +42,7 @@ function update_particle_physics(particle: Particle, rigid_body: RigidBody2D, de
         rigid_body.Acceleration[1] += spread_y;
     }
 
-    // Apply particle-specific damping (overrides rigid body drag)
-    if (particle.Damping < 1.0 && particle.Damping > 0) {
-        let damping_factor = Math.pow(particle.Damping, delta);
-        vec2_scale(rigid_body.VelocityLinear, rigid_body.VelocityLinear, damping_factor);
-    }
+    // Particle damping is now handled by RigidBody2D.Drag in sys_physics2d_integrate
 }
 
 function update_particle_visuals(

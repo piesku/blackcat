@@ -22,14 +22,6 @@ export interface Particle {
     FinalScale: Vec2; // Ending scale (for growth/shrinkage)
     FadeIn: number; // Time to fade in (0 = instant)
     FadeOut: number; // Time to fade out (0 = instant at death)
-
-    // Physics properties
-    Damping: number; // Speed reduction over time (1.0 = no damping, 0.5 = half speed each second)
-    Bounce: number; // Bounce factor when hitting surfaces (0 = no bounce, 1 = perfect bounce)
-
-    // Behavior flags
-    DestroyOnHit: boolean; // Whether particle should be destroyed when hitting something
-    AffectedByWind: boolean; // Whether particle responds to wind/external forces
 }
 
 export function particle(
@@ -40,10 +32,6 @@ export function particle(
         finalScale: Vec2;
         fadeIn: number;
         fadeOut: number;
-        damping: number;
-        bounce: number;
-        destroyOnHit: boolean;
-        affectedByWind: boolean;
     }> = {},
 ) {
     return (game: Game, entity: Entity) => {
@@ -55,12 +43,6 @@ export function particle(
             FinalScale: options.finalScale || [0.05, 0.05],
             FadeIn: options.fadeIn || 0.0,
             FadeOut: options.fadeOut || 0.2,
-
-            Damping: options.damping || 1.0,
-            Bounce: options.bounce || 0.0,
-
-            DestroyOnHit: options.destroyOnHit ?? true,
-            AffectedByWind: options.affectedByWind ?? true,
         };
 
         game.World.Particle[entity] = p;

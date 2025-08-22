@@ -4,7 +4,7 @@
  * Agnostic physics integration system that applies:
  * - Per-entity gravity (stored in RigidBody2D.Gravity)
  * - External acceleration forces
- * - Drag/damping
+ * - Exponential damping
  * - Velocity-based movement
  */
 
@@ -25,7 +25,6 @@ export function sys_physics2d_integrate(game: Game, delta: number) {
     }
 }
 
-let velocity_drag: Vec2 = [0, 0];
 let velocity_delta: Vec2 = [0, 0];
 
 function update(game: Game, entity: Entity, delta: number) {
@@ -41,9 +40,9 @@ function update(game: Game, entity: Entity, delta: number) {
         vec2_scale(rigid_body.Acceleration, rigid_body.Acceleration, delta);
         vec2_add(rigid_body.VelocityLinear, rigid_body.VelocityLinear, rigid_body.Acceleration);
 
-        // Compute and apply drag.
-        vec2_scale(velocity_drag, rigid_body.VelocityLinear, -rigid_body.Drag);
-        vec2_add(rigid_body.VelocityLinear, rigid_body.VelocityLinear, velocity_drag);
+        // Apply exponential damping (more realistic than linear drag).
+        let damping_factor = Math.pow(1.0 - rigid_body.Drag, delta);
+        vec2_scale(rigid_body.VelocityLinear, rigid_body.VelocityLinear, damping_factor);
 
         // Apply velocity to position.
         vec2_scale(velocity_delta, rigid_body.VelocityLinear, delta);

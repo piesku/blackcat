@@ -14,16 +14,14 @@ export function blueprint_flame_particle(damage: number = 1, source: number = -1
         render2d("34"), // Flame sprite
 
         // Physics integration via RigidBody2D (replaces move2d)
-        rigid_body2d(RigidKind.Dynamic, 0, 0.1, [0, 1.0]), // Custom gravity: gentle upward drift (flames rise)
+        rigid_body2d(RigidKind.Dynamic, 0, 0.9, [0, 1.0]), // Custom gravity: gentle upward drift (flames rise)
 
         // Flame particle physics and behavior
         particle(ParticleType.Flame, {
             spread: 0.3, // More turbulence for realistic flame motion
             initialScale: [0.1, 0.1],
-            finalScale: [0.2, 0.2], // Flames grow as they burn
+            finalScale: [0.5, 0.5], // Flames grow as they burn
             fadeOut: 0.4, // Long fade out
-            damping: 0.9, // Decelerate over time
-            destroyOnHit: true,
         }),
 
         // Collision and damage
@@ -34,6 +32,6 @@ export function blueprint_flame_particle(damage: number = 1, source: number = -1
             destroy_on_hit: true,
         }),
 
-        lifespan(0.8),
+        lifespan(4),
     ];
 }
