@@ -20,7 +20,6 @@ import {Particle} from "./components/com_particle.js";
 import {Render2D} from "./components/com_render2d.js";
 import {RigidBody2D} from "./components/com_rigid_body2d.js";
 import {Shake} from "./components/com_shake.js";
-import {ShadowTrail} from "./components/com_shadow_trail.js";
 import {SpatialNode2D} from "./components/com_spatial_node2d.js";
 import {Spawn} from "./components/com_spawn.js";
 import {Task} from "./components/com_task.js";
@@ -50,7 +49,6 @@ const enum Component {
     Render2D,
     RigidBody2D,
     Shake,
-    ShadowTrail,
     SpatialNode2D,
     Spawn,
     Task,
@@ -82,7 +80,6 @@ export const enum Has {
     Render2D = 1 << Component.Render2D,
     RigidBody2D = 1 << Component.RigidBody2D,
     Shake = 1 << Component.Shake,
-    ShadowTrail = 1 << Component.ShadowTrail,
     SpatialNode2D = 1 << Component.SpatialNode2D,
     Spawn = 1 << Component.Spawn,
     Task = 1 << Component.Task,
@@ -117,7 +114,6 @@ export class World extends WorldImpl {
     Render2D: Array<Render2D> = [];
     RigidBody2D: Array<RigidBody2D> = [];
     Shake: Array<Shake> = [];
-    ShadowTrail: Array<ShadowTrail> = [];
     SpatialNode2D: Array<SpatialNode2D> = [];
     Spawn: Array<Spawn> = [];
     Task: Array<Task> = [];

@@ -4,12 +4,17 @@ import {local_transform2d} from "../../components/com_local_transform2d.js";
 import {particle, ParticleType} from "../../components/com_particle.js";
 import {render2d} from "../../components/com_render2d.js";
 import {rigid_body2d, RigidKind} from "../../components/com_rigid_body2d.js";
+import {Game} from "../../game.js";
 
 export function blueprint_shadow_particle(
-    direction: Vec2 = [0, 0],
-    speed: number = 0.5,
-    lifetime: number = 2.0,
+    _game: Game,
+    direction: Vec2,
+    speed: number,
+    intensity: number = 1.0,
 ) {
+    // Calculate lifetime based on intensity
+    let lifetime = 1.5 + intensity * 0.5; // 1.5-2.0s for normal intensity range
+
     return [
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d([0, 0], 0, [0.2, 0.2]), // Start medium size
