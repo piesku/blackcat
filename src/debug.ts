@@ -5,6 +5,8 @@
  * of the game loop for debugging paused states.
  */
 
+import {DrawKind} from "./components/com_draw.js";
+import {TaskKind} from "./components/com_task.js";
 import {Game} from "./game.js";
 import {Has} from "./world.js";
 
@@ -233,10 +235,11 @@ export class SceneGraphInspector {
         let html = `<h4>${name} (ID: ${entityId})</h4>`;
         html += `<p><strong>Signature:</strong> ${world.Signature[entityId]} (0b${world.Signature[entityId].toString(2).padStart(32, "0")})</p>`;
 
+        html += "<h5>Active Components:</h5>";
         html += '<div class="component-list">';
 
         // Check each component type
-        if (world.LocalTransform2D[entityId]) {
+        if (world.Signature[entityId] & Has.LocalTransform2D) {
             const t = world.LocalTransform2D[entityId];
             html += `<div class="component">
                 <strong>LocalTransform2D</strong><br>
@@ -246,7 +249,7 @@ export class SceneGraphInspector {
             </div>`;
         }
 
-        if (world.SpatialNode2D[entityId]) {
+        if (world.Signature[entityId] & Has.SpatialNode2D) {
             const s = world.SpatialNode2D[entityId];
 
             // Make parent clickable if it exists
@@ -284,7 +287,7 @@ export class SceneGraphInspector {
             html += `</div>`;
         }
 
-        if (world.Render2D[entityId]) {
+        if (world.Signature[entityId] & Has.Render2D) {
             const r = world.Render2D[entityId];
             html += `<div class="component">
                 <strong>Render2D</strong><br>
@@ -293,7 +296,7 @@ export class SceneGraphInspector {
             </div>`;
         }
 
-        if (world.Health[entityId]) {
+        if (world.Signature[entityId] & Has.Health) {
             const h = world.Health[entityId];
             html += `<div class="component">
                 <strong>Health</strong><br>
@@ -303,7 +306,7 @@ export class SceneGraphInspector {
             </div>`;
         }
 
-        if (world.AIFighter[entityId]) {
+        if (world.Signature[entityId] & Has.AIFighter) {
             const ai = world.AIFighter[entityId];
             html += `<div class="component">
                 <strong>AIFighter</strong><br>
@@ -313,7 +316,7 @@ export class SceneGraphInspector {
             </div>`;
         }
 
-        if (world.Move2D[entityId]) {
+        if (world.Signature[entityId] & Has.Move2D) {
             const m = world.Move2D[entityId];
             html += `<div class="component">
                 <strong>Move2D</strong><br>
@@ -323,7 +326,7 @@ export class SceneGraphInspector {
             </div>`;
         }
 
-        if (world.RigidBody2D[entityId]) {
+        if (world.Signature[entityId] & Has.RigidBody2D) {
             const rb = world.RigidBody2D[entityId];
             html += `<div class="component">
                 <strong>RigidBody2D</strong><br>
@@ -334,7 +337,7 @@ export class SceneGraphInspector {
             </div>`;
         }
 
-        if (world.Collide2D[entityId]) {
+        if (world.Signature[entityId] & Has.Collide2D) {
             const c = world.Collide2D[entityId];
             html += `<div class="component">
                 <strong>Collide2D</strong><br>
@@ -345,7 +348,7 @@ export class SceneGraphInspector {
             </div>`;
         }
 
-        if (world.Weapon[entityId]) {
+        if (world.Signature[entityId] & Has.Weapon) {
             const w = world.Weapon[entityId];
             html += `<div class="component">
                 <strong>Weapon</strong><br>
@@ -356,7 +359,7 @@ export class SceneGraphInspector {
             </div>`;
         }
 
-        if (world.Named[entityId]) {
+        if (world.Signature[entityId] & Has.Named) {
             const n = world.Named[entityId];
             html += `<div class="component">
                 <strong>Named</strong><br>
@@ -364,7 +367,7 @@ export class SceneGraphInspector {
             </div>`;
         }
 
-        if (world.Spawn[entityId]) {
+        if (world.Signature[entityId] & Has.Spawn) {
             const s = world.Spawn[entityId];
             html += `<div class="component">
                 <strong>Spawn</strong><br>
@@ -375,7 +378,7 @@ export class SceneGraphInspector {
             </div>`;
         }
 
-        if (world.Lifespan[entityId]) {
+        if (world.Signature[entityId] & Has.Lifespan) {
             const l = world.Lifespan[entityId];
             html += `<div class="component">
                 <strong>Lifespan</strong><br>
@@ -383,7 +386,7 @@ export class SceneGraphInspector {
             </div>`;
         }
 
-        if (world.DealDamage[entityId]) {
+        if (world.Signature[entityId] & Has.DealDamage) {
             const d = world.DealDamage[entityId];
             html += `<div class="component">
                 <strong>DealDamage</strong><br>
@@ -392,11 +395,158 @@ export class SceneGraphInspector {
             </div>`;
         }
 
-        if (world.Particle[entityId]) {
+        if (world.Signature[entityId] & Has.Particle) {
             const p = world.Particle[entityId];
             html += `<div class="component">
                 <strong>Particle</strong><br>
                 Type: ${p.Type}
+            </div>`;
+        }
+
+        if (world.Signature[entityId] & Has.Draw) {
+            const d = world.Draw[entityId];
+            html += `<div class="component">
+                <strong>Draw</strong><br>
+                Kind: ${d.Kind}<br>`;
+
+            if (d.Kind === DrawKind.Text) {
+                html += `Text: "${d.Text}"<br>Font: ${d.Font}<br>Fill: ${d.FillStyle}`;
+            } else if (d.Kind === DrawKind.Rect) {
+                html += `Color: ${d.Color}<br>Size: ${d.Width} × ${d.Height}`;
+            } else if (d.Kind === DrawKind.Arc) {
+                html += `Color: ${d.Color}<br>Radius: ${d.Radius.toFixed(2)}<br>Angles: ${d.StartAngle.toFixed(2)} - ${d.EndAngle.toFixed(2)}`;
+            } else if (d.Kind === DrawKind.Selection) {
+                html += `Color: ${d.Color}<br>Size: ${d.Size.toFixed(2)}`;
+            }
+
+            html += `</div>`;
+        }
+
+        if (world.Signature[entityId] & Has.Dirty) {
+            html += `<div class="component">
+                <strong>Dirty</strong><br>
+                <em>Marker component (no data)</em>
+            </div>`;
+        }
+
+        if (world.Signature[entityId] & Has.AnimateSprite) {
+            const a = world.AnimateSprite[entityId];
+            html += `<div class="component">
+                <strong>AnimateSprite</strong><br>
+                Duration: ${a.Duration.toFixed(2)}<br>
+                Time: ${a.Time.toFixed(2)}<br>
+                Frames: ${Object.keys(a.Frames).length}
+            </div>`;
+        }
+
+        if (world.Signature[entityId] & Has.Boomerang) {
+            const b = world.Boomerang[entityId];
+            html += `<div class="component">
+                <strong>Boomerang</strong><br>
+                Phase: ${b.Phase}<br>
+                Thrower: ${b.ThrowerEntity}<br>
+                Target: [${b.OriginalTarget[0].toFixed(2)}, ${b.OriginalTarget[1].toFixed(2)}]<br>
+                Max Range: ${b.MaxRange.toFixed(2)}<br>
+                Speed: ${b.Speed.toFixed(2)}
+            </div>`;
+        }
+
+        if (world.Signature[entityId] & Has.Camera2D) {
+            const c = world.Camera2D[entityId];
+            html += `<div class="component">
+                <strong>Camera2D</strong><br>
+                Radius: [${c.Projection.Radius[0].toFixed(2)}, ${c.Projection.Radius[1].toFixed(2)}]<br>
+                Viewport: ${c.ViewportWidth} × ${c.ViewportHeight}
+            </div>`;
+        }
+
+        if (world.Signature[entityId] & Has.GrenadeBehavior) {
+            const g = world.GrenadeBehavior[entityId];
+            html += `<div class="component">
+                <strong>GrenadeBehavior</strong><br>
+                Gravity: ${g.Gravity.toFixed(2)}<br>
+                Flight Time: ${g.FlightTime.toFixed(2)} / ${g.TimeToTarget.toFixed(2)}<br>
+                Target: [${g.TargetPosition[0].toFixed(2)}, ${g.TargetPosition[1].toFixed(2)}]<br>
+                Damage: ${g.Damage}
+            </div>`;
+        }
+
+        if (world.Signature[entityId] & Has.ControlAlways2D) {
+            const c = world.ControlAlways2D[entityId];
+            const directionText = c.Direction
+                ? `[${c.Direction[0].toFixed(2)}, ${c.Direction[1].toFixed(2)}]`
+                : "null";
+            html += `<div class="component">
+                <strong>ControlAlways2D</strong><br>
+                Direction: ${directionText}<br>
+                Rotation: ${c.Rotation.toFixed(2)}
+            </div>`;
+        }
+
+        if (world.Signature[entityId] & Has.ControlPlayer) {
+            html += `<div class="component">
+                <strong>ControlPlayer</strong><br>
+                <em>Marker component (no data)</em>
+            </div>`;
+        }
+
+        if (world.Signature[entityId] & Has.Children) {
+            const c = world.Children[entityId];
+            const clickableChildren = c.Children.slice(0, 5).map((id) => {
+                const childName = this.getEntityName(id) || `Entity ${id}`;
+                return `<a href="#" onclick="selectEntity(${id}); return false;" style="color: #4a9eff; text-decoration: underline;">${childName}</a>`;
+            });
+
+            html += `<div class="component">
+                <strong>Children</strong><br>
+                Count: ${c.Children.length}<br>`;
+
+            if (clickableChildren.length > 0) {
+                html += `Children: ${clickableChildren.join(", ")}${c.Children.length > 5 ? "..." : ""}`;
+            }
+
+            html += `</div>`;
+        }
+
+        if (world.Signature[entityId] & Has.Shake) {
+            const s = world.Shake[entityId];
+            html += `<div class="component">
+                <strong>Shake</strong><br>
+                Duration: ${s.Duration.toFixed(2)}
+            </div>`;
+        }
+
+        if (world.Signature[entityId] & Has.Task) {
+            const t = world.Task[entityId];
+            html += `<div class="component">
+                <strong>Task</strong><br>`;
+
+            if (t.Kind === TaskKind.When) {
+                html += `Type: When (predicate)`;
+            } else if (t.Kind === TaskKind.Delay) {
+                html += `Type: Delay<br>Remaining: ${t.Remaining.toFixed(2)}s`;
+            } else if (t.Kind === TaskKind.Then) {
+                html += `Type: Then (callback)`;
+            }
+
+            html += `</div>`;
+        }
+
+        if (world.Signature[entityId] & Has.Toggle) {
+            const t = world.Toggle[entityId];
+            html += `<div class="component">
+                <strong>Toggle</strong><br>
+                Mask: ${t.Mask}<br>
+                Frequency: ${t.Frequency.toFixed(2)}<br>
+                Since Last: ${t.SinceLast.toFixed(2)}
+            </div>`;
+        }
+
+        if (world.Signature[entityId] & Has.Trigger) {
+            const t = world.Trigger[entityId];
+            html += `<div class="component">
+                <strong>Trigger</strong><br>
+                Action: ${t.Action}
             </div>`;
         }
 
