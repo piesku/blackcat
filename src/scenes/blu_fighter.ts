@@ -11,7 +11,6 @@ import {move2d} from "../components/com_move2d.js";
 import {render2d} from "../components/com_render2d.js";
 import {spatial_node2d} from "../components/com_spatial_node2d.js";
 import {Game, Layer} from "../game.js";
-import {apply_upgrades} from "../upgrades/manager.js";
 
 export function blueprint_fighter(game: Game, is_player: boolean) {
     // Calculate health based on arena level: base 2 + 2 per arena level
@@ -30,13 +29,8 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
         ai_fighter(-1, is_player), // AI will find target automatically
         children(blueprint_healthbar()), // Add healthbar, weapons will be added by apply_upgrades
 
-        // Apply upgrades after entity creation
+        // Fighter-vs-fighter collision damage (low damage, long cooldown)
         callback((game: Game, entity: number) => {
-            let gameUpgrades = is_player ? game.State.playerUpgrades : game.State.opponentUpgrades;
-            apply_upgrades(game, entity, gameUpgrades);
-
-            // Fighter-vs-fighter collision damage (low damage, long cooldown)
-            // Applied after entity creation so we can use the entity as its own source
             deal_damage(0.5, entity, DamageType.Hand2Hand, {
                 cooldown: 2.0,
                 shake_duration: 0.4,
