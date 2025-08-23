@@ -1,4 +1,6 @@
 import {instantiate} from "../../lib/game.js";
+import {blueprint_camera} from "../blueprints/blu_camera.js";
+import {blueprint_fighter} from "../blueprints/blu_fighter.js";
 import {draw_arc} from "../components/com_draw.js";
 import {local_transform2d, set_position} from "../components/com_local_transform2d.js";
 import {spatial_node2d} from "../components/com_spatial_node2d.js";
@@ -12,8 +14,6 @@ import {
 } from "../maps/arena.js";
 import {apply_upgrades} from "../upgrades/manager.js";
 import {World} from "../world.js";
-import {blueprint_camera} from "./blu_camera.js";
-import {blueprint_fighter} from "./blu_fighter.js";
 
 export function scene_arena(game: Game) {
     game.ViewportResized = true;

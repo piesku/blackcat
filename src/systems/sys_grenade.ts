@@ -1,8 +1,8 @@
 import {instantiate} from "../../lib/game.js";
 import {vec2_length} from "../../lib/vec2.js";
+import {blueprint_fire_zone} from "../blueprints/blu_fire_zone.js";
 import {GrenadeBehavior} from "../components/com_grenade_behavior.js";
 import {Game} from "../game.js";
-import {blueprint_fire_zone} from "../scenes/blu_fire_zone.js";
 import {Has} from "../world.js";
 
 const QUERY = Has.GrenadeBehavior | Has.LocalTransform2D | Has.RigidBody2D;

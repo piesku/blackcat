@@ -1,13 +1,13 @@
 import {instantiate} from "../../lib/game.js";
+import {blueprint_shadow_particle} from "../blueprints/particles/blu_shadow_particle.js";
+import {blueprint_boomerang_weapon} from "../blueprints/weapons/blu_boomerang_weapon.js";
+import {blueprint_flamethrower} from "../blueprints/weapons/blu_flamethrower.js";
+import {blueprint_grenade_launcher} from "../blueprints/weapons/blu_grenade_launcher.js";
+import {blueprint_shotgun} from "../blueprints/weapons/blu_shotgun.js";
+import {blueprint_sniper_rifle} from "../blueprints/weapons/blu_sniper_rifle.js";
 import {attach_to_parent} from "../components/com_children.js";
 import {spawn} from "../components/com_spawn.js";
 import {Game} from "../game.js";
-import {blueprint_shadow_particle} from "../scenes/particles/blu_shadow_particle.js";
-import {blueprint_boomerang_weapon} from "../scenes/weapons/blu_boomerang_weapon.js";
-import {blueprint_flamethrower} from "../scenes/weapons/blu_flamethrower.js";
-import {blueprint_grenade_launcher} from "../scenes/weapons/blu_grenade_launcher.js";
-import {blueprint_shotgun} from "../scenes/weapons/blu_shotgun.js";
-import {blueprint_sniper_rifle} from "../scenes/weapons/blu_sniper_rifle.js";
 import {
     apply_bonus_hp,
     apply_damage_reduction,

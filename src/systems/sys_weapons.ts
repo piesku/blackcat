@@ -2,14 +2,14 @@ import {instantiate} from "../../lib/game.js";
 import {Vec2} from "../../lib/math.js";
 import {float} from "../../lib/random.js";
 import {vec2_length, vec2_normalize, vec2_subtract} from "../../lib/vec2.js";
+import {blueprint_flame_particle} from "../blueprints/particles/blu_flame_particle.js";
+import {blueprint_boomerang_projectile} from "../blueprints/projectiles/blu_boomerang.js";
+import {blueprint_grenade} from "../blueprints/projectiles/blu_grenade.js";
+import {blueprint_projectile} from "../blueprints/projectiles/blu_projectile.js";
 import {AIState} from "../components/com_ai_fighter.js";
 import {query_down} from "../components/com_children.js";
 import {Weapon} from "../components/com_weapon.js";
 import {Game} from "../game.js";
-import {blueprint_flame_particle} from "../scenes/particles/blu_flame_particle.js";
-import {blueprint_boomerang_projectile} from "../scenes/projectiles/blu_boomerang.js";
-import {blueprint_grenade} from "../scenes/projectiles/blu_grenade.js";
-import {blueprint_projectile} from "../scenes/projectiles/blu_projectile.js";
 import {getAIStateName} from "../ui/ai_state.js";
 import {Has} from "../world.js";
 
