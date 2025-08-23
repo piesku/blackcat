@@ -17,6 +17,14 @@ const BASE_DASH_SPEED_MULTIPLIER = 4.0; // Higher speed for more dramatic dashes
 const BASE_PREPARE_DURATION = 0.8; // Wind-up time for dash attacks
 const BASE_MOVE_SPEED = 2.0; // Reference speed for scaling calculations
 
+interface ScaledDistances {
+    circle: number;
+    dash_trigger: number;
+    dash_target: number;
+    retreat: number;
+    separation: number;
+}
+
 export function sys_ai_fighter(game: Game, delta: number) {
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
         if ((game.World.Signature[entity] & QUERY) === QUERY) {
@@ -189,7 +197,7 @@ function update_ai_state(
     entity: number,
     distance: number,
     delta: number,
-    scaled_distances: any,
+    scaled_distances: ScaledDistances,
     speed_scale: number,
     is_target_retreating: boolean,
     to_target: Vec2,

@@ -13,6 +13,7 @@ import {float} from "../../lib/random.js";
 import {vec2_normalize, vec2_rotate} from "../../lib/vec2.js";
 import {Entity} from "../../lib/world.js";
 import {copy_position} from "../components/com_local_transform2d.js";
+import {Spawn} from "../components/com_spawn.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
@@ -57,7 +58,7 @@ function update(game: Game, entity: Entity, delta: number) {
     }
 }
 
-function spawn_single_entity(game: Game, spawn: any, position: Vec2) {
+function spawn_single_entity(game: Game, spawn: Spawn, position: Vec2) {
     // Check if we can create more entities
     if (game.World.Signature.length - game.World.Graveyard.length >= game.World.Capacity) {
         console.warn("Cannot spawn entity: world at maximum capacity");

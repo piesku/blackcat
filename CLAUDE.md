@@ -62,4 +62,4 @@ This visual verification complements code testing and catches rendering/interact
 
 - Wait for my explicit approval before committing your changes.
 
-- Always use proper TypeScript types instead of any to ensure type safety.
+- Always use proper TypeScript types instead of 'any' to ensure type safety.

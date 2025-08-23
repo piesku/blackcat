@@ -1,5 +1,6 @@
 import {instantiate} from "../../lib/game.js";
 import {vec2_length} from "../../lib/vec2.js";
+import {GrenadeBehavior} from "../components/com_grenade_behavior.js";
 import {Game} from "../game.js";
 import {blueprint_fire_zone} from "../scenes/blu_fire_zone.js";
 import {Has} from "../world.js";
@@ -34,7 +35,7 @@ export function sys_grenade(game: Game, delta: number) {
     }
 }
 
-function explode_grenade(game: Game, grenade_entity: number, grenade: any) {
+function explode_grenade(game: Game, grenade_entity: number, grenade: GrenadeBehavior) {
     let transform = game.World.LocalTransform2D[grenade_entity];
     DEBUG: if (!transform) throw new Error("missing component");
 

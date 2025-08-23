@@ -10,6 +10,15 @@ import {TaskKind} from "./components/com_task.js";
 import {Game} from "./game.js";
 import {Has} from "./world.js";
 
+declare global {
+    interface Window {
+        toggleSceneGraph(): void;
+        refreshSceneGraph(): void;
+        selectEntity(entityId: number): void;
+        toggleTreeNode(element: HTMLElement, event: Event): void;
+    }
+}
+
 export interface TreeNode {
     id: number;
     children: TreeNode[];
@@ -24,10 +33,10 @@ export class SceneGraphInspector {
 
     private setupEventListeners() {
         // Make inspector functions available globally
-        (window as any).toggleSceneGraph = () => this.toggle();
-        (window as any).refreshSceneGraph = () => this.refresh();
-        (window as any).selectEntity = (entityId: number) => this.selectEntity(entityId);
-        (window as any).toggleTreeNode = (element: HTMLElement, event: Event) =>
+        window.toggleSceneGraph = () => this.toggle();
+        window.refreshSceneGraph = () => this.refresh();
+        window.selectEntity = (entityId: number) => this.selectEntity(entityId);
+        window.toggleTreeNode = (element: HTMLElement, event: Event) =>
             this.toggleTreeNode(element, event);
     }
 

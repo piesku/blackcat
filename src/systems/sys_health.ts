@@ -1,5 +1,6 @@
 import {query_down} from "../components/com_children.js";
 import {DrawKind} from "../components/com_draw.js";
+import {Health} from "../components/com_health.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
@@ -85,7 +86,7 @@ export function sys_health(game: Game, _delta: number) {
     }
 }
 
-function calculate_armor_reduction(health: any, incoming_damage: number): number {
+function calculate_armor_reduction(health: Health, incoming_damage: number): number {
     let final_damage = incoming_damage;
 
     // Scrap Armor: Ignore first damage instance

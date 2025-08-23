@@ -10,6 +10,8 @@
  * All damage detection uses the collision system - no separate radius detection needed.
  */
 
+import {Collide2D} from "../components/com_collide2d.js";
+import {DealDamage} from "../components/com_deal_damage.js";
 import {shake} from "../components/com_shake.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
@@ -39,7 +41,12 @@ export function sys_deal_damage(game: Game, delta: number) {
 /**
  * Handle all damage via collision detection (works for both point and area damage)
  */
-function handle_collision_damage(game: Game, entity: number, damage_dealer: any, collider: any) {
+function handle_collision_damage(
+    game: Game,
+    entity: number,
+    damage_dealer: DealDamage,
+    collider: Collide2D,
+) {
     let hit_something = false;
 
     for (let collision of collider.Collisions) {

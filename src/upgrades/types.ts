@@ -4,7 +4,7 @@ export interface UpgradeType {
     name: string; // Display name
     description: string; // UI description
     tier?: number; // For power scaling (optional)
-    data?: any; // Upgrade-specific parameters (optional)
+    data?: Record<string, unknown>; // Upgrade-specific parameters (optional)
 }
 
 export const enum UpgradeCategory {
