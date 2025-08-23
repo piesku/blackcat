@@ -131,9 +131,9 @@ export class SceneGraphInspector {
                 ? `<span class="tree-toggle" onclick="toggleTreeNode(this, event)">▼</span>`
                 : `<span class="tree-spacer">•</span>`;
 
-            // Format name line: either "named_entity" or "entity N"
+            // Format name line: either "named_entity" or "Entity N"
             const entityName = this.getEntityName(entity);
-            const displayName = entityName ? entityName : `entity ${entity}`;
+            const displayName = entityName ? entityName : `Entity ${entity}`;
 
             html += `<div class="tree-node" style="margin-left: ${depth * 20}px;">
                 <div class="entity-item" onclick="selectEntity(${entity})">
@@ -231,9 +231,8 @@ export class SceneGraphInspector {
         const name = this.getEntityName(entityId) || `Entity ${entityId}`;
 
         let html = `<h4>${name} (ID: ${entityId})</h4>`;
-        html += `<p><strong>Signature:</strong> ${world.Signature[entityId]} (0b${world.Signature[entityId].toString(2)})</p>`;
+        html += `<p><strong>Signature:</strong> ${world.Signature[entityId]} (0b${world.Signature[entityId].toString(2).padStart(32, "0")})</p>`;
 
-        html += "<h5>Components:</h5>";
         html += '<div class="component-list">';
 
         // Check each component type
@@ -249,28 +248,33 @@ export class SceneGraphInspector {
 
         if (world.SpatialNode2D[entityId]) {
             const s = world.SpatialNode2D[entityId];
-            const parentName =
-                s.Parent !== undefined
-                    ? this.getEntityName(s.Parent) || `Entity ${s.Parent}`
-                    : "None";
 
-            // Get children from Children component, not SpatialNode2D
+            // Make parent clickable if it exists
+            let parentDisplay = "None";
+            if (s.Parent !== undefined && world.Signature[s.Parent] !== 0) {
+                const parentName = this.getEntityName(s.Parent) || `Entity ${s.Parent}`;
+                parentDisplay = `<a href="#" onclick="selectEntity(${s.Parent}); return false;" style="color: #4a9eff; text-decoration: underline;">${parentName}</a>`;
+            }
+
+            // Get children from Children component and make them clickable
             let childrenInfo = "None";
             let childrenCount = 0;
             if (world.Children[entityId]) {
                 const children = world.Children[entityId].Children;
                 childrenCount = children.length;
-                const childrenNames = children
-                    .map((id) => this.getEntityName(id) || `Entity ${id}`)
-                    .slice(0, 3);
-                if (childrenNames.length > 0) {
-                    childrenInfo = childrenNames.join(", ") + (children.length > 3 ? "..." : "");
+                const clickableChildren = children.slice(0, 3).map((id) => {
+                    const childName = this.getEntityName(id) || `Entity ${id}`;
+                    return `<a href="#" onclick="selectEntity(${id}); return false;" style="color: #4a9eff; text-decoration: underline;">${childName}</a>`;
+                });
+                if (clickableChildren.length > 0) {
+                    childrenInfo =
+                        clickableChildren.join(", ") + (children.length > 3 ? "..." : "");
                 }
             }
 
             html += `<div class="component">
                 <strong>SpatialNode2D</strong><br>
-                Parent: ${parentName}<br>
+                Parent: ${parentDisplay}<br>
                 Children: ${childrenCount}`;
 
             if (childrenCount > 0) {
