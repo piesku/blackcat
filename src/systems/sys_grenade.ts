@@ -51,7 +51,6 @@ function explode_grenade(game: Game, grenade_entity: number, grenade: GrenadeBeh
             grenade.Damage * 2, // Explosion damage is higher
             3.0, // Large explosion radius
             0.5, // Brief explosion duration
-            grenade.Source, // Original attacker
         ),
     );
 

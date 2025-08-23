@@ -7,7 +7,7 @@ import {render2d} from "../../components/com_render2d.js";
 import {rigid_body2d, RigidKind} from "../../components/com_rigid_body2d.js";
 import {Layer} from "../../game.js";
 
-export function blueprint_flame_particle(damage: number = 1, source: number = -1) {
+export function blueprint_flame_particle(damage: number = 1) {
     return [
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d([0, 0], 0, [0.1, 0.1]), // Start small
@@ -25,7 +25,7 @@ export function blueprint_flame_particle(damage: number = 1, source: number = -1
 
         // Collision and damage - particles collide with fighters and terrain but not each other
         collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.1),
-        deal_damage(damage, source, DamageType.Fire, {
+        deal_damage(damage, DamageType.Fire, {
             cooldown: 0.0,
             shake_duration: 0.05,
             destroy_on_hit: true,

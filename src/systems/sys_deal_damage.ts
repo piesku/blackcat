@@ -12,6 +12,7 @@
 
 import {Collide2D} from "../components/com_collide2d.js";
 import {DealDamage} from "../components/com_deal_damage.js";
+import {get_root_spawner} from "../components/com_label.js";
 import {shake} from "../components/com_shake.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
@@ -55,8 +56,11 @@ function handle_collision_damage(
         // Skip self-damage
         if (target_entity === entity) continue;
 
-        // Skip if target is the source (friendly fire prevention)
-        if (target_entity === damage_dealer.Source) continue;
+        // Get original spawner for damage attribution
+        let original_spawner = get_root_spawner(game.World, entity);
+
+        // Allow all damage by default (mayhem mode)
+        // Future upgrade: "Self-Immunity" could check if target_entity === original_spawner
 
         // Skip if target has no health
         if (!(game.World.Signature[target_entity] & Has.Health)) continue;
@@ -72,12 +76,12 @@ function handle_collision_damage(
         // Deal damage
         target_health.PendingDamage.push({
             Amount: damage_dealer.Damage,
-            Source: damage_dealer.Source,
+            Source: original_spawner,
             Type: damage_dealer.DamageType,
         });
 
         console.log(
-            `[DAMAGE] Entity ${entity} (${damage_dealer.DamageType}) hit target ${target_entity}: adding ${damage_dealer.Damage} damage`,
+            `[DAMAGE] Entity ${entity} (${damage_dealer.DamageType}) hit target ${target_entity}: adding ${damage_dealer.Damage} damage (original source: ${original_spawner})`,
         );
 
         // Add to hit list for piercing

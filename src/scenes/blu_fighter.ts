@@ -1,7 +1,6 @@
 import {blueprint_healthbar} from "../blueprints/blu_healthbar.js";
 import {ai_fighter} from "../components/com_ai_fighter.js";
 import {animate_sprite} from "../components/com_animate_sprite.js";
-import {callback} from "../components/com_callback.js";
 import {children} from "../components/com_children.js";
 import {collide2d} from "../components/com_collide2d.js";
 import {DamageType, deal_damage} from "../components/com_deal_damage.js";
@@ -30,12 +29,10 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
         children(blueprint_healthbar()), // Add healthbar, weapons will be added by apply_upgrades
 
         // Fighter-vs-fighter collision damage (low damage, long cooldown)
-        callback((game: Game, entity: number) => {
-            deal_damage(0.5, entity, DamageType.Hand2Hand, {
-                cooldown: 2.0,
-                shake_duration: 0.4,
-                destroy_on_hit: false, // Fighters don't destroy themselves on collision
-            })(game, entity);
+        deal_damage(0.5, DamageType.Hand2Hand, {
+            cooldown: 2.0,
+            shake_duration: 0.4,
+            destroy_on_hit: false, // Fighters don't destroy themselves on collision
         }),
     ];
 }

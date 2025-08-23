@@ -15,7 +15,7 @@ import {Health} from "./components/com_health.js";
 import {Lifespan} from "./components/com_lifespan.js";
 import {LocalTransform2D} from "./components/com_local_transform2d.js";
 import {Move2D} from "./components/com_move2d.js";
-import {Named} from "./components/com_named.js";
+import {Label} from "./components/com_label.js";
 import {Particle} from "./components/com_particle.js";
 import {Render2D} from "./components/com_render2d.js";
 import {RigidBody2D} from "./components/com_rigid_body2d.js";
@@ -41,10 +41,10 @@ const enum Component {
     Dirty,
     Draw,
     Health,
+    Label,
     Lifespan,
     LocalTransform2D,
     Move2D,
-    Named,
     Particle,
     Render2D,
     RigidBody2D,
@@ -72,10 +72,10 @@ export const enum Has {
     Dirty = 1 << Component.Dirty,
     Draw = 1 << Component.Draw,
     Health = 1 << Component.Health,
+    Label = 1 << Component.Label,
     Lifespan = 1 << Component.Lifespan,
     LocalTransform2D = 1 << Component.LocalTransform2D,
     Move2D = 1 << Component.Move2D,
-    Named = 1 << Component.Named,
     Particle = 1 << Component.Particle,
     Render2D = 1 << Component.Render2D,
     RigidBody2D = 1 << Component.RigidBody2D,
@@ -106,10 +106,10 @@ export class World extends WorldImpl {
     DealDamage: Array<DealDamage> = [];
     Draw: Array<Draw> = [];
     Health: Array<Health> = [];
+    Label: Array<Label> = [];
     Lifespan: Array<Lifespan> = [];
     LocalTransform2D: Array<LocalTransform2D> = [];
     Move2D: Array<Move2D> = [];
-    Named: Array<Named> = [];
     Particle: Array<Particle> = [];
     Render2D: Array<Render2D> = [];
     RigidBody2D: Array<RigidBody2D> = [];

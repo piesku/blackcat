@@ -183,7 +183,7 @@ export class SceneGraphInspector {
             [Has.Lifespan]: "Lifespan",
             [Has.LocalTransform2D]: "LocalTransform2D",
             [Has.Move2D]: "Move2D",
-            [Has.Named]: "Named",
+            [Has.Label]: "Label",
             [Has.Particle]: "Particle",
             [Has.Render2D]: "Render2D",
             [Has.RigidBody2D]: "RigidBody2D",
@@ -215,25 +215,25 @@ export class SceneGraphInspector {
     private getEntityName(entityId: number): string | null {
         const world = this.game.World;
 
-        // Check Named component first
-        if (world.Named[entityId]) {
-            return world.Named[entityId].Name;
+        // Check Label component first
+        if (world.Signature[entityId] & Has.Label && world.Label[entityId].Name) {
+            return world.Label[entityId].Name;
         }
 
-        // Try to infer name from components
-        if (world.AIFighter[entityId]) {
-            return world.Health[entityId] ? "Fighter" : "AI Entity";
+        // Try to infer name from components using signatures
+        if (world.Signature[entityId] & Has.AIFighter) {
+            return "Fighter";
         }
-        if (world.Weapon[entityId]) {
+        if (world.Signature[entityId] & Has.Weapon) {
             return "Weapon";
         }
-        if (world.Particle[entityId]) {
+        if (world.Signature[entityId] & Has.Particle) {
             return "Particle";
         }
-        if (world.Spawn[entityId]) {
+        if (world.Signature[entityId] & Has.Spawn) {
             return "Spawner";
         }
-        if (world.Camera2D[entityId]) {
+        if (world.Signature[entityId] & Has.Camera2D) {
             return "Camera";
         }
 
@@ -354,7 +354,6 @@ export class SceneGraphInspector {
             html += `<div class="component">
                 <strong>DealDamage</strong><br>
                 Damage: ${d.Damage}<br>
-                Source: ${d.Source}
             </div>`;
         }
 
@@ -433,11 +432,12 @@ export class SceneGraphInspector {
             </div>`;
         }
 
-        if (world.Signature[entityId] & Has.Named) {
-            const n = world.Named[entityId];
+        if (world.Signature[entityId] & Has.Label) {
+            const n = world.Label[entityId];
             html += `<div class="component">
-                <strong>Named</strong><br>
-                Name: "${n.Name}"
+                <strong>Label</strong><br>
+                Name: "${n.Name || "none"}"<br>
+                SpawnedBy: ${n.SpawnedBy !== undefined ? `<a href="#" onclick="selectEntity(${n.SpawnedBy}); return false;">${n.SpawnedBy}</a>` : "none"}
             </div>`;
         }
 

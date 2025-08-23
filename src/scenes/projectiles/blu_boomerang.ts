@@ -32,7 +32,7 @@ export function blueprint_boomerang_projectile(
         lifespan(max_lifespan), // Auto-destroy if it takes too long
 
         // Boomerang damage - can hit multiple targets on both paths
-        deal_damage(damage, thrower_entity, DamageType.Projectile, {
+        deal_damage(damage, DamageType.Projectile, {
             cooldown: 0.5, // Brief cooldown to prevent rapid multiple hits on same target
             piercing: true, // Can hit multiple enemies
             destroy_on_hit: false, // Boomerang continues after hitting

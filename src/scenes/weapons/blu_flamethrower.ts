@@ -1,5 +1,5 @@
 import {local_transform2d} from "../../components/com_local_transform2d.js";
-import {named} from "../../components/com_named.js";
+import {label} from "../../components/com_label.js";
 import {render2d} from "../../components/com_render2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {spawn} from "../../components/com_spawn.js";
@@ -12,7 +12,7 @@ export function blueprint_flamethrower(game: Game) {
         spatial_node2d(),
         local_transform2d([0.7, 0], 0, [1.0, 1.0]), // Larger weapon offset
         render2d("21"), // Using sprite 21 for flamethrower
-        named("flamethrower"), // Name for identification
+        label("flamethrower"), // Name for identification
         weapon_ranged(
             1, // damage: moderate damage per flame particle
             6, // range: medium range
@@ -26,7 +26,7 @@ export function blueprint_flamethrower(game: Game) {
 
         // Spawner for flame cone effect
         spawn(
-            blueprint_flame_particle(1, -1), // damage=1, source=-1 (set by weapon system)
+            blueprint_flame_particle(1), // damage=1 (spawner source set by spawn system)
             12, // frequency: 12 particles per second (rapid fire)
             {
                 direction: [1, 0], // Forward direction (will be overridden by weapon system)

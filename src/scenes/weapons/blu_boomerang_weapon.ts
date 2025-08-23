@@ -1,5 +1,5 @@
 import {local_transform2d} from "../../components/com_local_transform2d.js";
-import {named} from "../../components/com_named.js";
+import {label} from "../../components/com_label.js";
 import {render2d} from "../../components/com_render2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {weapon_ranged} from "../../components/com_weapon.js";
@@ -10,7 +10,7 @@ export function blueprint_boomerang_weapon(game: Game) {
         spatial_node2d(),
         local_transform2d([0.5, 0], 0, [0.8, 0.8]), // Medium offset and size
         render2d("24"), // Using sprite 24 for boomerang
-        named("boomerang"), // Name for identification
+        label("boomerang"), // Name for identification
         weapon_ranged(
             2, // damage: moderate damage, can hit multiple targets
             6, // range: medium range for throwing

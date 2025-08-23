@@ -11,7 +11,6 @@ export function blueprint_fire_zone(
     damage: number = 1,
     radius: number = 1.5,
     duration: number = 3.0,
-    source: number = -1,
 ) {
     return [
         spatial_node2d(),
@@ -22,7 +21,7 @@ export function blueprint_fire_zone(
         collide2d(true, Layer.Object, Layer.Player, radius),
 
         // Fire zone damage - continuous area effect
-        deal_damage(damage, source, DamageType.Fire, {
+        deal_damage(damage, DamageType.Fire, {
             cooldown: 0.5, // Fire damage every 0.5 seconds
             shake_duration: 0.1,
             destroy_on_hit: false, // Fire zones don't destroy on hit

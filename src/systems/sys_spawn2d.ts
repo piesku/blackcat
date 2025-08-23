@@ -12,6 +12,7 @@ import {Vec2} from "../../lib/math.js";
 import {float} from "../../lib/random.js";
 import {vec2_normalize, vec2_rotate} from "../../lib/vec2.js";
 import {Entity} from "../../lib/world.js";
+import {get_root_spawner, label} from "../components/com_label.js";
 import {copy_position} from "../components/com_local_transform2d.js";
 import {Spawn} from "../components/com_spawn.js";
 import {Game} from "../game.js";
@@ -53,12 +54,12 @@ function update(game: Game, entity: Entity, delta: number) {
 
         // Spawn burst of entities
         for (let i = 0; i < spawn.BurstCount; i++) {
-            spawn_single_entity(game, spawn, world_position);
+            spawn_single_entity(game, entity, spawn, world_position);
         }
     }
 }
 
-function spawn_single_entity(game: Game, spawn: Spawn, position: Vec2) {
+function spawn_single_entity(game: Game, spawner_entity: Entity, spawn: Spawn, position: Vec2) {
     // Check if we can create more entities
     if (game.World.Signature.length - game.World.Graveyard.length >= game.World.Capacity) {
         console.warn("Cannot spawn entity: world at maximum capacity");
@@ -83,6 +84,19 @@ function spawn_single_entity(game: Game, spawn: Spawn, position: Vec2) {
 
     // Create entity using blueprint
     let spawned_entity = instantiate(game, [...spawn.Blueprint, copy_position(position)]);
+
+    // Track spawner relationship for damage attribution
+    // Pass through the root spawner to maintain the chain back to the original fighter
+    let root_spawner = get_root_spawner(game.World, spawner_entity);
+
+    // Add or update Label component with spawner tracking
+    if (game.World.Signature[spawned_entity] & Has.Label) {
+        // Entity already has a Label, update SpawnedBy
+        game.World.Label[spawned_entity].SpawnedBy = root_spawner;
+    } else {
+        // Add Label component with spawner info
+        label(undefined, root_spawner)(game, spawned_entity);
+    }
 
     // Set initial velocity after all components are set up
     let rigid_body = game.World.RigidBody2D[spawned_entity];

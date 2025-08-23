@@ -12,7 +12,6 @@ import {Game, Layer} from "../../game.js";
 export function blueprint_piercing_projectile(
     game: Game,
     damage: number,
-    owner_entity: number,
     max_range: number,
     speed: number,
     direction: Vec2 = [0, 1],
@@ -27,7 +26,7 @@ export function blueprint_piercing_projectile(
         collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.075),
         move2d(speed, 0),
         control_always2d(direction, 0),
-        deal_damage(damage, owner_entity, DamageType.Piercing, {
+        deal_damage(damage, DamageType.Piercing, {
             piercing: true,
             destroy_on_hit: false, // Piercing projectiles don't destroy on hit
             shake_duration: 0.15,

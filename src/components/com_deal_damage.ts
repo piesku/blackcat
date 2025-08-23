@@ -9,9 +9,6 @@ export interface DealDamage {
     /** Damage amount per hit */
     Damage: number;
 
-    /** Entity that owns this damage dealer (for attribution and friendly fire) */
-    Source: number;
-
     /** Type of damage for logging and effects */
     DamageType: DamageType;
 
@@ -50,7 +47,6 @@ export const enum DamageType {
  */
 export function deal_damage(
     damage: number,
-    source: number,
     damage_type: DamageType,
     options: {
         cooldown?: number;
@@ -64,7 +60,6 @@ export function deal_damage(
         game.World.Signature[entity] |= Has.DealDamage;
         game.World.DealDamage[entity] = {
             Damage: damage,
-            Source: source,
             DamageType: damage_type,
             Cooldown: options.cooldown || 0,
             LastDamageTime: 0,

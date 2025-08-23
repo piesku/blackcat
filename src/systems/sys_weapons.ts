@@ -65,11 +65,11 @@ function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapo
 }
 
 function get_weapon_name(game: Game, weapon_entity: number): string | null {
-    // Check if weapon has a Name component
-    if (!(game.World.Signature[weapon_entity] & Has.Named)) return null;
+    // Check if weapon has a Label component
+    if (!(game.World.Signature[weapon_entity] & Has.Label)) return null;
 
-    let named_component = game.World.Named[weapon_entity];
-    return named_component ? named_component.Name : null;
+    let label_component = game.World.Label[weapon_entity];
+    return label_component ? label_component.Name || null : null;
 }
 
 function activate_weapon(
@@ -217,7 +217,6 @@ function execute_ranged_attack(
             blueprint_projectile(
                 game,
                 weapon.Damage,
-                wielder_entity,
                 weapon.Range,
                 weapon.ProjectileSpeed,
                 projectile_direction,
@@ -264,7 +263,7 @@ function execute_flamethrower_attack(
     spawner.Direction[1] = to_target[1];
 
     // Update blueprint to use correct damage and source
-    spawner.Blueprint = blueprint_flame_particle(weapon.Damage, wielder_entity);
+    spawner.Blueprint = blueprint_flame_particle(weapon.Damage);
 
     // Activate the spawner by setting duration
     spawner.Duration = 1.0;
