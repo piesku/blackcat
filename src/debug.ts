@@ -155,38 +155,50 @@ export class SceneGraphInspector {
         return html;
     }
 
+    private getComponentMapping(): Record<number, string> {
+        // Centralized component mapping
+        return {
+            [Has.AIFighter]: "AIFighter",
+            [Has.AnimateSprite]: "AnimateSprite",
+            [Has.Boomerang]: "Boomerang",
+            [Has.Camera2D]: "Camera2D",
+            [Has.Collide2D]: "Collide2D",
+            [Has.GrenadeBehavior]: "GrenadeBehavior",
+            [Has.ControlAlways2D]: "ControlAlways2D",
+            [Has.ControlPlayer]: "ControlPlayer",
+            [Has.Children]: "Children",
+            [Has.DealDamage]: "DealDamage",
+            [Has.Dirty]: "Dirty",
+            [Has.Draw]: "Draw",
+            [Has.Health]: "Health",
+            [Has.Lifespan]: "Lifespan",
+            [Has.LocalTransform2D]: "LocalTransform2D",
+            [Has.Move2D]: "Move2D",
+            [Has.Named]: "Named",
+            [Has.Particle]: "Particle",
+            [Has.Render2D]: "Render2D",
+            [Has.RigidBody2D]: "RigidBody2D",
+            [Has.Shake]: "Shake",
+            [Has.SpatialNode2D]: "SpatialNode2D",
+            [Has.Spawn]: "Spawn",
+            [Has.Task]: "Task",
+            [Has.Toggle]: "Toggle",
+            [Has.Trigger]: "Trigger",
+            [Has.Weapon]: "Weapon",
+        };
+    }
+
     private getEntityComponents(entityId: number): string[] {
         const signature = this.game.World.Signature[entityId];
         const components: string[] = [];
+        const componentMapping = this.getComponentMapping();
 
-        // Use actual Has enum as source of truth - no duplication!
-        if (signature & Has.LocalTransform2D) components.push("Transform");
-        if (signature & Has.SpatialNode2D) components.push("SpatialNode");
-        if (signature & Has.Render2D) components.push("Render");
-        if (signature & Has.Health) components.push("Health");
-        if (signature & Has.AIFighter) components.push("AI");
-        if (signature & Has.Move2D) components.push("Move");
-        if (signature & Has.RigidBody2D) components.push("RigidBody");
-        if (signature & Has.Collide2D) components.push("Collide");
-        if (signature & Has.Weapon) components.push("Weapon");
-        if (signature & Has.Named) components.push("Named");
-        if (signature & Has.Spawn) components.push("Spawn");
-        if (signature & Has.Lifespan) components.push("Lifespan");
-        if (signature & Has.DealDamage) components.push("DealDamage");
-        if (signature & Has.Particle) components.push("Particle");
-        if (signature & Has.AnimateSprite) components.push("Animate");
-        if (signature & Has.Boomerang) components.push("Boomerang");
-        if (signature & Has.Camera2D) components.push("Camera");
-        if (signature & Has.GrenadeBehavior) components.push("Grenade");
-        if (signature & Has.ControlAlways2D) components.push("ControlAlways");
-        if (signature & Has.ControlPlayer) components.push("ControlPlayer");
-        if (signature & Has.Children) components.push("Children");
-        if (signature & Has.Draw) components.push("Draw");
-        if (signature & Has.Shake) components.push("Shake");
-        if (signature & Has.Task) components.push("Task");
-        if (signature & Has.Toggle) components.push("Toggle");
-        if (signature & Has.Trigger) components.push("Trigger");
-        if (signature & Has.Dirty) components.push("Dirty");
+        // Use component mapping to avoid duplication
+        for (const [hasValue, name] of Object.entries(componentMapping)) {
+            if (signature & parseInt(hasValue)) {
+                components.push(name);
+            }
+        }
 
         return components.sort();
     }
@@ -233,7 +245,7 @@ export class SceneGraphInspector {
         const name = this.getEntityName(entityId) || `Entity ${entityId}`;
 
         let html = `<h4>${name} (ID: ${entityId})</h4>`;
-        html += `<p><strong>Signature:</strong> ${world.Signature[entityId]} (0b${world.Signature[entityId].toString(2).padStart(32, "0")})</p>`;
+        html += `<p><strong>Signature:</strong> ${this.formatSignatureBinary(world.Signature[entityId])}</p>`;
 
         html += "<h5>Active Components:</h5>";
         html += '<div class="component-list">';
@@ -552,6 +564,25 @@ export class SceneGraphInspector {
 
         html += "</div>";
         details.innerHTML = html;
+    }
+
+    private formatSignatureBinary(signature: number): string {
+        const binaryStr = signature.toString(2).padStart(32, "0");
+        const componentMapping = this.getComponentMapping();
+        let html = "";
+
+        for (let i = 0; i < 32; i++) {
+            const bit = binaryStr[i];
+            const bitPosition = 31 - i; // Reverse because binary string is MSB first
+            const bitValue = 1 << bitPosition;
+            const componentName = componentMapping[bitValue] || `Bit${bitPosition}`;
+            const isActive = bit === "1";
+
+            const className = isActive ? "bit-active" : "bit-inactive";
+            html += `<span class="${className}" title="${componentName} (bit ${bitPosition})">${bit}</span>`;
+        }
+
+        return html;
     }
 
     toggleTreeNode(toggleElement: HTMLElement, event: Event) {

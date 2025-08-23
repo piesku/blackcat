@@ -199,3 +199,23 @@ h4, h5 {
 #entity-details::-webkit-scrollbar-thumb:hover {
     background: #777;
 }
+
+/* Binary signature bit visualization */
+.bit-active {
+    background: #4CAF50;
+    color: #000;
+    padding: 1px 2px;
+    margin: 0 1px;
+    border-radius: 2px;
+    font-weight: bold;
+    cursor: help;
+}
+
+.bit-inactive {
+    background: #333;
+    color: #666;
+    padding: 1px 2px;
+    margin: 0 1px;
+    border-radius: 2px;
+    cursor: help;
+}
