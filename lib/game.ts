@@ -3,9 +3,7 @@ import {GL_CULL_FACE, GL_DEPTH_TEST, GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA} from 
 import {Entity, WorldImpl, create_entity} from "./world.js";
 
 const update_span = document.getElementById("update");
-const delta_span = document.getElementById("delta");
 const fps_span = document.getElementById("fps");
-const step = 1 / 60;
 
 /**
  * The base Game class.
@@ -232,9 +230,6 @@ export abstract class GameImpl {
         let update = performance.now() - this.Milliseconds;
         if (update_span) {
             update_span.textContent = update.toFixed(1);
-        }
-        if (delta_span) {
-            delta_span.textContent = (delta * 1000).toFixed(1);
         }
         if (fps_span) {
             fps_span.textContent = (1 / delta).toFixed();

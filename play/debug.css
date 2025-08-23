@@ -1,23 +1,201 @@
 #debug {
-    display: flex;
-    flex-flow: column nowrap;
-    align-items: flex-end;
     position: absolute;
-    top: 0;
+    bottom: 0;
     right: 0;
     color: #fff;
     font-family: monospace;
+    z-index: 1000;
 }
 #debug button {
     cursor: pointer;
-    padding: 0;
-    background: none;
-    border: none;
+    background: #333;
+    border: 1px solid #666;
     font: inherit;
     color: inherit;
+    margin: 1px;
 }
-#debug div {
-    width: max-content;
-    background: #000;
+#debug button:hover {
+    background: #555;
+}
+
+/* Scene Graph Inspector */
+#scene-graph {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 50px;
+    border: 2px solid #666;
+    border-radius: 8px;
     color: #fff;
+    font-family: monospace;
+    font-size: 12px;
+    z-index: 1001;
+    overflow: hidden;
+}
+
+#scene-graph-header {
+    background: #333;
+    padding: 10px;
+    border-bottom: 1px solid #666;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#scene-graph-header h3 {
+    margin: 0;
+    color: #fff;
+}
+
+#scene-graph-header button {
+    padding: 4px 8px;
+    background: #555;
+    border: 1px solid #777;
+    color: #fff;
+    cursor: pointer;
+    margin-left: 8px;
+}
+
+#scene-graph-header button:hover {
+    background: #666;
+}
+
+#scene-graph-content {
+    display: flex;
+    height: 100%;
+}
+
+#entity-list {
+    width: 40%;
+    border-right: 1px solid #666;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+#entity-details {
+    width: 60%;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.entity-tree {
+    display: flex;
+    flex-direction: column;
+}
+
+.entity-item {
+    background: #0009;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 6px 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.entity-header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.entity-header strong {
+    flex: 1;
+}
+
+.entity-id {
+    color: #888;
+    font-size: 11px;
+    margin-left: auto;
+    padding-left: 8px;
+}
+
+.entity-item:hover {
+    background: #333;
+    border-color: #666;
+}
+
+.tree-toggle, .tree-spacer {
+    display: inline-block;
+    width: 16px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    color: #888;
+    font-size: 10px;
+    margin-right: 4px;
+    vertical-align: top;
+}
+
+.tree-toggle:hover {
+    color: #fff;
+}
+
+.tree-spacer {
+    cursor: default;
+    color: #555;
+}
+
+.tree-children {
+    border-left: 1px dotted #555;
+    margin-top: 4px;
+    margin-left: 8px;
+    padding-left: 4px;
+}
+
+.entity-item strong {
+    color: #4CAF50;
+}
+
+.entity-item small {
+    color: #aaa;
+}
+
+.component-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.component {
+    background: #0009;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 8px;
+}
+
+.component strong {
+    color: #2196F3;
+    display: block;
+    margin-bottom: 4px;
+}
+
+h4, h5 {
+    color: #fff;
+    margin: 10px 0 5px 0;
+}
+
+/* Scrollbar styling */
+#entity-list::-webkit-scrollbar,
+#entity-details::-webkit-scrollbar {
+    width: 8px;
+}
+
+#entity-list::-webkit-scrollbar-track,
+#entity-details::-webkit-scrollbar-track {
+    background: #333;
+}
+
+#entity-list::-webkit-scrollbar-thumb,
+#entity-details::-webkit-scrollbar-thumb {
+    background: #666;
+    border-radius: 4px;
+}
+
+#entity-list::-webkit-scrollbar-thumb:hover,
+#entity-details::-webkit-scrollbar-thumb:hover {
+    background: #777;
 }
