@@ -1,4 +1,3 @@
-import {instantiate} from "../../lib/game.js";
 import {Vec2} from "../../lib/math.js";
 import {float} from "../../lib/random.js";
 import {vec2_length, vec2_normalize, vec2_subtract} from "../../lib/vec2.js";
@@ -8,6 +7,7 @@ import {blueprint_grenade} from "../blueprints/projectiles/blu_grenade.js";
 import {blueprint_projectile} from "../blueprints/projectiles/blu_projectile.js";
 import {AIState} from "../components/com_ai_fighter.js";
 import {query_down} from "../components/com_children.js";
+import {SpawnMode} from "../components/com_spawn.js";
 import {Weapon} from "../components/com_weapon.js";
 import {Game} from "../game.js";
 import {getAIStateName} from "../ui/ai_state.js";
@@ -119,13 +119,19 @@ function activate_weapon(
             execute_flamethrower_attack(game, wielder_entity, target_entity, weapon, weapon_entity);
             break;
         case "grenade_launcher":
-            execute_grenade_launcher_attack(game, wielder_entity, target_entity, weapon);
+            execute_grenade_launcher_attack(
+                game,
+                wielder_entity,
+                target_entity,
+                weapon,
+                weapon_entity,
+            );
             break;
         case "boomerang":
-            execute_boomerang_attack(game, wielder_entity, target_entity, weapon);
+            execute_boomerang_attack(game, wielder_entity, target_entity, weapon, weapon_entity);
             break;
         default:
-            execute_ranged_attack(game, wielder_entity, target_entity, weapon);
+            execute_ranged_attack(game, wielder_entity, target_entity, weapon, weapon_entity);
             break;
     }
 }
@@ -172,6 +178,7 @@ function execute_ranged_attack(
     wielder_entity: number,
     target_entity: number,
     weapon: Weapon,
+    weapon_entity: number,
 ) {
     let wielder_transform = game.World.LocalTransform2D[wielder_entity];
     let target_transform = game.World.LocalTransform2D[target_entity];
@@ -191,50 +198,33 @@ function execute_ranged_attack(
     to_target[0] = scattered_x;
     to_target[1] = scattered_y;
 
-    // Spawn projectiles based on weapon stats
-    for (let i = 0; i < weapon.ProjectileCount; i++) {
-        // Calculate spread for multiple projectiles
-        let spread_angle = 0;
-        if (weapon.ProjectileCount > 1) {
-            let total_spread = weapon.Spread * (weapon.ProjectileCount - 1);
-            spread_angle = -total_spread / 2 + weapon.Spread * i;
-        }
+    // Find and activate the spawner on the weapon
+    let spawner = game.World.Spawn[weapon_entity];
+    DEBUG: if (!spawner) {
+        throw new Error(`[RANGED] Weapon ${weapon_entity} missing spawn component`);
+    }
 
-        // Apply spread to direction
-        let projectile_direction: Vec2 = [to_target[0], to_target[1]];
-        if (spread_angle !== 0) {
-            let cos_angle = Math.cos(spread_angle);
-            let sin_angle = Math.sin(spread_angle);
-            let x = projectile_direction[0] * cos_angle - projectile_direction[1] * sin_angle;
-            let y = projectile_direction[0] * sin_angle + projectile_direction[1] * cos_angle;
-            projectile_direction[0] = x;
-            projectile_direction[1] = y;
-        }
+    // Set spawn direction toward target (with scatter applied)
+    spawner.Direction[0] = to_target[0];
+    spawner.Direction[1] = to_target[1];
 
-        // Create projectile entity
-        let projectile_entity = instantiate(
-            game,
-            blueprint_projectile(
-                game,
-                weapon.Damage,
-                weapon.Range,
-                weapon.ProjectileSpeed,
-                projectile_direction,
-            ),
-        );
+    // Update blueprint to use correct damage parameters
+    spawner.Blueprint = blueprint_projectile(
+        game,
+        weapon.Damage,
+        weapon.Range,
+        weapon.ProjectileSpeed,
+    );
 
-        // Set projectile position (slightly offset from wielder)
-        let projectile_transform = game.World.LocalTransform2D[projectile_entity];
-        if (projectile_transform) {
-            projectile_transform.Translation[0] =
-                wielder_transform.Translation[0] + to_target[0] * 0.5;
-            projectile_transform.Translation[1] =
-                wielder_transform.Translation[1] + to_target[1] * 0.5;
-        }
+    // Activate the spawner based on its mode
+    if (spawner.Mode === SpawnMode.Count) {
+        spawner.RemainingCount = spawner.TotalCount;
+    } else {
+        spawner.Duration = spawner.ConfiguredDuration;
     }
 
     console.log(
-        `[RANGED] Entity ${wielder_entity} fired ${weapon.ProjectileCount} projectile(s) toward target ${target_entity} with scatter ${scatter_angle.toFixed(3)}`,
+        `[RANGED] Entity ${wielder_entity} activated spawner toward target ${target_entity} with scatter ${scatter_angle.toFixed(3)}`,
     );
 }
 
@@ -265,8 +255,10 @@ function execute_flamethrower_attack(
     // Update blueprint to use correct damage and source
     spawner.Blueprint = blueprint_flame_particle(weapon.Damage);
 
-    // Activate the spawner by setting duration
-    spawner.Duration = 1.0;
+    // Activate the timed spawner
+    if (spawner.Mode === SpawnMode.Timed) {
+        spawner.Duration = spawner.ConfiguredDuration;
+    }
 
     console.log(
         `[${Date.now()}] [FLAMETHROWER] Entity ${wielder_entity} activated spawner toward target ${target_entity}`,
@@ -278,51 +270,50 @@ function execute_grenade_launcher_attack(
     wielder_entity: number,
     target_entity: number,
     weapon: Weapon,
+    weapon_entity: number,
 ) {
     let wielder_transform = game.World.LocalTransform2D[wielder_entity];
     let target_transform = game.World.LocalTransform2D[target_entity];
     DEBUG: if (!wielder_transform || !target_transform) throw new Error("missing component");
 
-    // Calculate relative target position
+    // Calculate direction to target
+    let to_target: Vec2 = [0, 0];
+    vec2_subtract(to_target, target_transform.Translation, wielder_transform.Translation);
+    vec2_normalize(to_target, to_target);
+
+    // Calculate relative target position for grenade blueprint
     let target_position: Vec2 = [
         target_transform.Translation[0] - wielder_transform.Translation[0],
         target_transform.Translation[1] - wielder_transform.Translation[1],
     ];
 
-    // Create grenade projectile entity
-    let grenade_entity = instantiate(
-        game,
-        blueprint_grenade(
-            game,
-            weapon.Damage,
-            wielder_entity,
-            weapon.Range,
-            weapon.ProjectileSpeed,
-            target_position,
-        ),
-    );
-
-    // Set grenade starting position (slightly offset from wielder)
-    let grenade_transform = game.World.LocalTransform2D[grenade_entity];
-    if (grenade_transform) {
-        let to_target: Vec2 = [0, 0];
-        vec2_subtract(to_target, target_transform.Translation, wielder_transform.Translation);
-        vec2_normalize(to_target, to_target);
-
-        grenade_transform.Translation[0] = wielder_transform.Translation[0] + to_target[0] * 0.5;
-        grenade_transform.Translation[1] = wielder_transform.Translation[1] + to_target[1] * 0.5;
+    // Find and activate the spawner on the weapon
+    let spawner = game.World.Spawn[weapon_entity];
+    DEBUG: if (!spawner) {
+        throw new Error(`[GRENADE_LAUNCHER] Weapon ${weapon_entity} missing spawn component`);
     }
 
-    // Set initial velocity for trajectory (after all components are set up)
-    let grenade_behavior = game.World.GrenadeBehavior[grenade_entity];
-    let rigid_body = game.World.RigidBody2D[grenade_entity];
-    if (grenade_behavior && rigid_body) {
-        rigid_body.VelocityLinear[0] = grenade_behavior.InitialVelocity[0];
-        rigid_body.VelocityLinear[1] = grenade_behavior.InitialVelocity[1];
+    // Set spawn direction toward target
+    spawner.Direction[0] = to_target[0];
+    spawner.Direction[1] = to_target[1];
+
+    // Update blueprint to use correct parameters for this specific shot
+    spawner.Blueprint = blueprint_grenade(
+        game,
+        weapon.Damage,
+        wielder_entity,
+        weapon.Range,
+        weapon.ProjectileSpeed,
+        target_position,
+    );
+
+    // Activate the count-based spawner
+    if (spawner.Mode === SpawnMode.Count) {
+        spawner.RemainingCount = spawner.TotalCount;
     }
 
     console.log(
-        `[GRENADE_LAUNCHER] Entity ${wielder_entity} fired grenade ${grenade_entity} toward target ${target_entity}`,
+        `[GRENADE_LAUNCHER] Entity ${wielder_entity} activated grenade spawner toward target ${target_entity}`,
     );
 }
 
@@ -331,36 +322,42 @@ function execute_boomerang_attack(
     wielder_entity: number,
     target_entity: number,
     weapon: Weapon,
+    weapon_entity: number,
 ) {
     let wielder_transform = game.World.LocalTransform2D[wielder_entity];
     let target_transform = game.World.LocalTransform2D[target_entity];
     DEBUG: if (!wielder_transform || !target_transform) throw new Error("missing component");
 
-    // Create boomerang projectile entity
-    let boomerang_entity = instantiate(
+    // Calculate direction to target
+    let to_target: Vec2 = [0, 0];
+    vec2_subtract(to_target, target_transform.Translation, wielder_transform.Translation);
+    vec2_normalize(to_target, to_target);
+
+    // Find and activate the spawner on the weapon
+    let spawner = game.World.Spawn[weapon_entity];
+    DEBUG: if (!spawner) {
+        throw new Error(`[BOOMERANG] Weapon ${weapon_entity} missing spawn component`);
+    }
+
+    // Set spawn direction toward target
+    spawner.Direction[0] = to_target[0];
+    spawner.Direction[1] = to_target[1];
+
+    // Update blueprint to use correct parameters for this specific shot
+    spawner.Blueprint = blueprint_boomerang_projectile(
         game,
-        blueprint_boomerang_projectile(
-            game,
-            wielder_entity, // thrower
-            [target_transform.Translation[0], target_transform.Translation[1]], // target position
-            weapon.Range, // max range
-            weapon.ProjectileSpeed, // speed
-        ),
+        wielder_entity, // thrower
+        [target_transform.Translation[0], target_transform.Translation[1]], // target position
+        weapon.Range, // max range
+        weapon.ProjectileSpeed, // speed
     );
 
-    // Set boomerang starting position (slightly offset from wielder)
-    let boomerang_transform = game.World.LocalTransform2D[boomerang_entity];
-    if (boomerang_transform) {
-        // Calculate direction to target for offset
-        let to_target: Vec2 = [0, 0];
-        vec2_subtract(to_target, target_transform.Translation, wielder_transform.Translation);
-        vec2_normalize(to_target, to_target);
-
-        boomerang_transform.Translation[0] = wielder_transform.Translation[0] + to_target[0] * 0.3;
-        boomerang_transform.Translation[1] = wielder_transform.Translation[1] + to_target[1] * 0.3;
+    // Activate the count-based spawner
+    if (spawner.Mode === SpawnMode.Count) {
+        spawner.RemainingCount = spawner.TotalCount;
     }
 
     console.log(
-        `[BOOMERANG] Entity ${wielder_entity} threw boomerang ${boomerang_entity} toward target ${target_entity}`,
+        `[BOOMERANG] Entity ${wielder_entity} activated boomerang spawner toward target ${target_entity}`,
     );
 }

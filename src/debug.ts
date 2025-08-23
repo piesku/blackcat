@@ -6,6 +6,7 @@
  */
 
 import {DrawKind} from "./components/com_draw.js";
+import {SpawnMode} from "./components/com_spawn.js";
 import {TaskKind} from "./components/com_task.js";
 import {Game} from "./game.js";
 import {Has} from "./world.js";
@@ -519,9 +520,13 @@ export class SceneGraphInspector {
             const s = world.Spawn[entityId];
             html += `<div class="component">
                 <strong>Spawn</strong><br>
-                Duration: ${s.Duration.toFixed(2)}<br>
+                Mode: ${s.Mode === SpawnMode.Count ? "Count" : "Timed"}<br>
+                ${
+                    s.Mode === SpawnMode.Count
+                        ? `Count: ${s.RemainingCount}/${s.TotalCount}`
+                        : `Duration: ${s.Duration.toFixed(2)}<br>Burst Count: ${s.BurstCount}`
+                }<br>
                 Interval: ${s.Interval.toFixed(2)}<br>
-                Burst Count: ${s.BurstCount}<br>
                 Speed: ${s.SpeedMin.toFixed(1)} - ${s.SpeedMax.toFixed(1)}
             </div>`;
         }

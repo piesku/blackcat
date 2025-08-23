@@ -14,7 +14,7 @@ import {vec2_normalize, vec2_rotate} from "../../lib/vec2.js";
 import {Entity} from "../../lib/world.js";
 import {get_root_spawner, label} from "../components/com_label.js";
 import {copy_position} from "../components/com_local_transform2d.js";
-import {Spawn} from "../components/com_spawn.js";
+import {Spawn, SpawnCount, SpawnMode, SpawnTimed} from "../components/com_spawn.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
@@ -34,13 +34,49 @@ const spawn_direction: Vec2 = [0, 0];
 function update(game: Game, entity: Entity, delta: number) {
     let spawn = game.World.Spawn[entity];
 
+    switch (spawn.Mode) {
+        case SpawnMode.Count:
+            update_count_spawner(game, entity, spawn, delta);
+            break;
+        case SpawnMode.Timed:
+            update_timed_spawner(game, entity, spawn, delta);
+            break;
+    }
+}
+
+function update_count_spawner(game: Game, entity: Entity, spawn: SpawnCount, delta: number) {
+    spawn.SinceLast += delta;
+
+    // Check if spawner is active and has remaining entities
+    if (spawn.RemainingCount <= 0) {
+        return;
+    }
+
+    // Check if it's time to spawn
+    if (spawn.SinceLast >= spawn.Interval) {
+        spawn.SinceLast = 0;
+        spawn.RemainingCount--;
+
+        let spatial_node = game.World.SpatialNode2D[entity];
+        mat2d_get_translation(world_position, spatial_node.World);
+
+        console.log(
+            `[${Date.now()}] [SPAWNER] Entity ${entity} spawning 1 entity (${spawn.RemainingCount} remaining)`,
+        );
+
+        spawn_single_entity(game, entity, spawn, world_position);
+    }
+}
+
+function update_timed_spawner(game: Game, entity: Entity, spawn: SpawnTimed, delta: number) {
+    spawn.SinceLast += delta;
+
     // Handle duration countdown
     if (spawn.Duration <= 0) {
         return;
     }
 
     spawn.Duration -= delta;
-    spawn.SinceLast += delta;
 
     if (spawn.SinceLast >= spawn.Interval) {
         spawn.SinceLast = 0;
@@ -60,12 +96,6 @@ function update(game: Game, entity: Entity, delta: number) {
 }
 
 function spawn_single_entity(game: Game, spawner_entity: Entity, spawn: Spawn, position: Vec2) {
-    // Check if we can create more entities
-    if (game.World.Signature.length - game.World.Graveyard.length >= game.World.Capacity) {
-        console.warn("Cannot spawn entity: world at maximum capacity");
-        return;
-    }
-
     // Set spawn direction
     spawn_direction[0] = spawn.Direction[0];
     spawn_direction[1] = spawn.Direction[1];

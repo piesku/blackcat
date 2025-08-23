@@ -1,7 +1,9 @@
+import {blueprint_grenade} from "../projectiles/blu_grenade.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
 import {label} from "../../components/com_label.js";
 import {render2d} from "../../components/com_render2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
+import {spawn_count} from "../../components/com_spawn.js";
 import {weapon_ranged} from "../../components/com_weapon.js";
 import {Game} from "../../game.js";
 
@@ -20,6 +22,17 @@ export function blueprint_grenade_launcher(game: Game) {
             0.0, // spread: no spread between shots
             0.1, // scatter: slight aiming inaccuracy
             0.5, // initial timeout
+        ),
+
+        // Spawner for grenade projectiles
+        spawn_count(
+            blueprint_grenade(game, 2, 0, 8, 6, [0, 0]), // Will be configured per shot
+            1, // count: single grenade per shot
+            0, // interval: instant spawn
+            [1, 0], // direction: Forward direction (will be overridden by weapon system)
+            0.1, // spread: Slight spread for realism
+            5.5, // speedMin
+            6.5, // speedMax
         ),
     ];
 }

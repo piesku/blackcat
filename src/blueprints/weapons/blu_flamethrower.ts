@@ -3,7 +3,7 @@ import {label} from "../../components/com_label.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
 import {render2d} from "../../components/com_render2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
-import {spawn} from "../../components/com_spawn.js";
+import {spawn_timed} from "../../components/com_spawn.js";
 import {weapon_ranged} from "../../components/com_weapon.js";
 import {Game} from "../../game.js";
 
@@ -25,17 +25,15 @@ export function blueprint_flamethrower(game: Game) {
         ),
 
         // Spawner for flame cone effect
-        spawn(
+        spawn_timed(
             blueprint_flame_particle(1), // damage=1 (spawner source set by spawn system)
-            12, // frequency: 12 particles per second (rapid fire)
-            {
-                direction: [1, 0], // Forward direction (will be overridden by weapon system)
-                spread: Math.PI / 4, // 45 degree cone spread
-                speedMin: 3.0,
-                speedMax: 5.0,
-                duration: 0, // Start inactive (0 duration), will be activated by weapon system
-                burstCount: 1, // 2 particles per emission
-            },
+            1.0, // duration: 1 second (will be reactivated by weapon system)
+            1.0 / 12, // interval: spawn every ~0.083 seconds (12 particles per second)
+            [1, 0], // direction: Forward direction (will be overridden by weapon system)
+            Math.PI / 4, // spread: 45 degree cone spread
+            3.0, // speedMin
+            5.0, // speedMax
+            1, // burstCount: 1 particle per emission
         ),
     ];
 }
