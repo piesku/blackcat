@@ -72,6 +72,12 @@ export const WEAPON_UPGRADES: UpgradeType[] = [
         name: "Spikeballs",
         description: "Bouncing projectiles that persist and ricochet around the arena",
     },
+    {
+        id: "larpa",
+        category: UpgradeCategory.Weapon,
+        name: "Larpa",
+        description: "Rockets leaving falling particle damage trails",
+    },
 ];
 
 // Armor upgrade definitions

@@ -8,6 +8,7 @@ import {blueprint_minigun} from "../blueprints/weapons/blu_minigun.js";
 import {blueprint_shotgun} from "../blueprints/weapons/blu_shotgun.js";
 import {blueprint_sniper_rifle} from "../blueprints/weapons/blu_sniper_rifle.js";
 import {blueprint_spikeballs} from "../blueprints/weapons/blu_spikeballs.js";
+import {blueprint_larpa} from "../blueprints/weapons/blu_larpa.js";
 import {attach_to_parent} from "../components/com_children.js";
 import {spawn_timed} from "../components/com_spawn.js";
 import {Game} from "../game.js";
@@ -92,6 +93,11 @@ function apply_weapon_upgrade(game: Game, entity: number, upgrade: UpgradeType) 
 
         case "spikeballs":
             weapon_entity = instantiate(game, blueprint_spikeballs());
+            attach_to_parent(game, weapon_entity, entity);
+            break;
+
+        case "larpa":
+            weapon_entity = instantiate(game, blueprint_larpa());
             attach_to_parent(game, weapon_entity, entity);
             break;
 

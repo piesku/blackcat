@@ -1,0 +1,39 @@
+import {Tile} from "../../../sprites/spritesheet.js";
+import {collide2d} from "../../components/com_collide2d.js";
+import {DamageType, deal_damage} from "../../components/com_deal_damage.js";
+import {label} from "../../components/com_label.js";
+import {lifespan} from "../../components/com_lifespan.js";
+import {local_transform2d} from "../../components/com_local_transform2d.js";
+import {render2d} from "../../components/com_render2d.js";
+import {rigid_body2d, RigidKind} from "../../components/com_rigid_body2d.js";
+import {spatial_node2d} from "../../components/com_spatial_node2d.js";
+import {spawn_timed} from "../../components/com_spawn.js";
+import {Layer} from "../../game.js";
+import {blueprint_larpa_trail_particle} from "../particles/blu_larpa_trail_particle.js";
+
+export function blueprint_larpa_rocket(damage: number) {
+    return [
+        label("larpa rocket"),
+        spatial_node2d(),
+        local_transform2d(undefined, 0, [0.3, 0.3]), // Medium-sized rocket
+        render2d(Tile.Mortar), // Use mortar sprite for rocket appearance
+        collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.08),
+        rigid_body2d(RigidKind.Dynamic, 0, 0, [0, 0]),
+        deal_damage(damage, DamageType.Explosion, {
+            destroy_on_hit: true,
+            shake_duration: 0.25,
+        }),
+        lifespan(5), // Longer flight time than regular projectiles
+
+        // Spawner for falling particle damage trail
+        spawn_timed(
+            () => blueprint_larpa_trail_particle(),
+            0.1, // interval: spawn trail particle every 0.1 seconds
+            [0, -1], // direction: particles fall downward
+            0.2, // spread: slight horizontal spread
+            0.5, // speedMin: slow falling speed
+            1.5, // speedMax
+            Infinity,
+        ),
+    ];
+}
