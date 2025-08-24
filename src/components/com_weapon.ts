@@ -1,7 +1,6 @@
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
-// Simplified weapon component - ranged only
 export interface Weapon {
     Damage: number;
     Range: number;

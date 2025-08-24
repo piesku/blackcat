@@ -10,13 +10,14 @@ import {
 import {setup_render2d_buffers} from "../materials/layout2d.js";
 import {mat_render2d} from "../materials/mat_render2d.js";
 import {createFreshGameState, GameState} from "./state.js";
-import {sys_control_ai} from "./systems/sys_control_ai.js";
 import {sys_aim} from "./systems/sys_aim.js";
 import {sys_arena_bounds} from "./systems/sys_arena_bounds.js";
 import {sys_boomerang} from "./systems/sys_boomerang.js";
 import {sys_camera2d} from "./systems/sys_camera2d.js";
 import {sys_collide2d} from "./systems/sys_collide2d.js";
+import {sys_control_ai} from "./systems/sys_control_ai.js";
 import {sys_control_always2d} from "./systems/sys_control_always2d.js";
+import {sys_control_weapon} from "./systems/sys_control_weapon.js";
 import {sys_deal_damage} from "./systems/sys_deal_damage.js";
 import {sys_draw2d} from "./systems/sys_draw2d.js";
 import {sys_duel_manager} from "./systems/sys_duel_manager.js";
@@ -38,7 +39,6 @@ import {sys_transform2d} from "./systems/sys_transform2d.js";
 import {sys_trigger2d} from "./systems/sys_trigger2d.js";
 import {sys_ui} from "./systems/sys_ui.js";
 import {sys_victory_timer} from "./systems/sys_victory_timer.js";
-import {sys_weapons} from "./systems/sys_weapons.js";
 import {Has, World} from "./world.js";
 
 export const WORLD_CAPACITY = 65_536; // = 4MB of InstanceData.
@@ -100,19 +100,21 @@ export class Game extends Game3D {
         sys_aim(this, delta);
         sys_control_ai(this, delta);
         sys_control_always2d(this, delta);
+        sys_control_weapon(this, delta);
 
-        // Weapons.
-        sys_weapons(this, delta);
+        // Weapon-specific logic.
         sys_boomerang(this, delta);
         sys_grenade(this, delta);
 
         // Particle systems.
         sys_particles(this, delta);
 
-        // Unified damage system (replaces sys_combat, sys_projectile, sys_fire_zone).
+        // Damage processing.
         sys_deal_damage(this, delta);
-        sys_health(this, delta); // Process damage after all damage dealers
+        sys_health(this, delta);
         sys_duel_manager(this, delta); // Check for victory/defeat after health processing
+
+        // Other systems.
         sys_move2d(this, delta);
         sys_arena_bounds(this, delta);
         sys_lifespan(this, delta);

@@ -12,7 +12,7 @@ import {Has} from "../world.js";
 
 const QUERY = Has.Weapon | Has.SpatialNode2D;
 
-export function sys_weapons(game: Game, delta: number) {
+export function sys_control_weapon(game: Game, delta: number) {
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
         if ((game.World.Signature[entity] & QUERY) === QUERY) {
             let weapon = game.World.Weapon[entity];
