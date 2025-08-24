@@ -6,47 +6,44 @@ import {blueprint_boomerang_projectile} from "../blueprints/projectiles/blu_boom
 import {blueprint_grenade} from "../blueprints/projectiles/blu_grenade.js";
 import {blueprint_projectile} from "../blueprints/projectiles/blu_projectile.js";
 import {AIState} from "../components/com_ai_fighter.js";
-import {query_down} from "../components/com_children.js";
 import {SpawnMode} from "../components/com_spawn.js";
 import {Weapon} from "../components/com_weapon.js";
 import {Game} from "../game.js";
 import {getAIStateName} from "../ui/ai_state.js";
 import {Has} from "../world.js";
 
-const QUERY = Has.Children; // Entities that might have weapon children
+const QUERY = Has.Weapon; // Entities that are weapons
 
 export function sys_weapons(game: Game, delta: number) {
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
         if ((game.World.Signature[entity] & QUERY) === QUERY) {
-            // Look for weapon children
-            for (let weapon_entity of query_down(game.World, entity, Has.Weapon)) {
-                if (weapon_entity === entity) continue; // Skip the parent itself
+            let weapon = game.World.Weapon[entity];
+            DEBUG: if (!weapon) throw new Error("missing component");
 
-                let weapon = game.World.Weapon[weapon_entity];
-                if (!weapon) continue;
+            // Update cooldowns
+            if (weapon.LastAttackTime > 0) {
+                weapon.LastAttackTime = Math.max(0, weapon.LastAttackTime - delta);
+            }
 
-                // Update cooldowns
-                if (weapon.LastAttackTime > 0) {
-                    weapon.LastAttackTime = Math.max(0, weapon.LastAttackTime - delta);
-                }
+            // Find the wielder (parent entity)
+            let wielder_entity = -1;
+            if (game.World.Signature[entity] & Has.SpatialNode2D) {
+                let spatial_node = game.World.SpatialNode2D[entity];
+                wielder_entity = spatial_node?.Parent ?? -1;
+            }
+            DEBUG: if (wielder_entity === -1) throw new Error("weapon missing parent");
 
-                // Check if weapon should activate based on AI state and weapon type
-                if (should_activate_weapon(game, entity, weapon)) {
-                    activate_weapon(game, entity, weapon_entity, weapon);
-                }
+            // Check if weapon should activate based on AI state and weapon type
+            if (should_activate_weapon(game, wielder_entity, weapon)) {
+                activate_weapon(game, wielder_entity, entity, weapon);
             }
         }
     }
 }
 
 function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapon): boolean {
-    // Check if parent has AI fighter component
-    if (!(game.World.Signature[parent_entity] & Has.AIFighter)) {
-        return false;
-    }
-
     let ai = game.World.AIFighter[parent_entity];
-    if (!ai) return false;
+    DEBUG: if (!ai) throw new Error("missing component");
 
     // All weapons are ranged - can activate in Circling, Pursuing, and Dashing states
     let should_activate =
