@@ -5,7 +5,7 @@ import {MortarBehavior} from "../components/com_mortar_behavior.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
-const QUERY = Has.MortarBehavior | Has.LocalTransform2D | Has.RigidBody2D;
+const QUERY = Has.MortarBehavior | Has.LocalTransform2D | Has.RigidBody2D | Has.Collide2D;
 
 export function sys_mortar(game: Game, delta: number) {
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
@@ -13,8 +13,9 @@ export function sys_mortar(game: Game, delta: number) {
             let mortar = game.World.MortarBehavior[entity];
             let transform = game.World.LocalTransform2D[entity];
             let rigid_body = game.World.RigidBody2D[entity];
+            let collider = game.World.Collide2D[entity];
 
-            if (!mortar || !transform || !rigid_body) continue;
+            if (!mortar || !transform || !rigid_body || !collider) continue;
 
             // Update flight time (domain-specific logic)
             mortar.FlightTime += delta;
@@ -25,8 +26,15 @@ export function sys_mortar(game: Game, delta: number) {
                 transform.Translation[1] - mortar.TargetPosition[1],
             ]);
 
+            let hit_something =
+                collider.Collisions.length > 0 &&
+                // TODO Position the mortar such that this isn't necessary
+                collider.Collisions.some((collision) => collision.Other !== mortar.Source);
+
             let should_explode =
-                mortar.FlightTime >= mortar.TimeToTarget || distance_to_target < 0.5;
+                hit_something ||
+                mortar.FlightTime >= mortar.TimeToTarget ||
+                distance_to_target < 0.5;
 
             if (should_explode) {
                 explode_mortar_shell(game, entity, mortar);
