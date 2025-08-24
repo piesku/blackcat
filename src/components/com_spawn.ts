@@ -17,7 +17,7 @@ export const enum SpawnMode {
 }
 
 export interface SpawnBase {
-    Blueprint: Blueprint<Game>;
+    BlueprintCreator: () => Blueprint<Game>; // Function that creates fresh blueprint each time
     Direction: Vec2; // Base emission direction (in parent's space)
     Spread: number; // Cone angle in radians (0 = straight line, π = full circle)
     SpeedMin: number; // Minimum spawn speed
@@ -45,7 +45,7 @@ export type Spawn = SpawnCount | SpawnTimed;
  * Spawn a count of entities with optional delay between spawns.
  * The count is set by the control system that activates this spawner.
  *
- * @param blueprint The blueprint to spawn.
+ * @param creator The blueprint creator.
  * @param interval Time between spawns (0 = all at once).
  * @param direction Base emission direction.
  * @param spread Cone angle in radians.
@@ -54,7 +54,7 @@ export type Spawn = SpawnCount | SpawnTimed;
  * @param initialCount Initial count to spawn (0 = inactive, >0 = immediately active).
  */
 export function spawn_count(
-    blueprint: Blueprint<Game>,
+    creator: () => Blueprint<Game>,
     interval: number,
     direction: Vec2,
     spread: number,
@@ -65,7 +65,7 @@ export function spawn_count(
     return (game: Game, entity: Entity) => {
         const spawner: SpawnCount = {
             Mode: SpawnMode.Count,
-            Blueprint: blueprint,
+            BlueprintCreator: creator,
             RemainingCount: initialCount, // 0 = inactive, >0 = active
             Interval: interval,
             SinceLast: 0,
@@ -84,7 +84,7 @@ export function spawn_count(
  * Spawn entities continuously over a time duration.
  * The duration is set by the control system that activates this spawner.
  *
- * @param blueprint The blueprint to spawn.
+ * @param creator The blueprint creator.
  * @param interval Time between spawns.
  * @param direction Base emission direction.
  * @param spread Cone angle in radians.
@@ -94,7 +94,7 @@ export function spawn_count(
  * @param initialDuration Initial duration to spawn (0 = inactive, >0 = immediately active).
  */
 export function spawn_timed(
-    blueprint: Blueprint<Game>,
+    creator: () => Blueprint<Game>,
     interval: number,
     direction: Vec2,
     spread: number,
@@ -106,7 +106,7 @@ export function spawn_timed(
     return (game: Game, entity: Entity) => {
         const spawner: SpawnTimed = {
             Mode: SpawnMode.Timed,
-            Blueprint: blueprint,
+            BlueprintCreator: creator,
             Duration: initialDuration, // 0 = inactive, >0 = active
             Interval: interval,
             SinceLast: 0,

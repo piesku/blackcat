@@ -87,7 +87,12 @@ function update_timed_spawner(game: Game, entity: Entity, spawn: SpawnTimed, del
     }
 }
 
-function spawn_single_entity(game: Game, spawner_entity: Entity, spawn: Spawn, position: Vec2) {
+function spawn_single_entity(
+    game: Game,
+    spawner_entity: Entity,
+    spawn: Spawn,
+    position: Readonly<Vec2>,
+) {
     // Set spawn direction
     spawn_direction[0] = spawn.Direction[0];
     spawn_direction[1] = spawn.Direction[1];
@@ -104,8 +109,8 @@ function spawn_single_entity(game: Game, spawner_entity: Entity, spawn: Spawn, p
     // Random speed within range
     let speed = float(spawn.SpeedMin, spawn.SpeedMax);
 
-    // Create entity using blueprint
-    let spawned_entity = instantiate(game, [...spawn.Blueprint, copy_position(position)]);
+    // Create entity using blueprint function (creates fresh blueprint each time)
+    let spawned_entity = instantiate(game, [...spawn.BlueprintCreator(), copy_position(position)]);
 
     // Track spawner relationship for damage attribution
     if (game.World.Signature[spawned_entity] & Has.Label) {

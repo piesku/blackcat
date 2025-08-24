@@ -570,7 +570,6 @@ export class SceneGraphInspector {
             const w = world.Weapon[entityId];
             html += `<div class="component">
                 <strong>Weapon</strong><br>
-                Damage: ${w.Damage}<br>
                 Range: ${w.Range}<br>
                 Cooldown: ${w.Cooldown.toFixed(2)}<br>
                 Last Attack: ${w.LastAttackTime.toFixed(2)}

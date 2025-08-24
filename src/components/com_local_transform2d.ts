@@ -87,7 +87,7 @@ export function set_position(x: number, y: number) {
  *
  * @param translation Local translation relative to the parent.
  */
-export function copy_position(translation: Vec2) {
+export function copy_position(translation: Readonly<Vec2>) {
     return (game: Game, entity: Entity) => {
         let local = game.World.LocalTransform2D[entity];
         vec2_copy(local.Translation, translation);
@@ -134,7 +134,7 @@ export function set_scale(x: number, y: number) {
  *
  * @param scale Local scale relative to the parent.
  */
-export function copy_scale(scale: Vec2) {
+export function copy_scale(scale: Readonly<Vec2>) {
     return (game: Game, entity: Entity) => {
         let local = game.World.LocalTransform2D[entity];
         vec2_copy(local.Scale, scale);

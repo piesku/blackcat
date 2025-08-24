@@ -6,16 +6,14 @@ import {render2d} from "../../components/com_render2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {spawn_timed} from "../../components/com_spawn.js";
 import {weapon_ranged} from "../../components/com_weapon.js";
-import {Game} from "../../game.js";
 
-export function blueprint_flamethrower(game: Game) {
+export function blueprint_flamethrower() {
     return [
         spatial_node2d(),
         local_transform2d([0, 0], 0, [1.0, 1.0]), // Larger weapon offset
         render2d(Tile.Flamethrower), // Using sprite 21 for flamethrower
         label("flamethrower"), // Name for identification
         weapon_ranged(
-            1, // damage: moderate damage per flame particle
             6, // range: medium range
             3.0, // cooldown: slower rate of fire for triggering flame bursts
             0.5, // initial timeout
@@ -24,7 +22,7 @@ export function blueprint_flamethrower(game: Game) {
 
         // Spawner for flame cone effect
         spawn_timed(
-            blueprint_flame_particle(1), // damage=1 (spawner source set by spawn system)
+            () => blueprint_flame_particle(1), // damage=1
             1.0 / 12, // interval: spawn every ~0.083 seconds (12 particles per second)
             [1, 0], // direction: Forward direction (will be overridden by weapon system)
             Math.PI / 4, // spread: 45 degree cone spread

@@ -6,10 +6,10 @@ import {render2d} from "../../components/com_render2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {spawn_count} from "../../components/com_spawn.js";
 import {weapon_ranged} from "../../components/com_weapon.js";
-import {Game, Layer} from "../../game.js";
+import {Layer} from "../../game.js";
 import {blueprint_projectile} from "../projectiles/blu_projectile.js";
 
-export function blueprint_shotgun(game: Game) {
+export function blueprint_shotgun() {
     return [
         spatial_node2d(),
         local_transform2d(),
@@ -17,7 +17,6 @@ export function blueprint_shotgun(game: Game) {
         collide2d(false, Layer.None, Layer.None, 0.35),
         label("shotgun"), // Name for identification
         weapon_ranged(
-            1.0, // damage per pellet
             4, // range (shorter than pistol)
             2.5, // cooldown (slow)
             0.9, // initial timeout
@@ -26,7 +25,7 @@ export function blueprint_shotgun(game: Game) {
 
         // Spawner for shotgun pellets
         spawn_count(
-            blueprint_projectile(game, 1.0, 4, 10), // Will be configured per shot
+            () => blueprint_projectile(1.0), // Will be configured per shot
             0, // interval: instant spawn (all at once)
             [1, 0], // direction: Forward direction (will be overridden by weapon system)
             0.5, // spread: Wide cone spread for pellets

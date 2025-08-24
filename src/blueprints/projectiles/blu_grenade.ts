@@ -2,15 +2,15 @@ import {Vec2} from "../../../lib/math.js";
 import {Tile} from "../../../sprites/spritesheet.js";
 import {collide2d} from "../../components/com_collide2d.js";
 import {grenade_behavior} from "../../components/com_grenade_behavior.js";
+import {label} from "../../components/com_label.js";
 import {lifespan} from "../../components/com_lifespan.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
 import {render2d} from "../../components/com_render2d.js";
 import {rigid_body2d, RigidKind} from "../../components/com_rigid_body2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
-import {Game, Layer} from "../../game.js";
+import {Layer} from "../../game.js";
 
 export function blueprint_grenade(
-    game: Game,
     damage: number,
     source: number,
     range: number,
@@ -24,6 +24,7 @@ export function blueprint_grenade(
         (target_position[1] + 0.5 * 9.8 * time_to_target * time_to_target) / time_to_target;
 
     return [
+        label("grenade"),
         spatial_node2d(),
         local_transform2d([0, 0], 0, [0.3, 0.3]), // Small grenade
         render2d(Tile.Body), // Using sprite 23 for grenade

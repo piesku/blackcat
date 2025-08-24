@@ -54,32 +54,32 @@ function apply_weapon_upgrade(game: Game, entity: number, upgrade: UpgradeType) 
 
     switch (upgrade.id) {
         case "flamethrower":
-            weapon_entity = instantiate(game, blueprint_flamethrower(game));
+            weapon_entity = instantiate(game, blueprint_flamethrower());
             attach_to_parent(game, weapon_entity, entity);
             break;
 
         case "shotgun":
-            weapon_entity = instantiate(game, blueprint_shotgun(game));
+            weapon_entity = instantiate(game, blueprint_shotgun());
             attach_to_parent(game, weapon_entity, entity);
             break;
 
         case "minigun":
-            weapon_entity = instantiate(game, blueprint_minigun(game));
+            weapon_entity = instantiate(game, blueprint_minigun());
             attach_to_parent(game, weapon_entity, entity);
             break;
 
         case "sniper_rifle":
-            weapon_entity = instantiate(game, blueprint_sniper_rifle(game));
+            weapon_entity = instantiate(game, blueprint_sniper_rifle());
             attach_to_parent(game, weapon_entity, entity);
             break;
 
         case "grenade_launcher":
-            weapon_entity = instantiate(game, blueprint_grenade_launcher(game));
+            weapon_entity = instantiate(game, blueprint_grenade_launcher());
             attach_to_parent(game, weapon_entity, entity);
             break;
 
         case "boomerang":
-            weapon_entity = instantiate(game, blueprint_boomerang_weapon(game));
+            weapon_entity = instantiate(game, blueprint_boomerang_weapon());
             attach_to_parent(game, weapon_entity, entity);
             break;
 
@@ -117,7 +117,7 @@ function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType)
     switch (upgrade.id) {
         case "shadow_trail":
             spawn_timed(
-                blueprint_shadow_particle(),
+                () => blueprint_shadow_particle(),
                 1.0 / 8.0, // interval: spawn every 0.125 seconds (8 particles per second)
                 [0, 0], // direction: Stationary shadows
                 0, // spread: No spread for trails

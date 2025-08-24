@@ -1,6 +1,7 @@
 import {Tile} from "../../../sprites/spritesheet.js";
 import {collide2d} from "../../components/com_collide2d.js";
 import {DamageType, deal_damage} from "../../components/com_deal_damage.js";
+import {label} from "../../components/com_label.js";
 import {lifespan} from "../../components/com_lifespan.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
 import {particle, ParticleType} from "../../components/com_particle.js";
@@ -8,8 +9,10 @@ import {render2d} from "../../components/com_render2d.js";
 import {rigid_body2d, RigidKind} from "../../components/com_rigid_body2d.js";
 import {Layer} from "../../game.js";
 
-export function blueprint_flame_particle(damage: number = 1) {
+export function blueprint_flame_particle(damage: number) {
     return [
+        label("flame particle"),
+
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d([0, 0], 0, [0.1, 0.1]), // Start small
         render2d(Tile.Body), // Flame sprite

@@ -1,4 +1,5 @@
 import {Tile} from "../../../sprites/spritesheet.js";
+import {label} from "../../components/com_label.js";
 import {lifespan} from "../../components/com_lifespan.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
 import {particle, ParticleType} from "../../components/com_particle.js";
@@ -7,6 +8,8 @@ import {rigid_body2d, RigidKind} from "../../components/com_rigid_body2d.js";
 
 export function blueprint_shadow_particle() {
     return [
+        label("shadow particle"),
+
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d([0, 0], 0, [0.2, 0.2]), // Start medium size
         render2d(Tile.Body), // Shadow sprite (dark/transparent)

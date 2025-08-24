@@ -6,10 +6,10 @@ import {render2d} from "../../components/com_render2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {spawn_count} from "../../components/com_spawn.js";
 import {weapon_ranged} from "../../components/com_weapon.js";
-import {Game, Layer} from "../../game.js";
+import {Layer} from "../../game.js";
 import {blueprint_projectile} from "../projectiles/blu_projectile.js";
 
-export function blueprint_sniper_rifle(game: Game) {
+export function blueprint_sniper_rifle() {
     return [
         spatial_node2d(),
         local_transform2d(),
@@ -17,7 +17,6 @@ export function blueprint_sniper_rifle(game: Game) {
         collide2d(false, Layer.None, Layer.None, 0.5),
         label("sniper_rifle"), // Name for identification
         weapon_ranged(
-            3.5, // damage (reduced from 5 for better balance)
             15, // range (very long)
             3.5, // cooldown (very slow)
             1.2, // initial timeout (longer delay before first shot)
@@ -26,7 +25,7 @@ export function blueprint_sniper_rifle(game: Game) {
 
         // Spawner for sniper bullets
         spawn_count(
-            blueprint_projectile(game, 3.5, 15, 20), // High damage, long range, fast projectile
+            () => blueprint_projectile(3.5),
             0, // interval: instant spawn
             [1, 0], // direction: Forward direction (will be overridden by weapon system)
             0.01, // spread: Very tight spread for precision

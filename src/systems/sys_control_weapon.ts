@@ -1,8 +1,6 @@
 import {Vec2} from "../../lib/math.js";
-import {blueprint_flame_particle} from "../blueprints/particles/blu_flame_particle.js";
 import {blueprint_boomerang_projectile} from "../blueprints/projectiles/blu_boomerang.js";
 import {blueprint_grenade} from "../blueprints/projectiles/blu_grenade.js";
-import {blueprint_projectile} from "../blueprints/projectiles/blu_projectile.js";
 import {query_down} from "../components/com_children.js";
 import {AiState} from "../components/com_control_ai.js";
 import {SpawnMode} from "../components/com_spawn.js";
@@ -115,14 +113,6 @@ function execute_ranged_attack(
         spawner.Direction[0] = to_target[0];
         spawner.Direction[1] = to_target[1];
 
-        // Update blueprint to use correct damage parameters (only for projectile spawners)
-        spawner.Blueprint = blueprint_projectile(
-            game,
-            weapon.Damage,
-            weapon.Range,
-            spawner.SpeedMin, // Use spawn component's speed
-        );
-
         // Activate the spawner based on its mode using weapon's TotalAmount
         if (spawner.Mode === SpawnMode.Count) {
             spawner.RemainingCount = weapon.TotalAmount;
@@ -177,9 +167,6 @@ function execute_flamethrower_attack(
     spawner.Direction[0] = to_target[0];
     spawner.Direction[1] = to_target[1];
 
-    // Update blueprint to use correct damage and source
-    spawner.Blueprint = blueprint_flame_particle(weapon.Damage);
-
     // Activate the timed spawner using weapon's TotalAmount
     if (spawner.Mode === SpawnMode.Timed) {
         spawner.Duration = weapon.TotalAmount;
@@ -220,15 +207,15 @@ function execute_grenade_launcher_attack(
     spawner.Direction[0] = to_target[0];
     spawner.Direction[1] = to_target[1];
 
-    // Update blueprint to use correct parameters for this specific shot
-    spawner.Blueprint = blueprint_grenade(
-        game,
-        weapon.Damage,
-        wielder_entity,
-        weapon.Range,
-        spawner.SpeedMin, // Use spawn component's speed
-        target_position,
-    );
+    // Update blueprint to use runtime parameters for this specific shot
+    spawner.BlueprintCreator = () =>
+        blueprint_grenade(
+            2, // Fixed damage for grenade launcher
+            wielder_entity,
+            weapon.Range,
+            spawner.SpeedMin, // Use spawn component's speed
+            target_position,
+        );
 
     // Activate the count-based spawner using weapon's TotalAmount
     if (spawner.Mode === SpawnMode.Count) {
@@ -264,14 +251,15 @@ function execute_boomerang_attack(
     spawner.Direction[0] = to_target[0];
     spawner.Direction[1] = to_target[1];
 
-    // Update blueprint to use correct parameters for this specific shot
-    spawner.Blueprint = blueprint_boomerang_projectile(
-        game,
-        wielder_entity, // thrower
-        [target_transform.Translation[0], target_transform.Translation[1]], // target position
-        weapon.Range, // max range
-        spawner.SpeedMin, // Use spawn component's speed
-    );
+    // Update blueprint to use runtime parameters for this specific shot
+    spawner.BlueprintCreator = () =>
+        blueprint_boomerang_projectile(
+            2, // Fixed damage for boomerang
+            wielder_entity, // thrower
+            [target_transform.Translation[0], target_transform.Translation[1]], // target position
+            weapon.Range, // max range
+            spawner.SpeedMin, // Use spawn component's speed
+        );
 
     // Activate the count-based spawner using weapon's TotalAmount
     if (spawner.Mode === SpawnMode.Count) {
