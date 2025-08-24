@@ -20,10 +20,6 @@ export function blueprint_sniper_rifle(game: Game) {
             3.5, // damage (reduced from 5 for better balance)
             15, // range (very long)
             3.5, // cooldown (very slow)
-            20, // projectile speed (very fast)
-            1, // projectile count (single shot)
-            0.01, // spread (pinpoint accuracy between multiple shots)
-            0.08, // scatter (small aiming inaccuracy for balance)
             1.2, // initial timeout (longer delay before first shot)
         ),
 

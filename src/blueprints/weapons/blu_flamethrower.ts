@@ -18,10 +18,6 @@ export function blueprint_flamethrower(game: Game) {
             1, // damage: moderate damage per flame particle
             6, // range: medium range
             3.0, // cooldown: slower rate of fire for triggering flame bursts
-            4, // projectile speed: flame particle speed
-            1, // projectile count: not used with particle emitter
-            0.0, // spread: not used with particle emitter
-            0.0, // scatter: not used with particle emitter
             0.5, // initial timeout
         ),
 

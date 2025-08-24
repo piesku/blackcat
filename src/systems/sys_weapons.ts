@@ -1,5 +1,4 @@
 import {Vec2} from "../../lib/math.js";
-import {float} from "../../lib/random.js";
 import {vec2_length, vec2_normalize, vec2_subtract} from "../../lib/vec2.js";
 import {blueprint_flame_particle} from "../blueprints/particles/blu_flame_particle.js";
 import {blueprint_boomerang_projectile} from "../blueprints/projectiles/blu_boomerang.js";
@@ -186,15 +185,6 @@ function execute_ranged_attack(
     vec2_subtract(to_target, target_transform.Translation, wielder_transform.Translation);
     vec2_normalize(to_target, to_target);
 
-    // Apply scatter (aiming inaccuracy) - random angle deviation
-    let scatter_angle = float(-1, 1) * weapon.Scatter;
-    let cos_scatter = Math.cos(scatter_angle);
-    let sin_scatter = Math.sin(scatter_angle);
-    let scattered_x = to_target[0] * cos_scatter - to_target[1] * sin_scatter;
-    let scattered_y = to_target[0] * sin_scatter + to_target[1] * cos_scatter;
-    to_target[0] = scattered_x;
-    to_target[1] = scattered_y;
-
     // Find and activate the spawner on the weapon
     let spawner = game.World.Spawn[weapon_entity];
     DEBUG: if (!spawner) {
@@ -210,7 +200,7 @@ function execute_ranged_attack(
         game,
         weapon.Damage,
         weapon.Range,
-        weapon.ProjectileSpeed,
+        spawner.SpeedMin, // Use spawn component's speed
     );
 
     // Activate the spawner based on its mode
@@ -221,7 +211,7 @@ function execute_ranged_attack(
     }
 
     console.log(
-        `[RANGED] Entity ${wielder_entity} activated spawner toward target ${target_entity} with scatter ${scatter_angle.toFixed(3)}`,
+        `[RANGED] Entity ${wielder_entity} activated spawner toward target ${target_entity}`,
     );
 }
 
@@ -300,7 +290,7 @@ function execute_grenade_launcher_attack(
         weapon.Damage,
         wielder_entity,
         weapon.Range,
-        weapon.ProjectileSpeed,
+        spawner.SpeedMin, // Use spawn component's speed
         target_position,
     );
 
@@ -346,7 +336,7 @@ function execute_boomerang_attack(
         wielder_entity, // thrower
         [target_transform.Translation[0], target_transform.Translation[1]], // target position
         weapon.Range, // max range
-        weapon.ProjectileSpeed, // speed
+        spawner.SpeedMin, // Use spawn component's speed
     );
 
     // Activate the count-based spawner

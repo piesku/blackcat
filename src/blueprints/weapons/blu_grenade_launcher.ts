@@ -18,10 +18,6 @@ export function blueprint_grenade_launcher(game: Game) {
             2, // damage: high damage per explosion
             8, // range: long range
             3.0, // cooldown: slow rate of fire
-            6, // projectile speed: grenades travel in arc
-            1, // projectile count: single grenade
-            0.0, // spread: no spread between shots
-            0.1, // scatter: slight aiming inaccuracy
             0.5, // initial timeout
         ),
 
