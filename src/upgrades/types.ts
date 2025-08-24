@@ -66,6 +66,12 @@ export const WEAPON_UPGRADES: UpgradeType[] = [
         name: "Explosives",
         description: "Thrown bombs that explode on timeout with debris particles",
     },
+    {
+        id: "spikeballs",
+        category: UpgradeCategory.Weapon,
+        name: "Spikeballs",
+        description: "Bouncing projectiles that persist and ricochet around the arena",
+    },
 ];
 
 // Armor upgrade definitions

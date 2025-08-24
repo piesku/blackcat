@@ -1,0 +1,32 @@
+import {Tile} from "../../../sprites/spritesheet.js";
+import {collide2d} from "../../components/com_collide2d.js";
+import {DamageType, deal_damage} from "../../components/com_deal_damage.js";
+import {label} from "../../components/com_label.js";
+import {lifespan} from "../../components/com_lifespan.js";
+import {local_transform2d} from "../../components/com_local_transform2d.js";
+import {render2d} from "../../components/com_render2d.js";
+import {rigid_body2d, RigidKind} from "../../components/com_rigid_body2d.js";
+import {Layer} from "../../game.js";
+
+export function blueprint_spikeball(damage: number) {
+    return [
+        label("spikeball"),
+        local_transform2d(undefined, 0, [0.3, 0.3]), // Medium-sized spiky projectile
+        render2d(Tile.Body), // Use body sprite (spiky appearance)
+        collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.15),
+
+        // High bounciness for persistent bouncing, no gravity for arena-level bouncing
+        rigid_body2d(RigidKind.Dynamic, 0.8, 0.4, [0, 0]), // 80% bounce, minimal drag, no gravity
+
+        deal_damage(damage, DamageType.Projectile, {
+            destroy_on_hit: false, // Spikeball continues after hitting
+            cooldown: 0.3, // Brief cooldown to prevent multiple hits on same target
+            piercing: true, // Can hit multiple enemies
+            shake_radius: 0.4,
+            shake_duration: 0.25,
+        }),
+
+        // Long lifespan - persists until timeout as per upgrade description
+        lifespan(8.0), // 8 seconds of bouncing chaos
+    ];
+}
