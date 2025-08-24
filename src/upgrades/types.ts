@@ -37,6 +37,12 @@ export const WEAPON_UPGRADES: UpgradeType[] = [
         description: "Spread shot ranged weapon with multiple projectiles",
     },
     {
+        id: "minigun",
+        category: UpgradeCategory.Weapon,
+        name: "Minigun",
+        description: "High rate of fire bullet spray with ejecting shell casings",
+    },
+    {
         id: "sniper_rifle",
         category: UpgradeCategory.Weapon,
         name: "Rifle",

@@ -3,6 +3,7 @@ import {blueprint_flame_particle} from "../blueprints/particles/blu_flame_partic
 import {blueprint_boomerang_projectile} from "../blueprints/projectiles/blu_boomerang.js";
 import {blueprint_grenade} from "../blueprints/projectiles/blu_grenade.js";
 import {blueprint_projectile} from "../blueprints/projectiles/blu_projectile.js";
+import {query_down} from "../components/com_children.js";
 import {AiState} from "../components/com_control_ai.js";
 import {SpawnMode} from "../components/com_spawn.js";
 import {Weapon} from "../components/com_weapon.js";
@@ -103,31 +104,57 @@ function execute_ranged_attack(
     DEBUG: if (!aim) throw new Error("missing component");
     let to_target: Vec2 = [aim.DirectionToTarget[0], aim.DirectionToTarget[1]];
 
-    // Find and activate the spawner on the weapon
-    let spawner = game.World.Spawn[weapon_entity];
-    DEBUG: if (!spawner) throw new Error("missing component");
+    // Find and activate all spawners on the weapon and its children
+    let spawners_activated = 0;
 
-    // Set spawn direction toward target (with scatter applied)
-    spawner.Direction[0] = to_target[0];
-    spawner.Direction[1] = to_target[1];
+    // First, handle the main spawner on the weapon entity itself
+    if (game.World.Spawn[weapon_entity]) {
+        let spawner = game.World.Spawn[weapon_entity];
 
-    // Update blueprint to use correct damage parameters
-    spawner.Blueprint = blueprint_projectile(
-        game,
-        weapon.Damage,
-        weapon.Range,
-        spawner.SpeedMin, // Use spawn component's speed
-    );
+        // Set spawn direction toward target
+        spawner.Direction[0] = to_target[0];
+        spawner.Direction[1] = to_target[1];
 
-    // Activate the spawner based on its mode
-    if (spawner.Mode === SpawnMode.Count) {
-        spawner.RemainingCount = spawner.TotalCount;
-    } else {
-        spawner.Duration = spawner.ConfiguredDuration;
+        // Update blueprint to use correct damage parameters (only for projectile spawners)
+        spawner.Blueprint = blueprint_projectile(
+            game,
+            weapon.Damage,
+            weapon.Range,
+            spawner.SpeedMin, // Use spawn component's speed
+        );
+
+        // Activate the spawner based on its mode
+        if (spawner.Mode === SpawnMode.Count) {
+            spawner.RemainingCount = spawner.TotalCount;
+        } else {
+            spawner.Duration = spawner.ConfiguredDuration;
+        }
+
+        spawners_activated++;
+    }
+
+    // Then, handle any spawners on child entities (e.g., shell casings)
+    for (let child_entity of query_down(game.World, weapon_entity, Has.Spawn)) {
+        if (child_entity === weapon_entity) continue; // Skip the main weapon, already handled
+
+        let child_spawner = game.World.Spawn[child_entity];
+        if (child_spawner) {
+            // For child spawners (like shell casings), don't override their blueprint
+            // but do activate them with timing synchronized to the main weapon
+
+            // Activate the child spawner
+            if (child_spawner.Mode === SpawnMode.Count) {
+                child_spawner.RemainingCount = child_spawner.TotalCount;
+            } else {
+                child_spawner.Duration = child_spawner.ConfiguredDuration;
+            }
+
+            spawners_activated++;
+        }
     }
 
     console.log(
-        `[RANGED] Entity ${wielder_entity} activated spawner toward target ${aim.TargetEntity}`,
+        `[RANGED] Entity ${wielder_entity} activated ${spawners_activated} spawner(s) toward target ${aim.TargetEntity}`,
     );
 }
 

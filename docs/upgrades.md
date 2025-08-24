@@ -15,10 +15,10 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 **Ranged Weapons** (14):
 
 - **Flamethrower** ✅ - Fire cone with persistent flame particles
-- **Minigun** - High ROF bullet spray with shell casing particles
+- **Minigun** ✅ - High rate of fire bullet spray with shell casing particles
 - **Shotgun** ✅ - Multi-pellet spread with spark particles
 - **Explosives** - Thrown bombs that explode on timeout with debris
-- **Spikeballs** - Bouncing projectiles with metal spark trails
+- **Spikeballs** - Bouncing projectiles which persist until timeout
 - **Rifle** - Enhanced pistol with muzzle flash and bullet trail
 - **Proxy Mine** - Contact mines that stick to arena and explode
 - **Bazooka** - Heavy rockets with explosion particles and area damage
@@ -163,7 +163,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 **Total Upgrades: 53** (Player will see 33 out of 53 in a single run)
 
-- **Weapons**: 14 upgrades (2 implemented + 12 new ranged weapons)
+- **Weapons**: 14 upgrades (3 implemented + 11 new ranged weapons)
 - **Armor/Defense**: 10 upgrades (4 implemented + 6 new)
 - **Abilities**: 11 upgrades (9 passive + 2 triggered)
 - **Traits**: 10 upgrades (4 speed + 3 health + 6 behavior)
@@ -212,4 +212,4 @@ export const enum UpgradeCategory {
     - Add 4 new weapons (Chainsaw, Flamethrower, Crossbow, Boomerang)
     - Add 6 new armor types (Shield Generator, Reactive Plating, etc.)
 
-**Current Status**: ✅ Weapons (2/14), Armor (4/10) systems implemented. Particle system ready for weapon effects.
+**Current Status**: ✅ Weapons (3/14), Armor (4/10) systems implemented. Particle system ready for weapon effects.

@@ -62,6 +62,12 @@ export function get_root_spawner(world: World, entity: Entity): Entity {
         }
     }
 
-    // This entity is the root spawner (no SpawnedBy field)
+    // This entity is the root spawner (no SpawnedBy field). Now get the parent fighter.
+    let weapon_node = world.SpatialNode2D[entity];
+    if (weapon_node && weapon_node.Parent !== undefined) {
+        return weapon_node.Parent;
+    }
+
+    // If no parent fighter is found, return the entity itself
     return entity;
 }

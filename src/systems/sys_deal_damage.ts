@@ -53,14 +53,13 @@ function handle_collision_damage(
     for (let collision of collider.Collisions) {
         let target_entity = collision.Other;
 
-        // Skip self-damage
-        if (target_entity === entity) continue;
-
         // Get original spawner for damage attribution
         let original_spawner = get_root_spawner(game.World, entity);
 
-        // Allow all damage by default (mayhem mode)
-        // Future upgrade: "Self-Immunity" could check if target_entity === original_spawner
+        // Skip self-damage
+        if (target_entity === original_spawner) {
+            continue;
+        }
 
         // Skip if target has no health
         if (!(game.World.Signature[target_entity] & Has.Health)) continue;

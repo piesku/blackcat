@@ -12,7 +12,7 @@ import {Vec2} from "../../lib/math.js";
 import {float} from "../../lib/random.js";
 import {vec2_normalize, vec2_rotate} from "../../lib/vec2.js";
 import {Entity} from "../../lib/world.js";
-import {get_root_spawner, label} from "../components/com_label.js";
+import {label} from "../components/com_label.js";
 import {copy_position} from "../components/com_local_transform2d.js";
 import {Spawn, SpawnCount, SpawnMode, SpawnTimed} from "../components/com_spawn.js";
 import {Game} from "../game.js";
@@ -60,10 +60,6 @@ function update_count_spawner(game: Game, entity: Entity, spawn: SpawnCount, del
         let spatial_node = game.World.SpatialNode2D[entity];
         mat2d_get_translation(world_position, spatial_node.World);
 
-        console.log(
-            `[${Date.now()}] [SPAWNER] Entity ${entity} spawning 1 entity (${spawn.RemainingCount} remaining)`,
-        );
-
         spawn_single_entity(game, entity, spawn, world_position);
     }
 }
@@ -83,10 +79,6 @@ function update_timed_spawner(game: Game, entity: Entity, spawn: SpawnTimed, del
 
         let spatial_node = game.World.SpatialNode2D[entity];
         mat2d_get_translation(world_position, spatial_node.World);
-
-        console.log(
-            `[${Date.now()}] [SPAWNER] Entity ${entity} spawning ${spawn.BurstCount} entities (duration: ${spawn.Duration.toFixed(2)}s remaining)`,
-        );
 
         // Spawn burst of entities
         for (let i = 0; i < spawn.BurstCount; i++) {
@@ -116,16 +108,12 @@ function spawn_single_entity(game: Game, spawner_entity: Entity, spawn: Spawn, p
     let spawned_entity = instantiate(game, [...spawn.Blueprint, copy_position(position)]);
 
     // Track spawner relationship for damage attribution
-    // Pass through the root spawner to maintain the chain back to the original fighter
-    let root_spawner = get_root_spawner(game.World, spawner_entity);
-
-    // Add or update Label component with spawner tracking
     if (game.World.Signature[spawned_entity] & Has.Label) {
         // Entity already has a Label, update SpawnedBy
-        game.World.Label[spawned_entity].SpawnedBy = root_spawner;
+        game.World.Label[spawned_entity].SpawnedBy = spawner_entity;
     } else {
         // Add Label component with spawner info
-        label(undefined, root_spawner)(game, spawned_entity);
+        label(undefined, spawner_entity)(game, spawned_entity);
     }
 
     // Set initial velocity after all components are set up
