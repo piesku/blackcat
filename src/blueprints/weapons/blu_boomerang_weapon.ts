@@ -11,8 +11,8 @@ import {blueprint_boomerang_projectile} from "../projectiles/blu_boomerang.js";
 export function blueprint_boomerang_weapon(game: Game) {
     return [
         spatial_node2d(),
-        local_transform2d([0.5, 0], 0, [0.8, 0.8]), // Medium offset and size
-        render2d(Tile.Body), // Using sprite 24 for boomerang
+        local_transform2d([0, 0], 0, [1, 1]), // Medium offset and size
+        render2d(Tile.Boomerang), // Using sprite 24 for boomerang
         label("boomerang"), // Name for identification
         weapon_ranged(
             2, // damage: moderate damage, can hit multiple targets

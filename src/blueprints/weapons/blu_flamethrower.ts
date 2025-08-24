@@ -11,8 +11,8 @@ import {Game} from "../../game.js";
 export function blueprint_flamethrower(game: Game) {
     return [
         spatial_node2d(),
-        local_transform2d([0.7, 0], 0, [1.0, 1.0]), // Larger weapon offset
-        render2d(Tile.Body), // Using sprite 21 for flamethrower
+        local_transform2d([0, 0], 0, [1.0, 1.0]), // Larger weapon offset
+        render2d(Tile.Flamethrower), // Using sprite 21 for flamethrower
         label("flamethrower"), // Name for identification
         weapon_ranged(
             1, // damage: moderate damage per flame particle

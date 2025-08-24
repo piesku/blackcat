@@ -3,4 +3,6 @@ export const enum Tile {
     Eyes,
     Shotgun,
     Mortar,
+    Flamethrower,
+    Boomerang,
 }
