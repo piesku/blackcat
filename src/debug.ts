@@ -524,7 +524,7 @@ export class SceneGraphInspector {
                 Mode: ${s.Mode === SpawnMode.Count ? "Count" : "Timed"}<br>
                 ${
                     s.Mode === SpawnMode.Count
-                        ? `Count: ${s.RemainingCount}/${s.TotalCount}`
+                        ? `Remaining Count: ${s.RemainingCount}`
                         : `Duration: ${s.Duration.toFixed(2)}<br>Burst Count: ${s.BurstCount}`
                 }<br>
                 Interval: ${s.Interval.toFixed(2)}<br>

@@ -123,11 +123,11 @@ function execute_ranged_attack(
             spawner.SpeedMin, // Use spawn component's speed
         );
 
-        // Activate the spawner based on its mode
+        // Activate the spawner based on its mode using weapon's TotalAmount
         if (spawner.Mode === SpawnMode.Count) {
-            spawner.RemainingCount = spawner.TotalCount;
+            spawner.RemainingCount = weapon.TotalAmount;
         } else {
-            spawner.Duration = spawner.ConfiguredDuration;
+            spawner.Duration = weapon.TotalAmount;
         }
 
         spawners_activated++;
@@ -142,11 +142,11 @@ function execute_ranged_attack(
             // For child spawners (like shell casings), don't override their blueprint
             // but do activate them with timing synchronized to the main weapon
 
-            // Activate the child spawner
+            // Activate the child spawner using weapon's TotalAmount
             if (child_spawner.Mode === SpawnMode.Count) {
-                child_spawner.RemainingCount = child_spawner.TotalCount;
+                child_spawner.RemainingCount = weapon.TotalAmount;
             } else {
-                child_spawner.Duration = child_spawner.ConfiguredDuration;
+                child_spawner.Duration = weapon.TotalAmount;
             }
 
             spawners_activated++;
@@ -180,9 +180,9 @@ function execute_flamethrower_attack(
     // Update blueprint to use correct damage and source
     spawner.Blueprint = blueprint_flame_particle(weapon.Damage);
 
-    // Activate the timed spawner
+    // Activate the timed spawner using weapon's TotalAmount
     if (spawner.Mode === SpawnMode.Timed) {
-        spawner.Duration = spawner.ConfiguredDuration;
+        spawner.Duration = weapon.TotalAmount;
     }
 
     console.log(
@@ -230,9 +230,9 @@ function execute_grenade_launcher_attack(
         target_position,
     );
 
-    // Activate the count-based spawner
+    // Activate the count-based spawner using weapon's TotalAmount
     if (spawner.Mode === SpawnMode.Count) {
-        spawner.RemainingCount = spawner.TotalCount;
+        spawner.RemainingCount = weapon.TotalAmount;
     }
 
     console.log(
@@ -273,9 +273,9 @@ function execute_boomerang_attack(
         spawner.SpeedMin, // Use spawn component's speed
     );
 
-    // Activate the count-based spawner
+    // Activate the count-based spawner using weapon's TotalAmount
     if (spawner.Mode === SpawnMode.Count) {
-        spawner.RemainingCount = spawner.TotalCount;
+        spawner.RemainingCount = weapon.TotalAmount;
     }
 
     console.log(

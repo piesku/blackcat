@@ -21,12 +21,12 @@ export function blueprint_shotgun(game: Game) {
             4, // range (shorter than pistol)
             2.5, // cooldown (slow)
             0.9, // initial timeout
+            5, // totalAmount: 5 pellets per shot
         ),
 
         // Spawner for shotgun pellets
         spawn_count(
             blueprint_projectile(game, 1.0, 4, 10), // Will be configured per shot
-            5, // count: 5 pellets per shot
             0, // interval: instant spawn (all at once)
             [1, 0], // direction: Forward direction (will be overridden by weapon system)
             0.5, // spread: Wide cone spread for pellets

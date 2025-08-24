@@ -21,12 +21,12 @@ export function blueprint_minigun(game: Game) {
             6, // range: medium range
             1.8, // cooldown: fast rate of fire for bursts
             0.2, // initial timeout
+            0.8, // totalAmount: 0.8 second burst duration
         ),
 
         // Spawner for rapid bullet spray - uses timed spawner for continuous fire
         spawn_timed(
             blueprint_projectile(game, 1.2, 6, 12), // Fast bullets
-            0.8, // duration: 0.8 second burst
             0.05, // interval: spawn every 0.05 seconds (20 bullets per second during burst)
             [1, 0], // direction: Forward direction (will be overridden by weapon system)
             0.15, // spread: Moderate spread for spray effect
@@ -41,7 +41,6 @@ export function blueprint_minigun(game: Game) {
             local_transform2d([0, 0], 0, [1, 1]), // Same position as parent weapon
             spawn_timed(
                 blueprint_shell_casing(),
-                0.8, // duration: same as bullet burst
                 0.05, // interval: shell casing for each bullet
                 [-0.5, 0.3], // direction: eject backwards and slightly up
                 0.3, // spread: casings scatter randomly

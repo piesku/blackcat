@@ -26,7 +26,6 @@ export interface SpawnBase {
 
 export interface SpawnCount extends SpawnBase {
     Mode: SpawnMode.Count;
-    TotalCount: number; // Total entities to spawn
     RemainingCount: number; // Entities left to spawn
     Interval: number; // Time between spawns (0 = all at once)
     SinceLast: number; // Time since last spawn
@@ -35,7 +34,6 @@ export interface SpawnCount extends SpawnBase {
 export interface SpawnTimed extends SpawnBase {
     Mode: SpawnMode.Timed;
     Duration: number; // Time remaining (counts down to 0)
-    ConfiguredDuration: number; // Original duration for reactivation
     Interval: number; // Time between spawns
     SinceLast: number; // Time since last spawn
     BurstCount: number; // How many entities to spawn at once (1 = single)
@@ -44,31 +42,31 @@ export interface SpawnTimed extends SpawnBase {
 export type Spawn = SpawnCount | SpawnTimed;
 
 /**
- * Spawn a specific count of entities with optional delay between spawns.
+ * Spawn a count of entities with optional delay between spawns.
+ * The count is set by the control system that activates this spawner.
  *
  * @param blueprint The blueprint to spawn.
- * @param count Total entities to spawn.
  * @param interval Time between spawns (0 = all at once).
  * @param direction Base emission direction.
  * @param spread Cone angle in radians.
  * @param speedMin Minimum spawn speed.
  * @param speedMax Maximum spawn speed.
+ * @param initialCount Initial count to spawn (0 = inactive, >0 = immediately active).
  */
 export function spawn_count(
     blueprint: Blueprint<Game>,
-    count: number,
     interval: number,
     direction: Vec2,
     spread: number,
     speedMin: number,
     speedMax: number,
+    initialCount: number = 0,
 ) {
     return (game: Game, entity: Entity) => {
         const spawner: SpawnCount = {
             Mode: SpawnMode.Count,
             Blueprint: blueprint,
-            TotalCount: count,
-            RemainingCount: 0, // Start inactive
+            RemainingCount: initialCount, // 0 = inactive, >0 = active
             Interval: interval,
             SinceLast: 0,
             Direction: direction,
@@ -84,32 +82,32 @@ export function spawn_count(
 
 /**
  * Spawn entities continuously over a time duration.
+ * The duration is set by the control system that activates this spawner.
  *
  * @param blueprint The blueprint to spawn.
- * @param duration Total time duration.
  * @param interval Time between spawns.
  * @param direction Base emission direction.
  * @param spread Cone angle in radians.
  * @param speedMin Minimum spawn speed.
  * @param speedMax Maximum spawn speed.
  * @param burstCount How many entities to spawn at once.
+ * @param initialDuration Initial duration to spawn (0 = inactive, >0 = immediately active).
  */
 export function spawn_timed(
     blueprint: Blueprint<Game>,
-    duration: number,
     interval: number,
     direction: Vec2,
     spread: number,
     speedMin: number,
     speedMax: number,
     burstCount: number = 1,
+    initialDuration: number = 0,
 ) {
     return (game: Game, entity: Entity) => {
         const spawner: SpawnTimed = {
             Mode: SpawnMode.Timed,
             Blueprint: blueprint,
-            Duration: 0, // Start inactive
-            ConfiguredDuration: duration, // Store original duration for reactivation
+            Duration: initialDuration, // 0 = inactive, >0 = active
             Interval: interval,
             SinceLast: 0,
             Direction: direction,
@@ -122,33 +120,4 @@ export function spawn_timed(
         game.World.Spawn[entity] = spawner;
         game.World.Signature[entity] |= Has.Spawn;
     };
-}
-
-/**
- * Legacy spawn function for backward compatibility.
- * @deprecated Use spawn_count or spawn_timed instead.
- */
-export function spawn(
-    blueprint: Blueprint<Game>,
-    frequency: number,
-    options: Partial<{
-        direction: Vec2;
-        spread: number;
-        speedMin: number;
-        speedMax: number;
-        duration: number;
-        burstCount: number;
-    }> = {},
-) {
-    // Convert to new timed spawner format
-    return spawn_timed(
-        blueprint,
-        options.duration ?? Infinity,
-        1.0 / frequency,
-        options.direction || [0, 1],
-        options.spread || 0,
-        options.speedMin || 3.0,
-        options.speedMax || 3.0,
-        options.burstCount || 1,
-    );
 }

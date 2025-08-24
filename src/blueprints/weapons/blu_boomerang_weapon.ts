@@ -19,12 +19,12 @@ export function blueprint_boomerang_weapon(game: Game) {
             6, // range: medium range for throwing
             2.5, // cooldown: moderate rate of fire for precision throwing
             0.3, // initial timeout
+            1, // totalAmount: 1 boomerang per shot
         ),
 
         // Spawner for boomerang projectiles
         spawn_count(
             blueprint_boomerang_projectile(game, 0, [0, 0], 6, 5), // Will be configured per shot
-            1, // count: single boomerang per shot
             0, // interval: instant spawn
             [1, 0], // direction: Forward direction (will be overridden by weapon system)
             0.0, // spread: No spread for precision throwing

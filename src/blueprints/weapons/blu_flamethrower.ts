@@ -19,12 +19,12 @@ export function blueprint_flamethrower(game: Game) {
             6, // range: medium range
             3.0, // cooldown: slower rate of fire for triggering flame bursts
             0.5, // initial timeout
+            1.0, // totalAmount: 1 second flame duration
         ),
 
         // Spawner for flame cone effect
         spawn_timed(
             blueprint_flame_particle(1), // damage=1 (spawner source set by spawn system)
-            1.0, // duration: 1 second (will be reactivated by weapon system)
             1.0 / 12, // interval: spawn every ~0.083 seconds (12 particles per second)
             [1, 0], // direction: Forward direction (will be overridden by weapon system)
             Math.PI / 4, // spread: 45 degree cone spread

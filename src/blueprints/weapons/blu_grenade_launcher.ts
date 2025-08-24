@@ -19,12 +19,12 @@ export function blueprint_grenade_launcher(game: Game) {
             8, // range: long range
             3.0, // cooldown: slow rate of fire
             0.5, // initial timeout
+            1, // totalAmount: 1 grenade per shot
         ),
 
         // Spawner for grenade projectiles
         spawn_count(
             blueprint_grenade(game, 2, 0, 8, 6, [0, 0]), // Will be configured per shot
-            1, // count: single grenade per shot
             0, // interval: instant spawn
             [1, 0], // direction: Forward direction (will be overridden by weapon system)
             0.1, // spread: Slight spread for realism

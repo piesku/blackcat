@@ -21,12 +21,12 @@ export function blueprint_sniper_rifle(game: Game) {
             15, // range (very long)
             3.5, // cooldown (very slow)
             1.2, // initial timeout (longer delay before first shot)
+            1, // totalAmount: 1 bullet per shot
         ),
 
         // Spawner for sniper bullets
         spawn_count(
             blueprint_projectile(game, 3.5, 15, 20), // High damage, long range, fast projectile
-            1, // count: single bullet per shot
             0, // interval: instant spawn
             [1, 0], // direction: Forward direction (will be overridden by weapon system)
             0.01, // spread: Very tight spread for precision
