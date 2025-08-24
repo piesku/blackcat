@@ -60,6 +60,12 @@ export const WEAPON_UPGRADES: UpgradeType[] = [
         name: "Boomerang",
         description: "Returning projectile that deals damage on the way out and back",
     },
+    {
+        id: "explosives",
+        category: UpgradeCategory.Weapon,
+        name: "Explosives",
+        description: "Thrown bombs that explode on timeout with debris particles",
+    },
 ];
 
 // Armor upgrade definitions

@@ -1,6 +1,7 @@
 import {instantiate} from "../../lib/game.js";
 import {blueprint_shadow_particle} from "../blueprints/particles/blu_shadow_particle.js";
 import {blueprint_boomerang_weapon} from "../blueprints/weapons/blu_boomerang_weapon.js";
+import {blueprint_explosives} from "../blueprints/weapons/blu_explosives.js";
 import {blueprint_flamethrower} from "../blueprints/weapons/blu_flamethrower.js";
 import {blueprint_grenade_launcher} from "../blueprints/weapons/blu_grenade_launcher.js";
 import {blueprint_minigun} from "../blueprints/weapons/blu_minigun.js";
@@ -80,6 +81,11 @@ function apply_weapon_upgrade(game: Game, entity: number, upgrade: UpgradeType) 
 
         case "boomerang":
             weapon_entity = instantiate(game, blueprint_boomerang_weapon());
+            attach_to_parent(game, weapon_entity, entity);
+            break;
+
+        case "explosives":
+            weapon_entity = instantiate(game, blueprint_explosives());
             attach_to_parent(game, weapon_entity, entity);
             break;
 

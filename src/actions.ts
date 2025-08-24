@@ -1,13 +1,14 @@
-import {Game, GameView, VictoryData} from "./game.js";
+import {instantiate} from "../lib/game.js";
+import {blueprint_explosion} from "./blueprints/blu_explosion.js";
+import {Game, GameView} from "./game.js";
 import {scene_arena} from "./scenes/sce_arena.js";
-import {UpgradeType} from "./upgrades/types.js";
-import {save_game_state, clear_game_state} from "./store.js";
 import {
-    generateOpponentUpgrades,
-    generatePlayerUpgradeChoices,
     calculatePopulation,
     createFreshGameState,
+    generateOpponentUpgrades,
+    generatePlayerUpgradeChoices,
 } from "./state.js";
+import {clear_game_state, save_game_state} from "./store.js";
 
 export const enum Action {
     NoOp,
@@ -17,6 +18,7 @@ export const enum Action {
     ViewTransition,
     RestartRun,
     ClearSave,
+    BombExplosion,
 }
 
 export function dispatch(game: Game, action: Action, payload?: unknown) {
@@ -97,6 +99,18 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
         case Action.ClearSave: {
             // Clear save state on demand
             clear_game_state();
+            break;
+        }
+        case Action.BombExplosion: {
+            let bomb_entity = payload as number;
+            let bomb_transform = game.World.LocalTransform2D[bomb_entity];
+            DEBUG: if (!bomb_transform) throw new Error("missing transform component");
+
+            let [x, y] = bomb_transform.Translation;
+            console.log(
+                `[EXPLOSIVES] Bomb ${bomb_entity} exploding at (${x.toFixed(2)}, ${y.toFixed(2)})`,
+            );
+            instantiate(game, blueprint_explosion([x, y], 3, 1.5, 0.2));
             break;
         }
     }

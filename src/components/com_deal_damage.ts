@@ -36,6 +36,7 @@ export const enum DamageType {
     Fire = "fire",
     Melee = "melee",
     Chainsaw = "chainsaw",
+    Explosion = "explosion",
 }
 
 // All damage detection now uses the collision system
