@@ -1,7 +1,7 @@
 import {Vec2} from "../../../lib/math.js";
 import {Tile} from "../../../sprites/spritesheet.js";
 import {collide2d} from "../../components/com_collide2d.js";
-import {grenade_behavior} from "../../components/com_grenade_behavior.js";
+import {mortar_behavior} from "../../components/com_mortar_behavior.js";
 import {label} from "../../components/com_label.js";
 import {lifespan} from "../../components/com_lifespan.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
@@ -10,7 +10,7 @@ import {rigid_body2d, RigidKind} from "../../components/com_rigid_body2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {Layer} from "../../game.js";
 
-export function blueprint_grenade(
+export function blueprint_mortar_shell(
     damage: number,
     source: number,
     range: number,
@@ -24,19 +24,19 @@ export function blueprint_grenade(
         (target_position[1] + 0.5 * 9.8 * time_to_target * time_to_target) / time_to_target;
 
     return [
-        label("grenade"),
+        label("mortar_shell"),
         spatial_node2d(),
         local_transform2d([0, 0], 0, [0.3, 0.3]), // Small grenade
-        render2d(Tile.Body), // Using sprite 23 for grenade
+        render2d(Tile.Body), // Using sprite 23 for mortar shell
 
         // Physics integration via RigidBody2D (replaces move2d and control_always2d)
         rigid_body2d(RigidKind.Dynamic, 0.3, 0.01, [0, -9.8]), // Standard gravity for grenades
 
-        // Small collision radius for the grenade itself
+        // Small collision radius for the mortar shell itself
         collide2d(true, Layer.Object, Layer.Object, 0.2),
 
-        // Grenade behavior component
-        grenade_behavior(
+        // Mortar shell behavior component
+        mortar_behavior(
             [initial_velocity_x, initial_velocity_y],
             time_to_target,
             target_position,

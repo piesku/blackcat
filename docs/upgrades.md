@@ -18,9 +18,9 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Minigun** ✅ - High rate of fire bullet spray with shell casing particles
 - **Shotgun** ✅ - Multi-pellet spread with spark particles
 - **Explosives** ✅ - Thrown bombs that explode on timeout with debris
-- **Spikeballs** - Bouncing projectiles which persist until timeout
-- **Rifle** - Enhanced pistol with muzzle flash and bullet trail
-- **Proxy Mine** - Contact mines that stick to arena and explode
+- **Spikeballs** ✅ - Bouncing projectiles which persist until timeout
+- **Rifle** - Enhanced pistol with muzzle flash
+- **Mine** - Contact mines that stick to arena and explode
 - **Homing Missile** - Missiles that track the nearest enemy
 - **Mortar** - High-arc shells that explode on contact/timeout
 - **Larpa** - Rockets leaving falling particle damage trails

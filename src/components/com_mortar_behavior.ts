@@ -3,7 +3,7 @@ import {Entity} from "../../lib/world.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
-export interface GrenadeBehavior {
+export interface MortarBehavior {
     InitialVelocity: Vec2; // x, y velocity components
     Gravity: number; // downward acceleration
     TimeToTarget: number; // calculated time to reach target
@@ -13,7 +13,7 @@ export interface GrenadeBehavior {
     Source: Entity;
 }
 
-export function grenade_behavior(
+export function mortar_behavior(
     initial_velocity: Vec2,
     time_to_target: number,
     target_position: Vec2,
@@ -21,7 +21,7 @@ export function grenade_behavior(
     source: Entity,
 ) {
     return (game: Game, entity: Entity) => {
-        let grenade: GrenadeBehavior = {
+        let mortar: MortarBehavior = {
             InitialVelocity: initial_velocity,
             Gravity: 9.8, // Standard gravity
             TimeToTarget: time_to_target,
@@ -31,7 +31,7 @@ export function grenade_behavior(
             Source: source,
         };
 
-        game.World.GrenadeBehavior[entity] = grenade;
-        game.World.Signature[entity] |= Has.GrenadeBehavior;
+        game.World.MortarBehavior[entity] = mortar;
+        game.World.Signature[entity] |= Has.MortarBehavior;
     };
 }

@@ -49,7 +49,7 @@ export const WEAPON_UPGRADES: UpgradeType[] = [
         description: "High-damage, long-range precision weapon with muzzle flash",
     },
     {
-        id: "grenade_launcher",
+        id: "mortar",
         category: UpgradeCategory.Weapon,
         name: "Mortar",
         description: "High-arc explosive shells with area damage",

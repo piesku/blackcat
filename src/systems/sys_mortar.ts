@@ -1,58 +1,58 @@
 import {instantiate} from "../../lib/game.js";
 import {vec2_length} from "../../lib/vec2.js";
 import {blueprint_explosion} from "../blueprints/blu_explosion.js";
-import {GrenadeBehavior} from "../components/com_grenade_behavior.js";
+import {MortarBehavior} from "../components/com_mortar_behavior.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
-const QUERY = Has.GrenadeBehavior | Has.LocalTransform2D | Has.RigidBody2D;
+const QUERY = Has.MortarBehavior | Has.LocalTransform2D | Has.RigidBody2D;
 
-export function sys_grenade(game: Game, delta: number) {
+export function sys_mortar(game: Game, delta: number) {
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
         if ((game.World.Signature[entity] & QUERY) === QUERY) {
-            let grenade = game.World.GrenadeBehavior[entity];
+            let mortar = game.World.MortarBehavior[entity];
             let transform = game.World.LocalTransform2D[entity];
             let rigid_body = game.World.RigidBody2D[entity];
 
-            if (!grenade || !transform || !rigid_body) continue;
+            if (!mortar || !transform || !rigid_body) continue;
 
             // Update flight time (domain-specific logic)
-            grenade.FlightTime += delta;
+            mortar.FlightTime += delta;
 
-            // Check if grenade should explode
+            // Check if mortar shell should explode
             let distance_to_target = vec2_length([
-                transform.Translation[0] - grenade.TargetPosition[0],
-                transform.Translation[1] - grenade.TargetPosition[1],
+                transform.Translation[0] - mortar.TargetPosition[0],
+                transform.Translation[1] - mortar.TargetPosition[1],
             ]);
 
             let should_explode =
-                grenade.FlightTime >= grenade.TimeToTarget || distance_to_target < 0.5;
+                mortar.FlightTime >= mortar.TimeToTarget || distance_to_target < 0.5;
 
             if (should_explode) {
-                explode_grenade(game, entity, grenade);
+                explode_mortar_shell(game, entity, mortar);
             }
         }
     }
 }
 
-function explode_grenade(game: Game, entity: number, grenade: GrenadeBehavior) {
+function explode_mortar_shell(game: Game, entity: number, mortar: MortarBehavior) {
     let transform = game.World.LocalTransform2D[entity];
     DEBUG: if (!transform) throw new Error("missing component");
 
     let [x, y] = transform.Translation;
-    console.log(`[GRENADE] Grenade ${entity} exploding at (${x.toFixed(2)}, ${y.toFixed(2)})`);
+    console.log(`[MORTAR] Mortar shell ${entity} exploding at (${x.toFixed(2)}, ${y.toFixed(2)})`);
 
     // Create explosion with debris particles
     instantiate(
         game,
         blueprint_explosion(
             [x, y],
-            grenade.Damage * 2, // Explosion damage is higher
+            mortar.Damage * 2, // Explosion damage is higher
             2.0, // Large explosion radius
             0.5, // Brief explosion duration
         ),
     );
 
-    // Destroy the grenade
+    // Destroy the mortar shell
     game.World.Signature[entity] = 0;
 }

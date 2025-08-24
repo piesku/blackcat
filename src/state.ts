@@ -17,13 +17,9 @@ export function generateOpponentUpgrades(arenaLevel: number, runSeed: number): U
 
     let availableUpgrades = ALL_UPGRADES.filter((upgrade) => {
         if (upgrade.category === "armor") return true;
-        return [
-            "flamethrower",
-            "shotgun",
-            "sniper_rifle",
-            "grenade_launcher",
-            "boomerang",
-        ].includes(upgrade.id);
+        return ["flamethrower", "shotgun", "sniper_rifle", "mortar", "boomerang"].includes(
+            upgrade.id,
+        );
     });
 
     // Shuffle array using Fisher-Yates with lib/random

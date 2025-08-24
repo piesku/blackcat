@@ -1,6 +1,6 @@
 import {Vec2} from "../../lib/math.js";
 import {blueprint_boomerang_projectile} from "../blueprints/projectiles/blu_boomerang.js";
-import {blueprint_grenade} from "../blueprints/projectiles/blu_grenade.js";
+import {blueprint_mortar_shell} from "../blueprints/projectiles/blu_mortar_shell.js";
 import {query_down} from "../components/com_children.js";
 import {AiState} from "../components/com_control_ai.js";
 import {SpawnMode} from "../components/com_spawn.js";
@@ -79,8 +79,8 @@ function activate_weapon(game: Game, wielder_entity: number, weapon_entity: numb
         case "flamethrower":
             execute_flamethrower_attack(game, wielder_entity, weapon, weapon_entity);
             break;
-        case "grenade_launcher":
-            execute_grenade_launcher_attack(game, wielder_entity, weapon, weapon_entity);
+        case "mortar":
+            execute_mortar_attack(game, wielder_entity, weapon, weapon_entity);
             break;
         case "boomerang":
             execute_boomerang_attack(game, wielder_entity, weapon, weapon_entity);
@@ -177,7 +177,7 @@ function execute_flamethrower_attack(
     );
 }
 
-function execute_grenade_launcher_attack(
+function execute_mortar_attack(
     game: Game,
     wielder_entity: number,
     weapon: Weapon,
@@ -209,8 +209,8 @@ function execute_grenade_launcher_attack(
 
     // Update blueprint to use runtime parameters for this specific shot
     spawner.BlueprintCreator = () =>
-        blueprint_grenade(
-            2, // Fixed damage for grenade launcher
+        blueprint_mortar_shell(
+            2, // Fixed damage for mortar
             wielder_entity,
             weapon.Range,
             spawner.SpeedMin, // Use spawn component's speed
