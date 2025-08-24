@@ -22,12 +22,12 @@ export function mat2d_set(
     return out;
 }
 
-export function mat2d_copy(out: Mat2D, a: Mat2D) {
+export function mat2d_copy(out: Mat2D, a: Readonly<Mat2D>) {
     mat2d_set(out, a[0], a[1], a[2], a[3], a[4], a[5]);
     return out;
 }
 
-export function mat2d_invert(out: Mat2D, a: Mat2D) {
+export function mat2d_invert(out: Mat2D, a: Readonly<Mat2D>) {
     let aa = a[0],
         ab = a[1],
         ac = a[2],
@@ -50,7 +50,7 @@ export function mat2d_invert(out: Mat2D, a: Mat2D) {
     return out;
 }
 
-export function mat2d_multiply(out: Mat2D, a: Mat2D, b: Mat2D) {
+export function mat2d_multiply(out: Mat2D, a: Readonly<Mat2D>, b: Readonly<Mat2D>) {
     let a0 = a[0],
         a1 = a[1],
         a2 = a[2],
@@ -84,7 +84,7 @@ export function mat2d_from_rotation(out: Mat2D, rad: Rad) {
     return out;
 }
 
-export function mat2d_from_scaling(out: Mat2D, v: Vec2) {
+export function mat2d_from_scaling(out: Mat2D, v: Readonly<Vec2>) {
     out[0] = v[0];
     out[1] = 0;
     out[2] = 0;
@@ -94,7 +94,7 @@ export function mat2d_from_scaling(out: Mat2D, v: Vec2) {
     return out;
 }
 
-export function mat2d_from_translation(out: Mat2D, v: Vec2) {
+export function mat2d_from_translation(out: Mat2D, v: Readonly<Vec2>) {
     out[0] = 1;
     out[1] = 0;
     out[2] = 0;
@@ -104,7 +104,7 @@ export function mat2d_from_translation(out: Mat2D, v: Vec2) {
     return out;
 }
 
-export function mat2d_compose(out: Mat2D, v: Vec2, r: Rad, s: Vec2) {
+export function mat2d_compose(out: Mat2D, v: Readonly<Vec2>, r: Rad, s: Readonly<Vec2>) {
     let sin = Math.sin(r);
     let cos = Math.cos(r);
     out[0] = cos * s[0];
@@ -116,7 +116,7 @@ export function mat2d_compose(out: Mat2D, v: Vec2, r: Rad, s: Vec2) {
     return out;
 }
 
-export function mat2d_rotate(out: Mat2D, a: Mat2D, rad: Rad) {
+export function mat2d_rotate(out: Mat2D, a: Readonly<Mat2D>, rad: Rad) {
     let a0 = a[0],
         a1 = a[1],
         a2 = a[2],
@@ -134,7 +134,7 @@ export function mat2d_rotate(out: Mat2D, a: Mat2D, rad: Rad) {
     return out;
 }
 
-export function mat2d_scale(out: Mat2D, a: Mat2D, v: Vec2) {
+export function mat2d_scale(out: Mat2D, a: Readonly<Mat2D>, v: Readonly<Vec2>) {
     let a0 = a[0],
         a1 = a[1],
         a2 = a[2],
@@ -152,7 +152,7 @@ export function mat2d_scale(out: Mat2D, a: Mat2D, v: Vec2) {
     return out;
 }
 
-export function mat2d_translate(out: Mat2D, a: Mat2D, v: Vec2) {
+export function mat2d_translate(out: Mat2D, a: Readonly<Mat2D>, v: Readonly<Vec2>) {
     let a0 = a[0],
         a1 = a[1],
         a2 = a[2],
@@ -170,13 +170,13 @@ export function mat2d_translate(out: Mat2D, a: Mat2D, v: Vec2) {
     return out;
 }
 
-export function mat2d_get_scaling(out: Vec2, a: Mat2D) {
+export function mat2d_get_scaling(out: Vec2, a: Readonly<Mat2D>) {
     out[0] = Math.hypot(a[0], a[1]);
     out[1] = Math.hypot(a[2], a[3]);
     return out;
 }
 
-export function mat2d_get_translation(out: Vec2, a: Mat2D) {
+export function mat2d_get_translation(out: Vec2, a: Readonly<Mat2D>) {
     out[0] = a[4];
     out[1] = a[5];
     return out;
