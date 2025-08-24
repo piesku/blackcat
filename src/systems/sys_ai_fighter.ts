@@ -145,7 +145,11 @@ export function sys_ai_fighter(game: Game, delta: number) {
 
             // Apply movement directly to Move2D component
             if (move) {
-                move.Direction[0] = movement[0];
+                // Account for sprite flipping: if scale is negative, flip the X movement
+                let transform = game.World.LocalTransform2D[entity];
+                let flip_multiplier = transform && transform.Scale[0] < 0 ? -1 : 1;
+
+                move.Direction[0] = movement[0] * flip_multiplier;
                 move.Direction[1] = movement[1];
                 // Mark entity as dirty since we modified its movement
                 game.World.Signature[entity] |= Has.Dirty;

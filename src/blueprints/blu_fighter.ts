@@ -42,7 +42,11 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
         move2d(4, 0),
         aim(0.1), // Target search every 0.1 seconds
         ai_fighter(is_player), // AI will find target automatically via Aim component
-        children(blueprint_healthbar(), blueprint_eyes(game)), // Add healthbar, and eyes, weapons will be added by apply_upgrades
+        children(
+            blueprint_eyes(game),
+            blueprint_healthbar(),
+            // Weapons will be added by apply_upgrades
+        ),
 
         // Fighter-vs-fighter collision damage (low damage, long cooldown)
         deal_damage(0.5, DamageType.Hand2Hand, {

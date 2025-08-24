@@ -3,7 +3,8 @@ import {vec2_length, vec2_normalize, vec2_subtract} from "../../lib/vec2.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
-const QUERY = Has.Aim | Has.LocalTransform2D;
+const QUERY = Has.Aim | Has.LocalTransform2D | Has.Children;
+const QUERY_TARGET = Has.Health | Has.LocalTransform2D;
 
 export function sys_aim(game: Game, delta: number) {
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
@@ -33,6 +34,9 @@ export function sys_aim(game: Game, delta: number) {
 
                     if (aim.DistanceToTarget > 0.01) {
                         vec2_normalize(aim.DirectionToTarget, to_target);
+
+                        // Flip the body sprite to face the target
+                        flip_body_sprite_to_target(game, entity, aim.DirectionToTarget);
                     } else {
                         aim.DirectionToTarget[0] = 0;
                         aim.DirectionToTarget[1] = 0;
@@ -51,10 +55,10 @@ export function sys_aim(game: Game, delta: number) {
 
 function is_target_valid(game: Game, target_entity: number): boolean {
     if (target_entity === -1) return false;
-    if (!(game.World.Signature[target_entity] & Has.Health)) return false;
+    if ((game.World.Signature[target_entity] & QUERY_TARGET) !== QUERY_TARGET) return false;
 
     let target_health = game.World.Health[target_entity];
-    return target_health && target_health.IsAlive;
+    return target_health.IsAlive;
 }
 
 function find_nearest_enemy(game: Game, entity: number): number {
@@ -67,7 +71,6 @@ function find_nearest_enemy(game: Game, entity: number): number {
     for (let other = 0; other < game.World.Signature.length; other++) {
         if (other === entity) continue;
         if (!is_target_valid(game, other)) continue;
-        if (!(game.World.Signature[other] & Has.LocalTransform2D)) continue;
 
         let other_transform = game.World.LocalTransform2D[other];
         let distance_vec: Vec2 = [0, 0];
@@ -81,4 +84,20 @@ function find_nearest_enemy(game: Game, entity: number): number {
     }
 
     return nearest_entity;
+}
+
+function flip_body_sprite_to_target(game: Game, entity: number, direction_to_target: Vec2) {
+    let transform = game.World.LocalTransform2D[entity];
+
+    // Flip the sprite based on target direction
+    // If target is to the left (negative x), flip the sprite (negative scale)
+    // If target is to the right (positive x), don't flip (positive scale)
+    let should_flip = direction_to_target[0] < 0;
+    let new_scale_x = should_flip ? -1 : 1;
+
+    // Only update if the scale changed to avoid unnecessary dirty marking
+    if (transform.Scale[0] !== new_scale_x) {
+        transform.Scale[0] = new_scale_x;
+        game.World.Signature[entity] |= Has.Dirty;
+    }
 }
