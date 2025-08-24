@@ -168,18 +168,18 @@ export class SceneGraphInspector {
     private getComponentMapping(): Record<number, string> {
         // Centralized component mapping
         return {
-            [Has.AIFighter]: "AIFighter",
             [Has.AnimateSprite]: "AnimateSprite",
             [Has.Boomerang]: "Boomerang",
             [Has.Camera2D]: "Camera2D",
             [Has.Collide2D]: "Collide2D",
-            [Has.GrenadeBehavior]: "GrenadeBehavior",
+            [Has.ControlAi]: "ControlAi",
             [Has.ControlAlways2D]: "ControlAlways2D",
             [Has.ControlPlayer]: "ControlPlayer",
             [Has.Children]: "Children",
             [Has.DealDamage]: "DealDamage",
             [Has.Dirty]: "Dirty",
             [Has.Draw]: "Draw",
+            [Has.GrenadeBehavior]: "GrenadeBehavior",
             [Has.Health]: "Health",
             [Has.Lifespan]: "Lifespan",
             [Has.LocalTransform2D]: "LocalTransform2D",
@@ -222,7 +222,7 @@ export class SceneGraphInspector {
         }
 
         // Try to infer name from components using signatures
-        if (world.Signature[entityId] & Has.AIFighter) {
+        if (world.Signature[entityId] & Has.ControlAi) {
             return "Fighter";
         }
         if (world.Signature[entityId] & Has.Weapon) {
@@ -261,15 +261,6 @@ export class SceneGraphInspector {
         html += '<div class="component-list">';
 
         // Check each component type - alphabetical order
-        if (world.Signature[entityId] & Has.AIFighter) {
-            const ai = world.AIFighter[entityId];
-            html += `<div class="component">
-                <strong>AIFighter</strong><br>
-                State: ${ai.State}<br>
-                Aggressiveness: ${ai.Aggressiveness.toFixed(2)}<br>
-                Patience: ${ai.Patience.toFixed(2)}
-            </div>`;
-        }
 
         if (world.Signature[entityId] & Has.AnimateSprite) {
             const a = world.AnimateSprite[entityId];
@@ -328,6 +319,16 @@ export class SceneGraphInspector {
                 Mask: ${c.Mask}<br>
                 Radius: ${c.Radius.toFixed(2)}<br>
                 Collisions: ${c.Collisions.length}
+            </div>`;
+        }
+
+        if (world.Signature[entityId] & Has.ControlAi) {
+            const ai = world.ControlAi[entityId];
+            html += `<div class="component">
+                <strong>ControlAi</strong><br>
+                State: ${ai.State}<br>
+                Aggressiveness: ${ai.Aggressiveness.toFixed(2)}<br>
+                Patience: ${ai.Patience.toFixed(2)}
             </div>`;
         }
 

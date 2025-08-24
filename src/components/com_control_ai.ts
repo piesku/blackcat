@@ -1,9 +1,9 @@
+import {float} from "../../lib/random.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
-import {float} from "../../lib/random.js";
 
-export interface AIFighter {
-    State: AIState;
+export interface ControlAi {
+    State: AiState;
     LastStateChange: number; // Game time in seconds when state last changed
     StateTimer: number;
     CircleDirection: number; // 1 or -1 for clockwise/counterclockwise
@@ -20,7 +20,7 @@ export interface AIFighter {
     HasRetreatedAtLowHealth: boolean; // Prevents repeated retreating at same health level
 }
 
-export const enum AIState {
+export const enum AiState {
     Circling,
     Preparing, // New: Wind-up state before dash attack
     Dashing,
@@ -30,9 +30,9 @@ export const enum AIState {
     Separating, // New: Active collision avoidance
 }
 
-export function ai_fighter(is_player: boolean = false) {
+export function control_ai(is_player: boolean = false) {
     return (game: Game, entity: number) => {
-        game.World.Signature[entity] |= Has.AIFighter;
+        game.World.Signature[entity] |= Has.ControlAi;
 
         let aggressiveness: number;
         let patience: number;
@@ -56,8 +56,8 @@ export function ai_fighter(is_player: boolean = false) {
             circle_direction = float(0, 1) > 0.5 ? 1 : -1;
         }
 
-        game.World.AIFighter[entity] = {
-            State: AIState.Circling,
+        game.World.ControlAi[entity] = {
+            State: AiState.Circling,
             LastStateChange: game.Time,
             StateTimer: initial_delay,
             CircleDirection: circle_direction,

@@ -3,7 +3,7 @@ import {blueprint_flame_particle} from "../blueprints/particles/blu_flame_partic
 import {blueprint_boomerang_projectile} from "../blueprints/projectiles/blu_boomerang.js";
 import {blueprint_grenade} from "../blueprints/projectiles/blu_grenade.js";
 import {blueprint_projectile} from "../blueprints/projectiles/blu_projectile.js";
-import {AIState} from "../components/com_ai_fighter.js";
+import {AiState} from "../components/com_control_ai.js";
 import {SpawnMode} from "../components/com_spawn.js";
 import {Weapon} from "../components/com_weapon.js";
 import {Game} from "../game.js";
@@ -37,16 +37,16 @@ export function sys_weapons(game: Game, delta: number) {
 }
 
 function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapon): boolean {
-    let ai = game.World.AIFighter[parent_entity];
+    let ai = game.World.ControlAi[parent_entity];
     let aim = game.World.Aim[parent_entity];
     DEBUG: if (!ai || !aim) throw new Error("missing component");
 
     // All weapons are ranged - can activate in Circling, Pursuing, and Dashing states
     // AND must have a valid target from the Aim component within range
     let should_activate =
-        (ai.State === AIState.Circling ||
-            ai.State === AIState.Pursuing ||
-            ai.State === AIState.Dashing) &&
+        (ai.State === AiState.Circling ||
+            ai.State === AiState.Pursuing ||
+            ai.State === AiState.Dashing) &&
         weapon.LastAttackTime <= 0 &&
         aim.TargetEntity !== -1 &&
         aim.DistanceToTarget <= weapon.Range;

@@ -16,8 +16,8 @@ export function getFighterStats(game: Game): FighterStats {
     let opponentAIState = "Unknown";
 
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
-        if (game.World.Signature[entity] & Has.AIFighter) {
-            let ai = game.World.AIFighter[entity];
+        if (game.World.Signature[entity] & Has.ControlAi) {
+            let ai = game.World.ControlAi[entity];
             if (!ai) continue;
 
             // Get health info

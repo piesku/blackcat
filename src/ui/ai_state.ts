@@ -1,20 +1,20 @@
-import {AIState} from "../components/com_ai_fighter.js";
+import {AiState} from "../components/com_control_ai.js";
 
-export function getAIStateName(state: AIState): string {
+export function getAIStateName(state: AiState): string {
     switch (state) {
-        case AIState.Circling:
+        case AiState.Circling:
             return "Circling";
-        case AIState.Preparing:
+        case AiState.Preparing:
             return "Preparing";
-        case AIState.Dashing:
+        case AiState.Dashing:
             return "Dashing";
-        case AIState.Retreating:
+        case AiState.Retreating:
             return "Retreating";
-        case AIState.Stunned:
+        case AiState.Stunned:
             return "Stunned";
-        case AIState.Pursuing:
+        case AiState.Pursuing:
             return "Pursuing";
-        case AIState.Separating:
+        case AiState.Separating:
             return "Separating";
         default:
             return "Unknown";

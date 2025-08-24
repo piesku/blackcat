@@ -2,7 +2,7 @@ import {Action, dispatch} from "../actions.js";
 import {Game, GameView} from "../game.js";
 import {Has} from "../world.js";
 
-const QUERY = Has.Health | Has.AIFighter;
+const QUERY = Has.Health | Has.ControlAi;
 
 // TODO Consider checking for victory conditions in action handlers.
 export function sys_duel_manager(game: Game, delta: number) {
@@ -20,7 +20,7 @@ export function sys_duel_manager(game: Game, delta: number) {
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
         if ((game.World.Signature[entity] & QUERY) === QUERY) {
             let health = game.World.Health[entity];
-            let ai = game.World.AIFighter[entity];
+            let ai = game.World.ControlAi[entity];
 
             if (ai.IsPlayer) {
                 players.push(entity);

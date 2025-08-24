@@ -10,7 +10,7 @@ import {
 import {setup_render2d_buffers} from "../materials/layout2d.js";
 import {mat_render2d} from "../materials/mat_render2d.js";
 import {createFreshGameState, GameState} from "./state.js";
-import {sys_ai_fighter} from "./systems/sys_ai_fighter.js";
+import {sys_control_ai} from "./systems/sys_control_ai.js";
 import {sys_aim} from "./systems/sys_aim.js";
 import {sys_arena_bounds} from "./systems/sys_arena_bounds.js";
 import {sys_boomerang} from "./systems/sys_boomerang.js";
@@ -98,7 +98,7 @@ export class Game extends Game3D {
 
         // AI.
         sys_aim(this, delta);
-        sys_ai_fighter(this, delta);
+        sys_control_ai(this, delta);
         sys_control_always2d(this, delta);
 
         // Weapons.

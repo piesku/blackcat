@@ -2,7 +2,7 @@ import {Vec4} from "../../lib/math.js";
 import {element} from "../../lib/random.js";
 import {Tile} from "../../sprites/spritesheet.js";
 import {blueprint_healthbar} from "../blueprints/blu_healthbar.js";
-import {ai_fighter} from "../components/com_ai_fighter.js";
+import {control_ai} from "../components/com_control_ai.js";
 import {aim} from "../components/com_aim.js";
 import {children} from "../components/com_children.js";
 import {collide2d} from "../components/com_collide2d.js";
@@ -41,7 +41,7 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
         health(totalHealth),
         move2d(4, 0),
         aim(0.1), // Target search every 0.1 seconds
-        ai_fighter(is_player), // AI will find target automatically via Aim component
+        control_ai(is_player), // AI will find target automatically via Aim component
         children(
             blueprint_eyes(game),
             blueprint_healthbar(),
