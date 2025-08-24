@@ -1,4 +1,5 @@
 import {Vec2} from "../../../lib/math.js";
+import {Tile} from "../../../sprites/spritesheet.js";
 import {collide2d} from "../../components/com_collide2d.js";
 import {control_always2d} from "../../components/com_control_always2d.js";
 import {DamageType, deal_damage} from "../../components/com_deal_damage.js";
@@ -22,7 +23,7 @@ export function blueprint_projectile(
     return [
         spatial_node2d(),
         local_transform2d(undefined, 0, [0.2, 0.2]), // Small projectile
-        render2d("17"), // Use a bullet/projectile sprite
+        render2d(Tile.Body), // Use a bullet/projectile sprite
         collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.05),
         move2d(speed, 0),
         control_always2d(direction, 0),

@@ -2,17 +2,12 @@
  * # Render2D
  *
  * The `Render2D` component allows an entity to be rendered in 2D space.
- *
- * Only a single sprite atlas is supported. The atlas is defined in
- * `src/sprites/atlas.ts`. See [tiled_tsj2atlas.cjs](tiled_tsj2atlas.html) for
- * more information.
  */
 
 import {Vec4} from "../../lib/math.js";
 import {clamp} from "../../lib/number.js";
 import {Entity} from "../../lib/world.js";
 import {FLOATS_PER_INSTANCE} from "../../materials/layout2d.js";
-import {atlas} from "../../sprites/atlas.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
@@ -27,10 +22,10 @@ export interface Render2D {
  *
  * By default, the z-order is 0. Use `order()` to change it.
  *
- * @param sprite_name The name of the sprite to render.
+ * @param tile_id The tile ID from the spritesheet enum.
  * @param color The tint of the sprite.
  */
-export function render2d(sprite_name: string, color: Vec4 = [1, 1, 1, 1]) {
+export function render2d(tile_id: number, color: Vec4 = [1, 1, 1, 1]) {
     return (game: Game, entity: Entity) => {
         let instance_offset = entity * FLOATS_PER_INSTANCE;
         // Detail.
@@ -41,11 +36,11 @@ export function render2d(sprite_name: string, color: Vec4 = [1, 1, 1, 1]) {
         game.World.InstanceData[instance_offset + 9] = color[1];
         game.World.InstanceData[instance_offset + 10] = color[2];
         game.World.InstanceData[instance_offset + 11] = color[3];
-        // Sprite.
-        game.World.InstanceData[instance_offset + 12] = atlas[sprite_name].x;
-        game.World.InstanceData[instance_offset + 13] = atlas[sprite_name].y;
-        game.World.InstanceData[instance_offset + 14] = atlas[sprite_name].w;
-        game.World.InstanceData[instance_offset + 15] = atlas[sprite_name].h;
+        // Sprite. For 8x8 tiles with 1px padding in a vertical layout
+        game.World.InstanceData[instance_offset + 12] = 0; // x is always 0 for vertical layout
+        game.World.InstanceData[instance_offset + 13] = tile_id * 9; // y = tile_id * (8 + 1 padding)
+        game.World.InstanceData[instance_offset + 14] = 8; // width is always 8
+        game.World.InstanceData[instance_offset + 15] = 8; // height is always 8
 
         game.World.Signature[entity] |= Has.Render2D;
         game.World.Render2D[entity] = {
@@ -73,12 +68,12 @@ export function order(z: number) {
     };
 }
 
-export function set_sprite(game: Game, entity: Entity, sprite_name: string) {
+export function set_sprite(game: Game, entity: Entity, tile_id: number) {
     let instance_offset = entity * FLOATS_PER_INSTANCE;
-    game.World.InstanceData[instance_offset + 12] = atlas[sprite_name].x;
-    game.World.InstanceData[instance_offset + 13] = atlas[sprite_name].y;
-    game.World.InstanceData[instance_offset + 14] = atlas[sprite_name].w;
-    game.World.InstanceData[instance_offset + 15] = atlas[sprite_name].h;
+    game.World.InstanceData[instance_offset + 12] = 0; // x is always 0 for vertical layout
+    game.World.InstanceData[instance_offset + 13] = tile_id * 9; // y = tile_id * (8 + 1 padding)
+    game.World.InstanceData[instance_offset + 14] = 8; // width is always 8
+    game.World.InstanceData[instance_offset + 15] = 8; // height is always 8
 }
 
 export function set_color(game: Game, entity: Entity, color: Vec4) {

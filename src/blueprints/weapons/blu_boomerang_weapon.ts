@@ -1,17 +1,18 @@
-import {blueprint_boomerang_projectile} from "../projectiles/blu_boomerang.js";
-import {local_transform2d} from "../../components/com_local_transform2d.js";
+import {Tile} from "../../../sprites/spritesheet.js";
 import {label} from "../../components/com_label.js";
+import {local_transform2d} from "../../components/com_local_transform2d.js";
 import {render2d} from "../../components/com_render2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {spawn_count} from "../../components/com_spawn.js";
 import {weapon_ranged} from "../../components/com_weapon.js";
 import {Game} from "../../game.js";
+import {blueprint_boomerang_projectile} from "../projectiles/blu_boomerang.js";
 
 export function blueprint_boomerang_weapon(game: Game) {
     return [
         spatial_node2d(),
         local_transform2d([0.5, 0], 0, [0.8, 0.8]), // Medium offset and size
-        render2d("24"), // Using sprite 24 for boomerang
+        render2d(Tile.Body), // Using sprite 24 for boomerang
         label("boomerang"), // Name for identification
         weapon_ranged(
             2, // damage: moderate damage, can hit multiple targets

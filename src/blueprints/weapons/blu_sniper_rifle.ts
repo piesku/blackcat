@@ -1,4 +1,4 @@
-import {blueprint_projectile} from "../projectiles/blu_projectile.js";
+import {Tile} from "../../../sprites/spritesheet.js";
 import {collide2d} from "../../components/com_collide2d.js";
 import {label} from "../../components/com_label.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
@@ -7,12 +7,13 @@ import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {spawn_count} from "../../components/com_spawn.js";
 import {weapon_ranged} from "../../components/com_weapon.js";
 import {Game, Layer} from "../../game.js";
+import {blueprint_projectile} from "../projectiles/blu_projectile.js";
 
 export function blueprint_sniper_rifle(game: Game) {
     return [
         spatial_node2d(),
         local_transform2d(),
-        render2d("22"), // Use a sniper sprite
+        render2d(Tile.Body), // Use a weapon sprite
         collide2d(false, Layer.None, Layer.None, 0.5),
         label("sniper_rifle"), // Name for identification
         weapon_ranged(

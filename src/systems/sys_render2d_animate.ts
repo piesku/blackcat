@@ -22,10 +22,10 @@ export function sys_render2d_animate(game: Game, delta: number) {
 function update(game: Game, entity: Entity, delta: number) {
     let animate = game.World.AnimateSprite[entity];
 
-    for (let frame_name in animate.Frames) {
-        let frame_timestamp = animate.Frames[frame_name];
+    for (let frame_id in animate.Frames) {
+        let frame_timestamp = animate.Frames[frame_id];
         if (animate.Time < frame_timestamp) {
-            set_sprite(game, entity, frame_name);
+            set_sprite(game, entity, Number(frame_id));
             break;
         }
     }

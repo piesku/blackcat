@@ -1,3 +1,4 @@
+import {Tile} from "../../sprites/spritesheet.js";
 import {blueprint_healthbar} from "../blueprints/blu_healthbar.js";
 import {ai_fighter} from "../components/com_ai_fighter.js";
 import {animate_sprite} from "../components/com_animate_sprite.js";
@@ -21,8 +22,8 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
         spatial_node2d(),
         local_transform2d(undefined, 0, [1, 1]),
         collide2d(true, Layer.Player, Layer.Terrain | Layer.Player, 0.5),
-        render2d("13"),
-        animate_sprite({13: Math.random(), 14: Math.random()}),
+        render2d(Tile.Body),
+        animate_sprite({[Tile.Body]: Math.random()}),
         health(totalHealth),
         move2d(4, 0),
         ai_fighter(-1, is_player), // AI will find target automatically

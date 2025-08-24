@@ -1,4 +1,5 @@
 import {Vec2} from "../../../lib/math.js";
+import {Tile} from "../../../sprites/spritesheet.js";
 import {collide2d} from "../../components/com_collide2d.js";
 import {grenade_behavior} from "../../components/com_grenade_behavior.js";
 import {lifespan} from "../../components/com_lifespan.js";
@@ -25,7 +26,7 @@ export function blueprint_grenade(
     return [
         spatial_node2d(),
         local_transform2d([0, 0], 0, [0.3, 0.3]), // Small grenade
-        render2d("23"), // Using sprite 23 for grenade
+        render2d(Tile.Body), // Using sprite 23 for grenade
 
         // Physics integration via RigidBody2D (replaces move2d and control_always2d)
         rigid_body2d(RigidKind.Dynamic, 0.3, 0.01, [0, -9.8]), // Standard gravity for grenades
