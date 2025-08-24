@@ -64,9 +64,6 @@ export function sys_ai_fighter(game: Game, delta: number) {
             let target_transform = game.World.LocalTransform2D[aim.TargetEntity];
             if (!target_transform) continue;
 
-            // Use distance and direction from Aim component
-            let to_target: Vec2 = [aim.DirectionToTarget[0], aim.DirectionToTarget[1]];
-
             // Calculate separation force to prevent collision lock-ins
             calculate_separation_force(
                 game,
@@ -108,7 +105,7 @@ export function sys_ai_fighter(game: Game, delta: number) {
 
                     circle_movement(
                         movement,
-                        to_target,
+                        aim.DirectionToTarget,
                         aim.DistanceToTarget,
                         ai.CircleDirection,
                         scaled_distances.circle,
@@ -126,14 +123,19 @@ export function sys_ai_fighter(game: Game, delta: number) {
                     break;
                 case AIState.Pursuing:
                     // Move directly toward retreating target - aggressive pursuit!
-                    vec2_normalize(movement, to_target);
+                    vec2_normalize(movement, aim.DirectionToTarget);
                     vec2_scale(movement, movement, 1.2 * ai.Aggressiveness); // Personality affects pursuit speed
                     break;
                 case AIState.Dashing:
-                    attack_movement(movement, to_target, speed_scale, ai.Aggressiveness);
+                    attack_movement(
+                        movement,
+                        aim.DirectionToTarget,
+                        speed_scale,
+                        ai.Aggressiveness,
+                    );
                     break;
                 case AIState.Retreating:
-                    retreat_movement(movement, to_target, ai.SeparationForce);
+                    retreat_movement(movement, aim.DirectionToTarget, ai.SeparationForce);
                     break;
                 case AIState.Separating:
                     separation_movement(movement, ai.SeparationForce);
@@ -170,9 +172,6 @@ function update_ai_state(
     let health = game.World.Health[entity];
     let aim = game.World.Aim[entity];
 
-    let distance = aim.DistanceToTarget;
-    let to_target: Vec2 = [aim.DirectionToTarget[0], aim.DirectionToTarget[1]];
-
     ai.StateTimer += delta;
     ai.AttackCooldown = Math.max(0, ai.AttackCooldown - delta);
 
@@ -204,7 +203,7 @@ function update_ai_state(
     switch (ai.State) {
         case AIState.Circling:
             // Check if too close - force separation (but only for higher entity ID to avoid both separating)
-            if (distance < scaled_distances.separation) {
+            if (aim.DistanceToTarget < scaled_distances.separation) {
                 let target_ai = game.World.AIFighter[aim.TargetEntity];
                 if (target_ai && target_ai.State === AIState.Separating) {
                     // Target is already separating, stay in circling but move away
@@ -222,23 +221,23 @@ function update_ai_state(
             // If target is retreating, switch to pursuing state
             else if (is_target_retreating) {
                 console.log(
-                    `[AI] Entity entering PURSUING state for retreating target at distance ${distance.toFixed(2)}`,
+                    `[AI] Entity entering PURSUING state for retreating target at distance ${aim.DistanceToTarget.toFixed(2)}`,
                 );
                 change_state(ai, AIState.Pursuing, game.Time);
             }
             // Enhanced dash attack trigger: longer range, personality-based timing
             else if (
-                distance < scaled_distances.dash_trigger &&
+                aim.DistanceToTarget < scaled_distances.dash_trigger &&
                 ai.AttackCooldown <= 0 &&
                 ai.StateTimer > ai.Patience * time_scale &&
                 float(0, 1) < 0.2 * ai.Aggressiveness
             ) {
                 // Store attack direction and enter preparing state
-                ai.PrepareDirection[0] = to_target[0];
-                ai.PrepareDirection[1] = to_target[1];
+                ai.PrepareDirection[0] = aim.DirectionToTarget[0];
+                ai.PrepareDirection[1] = aim.DirectionToTarget[1];
                 vec2_normalize(ai.PrepareDirection, ai.PrepareDirection);
                 console.log(
-                    `[AI] Entity PREPARING DASH ATTACK at distance ${distance.toFixed(2)} (trigger: ${scaled_distances.dash_trigger.toFixed(2)})`,
+                    `[AI] Entity PREPARING DASH ATTACK at distance ${aim.DistanceToTarget.toFixed(2)} (trigger: ${scaled_distances.dash_trigger.toFixed(2)})`,
                 );
                 change_state(ai, AIState.Preparing, game.Time);
                 ai.AttackCooldown = (1.5 + float(0, 2.0)) * time_scale * ai.Patience;
@@ -253,9 +252,9 @@ function update_ai_state(
 
         case AIState.Pursuing:
             // Attack immediately when close enough
-            if (distance < scaled_distances.dash_trigger && ai.AttackCooldown <= 0) {
+            if (aim.DistanceToTarget < scaled_distances.dash_trigger && ai.AttackCooldown <= 0) {
                 console.log(
-                    `[AI] Entity dashing from PURSUING state at distance ${distance.toFixed(2)}`,
+                    `[AI] Entity dashing from PURSUING state at distance ${aim.DistanceToTarget.toFixed(2)}`,
                 );
                 change_state(ai, AIState.Dashing, game.Time);
                 ai.AttackCooldown = (1.0 + Math.random() * 0.5) * time_scale; // Shorter cooldown for pursued targets
@@ -281,9 +280,12 @@ function update_ai_state(
         case AIState.Dashing:
             // Longer, more dramatic dash duration
             let attack_duration = (1.5 + 0.5 * ai.Aggressiveness) * time_scale;
-            if (ai.StateTimer > attack_duration || distance > scaled_distances.dash_trigger * 1.5) {
+            if (
+                ai.StateTimer > attack_duration ||
+                aim.DistanceToTarget > scaled_distances.dash_trigger * 1.5
+            ) {
                 console.log(
-                    `[AI] Entity ending dash attack (timer: ${ai.StateTimer.toFixed(2)}, duration: ${attack_duration.toFixed(2)}, distance: ${distance.toFixed(2)})`,
+                    `[AI] Entity ending dash attack (timer: ${ai.StateTimer.toFixed(2)}, duration: ${attack_duration.toFixed(2)}, distance: ${aim.DistanceToTarget.toFixed(2)})`,
                 );
                 change_state(ai, AIState.Circling, game.Time);
             }
@@ -293,11 +295,11 @@ function update_ai_state(
             // Return to circling when adequately separated OR after timeout
             let separation_timeout = 2.0 * time_scale; // Max 2 seconds in separating state
             if (
-                distance > scaled_distances.separation * 1.5 ||
+                aim.DistanceToTarget > scaled_distances.separation * 1.5 ||
                 ai.StateTimer > separation_timeout
             ) {
                 console.log(
-                    `[AI] Entity returning to circling after separation (distance: ${distance.toFixed(2)}, timer: ${ai.StateTimer.toFixed(2)})`,
+                    `[AI] Entity returning to circling after separation (distance: ${aim.DistanceToTarget.toFixed(2)}, timer: ${ai.StateTimer.toFixed(2)})`,
                 );
                 change_state(ai, AIState.Circling, game.Time);
             }
@@ -307,7 +309,8 @@ function update_ai_state(
             // Return to circling when at safe distance and health recovered, OR after timeout
             let retreat_timeout = 3.0 * time_scale; // Max 3 seconds in retreat to prevent stalemates
             if (
-                (distance > scaled_distances.retreat && health.Current > LOW_HEALTH_THRESHOLD) ||
+                (aim.DistanceToTarget > scaled_distances.retreat &&
+                    health.Current > LOW_HEALTH_THRESHOLD) ||
                 ai.StateTimer > retreat_timeout
             ) {
                 if (ai.StateTimer > retreat_timeout) {
@@ -362,11 +365,11 @@ function getAIStateName(state: AIState): string {
 
 function circle_movement(
     out: Vec2,
-    to_target: Vec2,
+    to_target: Readonly<Vec2>,
     distance: number,
     direction: number,
     circle_distance: number,
-    separation_force: Vec2,
+    separation_force: Readonly<Vec2>,
     target_separating: boolean = false,
 ) {
     if (distance < 0.1) return;
@@ -399,7 +402,12 @@ function circle_movement(
     vec2_normalize(out, out);
 }
 
-function attack_movement(out: Vec2, to_target: Vec2, speed_scale: number, aggressiveness: number) {
+function attack_movement(
+    out: Vec2,
+    to_target: Readonly<Vec2>,
+    speed_scale: number,
+    aggressiveness: number,
+) {
     // Enhanced DASH with higher speed and personality
     vec2_normalize(out, to_target);
     // Dramatic speed multiplier that scales with aggressiveness
@@ -412,7 +420,7 @@ function attack_movement(out: Vec2, to_target: Vec2, speed_scale: number, aggres
     vec2_scale(out, out, effective_multiplier);
 }
 
-function retreat_movement(out: Vec2, to_target: Vec2, separation_force: Vec2) {
+function retreat_movement(out: Vec2, to_target: Readonly<Vec2>, separation_force: Readonly<Vec2>) {
     // Move away from target with separation consideration
     vec2_normalize(out, to_target);
     vec2_scale(out, out, -0.8); // Slower retreat for strategic positioning
@@ -424,7 +432,7 @@ function retreat_movement(out: Vec2, to_target: Vec2, separation_force: Vec2) {
 
 function prepare_movement(
     out: Vec2,
-    prepare_direction: Vec2,
+    prepare_direction: Readonly<Vec2>,
     state_timer: number,
     prepare_duration: number,
 ) {
@@ -435,7 +443,7 @@ function prepare_movement(
     vec2_scale(out, prepare_direction, intensity);
 }
 
-function separation_movement(out: Vec2, separation_force: Vec2) {
+function separation_movement(out: Vec2, separation_force: Readonly<Vec2>) {
     // Move based on separation force, with fallback for zero force
     let force_length = vec2_length(separation_force);
 
