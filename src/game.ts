@@ -20,6 +20,7 @@ import {sys_control_always2d} from "./systems/sys_control_always2d.js";
 import {sys_control_weapon} from "./systems/sys_control_weapon.js";
 import {sys_deal_damage} from "./systems/sys_deal_damage.js";
 import {sys_draw2d} from "./systems/sys_draw2d.js";
+import {sys_draw2d_debug} from "./systems/sys_draw2d_debug.js";
 import {sys_duel_manager} from "./systems/sys_duel_manager.js";
 import {sys_grenade} from "./systems/sys_grenade.js";
 import {sys_health} from "./systems/sys_health.js";
@@ -133,6 +134,11 @@ export class Game extends Game3D {
         sys_draw2d(this, delta);
         sys_render2d_animate(this, delta);
         sys_render2d(this, delta);
+
+        if (DEBUG) {
+            // Debug rendering (after all other rendering).
+            sys_draw2d_debug(this);
+        }
 
         // UI and timers.
         sys_victory_timer(this, delta);

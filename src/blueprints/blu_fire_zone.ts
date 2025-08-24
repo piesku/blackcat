@@ -15,7 +15,7 @@ export function blueprint_fire_zone(
 ) {
     return [
         spatial_node2d(),
-        local_transform2d([0, 0], 0, [radius * 2, radius * 2]), // Scale to show fire area
+        local_transform2d([0, 0], 0, [radius, radius]), // Scale to show fire area
         render2d(Tile.Body), // Using first sprite
 
         // Fire zone collision detection with large radius
