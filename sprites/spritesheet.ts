@@ -5,4 +5,5 @@ export const enum Tile {
     Mortar,
     Flamethrower,
     Boomerang,
+    Rifle,
 }

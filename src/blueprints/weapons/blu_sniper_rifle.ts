@@ -13,7 +13,7 @@ export function blueprint_sniper_rifle(game: Game) {
     return [
         spatial_node2d(),
         local_transform2d(),
-        render2d(Tile.Body), // Use a weapon sprite
+        render2d(Tile.Rifle), // Use a weapon sprite
         collide2d(false, Layer.None, Layer.None, 0.5),
         label("sniper_rifle"), // Name for identification
         weapon_ranged(
