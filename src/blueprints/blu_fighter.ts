@@ -3,6 +3,7 @@ import {element} from "../../lib/random.js";
 import {Tile} from "../../sprites/spritesheet.js";
 import {blueprint_healthbar} from "../blueprints/blu_healthbar.js";
 import {ai_fighter} from "../components/com_ai_fighter.js";
+import {aim} from "../components/com_aim.js";
 import {children} from "../components/com_children.js";
 import {collide2d} from "../components/com_collide2d.js";
 import {DamageType, deal_damage} from "../components/com_deal_damage.js";
@@ -33,13 +34,14 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
 
     return [
         spatial_node2d(),
-        local_transform2d(undefined, 0, [is_player ? 1 : -1, 1]),
+        local_transform2d(),
         collide2d(true, Layer.Player, Layer.Terrain | Layer.Player, 0.5),
         render2d(Tile.Body, element(skin_colors)),
         // animate_sprite({[Tile.Body]: Math.random()}),
         health(totalHealth),
         move2d(4, 0),
-        ai_fighter(-1, is_player), // AI will find target automatically
+        aim(0.1), // Target search every 0.1 seconds
+        ai_fighter(is_player), // AI will find target automatically via Aim component
         children(blueprint_healthbar(), blueprint_eyes(game)), // Add healthbar, and eyes, weapons will be added by apply_upgrades
 
         // Fighter-vs-fighter collision damage (low damage, long cooldown)

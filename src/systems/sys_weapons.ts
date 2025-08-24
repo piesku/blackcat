@@ -1,5 +1,4 @@
 import {Vec2} from "../../lib/math.js";
-import {vec2_length, vec2_normalize, vec2_subtract} from "../../lib/vec2.js";
 import {blueprint_flame_particle} from "../blueprints/particles/blu_flame_particle.js";
 import {blueprint_boomerang_projectile} from "../blueprints/projectiles/blu_boomerang.js";
 import {blueprint_grenade} from "../blueprints/projectiles/blu_grenade.js";
@@ -11,7 +10,7 @@ import {Game} from "../game.js";
 import {getAIStateName} from "../ui/ai_state.js";
 import {Has} from "../world.js";
 
-const QUERY = Has.Weapon; // Entities that are weapons
+const QUERY = Has.Weapon | Has.SpatialNode2D;
 
 export function sys_weapons(game: Game, delta: number) {
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
@@ -25,16 +24,13 @@ export function sys_weapons(game: Game, delta: number) {
             }
 
             // Find the wielder (parent entity)
-            let wielder_entity = -1;
-            if (game.World.Signature[entity] & Has.SpatialNode2D) {
-                let spatial_node = game.World.SpatialNode2D[entity];
-                wielder_entity = spatial_node?.Parent ?? -1;
-            }
+            let spatial_node = game.World.SpatialNode2D[entity];
+            let wielder_entity = spatial_node.Parent ?? -1;
             DEBUG: if (wielder_entity === -1) throw new Error("weapon missing parent");
 
             // Check if weapon should activate based on AI state and weapon type
             if (should_activate_weapon(game, wielder_entity, weapon)) {
-                activate_weapon(game, wielder_entity, entity, weapon);
+                activate_weapon(game, wielder_entity, entity);
             }
         }
     }
@@ -42,18 +38,22 @@ export function sys_weapons(game: Game, delta: number) {
 
 function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapon): boolean {
     let ai = game.World.AIFighter[parent_entity];
-    DEBUG: if (!ai) throw new Error("missing component");
+    let aim = game.World.Aim[parent_entity];
+    DEBUG: if (!ai || !aim) throw new Error("missing component");
 
     // All weapons are ranged - can activate in Circling, Pursuing, and Dashing states
+    // AND must have a valid target from the Aim component within range
     let should_activate =
         (ai.State === AIState.Circling ||
             ai.State === AIState.Pursuing ||
             ai.State === AIState.Dashing) &&
-        weapon.LastAttackTime <= 0;
+        weapon.LastAttackTime <= 0 &&
+        aim.TargetEntity !== -1 &&
+        aim.DistanceToTarget <= weapon.Range;
 
     if (should_activate) {
         console.log(
-            `[${Date.now()}] [WEAPON] Entity ${parent_entity} activating ranged weapon (AI State: ${getAIStateName(ai.State)}, Cooldown: ${weapon.LastAttackTime.toFixed(2)})`,
+            `[${Date.now()}] [WEAPON] Entity ${parent_entity} activating weapon (AI State: ${getAIStateName(ai.State)}, Target: ${aim.TargetEntity}, Distance: ${aim.DistanceToTarget.toFixed(2)})`,
         );
     }
 
@@ -68,128 +68,44 @@ function get_weapon_name(game: Game, weapon_entity: number): string | null {
     return label_component ? label_component.Name || null : null;
 }
 
-function activate_weapon(
-    game: Game,
-    wielder_entity: number,
-    weapon_entity: number,
-    weapon: Weapon,
-) {
+function activate_weapon(game: Game, wielder_entity: number, weapon_entity: number) {
+    let weapon = game.World.Weapon[weapon_entity];
+
     // Set weapon on cooldown
     weapon.LastAttackTime = weapon.Cooldown;
-
-    // Get wielder's position and target
-    let wielder_transform = game.World.LocalTransform2D[wielder_entity];
-    DEBUG: if (!wielder_transform) throw new Error("missing component");
-
-    // Find target (opponent)
-    let target_entity = find_weapon_target(game, wielder_entity, weapon);
-    if (target_entity === -1) {
-        console.log(`[WEAPON] Entity ${wielder_entity} failed to find target`);
-        return;
-    }
-
-    let target_transform = game.World.LocalTransform2D[target_entity];
-    DEBUG: if (!target_transform) throw new Error("missing component");
-
-    // Calculate distance to target
-    let to_target: Vec2 = [0, 0];
-    vec2_subtract(to_target, target_transform.Translation, wielder_transform.Translation);
-    let distance = vec2_length(to_target);
-
-    // Check if target is in range
-    if (distance > weapon.Range) {
-        console.log(
-            `[WEAPON] Entity ${wielder_entity} target ${target_entity} out of range (${distance.toFixed(2)} > ${weapon.Range})`,
-        );
-        return;
-    }
-
-    console.log(
-        `[WEAPON] Entity ${wielder_entity} attacking target ${target_entity} at range ${distance.toFixed(2)}`,
-    );
 
     // Apply weapon-specific effects based on weapon name
     let weapon_name = get_weapon_name(game, weapon_entity);
     switch (weapon_name) {
         case "flamethrower":
-            execute_flamethrower_attack(game, wielder_entity, target_entity, weapon, weapon_entity);
+            execute_flamethrower_attack(game, wielder_entity, weapon, weapon_entity);
             break;
         case "grenade_launcher":
-            execute_grenade_launcher_attack(
-                game,
-                wielder_entity,
-                target_entity,
-                weapon,
-                weapon_entity,
-            );
+            execute_grenade_launcher_attack(game, wielder_entity, weapon, weapon_entity);
             break;
         case "boomerang":
-            execute_boomerang_attack(game, wielder_entity, target_entity, weapon, weapon_entity);
+            execute_boomerang_attack(game, wielder_entity, weapon, weapon_entity);
             break;
         default:
-            execute_ranged_attack(game, wielder_entity, target_entity, weapon, weapon_entity);
+            execute_ranged_attack(game, wielder_entity, weapon, weapon_entity);
             break;
     }
-}
-
-function find_weapon_target(game: Game, wielder_entity: number, weapon: Weapon): number {
-    // For now, find the nearest enemy with health
-    let wielder_transform = game.World.LocalTransform2D[wielder_entity];
-    if (!wielder_transform) return -1;
-
-    let nearest_entity = -1;
-    let nearest_distance = weapon.Range + 1; // Start beyond weapon range
-    let candidates = 0;
-
-    for (let entity = 0; entity < game.World.Signature.length; entity++) {
-        if (entity === wielder_entity) continue;
-        if (!(game.World.Signature[entity] & Has.Health)) continue;
-        if (!(game.World.Signature[entity] & Has.LocalTransform2D)) continue;
-
-        let health = game.World.Health[entity];
-        if (!health.IsAlive) continue;
-
-        candidates++;
-
-        let transform = game.World.LocalTransform2D[entity];
-        let distance_vec: Vec2 = [0, 0];
-        vec2_subtract(distance_vec, transform.Translation, wielder_transform.Translation);
-        let distance = vec2_length(distance_vec);
-
-        if (distance < nearest_distance) {
-            nearest_distance = distance;
-            nearest_entity = entity;
-        }
-    }
-
-    console.log(
-        `[TARGET] Entity ${wielder_entity} found ${candidates} potential targets, selected: ${nearest_entity} (distance: ${nearest_distance.toFixed(2)})`,
-    );
-
-    return nearest_entity;
 }
 
 function execute_ranged_attack(
     game: Game,
     wielder_entity: number,
-    target_entity: number,
     weapon: Weapon,
     weapon_entity: number,
 ) {
-    let wielder_transform = game.World.LocalTransform2D[wielder_entity];
-    let target_transform = game.World.LocalTransform2D[target_entity];
-    DEBUG: if (!wielder_transform || !target_transform) throw new Error("missing component");
-
-    // Calculate direction to target
-    let to_target: Vec2 = [0, 0];
-    vec2_subtract(to_target, target_transform.Translation, wielder_transform.Translation);
-    vec2_normalize(to_target, to_target);
+    // Get direction from Aim component
+    let aim = game.World.Aim[wielder_entity];
+    DEBUG: if (!aim) throw new Error("missing component");
+    let to_target: Vec2 = [aim.DirectionToTarget[0], aim.DirectionToTarget[1]];
 
     // Find and activate the spawner on the weapon
     let spawner = game.World.Spawn[weapon_entity];
-    DEBUG: if (!spawner) {
-        throw new Error(`[RANGED] Weapon ${weapon_entity} missing spawn component`);
-    }
+    DEBUG: if (!spawner) throw new Error("missing component");
 
     // Set spawn direction toward target (with scatter applied)
     spawner.Direction[0] = to_target[0];
@@ -211,25 +127,20 @@ function execute_ranged_attack(
     }
 
     console.log(
-        `[RANGED] Entity ${wielder_entity} activated spawner toward target ${target_entity}`,
+        `[RANGED] Entity ${wielder_entity} activated spawner toward target ${aim.TargetEntity}`,
     );
 }
 
 function execute_flamethrower_attack(
     game: Game,
     wielder_entity: number,
-    target_entity: number,
     weapon: Weapon,
     weapon_entity: number,
 ) {
-    let wielder_transform = game.World.LocalTransform2D[wielder_entity];
-    let target_transform = game.World.LocalTransform2D[target_entity];
-    DEBUG: if (!wielder_transform || !target_transform) throw new Error("missing component");
-
-    // Calculate direction to target
-    let to_target: Vec2 = [0, 0];
-    vec2_subtract(to_target, target_transform.Translation, wielder_transform.Translation);
-    vec2_normalize(to_target, to_target);
+    // Get direction from Aim component
+    let aim = game.World.Aim[wielder_entity];
+    DEBUG: if (!aim) throw new Error("wielder missing aim component");
+    let to_target: Vec2 = [aim.DirectionToTarget[0], aim.DirectionToTarget[1]];
 
     // Find and activate the spawner on the weapon
     let spawner = game.World.Spawn[weapon_entity];
@@ -248,25 +159,23 @@ function execute_flamethrower_attack(
     }
 
     console.log(
-        `[${Date.now()}] [FLAMETHROWER] Entity ${wielder_entity} activated spawner toward target ${target_entity}`,
+        `[${Date.now()}] [FLAMETHROWER] Entity ${wielder_entity} activated spawner toward target ${aim.TargetEntity}`,
     );
 }
 
 function execute_grenade_launcher_attack(
     game: Game,
     wielder_entity: number,
-    target_entity: number,
     weapon: Weapon,
     weapon_entity: number,
 ) {
-    let wielder_transform = game.World.LocalTransform2D[wielder_entity];
-    let target_transform = game.World.LocalTransform2D[target_entity];
-    DEBUG: if (!wielder_transform || !target_transform) throw new Error("missing component");
+    let aim = game.World.Aim[wielder_entity];
+    DEBUG: if (!aim) throw new Error("wielder missing aim component");
+    let to_target: Vec2 = [aim.DirectionToTarget[0], aim.DirectionToTarget[1]];
 
-    // Calculate direction to target
-    let to_target: Vec2 = [0, 0];
-    vec2_subtract(to_target, target_transform.Translation, wielder_transform.Translation);
-    vec2_normalize(to_target, to_target);
+    let wielder_transform = game.World.LocalTransform2D[wielder_entity];
+    let target_transform = game.World.LocalTransform2D[aim.TargetEntity];
+    DEBUG: if (!wielder_transform || !target_transform) throw new Error("missing component");
 
     // Calculate relative target position for grenade blueprint
     let target_position: Vec2 = [
@@ -300,25 +209,23 @@ function execute_grenade_launcher_attack(
     }
 
     console.log(
-        `[GRENADE_LAUNCHER] Entity ${wielder_entity} activated grenade spawner toward target ${target_entity}`,
+        `[GRENADE_LAUNCHER] Entity ${wielder_entity} activated grenade spawner toward target ${aim.TargetEntity}`,
     );
 }
 
 function execute_boomerang_attack(
     game: Game,
     wielder_entity: number,
-    target_entity: number,
     weapon: Weapon,
     weapon_entity: number,
 ) {
-    let wielder_transform = game.World.LocalTransform2D[wielder_entity];
-    let target_transform = game.World.LocalTransform2D[target_entity];
-    DEBUG: if (!wielder_transform || !target_transform) throw new Error("missing component");
+    let aim = game.World.Aim[wielder_entity];
+    DEBUG: if (!aim) throw new Error("wielder missing aim component");
+    let to_target: Vec2 = [aim.DirectionToTarget[0], aim.DirectionToTarget[1]];
 
-    // Calculate direction to target
-    let to_target: Vec2 = [0, 0];
-    vec2_subtract(to_target, target_transform.Translation, wielder_transform.Translation);
-    vec2_normalize(to_target, to_target);
+    let wielder_transform = game.World.LocalTransform2D[wielder_entity];
+    let target_transform = game.World.LocalTransform2D[aim.TargetEntity];
+    DEBUG: if (!wielder_transform || !target_transform) throw new Error("missing component");
 
     // Find and activate the spawner on the weapon
     let spawner = game.World.Spawn[weapon_entity];
@@ -345,6 +252,6 @@ function execute_boomerang_attack(
     }
 
     console.log(
-        `[BOOMERANG] Entity ${wielder_entity} activated boomerang spawner toward target ${target_entity}`,
+        `[BOOMERANG] Entity ${wielder_entity} activated boomerang spawner toward target ${aim.TargetEntity}`,
     );
 }

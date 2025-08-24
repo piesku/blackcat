@@ -6,7 +6,6 @@ export interface AIFighter {
     State: AIState;
     LastStateChange: number; // Game time in seconds when state last changed
     StateTimer: number;
-    TargetEntity: number;
     CircleDirection: number; // 1 or -1 for clockwise/counterclockwise
     AttackCooldown: number;
     IsPlayer: boolean; // True for player fighters, false for opponents
@@ -31,7 +30,7 @@ export const enum AIState {
     Separating, // New: Active collision avoidance
 }
 
-export function ai_fighter(target_entity: number = -1, is_player: boolean = false) {
+export function ai_fighter(is_player: boolean = false) {
     return (game: Game, entity: number) => {
         game.World.Signature[entity] |= Has.AIFighter;
 
@@ -61,7 +60,6 @@ export function ai_fighter(target_entity: number = -1, is_player: boolean = fals
             State: AIState.Circling,
             LastStateChange: game.Time,
             StateTimer: initial_delay,
-            TargetEntity: target_entity,
             CircleDirection: circle_direction,
             AttackCooldown: attack_delay,
             IsPlayer: is_player,
