@@ -30,7 +30,6 @@ export function blueprint_minigun() {
             0.15, // spread: Moderate spread for spray effect
             7.0, // speedMin
             8.0, // speedMax
-            1, // burstCount: single bullet per emission
         ),
 
         // Child entity for shell casing effects
@@ -44,7 +43,6 @@ export function blueprint_minigun() {
                 0.3, // spread: casings scatter randomly
                 1.0, // speedMin: casings eject with moderate force
                 2.0, // speedMax
-                1, // burstCount: single casing per emission
             ),
         ]),
     ];

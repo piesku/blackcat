@@ -45,21 +45,17 @@ function update(game: Game, entity: Entity, delta: number) {
 }
 
 function update_count_spawner(game: Game, entity: Entity, spawn: SpawnCount, delta: number) {
-    spawn.SinceLast += delta;
-
-    // Check if spawner is active and has remaining entities
     if (spawn.RemainingCount <= 0) {
         return;
     }
 
-    // Check if it's time to spawn
-    if (spawn.SinceLast >= spawn.Interval) {
-        spawn.SinceLast = 0;
+    spawn.SinceLast += delta;
+    while (spawn.SinceLast >= spawn.Interval && spawn.RemainingCount > 0) {
+        spawn.SinceLast -= spawn.Interval;
         spawn.RemainingCount--;
 
         let spatial_node = game.World.SpatialNode2D[entity];
         mat2d_get_translation(world_position, spatial_node.World);
-
         spawn_single_entity(game, entity, spawn, world_position);
     }
 }
@@ -74,16 +70,13 @@ function update_timed_spawner(game: Game, entity: Entity, spawn: SpawnTimed, del
 
     spawn.Duration -= delta;
 
-    if (spawn.SinceLast >= spawn.Interval) {
-        spawn.SinceLast = 0;
+    while (spawn.SinceLast >= spawn.Interval && spawn.Duration > 0) {
+        spawn.SinceLast -= spawn.Interval;
 
         let spatial_node = game.World.SpatialNode2D[entity];
         mat2d_get_translation(world_position, spatial_node.World);
 
-        // Spawn burst of entities
-        for (let i = 0; i < spawn.BurstCount; i++) {
-            spawn_single_entity(game, entity, spawn, world_position);
-        }
+        spawn_single_entity(game, entity, spawn, world_position);
     }
 }
 

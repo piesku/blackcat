@@ -129,7 +129,6 @@ function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType)
                 0, // spread: No spread for trails
                 0.2, // speedMin: Very slow drift
                 0.2, // speedMax
-                1, // burstCount: Single particle per emission
                 Infinity, // initialDuration: Infinite duration - always active
             )(game, entity);
             console.log(`Applied shadow trail to entity ${entity}`);

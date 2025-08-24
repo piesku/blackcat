@@ -36,7 +36,6 @@ export interface SpawnTimed extends SpawnBase {
     Duration: number; // Time remaining (counts down to 0)
     Interval: number; // Time between spawns
     SinceLast: number; // Time since last spawn
-    BurstCount: number; // How many entities to spawn at once (1 = single)
 }
 
 export type Spawn = SpawnCount | SpawnTimed;
@@ -90,7 +89,6 @@ export function spawn_count(
  * @param spread Cone angle in radians.
  * @param speedMin Minimum spawn speed.
  * @param speedMax Maximum spawn speed.
- * @param burstCount How many entities to spawn at once.
  * @param initialDuration Initial duration to spawn (0 = inactive, >0 = immediately active).
  */
 export function spawn_timed(
@@ -100,7 +98,6 @@ export function spawn_timed(
     spread: number,
     speedMin: number,
     speedMax: number,
-    burstCount: number = 1,
     initialDuration: number = 0,
 ) {
     return (game: Game, entity: Entity) => {
@@ -114,7 +111,6 @@ export function spawn_timed(
             Spread: spread,
             SpeedMin: speedMin,
             SpeedMax: speedMax,
-            BurstCount: burstCount,
         };
 
         game.World.Spawn[entity] = spawner;

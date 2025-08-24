@@ -28,7 +28,7 @@ export function blueprint_explosion(
 
         spawn_count(
             blueprint_debris_particle,
-            0, // Very rapid spawning
+            0.001, // Very rapid spawning
             [1, 0], // All directions
             2 * Math.PI, // Full 360 degree spread
             3.0, // speedMin: debris flies fast

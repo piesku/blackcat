@@ -28,7 +28,6 @@ export function blueprint_flamethrower() {
             Math.PI / 4, // spread: 45 degree cone spread
             3.0, // speedMin
             5.0, // speedMax
-            1, // burstCount: 1 particle per emission
         ),
     ];
 }

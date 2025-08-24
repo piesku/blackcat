@@ -410,7 +410,7 @@ export class SceneGraphInspector {
             const l = world.Lifespan[entityId];
             html += `<div class="component">
                 <strong>Lifespan</strong><br>
-                Remaining: ${l.Age.toFixed(2)}s
+                Age: ${l.Age.toFixed(2)}s / ${l.Lifetime.toFixed(2)}s
             </div>`;
         }
 
@@ -525,7 +525,7 @@ export class SceneGraphInspector {
                 ${
                     s.Mode === SpawnMode.Count
                         ? `Remaining Count: ${s.RemainingCount}`
-                        : `Duration: ${s.Duration.toFixed(2)}<br>Burst Count: ${s.BurstCount}`
+                        : `Duration: ${s.Duration.toFixed(2)}`
                 }<br>
                 Interval: ${s.Interval.toFixed(2)}<br>
                 Speed: ${s.SpeedMin.toFixed(1)} - ${s.SpeedMax.toFixed(1)}
