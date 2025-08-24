@@ -13,7 +13,7 @@ export function blueprint_shotgun(game: Game) {
     return [
         spatial_node2d(),
         local_transform2d(),
-        render2d(Tile.Body), // Use a shotgun sprite
+        render2d(Tile.Shotgun), // Use a shotgun sprite
         collide2d(false, Layer.None, Layer.None, 0.35),
         label("shotgun"), // Name for identification
         weapon_ranged(

@@ -1,7 +1,8 @@
+import {Vec4} from "../../lib/math.js";
+import {element} from "../../lib/random.js";
 import {Tile} from "../../sprites/spritesheet.js";
 import {blueprint_healthbar} from "../blueprints/blu_healthbar.js";
 import {ai_fighter} from "../components/com_ai_fighter.js";
-import {animate_sprite} from "../components/com_animate_sprite.js";
 import {children} from "../components/com_children.js";
 import {collide2d} from "../components/com_collide2d.js";
 import {DamageType, deal_damage} from "../components/com_deal_damage.js";
@@ -12,6 +13,18 @@ import {render2d} from "../components/com_render2d.js";
 import {spatial_node2d} from "../components/com_spatial_node2d.js";
 import {Game, Layer} from "../game.js";
 
+const skin_colors: Vec4[] = [
+    [1.0, 0.8, 0.66, 1],
+    [1.0, 0.8, 0.66, 1],
+    [1.0, 0.8, 0.66, 1],
+    [0.33, 0.25, 0.2, 1],
+    [0.26, 0.19, 0.15, 1],
+];
+
+export function blueprint_eyes(game: Game, color: Vec4 = [0, 0, 0, 1]) {
+    return [spatial_node2d(), local_transform2d(undefined, 0, [1, 1]), render2d(Tile.Eyes, color)];
+}
+
 export function blueprint_fighter(game: Game, is_player: boolean) {
     // Calculate health based on arena level: base 2 + 2 per arena level
     let baseHealth = 2;
@@ -20,14 +33,14 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
 
     return [
         spatial_node2d(),
-        local_transform2d(undefined, 0, [1, 1]),
+        local_transform2d(undefined, 0, [is_player ? 1 : -1, 1]),
         collide2d(true, Layer.Player, Layer.Terrain | Layer.Player, 0.5),
-        render2d(Tile.Body),
-        animate_sprite({[Tile.Body]: Math.random()}),
+        render2d(Tile.Body, element(skin_colors)),
+        // animate_sprite({[Tile.Body]: Math.random()}),
         health(totalHealth),
         move2d(4, 0),
         ai_fighter(-1, is_player), // AI will find target automatically
-        children(blueprint_healthbar()), // Add healthbar, weapons will be added by apply_upgrades
+        children(blueprint_healthbar(), blueprint_eyes(game)), // Add healthbar, and eyes, weapons will be added by apply_upgrades
 
         // Fighter-vs-fighter collision damage (low damage, long cooldown)
         deal_damage(0.5, DamageType.Hand2Hand, {
