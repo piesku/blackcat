@@ -1,4 +1,5 @@
 import {instantiate} from "../lib/game.js";
+import {blueprint_chiquita_banana_spawner} from "./blueprints/blu_chiquita_banana_spawner.js";
 import {blueprint_explosion} from "./blueprints/blu_explosion.js";
 import {Game, GameView} from "./game.js";
 import {scene_arena} from "./scenes/sce_arena.js";
@@ -18,7 +19,8 @@ export const enum Action {
     ViewTransition,
     RestartRun,
     ClearSave,
-    BombExplosion,
+    ExplodeArea,
+    ExplodeBananas,
 }
 
 export function dispatch(game: Game, action: Action, payload?: unknown) {
@@ -101,16 +103,31 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
             clear_game_state();
             break;
         }
-        case Action.BombExplosion: {
+        case Action.ExplodeArea: {
             let bomb_entity = payload as number;
             let bomb_transform = game.World.LocalTransform2D[bomb_entity];
             DEBUG: if (!bomb_transform) throw new Error("missing transform component");
 
             let [x, y] = bomb_transform.Translation;
             console.log(
-                `[EXPLOSIVES] Bomb ${bomb_entity} exploding at (${x.toFixed(2)}, ${y.toFixed(2)})`,
+                `[EXPLOSIVES] Bomb ${bomb_entity} explodesing at (${x.toFixed(2)}, ${y.toFixed(2)})`,
             );
             instantiate(game, blueprint_explosion([x, y], 3, 1.5, 0.2));
+            break;
+        }
+        case Action.ExplodeBananas: {
+            let bomb_entity = payload as number;
+            let bomb_transform = game.World.LocalTransform2D[bomb_entity];
+            DEBUG: if (!bomb_transform) throw new Error("missing transform component");
+
+            let [x, y] = bomb_transform.Translation;
+            console.log(
+                `[CHIQUITA] Main bomb ${bomb_entity} exploding at (${x.toFixed(2)}, ${y.toFixed(2)}) `,
+            );
+
+            // Create dedicated banana spawner at explosion location
+            instantiate(game, blueprint_chiquita_banana_spawner([x, y]));
+
             break;
         }
     }

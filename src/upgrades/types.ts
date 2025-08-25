@@ -84,6 +84,12 @@ export const WEAPON_UPGRADES: UpgradeType[] = [
         name: "Hoover Crack",
         description: "Spinning particle emitter dealing continuous damage",
     },
+    {
+        id: "chiquita_bomb",
+        category: UpgradeCategory.Weapon,
+        name: "Chiquita Bomb",
+        description: "Bomb spawning multiple banana sub-bombs",
+    },
 ];
 
 // Armor upgrade definitions

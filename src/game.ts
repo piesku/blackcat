@@ -121,9 +121,12 @@ export class Game extends Game3D {
         sys_lifespan(this, delta);
         sys_shake2d(this, delta);
         sys_toggle(this, delta);
-        sys_spawn2d(this, delta);
 
         // Commit all positions.
+        sys_transform2d(this, delta);
+
+        // TODO Any other way so that we don't need to call transform2d twice?
+        sys_spawn2d(this, delta);
         sys_transform2d(this, delta);
 
         // Camera.
