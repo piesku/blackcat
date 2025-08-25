@@ -26,7 +26,7 @@ export function blueprint_minigun() {
         spawn_timed(
             () => blueprint_projectile(1.2),
             0.05, // interval: spawn every 0.05 seconds (20 bullets per second during burst)
-            [1, 0], // direction: Forward direction (will be overridden by weapon system)
+            null, // direction: Will be set by weapon system
             0.15, // spread: Moderate spread for spray effect
             7.0, // speedMin
             8.0, // speedMax

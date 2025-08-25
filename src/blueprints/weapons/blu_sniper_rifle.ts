@@ -27,7 +27,7 @@ export function blueprint_sniper_rifle() {
         spawn_count(
             () => blueprint_projectile(3.5),
             0, // interval: instant spawn
-            [1, 0], // direction: Forward direction (will be overridden by weapon system)
+            null, // direction: Will be set by weapon system
             0.01, // spread: Very tight spread for precision
             19.5, // speedMin
             20.5, // speedMax

@@ -78,6 +78,12 @@ export const WEAPON_UPGRADES: UpgradeType[] = [
         name: "Larpa",
         description: "Rockets leaving falling particle damage trails",
     },
+    {
+        id: "hoover_crack",
+        category: UpgradeCategory.Weapon,
+        name: "Hoover Crack",
+        description: "Spinning particle emitter dealing continuous damage",
+    },
 ];
 
 // Armor upgrade definitions

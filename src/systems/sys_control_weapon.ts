@@ -100,43 +100,24 @@ function execute_ranged_attack(
     // Get direction from Aim component
     let aim = game.World.Aim[wielder_entity];
     DEBUG: if (!aim) throw new Error("missing component");
-    let to_target: Vec2 = [aim.DirectionToTarget[0], aim.DirectionToTarget[1]];
 
     // Find and activate all spawners on the weapon and its children
     let spawners_activated = 0;
 
-    // First, handle the main spawner on the weapon entity itself
-    if (game.World.Spawn[weapon_entity]) {
-        let spawner = game.World.Spawn[weapon_entity];
+    // Handle all spawners on weapon entity and its children
+    for (let spawn_entity of query_down(game.World, weapon_entity, Has.Spawn)) {
+        let spawner = game.World.Spawn[spawn_entity];
+        if (spawner) {
+            // Only override direction if spawner wants weapon system to set it
+            if (spawner.Direction === null) {
+                spawner.Direction = [aim.DirectionToTarget[0], aim.DirectionToTarget[1]];
+            }
 
-        // Set spawn direction toward target
-        spawner.Direction[0] = to_target[0];
-        spawner.Direction[1] = to_target[1];
-
-        // Activate the spawner based on its mode using weapon's TotalAmount
-        if (spawner.Mode === SpawnMode.Count) {
-            spawner.RemainingCount = weapon.TotalAmount;
-        } else {
-            spawner.Duration = weapon.TotalAmount;
-        }
-
-        spawners_activated++;
-    }
-
-    // Then, handle any spawners on child entities (e.g., shell casings)
-    for (let child_entity of query_down(game.World, weapon_entity, Has.Spawn)) {
-        if (child_entity === weapon_entity) continue; // Skip the main weapon, already handled
-
-        let child_spawner = game.World.Spawn[child_entity];
-        if (child_spawner) {
-            // For child spawners (like shell casings), don't override their blueprint
-            // but do activate them with timing synchronized to the main weapon
-
-            // Activate the child spawner using weapon's TotalAmount
-            if (child_spawner.Mode === SpawnMode.Count) {
-                child_spawner.RemainingCount = weapon.TotalAmount;
+            // Activate the spawner based on its mode using weapon's TotalAmount
+            if (spawner.Mode === SpawnMode.Count) {
+                spawner.RemainingCount = weapon.TotalAmount;
             } else {
-                child_spawner.Duration = weapon.TotalAmount;
+                spawner.Duration = weapon.TotalAmount;
             }
 
             spawners_activated++;
@@ -157,15 +138,15 @@ function execute_flamethrower_attack(
     // Get direction from Aim component
     let aim = game.World.Aim[wielder_entity];
     DEBUG: if (!aim) throw new Error("wielder missing aim component");
-    let to_target: Vec2 = [aim.DirectionToTarget[0], aim.DirectionToTarget[1]];
 
     // Find and activate the spawner on the weapon
     let spawner = game.World.Spawn[weapon_entity];
     DEBUG: if (!spawner) throw new Error("missing component");
 
     // Set spawn direction toward target
-    spawner.Direction[0] = to_target[0];
-    spawner.Direction[1] = to_target[1];
+    if (spawner.Direction === null) {
+        spawner.Direction = [aim.DirectionToTarget[0], aim.DirectionToTarget[1]];
+    }
 
     // Activate the timed spawner using weapon's TotalAmount
     if (spawner.Mode === SpawnMode.Timed) {
@@ -185,7 +166,6 @@ function execute_mortar_attack(
 ) {
     let aim = game.World.Aim[wielder_entity];
     DEBUG: if (!aim) throw new Error("wielder missing aim component");
-    let to_target: Vec2 = [aim.DirectionToTarget[0], aim.DirectionToTarget[1]];
 
     let wielder_transform = game.World.LocalTransform2D[wielder_entity];
     let target_transform = game.World.LocalTransform2D[aim.TargetEntity];
@@ -204,8 +184,9 @@ function execute_mortar_attack(
     }
 
     // Set spawn direction toward target
-    spawner.Direction[0] = to_target[0];
-    spawner.Direction[1] = to_target[1];
+    if (spawner.Direction === null) {
+        spawner.Direction = [aim.DirectionToTarget[0], aim.DirectionToTarget[1]];
+    }
 
     // Update blueprint to use runtime parameters for this specific shot
     spawner.BlueprintCreator = () =>
@@ -235,7 +216,6 @@ function execute_boomerang_attack(
 ) {
     let aim = game.World.Aim[wielder_entity];
     DEBUG: if (!aim) throw new Error("wielder missing aim component");
-    let to_target: Vec2 = [aim.DirectionToTarget[0], aim.DirectionToTarget[1]];
 
     let wielder_transform = game.World.LocalTransform2D[wielder_entity];
     let target_transform = game.World.LocalTransform2D[aim.TargetEntity];
@@ -248,8 +228,9 @@ function execute_boomerang_attack(
     }
 
     // Set spawn direction toward target
-    spawner.Direction[0] = to_target[0];
-    spawner.Direction[1] = to_target[1];
+    if (spawner.Direction === null) {
+        spawner.Direction = [aim.DirectionToTarget[0], aim.DirectionToTarget[1]];
+    }
 
     // Update blueprint to use runtime parameters for this specific shot
     spawner.BlueprintCreator = () =>

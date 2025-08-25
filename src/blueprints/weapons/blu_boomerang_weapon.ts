@@ -24,7 +24,7 @@ export function blueprint_boomerang_weapon() {
         spawn_count(
             () => blueprint_boomerang_projectile(2, -1, [0, 0], 6, 5), // Will be configured per shot
             0, // interval: instant spawn
-            [1, 0], // direction: Forward direction (will be overridden by weapon system)
+            null, // direction: Will be set by weapon system
             0.0, // spread: No spread for precision throwing
             4.5, // speedMin
             5.5, // speedMax

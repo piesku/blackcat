@@ -22,13 +22,13 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Rifle** - Enhanced pistol with muzzle flash
 - **Mine** - Contact mines that stick to arena and explode
 - **Homing Missile** - Missiles that track the nearest enemy
-- **Mortar** - High-arc shells that explode on contact/timeout
-- **Larpa** - Rockets leaving falling particle damage trails
+- **Mortar** ✅ - High-arc shells that explode on contact/timeout
+- **Larpa** ✅ - Rockets leaving falling particle damage trails
 - **Chiquita Bomb** - Timeout bomb spawning multiple banana sub-bombs
-- **Hoover Crack** - Spinning particle emitter dealing continuous damage
+- **Hoover Crack** ✅ - Spinning particle emitter dealing continuous damage
 - **Mini Rockets** - Rapid-fire rocket barrage with small explosions
 - **Zimm** - Bouncing ball weapon ricocheting off arena walls
-- **Boomerang** - Returning projectile that deals damage on the way out and back
+- **Boomerang** ✅ - Returning projectile that deals damage on the way out and back
 
 **Removed Melee Weapons**:
 

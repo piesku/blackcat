@@ -18,7 +18,7 @@ export const enum SpawnMode {
 
 export interface SpawnBase {
     BlueprintCreator: () => Blueprint<Game>; // Function that creates fresh blueprint each time
-    Direction: Vec2; // Base emission direction (in parent's space)
+    Direction: Vec2 | null; // Base emission direction (in parent's space), null = weapon system sets direction
     Spread: number; // Cone angle in radians (0 = straight line, π = full circle)
     SpeedMin: number; // Minimum spawn speed
     SpeedMax: number; // Maximum spawn speed
@@ -55,7 +55,7 @@ export type Spawn = SpawnCount | SpawnTimed;
 export function spawn_count(
     creator: () => Blueprint<Game>,
     interval: number,
-    direction: Vec2,
+    direction: Vec2 | null,
     spread: number,
     speedMin: number,
     speedMax: number,
@@ -94,7 +94,7 @@ export function spawn_count(
 export function spawn_timed(
     creator: () => Blueprint<Game>,
     interval: number,
-    direction: Vec2,
+    direction: Vec2 | null,
     spread: number,
     speedMin: number,
     speedMax: number,

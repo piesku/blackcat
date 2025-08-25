@@ -24,7 +24,7 @@ export function blueprint_flamethrower() {
         spawn_timed(
             () => blueprint_flame_particle(1), // damage=1
             1.0 / 12, // interval: spawn every ~0.083 seconds (12 particles per second)
-            [1, 0], // direction: Forward direction (will be overridden by weapon system)
+            null, // direction: Will be set by weapon system
             Math.PI / 4, // spread: 45 degree cone spread
             3.0, // speedMin
             5.0, // speedMax

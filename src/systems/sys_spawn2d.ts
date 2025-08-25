@@ -86,9 +86,14 @@ function spawn_single_entity(
     spawn: Spawn,
     position: Readonly<Vec2>,
 ) {
-    // Set spawn direction
-    spawn_direction[0] = spawn.Direction[0];
-    spawn_direction[1] = spawn.Direction[1];
+    // Set spawn direction (default to forward if null)
+    if (spawn.Direction) {
+        spawn_direction[0] = spawn.Direction[0];
+        spawn_direction[1] = spawn.Direction[1];
+    } else {
+        spawn_direction[0] = 1;
+        spawn_direction[1] = 0;
+    }
 
     // Apply random spread
     if (spawn.Spread > 0) {

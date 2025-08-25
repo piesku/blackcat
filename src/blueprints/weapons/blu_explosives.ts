@@ -25,7 +25,7 @@ export function blueprint_explosives() {
         spawn_count(
             blueprint_explosive_bomb,
             0.0, // interval: no repeated spawning - single shot
-            [1, 0], // direction: Forward direction (will be overridden by weapon system)
+            null, // direction: Will be set by weapon system
             0.1, // spread: Low spread for accurate throwing
             4.0, // speedMin: moderate throwing speed
             6.0, // speedMax: moderate throwing speed
