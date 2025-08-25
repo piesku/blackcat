@@ -1,4 +1,6 @@
 import {Vec2} from "../../lib/math.js";
+import {clamp} from "../../lib/number.js";
+import {vec2_rotate} from "../../lib/vec2.js";
 import {blueprint_boomerang_projectile} from "../blueprints/projectiles/blu_boomerang.js";
 import {blueprint_mortar_shell} from "../blueprints/projectiles/blu_mortar_shell.js";
 import {query_down} from "../components/com_children.js";
@@ -158,6 +160,8 @@ function execute_flamethrower_attack(
     );
 }
 
+let angled_direction: Vec2 = [0, 0];
+
 function execute_mortar_attack(
     game: Game,
     wielder_entity: number,
@@ -167,36 +171,32 @@ function execute_mortar_attack(
     let aim = game.World.Aim[wielder_entity];
     DEBUG: if (!aim) throw new Error("wielder missing aim component");
 
-    let wielder_transform = game.World.LocalTransform2D[wielder_entity];
-    let target_transform = game.World.LocalTransform2D[aim.TargetEntity];
-    DEBUG: if (!wielder_transform || !target_transform) throw new Error("missing component");
-
-    // Calculate relative target position for grenade blueprint
-    let target_position: Vec2 = [
-        target_transform.Translation[0] - wielder_transform.Translation[0],
-        target_transform.Translation[1] - wielder_transform.Translation[1],
-    ];
-
     // Find and activate the spawner on the weapon
     let spawner = game.World.Spawn[weapon_entity];
     DEBUG: if (!spawner) {
-        throw new Error(`[GRENADE_LAUNCHER] Weapon ${weapon_entity} missing spawn component`);
+        throw new Error(`[MORTAR] Weapon ${weapon_entity} missing spawn component`);
     }
 
-    // Set spawn direction toward target
+    // Calculate firing angle for mortar (45 degrees up from horizontal direction to target)
+    let base_speed = (spawner.SpeedMin + spawner.SpeedMax) * 0.5;
+    let firing_angle = Math.PI * 0.25; // 45 degrees for high arc
+
+    // Calculate initial velocity components for mortar trajectory
+    let horizontal_speed = base_speed * Math.cos(firing_angle);
+
+    // Set spawn direction as angled upward toward target
     if (spawner.Direction === null) {
-        spawner.Direction = [aim.DirectionToTarget[0], aim.DirectionToTarget[1]];
+        // Rotate the already-normalized direction by the firing angle (45 degrees upward)
+        vec2_rotate(angled_direction, aim.DirectionToTarget, firing_angle);
+        spawner.Direction = [angled_direction[0], angled_direction[1]];
     }
 
-    // Update blueprint to use runtime parameters for this specific shot
-    spawner.BlueprintCreator = () =>
-        blueprint_mortar_shell(
-            2, // Fixed damage for mortar
-            wielder_entity,
-            weapon.Range,
-            spawner.SpeedMin, // Use spawn component's speed
-            target_position,
-        );
+    // Approximate flight time based on distance and trajectory
+    // Using physics approximation: time = distance / horizontal_speed + extra for arc
+    let approx_lifetime = clamp(0.8, 4.0, (aim.DistanceToTarget / horizontal_speed) * 1.2); // 20% extra for arc
+
+    // Update blueprint to use calculated lifetime
+    spawner.BlueprintCreator = () => blueprint_mortar_shell(approx_lifetime);
 
     // Activate the count-based spawner using weapon's TotalAmount
     if (spawner.Mode === SpawnMode.Count) {
@@ -204,7 +204,7 @@ function execute_mortar_attack(
     }
 
     console.log(
-        `[GRENADE_LAUNCHER] Entity ${wielder_entity} activated grenade spawner toward target ${aim.TargetEntity}`,
+        `[MORTAR] Entity ${wielder_entity} firing mortar with ${approx_lifetime.toFixed(2)}s lifetime toward target ${aim.TargetEntity}`,
     );
 }
 

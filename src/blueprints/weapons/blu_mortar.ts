@@ -22,7 +22,7 @@ export function blueprint_mortar() {
 
         // Spawner for grenade projectiles
         spawn_count(
-            () => blueprint_mortar_shell(2, 0, 8, 6, [0, 0]), // Will be configured per shot
+            () => blueprint_mortar_shell(2.0), // Will be configured per shot
             0, // interval: instant spawn
             null, // direction: Will be set by weapon system
             0.1, // spread: Slight spread for realism

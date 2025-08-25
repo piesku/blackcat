@@ -24,7 +24,6 @@ import {sys_draw2d_debug} from "./systems/sys_draw2d_debug.js";
 import {sys_duel_manager} from "./systems/sys_duel_manager.js";
 import {sys_health} from "./systems/sys_health.js";
 import {sys_lifespan} from "./systems/sys_lifespan.js";
-import {sys_mortar} from "./systems/sys_mortar.js";
 import {sys_move2d} from "./systems/sys_move2d.js";
 import {sys_particles} from "./systems/sys_particles.js";
 import {sys_physics2d_integrate} from "./systems/sys_physics2d_integrate.js";
@@ -105,7 +104,6 @@ export class Game extends Game3D {
 
         // Weapon-specific logic.
         sys_boomerang(this, delta);
-        sys_mortar(this, delta);
 
         // Particle systems.
         sys_particles(this, delta);

@@ -179,7 +179,6 @@ export class SceneGraphInspector {
             [Has.DealDamage]: "DealDamage",
             [Has.Dirty]: "Dirty",
             [Has.Draw]: "Draw",
-            [Has.MortarBehavior]: "MortarBehavior",
             [Has.Health]: "Health",
             [Has.Lifespan]: "Lifespan",
             [Has.LocalTransform2D]: "LocalTransform2D",
@@ -383,17 +382,6 @@ export class SceneGraphInspector {
             }
 
             html += `</div>`;
-        }
-
-        if (world.Signature[entityId] & Has.MortarBehavior) {
-            const g = world.MortarBehavior[entityId];
-            html += `<div class="component">
-                <strong>MortarBehavior</strong><br>
-                Gravity: ${g.Gravity.toFixed(2)}<br>
-                Flight Time: ${g.FlightTime.toFixed(2)} / ${g.TimeToTarget.toFixed(2)}<br>
-                Target: [${g.TargetPosition[0].toFixed(2)}, ${g.TargetPosition[1].toFixed(2)}]<br>
-                Damage: ${g.Damage}
-            </div>`;
         }
 
         if (world.Signature[entityId] & Has.Health) {

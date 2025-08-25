@@ -11,7 +11,6 @@ import {ControlAlways2D} from "./components/com_control_always2d.js";
 import {ControlPlayer} from "./components/com_control_player.js";
 import {DealDamage} from "./components/com_deal_damage.js";
 import {Draw} from "./components/com_draw.js";
-import {MortarBehavior} from "./components/com_mortar_behavior.js";
 import {Health} from "./components/com_health.js";
 import {Label} from "./components/com_label.js";
 import {Lifespan} from "./components/com_lifespan.js";
@@ -41,7 +40,6 @@ const enum Component {
     DealDamage,
     Dirty,
     Draw,
-    MortarBehavior,
     Health,
     Label,
     Lifespan,
@@ -73,7 +71,6 @@ export const enum Has {
     DealDamage = 1 << Component.DealDamage,
     Dirty = 1 << Component.Dirty,
     Draw = 1 << Component.Draw,
-    MortarBehavior = 1 << Component.MortarBehavior,
     Health = 1 << Component.Health,
     Label = 1 << Component.Label,
     Lifespan = 1 << Component.Lifespan,
@@ -108,7 +105,6 @@ export class World extends WorldImpl {
     Children: Array<Children> = [];
     DealDamage: Array<DealDamage> = [];
     Draw: Array<Draw> = [];
-    MortarBehavior: Array<MortarBehavior> = [];
     Health: Array<Health> = [];
     Label: Array<Label> = [];
     Lifespan: Array<Lifespan> = [];
