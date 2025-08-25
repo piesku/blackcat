@@ -21,10 +21,7 @@ export function blueprint_hoover_particle(damage: number) {
         rigid_body2d(RigidKind.Dynamic, 0, 0.9, [0, 0]),
 
         // Spinning particle with continuous damage
-        particle(ParticleType.Spark, {
-            spread: 0.8, // High turbulence for chaotic spinning motion
-            fadeOut: 0.3, // Moderate fade out
-        }),
+        particle(ParticleType.Spark, 0.8, [0.05, 0.05], 0.3), // spread, finalScale, fadeOut
 
         // Collision and damage - continuous damage dealing
         collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.15),

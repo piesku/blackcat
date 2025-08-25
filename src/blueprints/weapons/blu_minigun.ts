@@ -7,7 +7,7 @@ import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {spawn_timed} from "../../components/com_spawn.js";
 import {weapon_ranged} from "../../components/com_weapon.js";
 import {blueprint_shell_casing} from "../particles/blu_shell_casing.js";
-import {blueprint_projectile} from "../projectiles/blu_projectile.js";
+import {blueprint_bullet} from "../projectiles/blu_bullet.js";
 
 export function blueprint_minigun() {
     return [
@@ -24,8 +24,8 @@ export function blueprint_minigun() {
 
         // Spawner for rapid bullet spray - uses timed spawner for continuous fire
         spawn_timed(
-            () => blueprint_projectile(1.2),
-            0.05, // interval: spawn every 0.05 seconds (20 bullets per second during burst)
+            () => blueprint_bullet(1.2),
+            1 / 10,
             null, // direction: Will be set by weapon system
             0.15, // spread: Moderate spread for spray effect
             7.0, // speedMin
@@ -38,7 +38,7 @@ export function blueprint_minigun() {
             local_transform2d([0, 0], 0, [1, 1]), // Same position as parent weapon
             spawn_timed(
                 () => blueprint_shell_casing(),
-                0.05, // interval: shell casing for each bullet
+                1 / 10,
                 [-0.5, 0.3], // direction: eject backwards and slightly up
                 0.3, // spread: casings scatter randomly
                 1.0, // speedMin: casings eject with moderate force

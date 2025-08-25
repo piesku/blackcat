@@ -21,12 +21,7 @@ export function blueprint_debris_particle() {
         rigid_body2d(RigidKind.Dynamic, 0, 0.3, [0, -9.8]), // Standard gravity for debris
 
         // Debris particle physics and behavior
-        particle(ParticleType.Flame, {
-            // Reuse flame particle type for now
-            spread: 0.8, // High turbulence for chaotic debris motion
-            finalScale: [0.05, 0.05], // Shrink as debris settles
-            fadeOut: 0.6, // Moderate fade out
-        }),
+        particle(ParticleType.Flame, 0.8, [0.05, 0.05], 0.6), // spread, finalScale, fadeOut
 
         // Collision and damage
         collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.1),

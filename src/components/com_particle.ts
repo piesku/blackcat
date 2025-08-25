@@ -19,27 +19,21 @@ export interface Particle {
 
     // Visual properties that change over time
     FinalScale: Vec2; // Ending scale (for growth/shrinkage) - initial scale comes from LocalTransform2D
-    FadeIn: number; // Time to fade in (0 = instant)
-    FadeOut: number; // Time to fade out (0 = instant at death)
+    FadeOutDuration: number; // Time to fade out (0 = instant at death)
 }
 
 export function particle(
     type: ParticleType = ParticleType.Generic,
-    options: Partial<{
-        spread: number;
-        finalScale: Vec2;
-        fadeIn: number;
-        fadeOut: number;
-    }> = {},
+    spread: number = 0.1,
+    final_scale: Vec2 = [0.05, 0.05],
+    fade_out_duration: number = 0.2,
 ) {
     return (game: Game, entity: Entity) => {
         let p: Particle = {
             Type: type,
-            Spread: options.spread || 0.1,
-
-            FinalScale: options.finalScale || [0.05, 0.05],
-            FadeIn: options.fadeIn || 0.0,
-            FadeOut: options.fadeOut || 0.2,
+            Spread: spread,
+            FinalScale: final_scale,
+            FadeOutDuration: fade_out_duration,
         };
 
         game.World.Particle[entity] = p;

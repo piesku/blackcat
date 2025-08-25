@@ -4,13 +4,13 @@ import {blueprint_boomerang_weapon} from "../blueprints/weapons/blu_boomerang_we
 import {blueprint_chiquita_bomb} from "../blueprints/weapons/blu_chiquita_bomb.js";
 import {blueprint_explosives} from "../blueprints/weapons/blu_explosives.js";
 import {blueprint_flamethrower} from "../blueprints/weapons/blu_flamethrower.js";
-import {blueprint_mortar} from "../blueprints/weapons/blu_mortar.js";
+import {blueprint_hoover_crack} from "../blueprints/weapons/blu_hoover_crack.js";
+import {blueprint_larpa} from "../blueprints/weapons/blu_larpa.js";
 import {blueprint_minigun} from "../blueprints/weapons/blu_minigun.js";
+import {blueprint_mortar} from "../blueprints/weapons/blu_mortar.js";
 import {blueprint_shotgun} from "../blueprints/weapons/blu_shotgun.js";
 import {blueprint_sniper_rifle} from "../blueprints/weapons/blu_sniper_rifle.js";
 import {blueprint_spikeballs} from "../blueprints/weapons/blu_spikeballs.js";
-import {blueprint_larpa} from "../blueprints/weapons/blu_larpa.js";
-import {blueprint_hoover_crack} from "../blueprints/weapons/blu_hoover_crack.js";
 import {attach_to_parent} from "../components/com_children.js";
 import {spawn_timed} from "../components/com_spawn.js";
 import {Game} from "../game.js";
@@ -147,13 +147,13 @@ function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType)
     switch (upgrade.id) {
         case "shadow_trail":
             spawn_timed(
-                () => blueprint_shadow_particle(),
-                1.0 / 8.0, // interval: spawn every 0.125 seconds (8 particles per second)
+                blueprint_shadow_particle,
+                1.0 / 8.0, // interval
                 [0, 0], // direction: Stationary shadows
                 0, // spread: No spread for trails
-                0.2, // speedMin: Very slow drift
-                0.2, // speedMax
-                Infinity, // initialDuration: Infinite duration - always active
+                0, // speedMin
+                0, // speedMax
+                Infinity, // initialDuration: always active
             )(game, entity);
             console.log(`Applied shadow trail to entity ${entity}`);
             break;

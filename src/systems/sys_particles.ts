@@ -2,12 +2,12 @@ import {float} from "../../lib/random.js";
 import {Lifespan} from "../components/com_lifespan.js";
 import {LocalTransform2D} from "../components/com_local_transform2d.js";
 import {Particle} from "../components/com_particle.js";
-import {set_color} from "../components/com_render2d.js";
+import {Render2D, set_color} from "../components/com_render2d.js";
 import {RigidBody2D} from "../components/com_rigid_body2d.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
-const QUERY = Has.Particle | Has.LocalTransform2D | Has.Render2D | Has.RigidBody2D | Has.Lifespan;
+const QUERY = Has.Particle | Has.LocalTransform2D | Has.Render2D | Has.Lifespan;
 
 export function sys_particles(game: Game, delta: number) {
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
@@ -15,20 +15,23 @@ export function sys_particles(game: Game, delta: number) {
             let particle = game.World.Particle[entity];
             let transform = game.World.LocalTransform2D[entity];
             let render = game.World.Render2D[entity];
-            let rigid_body = game.World.RigidBody2D[entity];
             let lifespan = game.World.Lifespan[entity];
 
-            DEBUG: if (!particle || !transform || !render || !rigid_body || !lifespan)
+            DEBUG: if (!particle || !transform || !render || !lifespan)
                 throw new Error("missing component");
 
-            // Apply particle-specific physics by modifying rigid body acceleration
-            update_particle_physics(particle, rigid_body);
+            if (game.World.Signature[entity] & Has.RigidBody2D) {
+                // Apply particle-specific physics by modifying rigid body acceleration
+                let rigid_body = game.World.RigidBody2D[entity];
+                DEBUG: if (!rigid_body) throw new Error("missing component");
+                update_particle_physics(particle, rigid_body);
+            }
 
             // Handle visual effects
-            update_particle_visuals(game, entity, particle, transform, lifespan);
+            update_particle_visuals(game, entity, particle, transform, render, lifespan);
 
             // Mark transform as dirty for the render system
-            game.World.Signature[entity] |= Has.Dirty;
+            //game.World.Signature[entity] |= Has.Dirty;
         }
     }
 }
@@ -41,8 +44,6 @@ function update_particle_physics(particle: Particle, rigid_body: RigidBody2D) {
         rigid_body.Acceleration[0] += spread_x;
         rigid_body.Acceleration[1] += spread_y;
     }
-
-    // Particle damping is now handled by RigidBody2D.Drag in sys_physics2d_integrate
 }
 
 function update_particle_visuals(
@@ -50,25 +51,22 @@ function update_particle_visuals(
     entity: number,
     particle: Particle,
     transform: LocalTransform2D,
+    render: Render2D,
     lifespan: Lifespan,
 ) {
-    // Calculate age factor (0 = just born, 1 = about to die)
-    let age_factor = Math.min(lifespan.Age / lifespan.Lifetime, 1.0);
-
-    // Handle fade in
-    let alpha = 1.0;
-    if (particle.FadeIn > 0 && lifespan.Age < particle.FadeIn) {
-        alpha = lifespan.Age / particle.FadeIn;
-    }
+    let alpha = render.Color[3];
 
     // Handle fade out
-    if (particle.FadeOut > 0) {
-        let fade_start_time = lifespan.Lifetime - particle.FadeOut;
+    if (particle.FadeOutDuration > 0) {
+        let fade_start_time = lifespan.Lifetime - particle.FadeOutDuration;
         if (lifespan.Age >= fade_start_time) {
-            let fade_progress = (lifespan.Age - fade_start_time) / particle.FadeOut;
+            let fade_progress = (lifespan.Age - fade_start_time) / particle.FadeOutDuration;
             alpha *= 1.0 - fade_progress;
         }
     }
+
+    // Calculate age factor (0 = just born, 1 = about to die)
+    let age_factor = Math.min(lifespan.Age / lifespan.Lifetime, 1.0);
 
     // Interpolate scale from current to final using age factor
     let scale_x = transform.Scale[0] + (particle.FinalScale[0] - transform.Scale[0]) * age_factor;

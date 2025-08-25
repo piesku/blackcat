@@ -18,10 +18,7 @@ export function blueprint_shell_casing() {
         rigid_body2d(RigidKind.Dynamic, 0, 0.7, [0, -8.0]), // Strong downward gravity for realistic shell drop
 
         // Shell casing particle physics and behavior
-        particle(ParticleType.Debris, {
-            spread: 0.2, // Moderate spread for realistic ejection
-            fadeOut: 1.0, // Moderate fade out
-        }),
+        particle(ParticleType.Debris, 0.2, [0.05, 0.05], 1.0), // spread, finalScale, fadeOut
 
         lifespan(3), // Short lifespan - shells disappear after bouncing
     ];

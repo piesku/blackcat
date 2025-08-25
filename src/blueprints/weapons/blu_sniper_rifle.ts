@@ -7,7 +7,7 @@ import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {spawn_count} from "../../components/com_spawn.js";
 import {weapon_ranged} from "../../components/com_weapon.js";
 import {Layer} from "../../game.js";
-import {blueprint_projectile} from "../projectiles/blu_projectile.js";
+import {blueprint_bullet} from "../projectiles/blu_bullet.js";
 
 export function blueprint_sniper_rifle() {
     return [
@@ -25,12 +25,12 @@ export function blueprint_sniper_rifle() {
 
         // Spawner for sniper bullets
         spawn_count(
-            () => blueprint_projectile(3.5),
+            () => blueprint_bullet(3.5),
             0, // interval: instant spawn
             null, // direction: Will be set by weapon system
             0.01, // spread: Very tight spread for precision
-            19.5, // speedMin
-            20.5, // speedMax
+            10, // speedMin
+            11, // speedMax
         ),
     ];
 }

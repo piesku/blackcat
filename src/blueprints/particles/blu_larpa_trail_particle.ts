@@ -21,11 +21,7 @@ export function blueprint_larpa_trail_particle() {
         rigid_body2d(RigidKind.Dynamic, 0, 0.2, [0, -5.0]), // Falling particles with gravity
 
         // Particle behavior - falling damage trail
-        particle(ParticleType.Flame, {
-            spread: 0.4, // Moderate turbulence for trail effect
-            finalScale: [0.05, 0.05], // Shrink as particles fall
-            fadeOut: 0.8, // Gradual fade out
-        }),
+        particle(ParticleType.Flame, 0.4, [0.05, 0.05], 0.8), // spread, finalScale, fadeOut
 
         // Collision and damage
         collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.05),

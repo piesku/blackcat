@@ -7,7 +7,7 @@ import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {spawn_count} from "../../components/com_spawn.js";
 import {weapon_ranged} from "../../components/com_weapon.js";
 import {Layer} from "../../game.js";
-import {blueprint_projectile} from "../projectiles/blu_projectile.js";
+import {blueprint_bullet} from "../projectiles/blu_bullet.js";
 
 export function blueprint_shotgun() {
     return [
@@ -25,7 +25,7 @@ export function blueprint_shotgun() {
 
         // Spawner for shotgun pellets
         spawn_count(
-            () => blueprint_projectile(1.0), // Will be configured per shot
+            () => blueprint_bullet(1.0), // Will be configured per shot
             0, // interval: instant spawn (all at once)
             null, // direction: Will be set by weapon system
             0.5, // spread: Wide cone spread for pellets

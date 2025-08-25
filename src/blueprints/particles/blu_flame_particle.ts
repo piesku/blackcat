@@ -21,11 +21,7 @@ export function blueprint_flame_particle(damage: number) {
         rigid_body2d(RigidKind.Dynamic, 0, 0.9, [0, 1.0]), // Custom gravity: gentle upward drift (flames rise)
 
         // Flame particle physics and behavior
-        particle(ParticleType.Flame, {
-            spread: 0.3, // More turbulence for realistic flame motion
-            finalScale: [0.5, 0.5], // Flames grow as they burn
-            fadeOut: 0.4, // Long fade out
-        }),
+        particle(ParticleType.Flame, 0.3, [0.5, 0.5], 0.4), // spread, finalScale, fadeOut
 
         // Collision and damage - particles collide with fighters and terrain but not each other
         collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.1),
