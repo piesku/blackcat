@@ -6,28 +6,24 @@ This document outlines the implementation architecture for the upgrade system in
 
 Upgrades are the core mechanic that drives strategic depth and build variety. Players accumulate 33 upgrades over the course of their run, with opponents receiving the same number of randomly assigned upgrades for balanced but unpredictable encounters.
 
-## Complete Upgrade Categories (48 Total)
+## Complete Upgrade Categories (53 Total)
 
-### 1. Weapons (14 upgrades) - Ranged Focus with Particle Effects ✅
+### 1. Weapons (11 upgrades) - Ranged Focus with Particle Effects ✅
 
 **Strategy**: Ranged weapons using particle spawn system for spectacular visual effects. Inspired by Liero classics.
 
-**Ranged Weapons** (14):
+**Ranged Weapons** (11):
 
 - **Flamethrower** ✅ - Fire cone with persistent flame particles
 - **Minigun** ✅ - High rate of fire bullet spray with shell casing particles
 - **Shotgun** ✅ - Multi-pellet spread with spark particles
 - **Explosives** ✅ - Thrown bombs that explode on timeout with debris
 - **Spikeballs** ✅ - Bouncing projectiles which persist until timeout
-- **Rifle** - Enhanced pistol with muzzle flash
-- **Mine** - Contact mines that stick to arena and explode
-- **Homing Missile** - Missiles that track the nearest enemy
+- **Sniper Rifle** ✅ - Powerful high precision rifle with long reload
 - **Mortar** ✅ - High-arc shells that explode on contact/timeout
 - **Larpa** ✅ - Rockets leaving falling particle damage trails
 - **Chiquita Bomb** ✅ - Timeout bomb spawning multiple banana sub-bombs
 - **Hoover Crack** ✅ - Spinning particle emitter dealing continuous damage
-- **Mini Rockets** - Rapid-fire rocket barrage with small explosions
-- **Zimm** - Bouncing ball weapon ricocheting off arena walls
 - **Boomerang** ✅ - Returning projectile that deals damage on the way out and back
 
 **Removed Melee Weapons**:
@@ -69,7 +65,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - Damage accumulation pattern (systems write to `PendingDamage[]`)
 - Armor effects stack multiplicatively
 
-### 3. Abilities (10 upgrades) - System Integration & Event Hooks
+### 3. Abilities (11 upgrades) - System Integration & Event Hooks
 
 **Strategy**: New components for ability tracking + system modifications for ability effects.
 
@@ -97,7 +93,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - Event system: Use existing action dispatch for ability triggers
 - New system: `sys_abilities.ts` for ability-specific logic
 
-### 4. Traits (10 upgrades) - Combat Enhancement ⚡
+### 4. Traits (13 upgrades) - Combat Enhancement ⚡
 
 **Strategy**: Direct combat stat modifications and behavioral changes with clear benefits.
 
@@ -163,10 +159,10 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 **Total Upgrades: 53** (Player will see 33 out of 53 in a single run)
 
-- **Weapons**: 14 upgrades (3 implemented + 11 new ranged weapons)
+- **Weapons**: 11 upgrades
 - **Armor/Defense**: 10 upgrades (4 implemented + 6 new)
 - **Abilities**: 11 upgrades (9 passive + 2 triggered)
-- **Traits**: 10 upgrades (4 speed + 3 health + 6 behavior)
+- **Traits**: 13 upgrades (4 speed + 3 health + 6 behavior)
 - **Companions**: 8 upgrades (Mr. Black, Mr. Orange, Mr. Pink, etc.)
 
 **Implementation Strategy**:
@@ -211,5 +207,3 @@ export const enum UpgradeCategory {
 4. **Phase 6: New Weapons & Armor** (Low Priority)
     - Add 4 new weapons (Chainsaw, Flamethrower, Crossbow, Boomerang)
     - Add 6 new armor types (Shield Generator, Reactive Plating, etc.)
-
-**Current Status**: ✅ Weapons (3/14), Armor (4/10) systems implemented. Particle system ready for weapon effects.
