@@ -221,11 +221,11 @@ function execute_boomerang_attack(
     let aim = game.World.Aim[wielder_entity];
     DEBUG: if (!aim) throw new Error("wielder missing aim component");
 
-    let weapon_spatial = game.World.SpatialNode2D[weapon_entity];
-    DEBUG: if (!weapon_spatial) throw new Error("weapon missing spatial node");
-
     let target_direction: Vec2 = [0, 0];
     vec2_copy(target_direction, aim.DirectionToTarget);
+
+    let weapon_spatial = game.World.SpatialNode2D[weapon_entity];
+    DEBUG: if (!weapon_spatial) throw new Error("weapon missing spatial node");
 
     // Get world position from spatial node
     let weapon_world_position: Vec2 = [0, 0];

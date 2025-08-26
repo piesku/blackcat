@@ -132,7 +132,7 @@ export class Game extends Game3D {
         sys_render2d_animate(this, delta);
         sys_render2d(this, delta);
 
-        if (DEBUG) {
+        if (false) {
             // Debug rendering (after all other rendering).
             sys_draw2d_debug(this);
         }

@@ -4,7 +4,7 @@ import {Game} from "../game.js";
 import {Has} from "../world.js";
 
 const QUERY = Has.Aim | Has.LocalTransform2D | Has.Children;
-const QUERY_TARGET = Has.Health | Has.LocalTransform2D;
+const QUERY_TARGET = Has.Health | Has.LocalTransform2D | Has.ControlAi;
 
 export function sys_aim(game: Game, delta: number) {
     for (let entity = 0; entity < game.World.Signature.length; entity++) {

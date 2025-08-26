@@ -17,6 +17,8 @@ export function blueprint_shadow_particle() {
         // Shadow particle physics and behavior
         particle(ParticleType.Shadow, 0.0, [0.05, 0.05], 2), // spread, finalScale, fadeOut
 
+        // TODO add deal_damage
+
         lifespan(3),
     ];
 }

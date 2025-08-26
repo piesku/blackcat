@@ -1,4 +1,4 @@
-import {query_down} from "../components/com_children.js";
+import {destroy_all, query_down} from "../components/com_children.js";
 import {DrawKind} from "../components/com_draw.js";
 import {Health} from "../components/com_health.js";
 import {Game} from "../game.js";
@@ -49,10 +49,7 @@ export function sys_health(game: Game, _delta: number) {
                         `[DEATH] Entity ${entity} died from ${total_damage.toFixed(1)} damage`,
                     );
 
-                    // Disable movement for dead entities
-                    if (game.World.Signature[entity] & Has.ControlAlways2D) {
-                        game.World.Signature[entity] &= ~Has.ControlAlways2D;
-                    }
+                    destroy_all(game.World, entity);
                 } else {
                     console.log(
                         `[HEALTH] Entity ${entity} HP: ${health_before.toFixed(1)} -> ${health.Current.toFixed(1)}`,

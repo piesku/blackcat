@@ -100,7 +100,7 @@ export class SceneGraphInspector {
                 parentCandidate < world.Signature.length;
                 parentCandidate++
             ) {
-                if (world.Children[parentCandidate]) {
+                if (world.Signature[parentCandidate] & Has.Children) {
                     const children = world.Children[parentCandidate].Children;
                     if (children.includes(entity)) {
                         // This entity is a child
