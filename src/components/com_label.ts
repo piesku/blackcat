@@ -5,13 +5,14 @@
  * including its name and spawner relationship for damage attribution.
  */
 
-import {Entity} from "../../lib/world.js";
+import {Entity, get_generation, is_entity_alive} from "../../lib/world.js";
 import {Game} from "../game.js";
 import {Has, World} from "../world.js";
 
 export interface Label {
     Name?: string;
     SpawnedBy?: number;
+    SpawnedByGeneration?: number; // Store expected generation of SpawnedBy entity
 }
 
 /**
@@ -23,7 +24,15 @@ export interface Label {
 export function label(name?: string, spawnedBy?: number) {
     return (game: Game, entity: Entity) => {
         game.World.Signature[entity] |= Has.Label;
-        game.World.Label[entity] = {Name: name, SpawnedBy: spawnedBy};
+
+        let spawnedByGeneration =
+            spawnedBy !== undefined ? get_generation(game.World, spawnedBy) : undefined;
+
+        game.World.Label[entity] = {
+            Name: name,
+            SpawnedBy: spawnedBy,
+            SpawnedByGeneration: spawnedByGeneration,
+        };
     };
 }
 
@@ -56,9 +65,35 @@ export function get_root_spawner(world: World, entity: Entity): Entity {
     // Check if entity has Label component with spawner tracking
     if (world.Signature[entity] & Has.Label) {
         let label_component = world.Label[entity];
-        if (label_component && label_component.SpawnedBy !== undefined) {
+        DEBUG: if (!label_component) throw new Error("missing label component");
+
+        if (
+            label_component.SpawnedBy !== undefined &&
+            label_component.SpawnedByGeneration !== undefined
+        ) {
+            let spawner_id = label_component.SpawnedBy;
+            let expected_generation = label_component.SpawnedByGeneration;
+
+            // Validate generation to detect recycled entities
+            let current_generation = get_generation(world, spawner_id);
+            if (current_generation !== expected_generation) {
+                console.warn(
+                    `[get_root_spawner] Entity ${spawner_id} generation mismatch ` +
+                        `(expected: ${expected_generation}, current: ${current_generation}), treating ${entity} as root`,
+                );
+                return entity;
+            }
+
+            // Check if spawner is alive (has components)
+            if (!is_entity_alive(world, spawner_id)) {
+                console.warn(
+                    `[get_root_spawner] Spawner ${spawner_id} is dead, treating ${entity} as root`,
+                );
+                return entity;
+            }
+
             // Recursively trace back through the chain
-            return get_root_spawner(world, label_component.SpawnedBy);
+            return get_root_spawner(world, spawner_id);
         }
     }
 

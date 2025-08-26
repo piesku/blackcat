@@ -5,6 +5,7 @@
  * of the game loop for debugging paused states.
  */
 
+import {is_entity_alive} from "../lib/world.js";
 import {DrawKind} from "./components/com_draw.js";
 import {SpawnMode} from "./components/com_spawn.js";
 import {TaskKind} from "./components/com_task.js";
@@ -66,7 +67,7 @@ export class SceneGraphInspector {
         const world = this.game.World;
         let activeCount = 0;
         for (let entity = 0; entity < world.Signature.length; entity++) {
-            if (world.Signature[entity] !== 0) activeCount++;
+            if (is_entity_alive(world, entity)) activeCount++;
         }
 
         const header = document.querySelector("#scene-graph-header h3");
@@ -91,7 +92,7 @@ export class SceneGraphInspector {
 
         // Use Children component for hierarchy, not SpatialNode2D
         for (let entity = 0; entity < world.Signature.length; entity++) {
-            if (world.Signature[entity] === 0) continue; // Skip dead entities
+            if (!is_entity_alive(world, entity)) continue; // Skip dead entities
 
             // Check if this entity is a child of another entity
             let isChild = false;
@@ -245,7 +246,7 @@ export class SceneGraphInspector {
 
         const world = this.game.World;
 
-        if (world.Signature[entityId] === 0) {
+        if (!is_entity_alive(world, entityId)) {
             details.innerHTML = "<h4>Entity not found</h4>";
             return;
         }
@@ -411,10 +412,19 @@ export class SceneGraphInspector {
 
         if (world.Signature[entityId] & Has.Label) {
             const n = world.Label[entityId];
+            let spawnedByDisplay = "none";
+            if (n.SpawnedBy !== undefined) {
+                const isSpawnerAlive = is_entity_alive(world, n.SpawnedBy);
+                const spawnerName = this.getEntityName(n.SpawnedBy) || `Entity ${n.SpawnedBy}`;
+                const statusIcon = isSpawnerAlive ? "🟢" : "🔴";
+                spawnedByDisplay = `<a href="#" onclick="selectEntity(${n.SpawnedBy}); return false;" style="color: #4a9eff; text-decoration: underline;">${spawnerName}</a> ${statusIcon}`;
+            }
+
             html += `<div class="component">
                 <strong>Label</strong><br>
                 Name: "${n.Name || "none"}"<br>
-                SpawnedBy: ${n.SpawnedBy !== undefined ? `<a href="#" onclick="selectEntity(${n.SpawnedBy}); return false;">${n.SpawnedBy}</a>` : "none"}
+                SpawnedBy: ${spawnedByDisplay}<br>
+                SpawnedByGeneration: ${n.SpawnedByGeneration !== undefined ? n.SpawnedByGeneration : "none"}
             </div>`;
         }
 
@@ -459,7 +469,7 @@ export class SceneGraphInspector {
 
             // Make parent clickable if it exists
             let parentDisplay = "None";
-            if (s.Parent !== undefined && world.Signature[s.Parent] !== 0) {
+            if (s.Parent !== undefined && is_entity_alive(world, s.Parent)) {
                 const parentName = this.getEntityName(s.Parent) || `Entity ${s.Parent}`;
                 parentDisplay = `<a href="#" onclick="selectEntity(${s.Parent}); return false;" style="color: #4a9eff; text-decoration: underline;">${parentName}</a>`;
             }

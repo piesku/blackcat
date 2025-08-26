@@ -18,23 +18,55 @@ export class WorldImpl {
     }
 }
 
+// Generation system constants
+const GENERATION_SHIFT = 28;
+const GENERATION_MASK = 0xf0000000; // Top 4 bits
+const COMPONENT_MASK = 0x0fffffff; // Bottom 28 bits
+
+/**
+ * Extract generation number from signature (0-15)
+ */
+export function get_generation(world: WorldImpl, entity: Entity): number {
+    return (world.Signature[entity] & GENERATION_MASK) >>> GENERATION_SHIFT;
+}
+
+/**
+ * Increment generation number for entity, wrapping at 16
+ */
+export function increment_generation(world: WorldImpl, entity: Entity): void {
+    let currentGeneration = get_generation(world, entity);
+    let newGeneration = (currentGeneration + 1) % 16;
+    // Clear component bits and set new generation
+    world.Signature[entity] = (newGeneration & 0xf) << GENERATION_SHIFT;
+}
+
+/**
+ * Check if entity is alive (has any components)
+ */
+export function is_entity_alive(world: WorldImpl, entity: Entity): boolean {
+    return (world.Signature[entity] & COMPONENT_MASK) !== 0;
+}
+
 // Methods are free functions for the sake of serialization and tree-shaking.
 
 export function create_entity(world: WorldImpl) {
     if (world.Graveyard.length > 0) {
-        return world.Graveyard.pop()!;
+        let entity = world.Graveyard.pop()!;
+        increment_generation(world, entity);
+        return entity;
     }
 
     if (DEBUG && world.Signature.length > world.Capacity) {
         throw new Error("No more entities available.");
     }
 
-    // Push a new signature and return its index.
+    // Push a new signature and return its index (generation starts at 0)
     return world.Signature.push(0) - 1;
 }
 
 export function destroy_entity(world: WorldImpl, entity: Entity) {
-    world.Signature[entity] = 0;
+    // Clear only the component bits (low 28 bits), preserve generation (high 4 bits)
+    world.Signature[entity] &= GENERATION_MASK;
 
     if (DEBUG && world.Graveyard.includes(entity)) {
         throw new Error("Entity already in graveyard.");
