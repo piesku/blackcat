@@ -1,10 +1,14 @@
+import {instantiate} from "../../lib/game.js";
+import {mat2d_get_translation} from "../../lib/mat2d.js";
 import {Vec2} from "../../lib/math.js";
 import {clamp} from "../../lib/number.js";
-import {vec2_rotate} from "../../lib/vec2.js";
-import {blueprint_boomerang_projectile} from "../blueprints/projectiles/blu_boomerang.js";
+import {vec2_copy, vec2_rotate} from "../../lib/vec2.js";
+import {blueprint_boomerang_outward} from "../blueprints/projectiles/blu_boomerang.js";
 import {blueprint_mortar_shell} from "../blueprints/projectiles/blu_mortar_shell.js";
 import {query_down} from "../components/com_children.js";
 import {AiState} from "../components/com_control_ai.js";
+import {label} from "../components/com_label.js";
+import {copy_position} from "../components/com_local_transform2d.js";
 import {SpawnMode} from "../components/com_spawn.js";
 import {Weapon} from "../components/com_weapon.js";
 import {Game} from "../game.js";
@@ -217,37 +221,27 @@ function execute_boomerang_attack(
     let aim = game.World.Aim[wielder_entity];
     DEBUG: if (!aim) throw new Error("wielder missing aim component");
 
-    let wielder_transform = game.World.LocalTransform2D[wielder_entity];
-    let target_transform = game.World.LocalTransform2D[aim.TargetEntity];
-    DEBUG: if (!wielder_transform || !target_transform) throw new Error("missing component");
+    let weapon_spatial = game.World.SpatialNode2D[weapon_entity];
+    DEBUG: if (!weapon_spatial) throw new Error("weapon missing spatial node");
 
-    // Find and activate the spawner on the weapon
-    let spawner = game.World.Spawn[weapon_entity];
-    DEBUG: if (!spawner) {
-        throw new Error(`[BOOMERANG] Weapon ${weapon_entity} missing spawn component`);
-    }
+    let target_direction: Vec2 = [0, 0];
+    vec2_copy(target_direction, aim.DirectionToTarget);
 
-    // Set spawn direction toward target
-    if (spawner.Direction === null) {
-        spawner.Direction = [aim.DirectionToTarget[0], aim.DirectionToTarget[1]];
-    }
+    // Get world position from spatial node
+    let weapon_world_position: Vec2 = [0, 0];
+    mat2d_get_translation(weapon_world_position, weapon_spatial.World);
 
-    // Update blueprint to use runtime parameters for this specific shot
-    spawner.BlueprintCreator = () =>
-        blueprint_boomerang_projectile(
-            2, // Fixed damage for boomerang
-            wielder_entity, // thrower
-            [target_transform.Translation[0], target_transform.Translation[1]], // target position
-            weapon.Range, // max range
-            spawner.SpeedMin, // Use spawn component's speed
-        );
-
-    // Activate the count-based spawner using weapon's TotalAmount
-    if (spawner.Mode === SpawnMode.Count) {
-        spawner.RemainingCount = weapon.TotalAmount;
-    }
+    // Create and launch the boomerang directly at weapon location
+    instantiate(game, [
+        ...blueprint_boomerang_outward(
+            target_direction, // direction to target
+            aim.DistanceToTarget,
+        ),
+        copy_position(weapon_world_position), // Spawn at weapon's world position
+        label("boomerang outward", weapon_entity),
+    ]);
 
     console.log(
-        `[BOOMERANG] Entity ${wielder_entity} activated boomerang spawner toward target ${aim.TargetEntity}`,
+        `[BOOMERANG] Entity ${wielder_entity} threw boomerang toward target ${aim.TargetEntity}`,
     );
 }

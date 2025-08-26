@@ -65,3 +65,5 @@ This visual verification complements code testing and catches rendering/interact
 - Always use proper TypeScript types instead of 'any' to ensure type safety.
 
 - Never run the dev server. it alwasy runs in background
+
+- Always use the proper vector math functions from lib/vec2, lib/vec3, and lib/vec4 instead of writing your own.

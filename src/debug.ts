@@ -169,7 +169,6 @@ export class SceneGraphInspector {
         // Centralized component mapping
         return {
             [Has.AnimateSprite]: "AnimateSprite",
-            [Has.Boomerang]: "Boomerang",
             [Has.Camera2D]: "Camera2D",
             [Has.Collide2D]: "Collide2D",
             [Has.ControlAi]: "ControlAi",
@@ -268,18 +267,6 @@ export class SceneGraphInspector {
                 Duration: ${a.Duration.toFixed(2)}<br>
                 Time: ${a.Time.toFixed(2)}<br>
                 Frames: ${Object.keys(a.Frames).length}
-            </div>`;
-        }
-
-        if (world.Signature[entityId] & Has.Boomerang) {
-            const b = world.Boomerang[entityId];
-            html += `<div class="component">
-                <strong>Boomerang</strong><br>
-                Phase: ${b.Phase}<br>
-                Thrower: ${b.ThrowerEntity}<br>
-                Target: [${b.OriginalTarget[0].toFixed(2)}, ${b.OriginalTarget[1].toFixed(2)}]<br>
-                Max Range: ${b.MaxRange.toFixed(2)}<br>
-                Speed: ${b.Speed.toFixed(2)}
             </div>`;
         }
 

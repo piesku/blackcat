@@ -1,6 +1,12 @@
 import {instantiate} from "../lib/game.js";
+import {Vec2} from "../lib/math.js";
+import {vec2_normalize, vec2_subtract} from "../lib/vec2.js";
 import {blueprint_chiquita_banana_spawner} from "./blueprints/blu_chiquita_banana_spawner.js";
 import {blueprint_explosion} from "./blueprints/blu_explosion.js";
+import {blueprint_boomerang_return} from "./blueprints/projectiles/blu_boomerang.js";
+import {get_root_spawner} from "./components/com_label.js";
+import {lifespan} from "./components/com_lifespan.js";
+import {copy_position} from "./components/com_local_transform2d.js";
 import {Game, GameView} from "./game.js";
 import {scene_arena} from "./scenes/sce_arena.js";
 import {
@@ -21,6 +27,7 @@ export const enum Action {
     ClearSave,
     ExplodeArea,
     ExplodeBananas,
+    SpawnBoomerangReturn,
 }
 
 export function dispatch(game: Game, action: Action, payload?: unknown) {
@@ -127,6 +134,48 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
 
             // Create dedicated banana spawner at explosion location
             instantiate(game, blueprint_chiquita_banana_spawner([x, y]));
+
+            break;
+        }
+        case Action.SpawnBoomerangReturn: {
+            // The payload is the outward boomerang entity that just expired
+            let outward_boomerang = payload as number;
+            let boomerang_transform = game.World.LocalTransform2D[outward_boomerang];
+            DEBUG: if (!boomerang_transform) throw new Error("missing boomerang transform");
+
+            let boomerang_lifespan = game.World.Lifespan[outward_boomerang];
+            DEBUG: if (!boomerang_lifespan) throw new Error("missing boomerang lifespan");
+
+            // Use get_root_spawner to trace back to the original thrower
+            let thrower_entity = get_root_spawner(game.World, outward_boomerang);
+            let thrower_transform = game.World.LocalTransform2D[thrower_entity];
+
+            if (!thrower_transform) {
+                console.log(
+                    `[BOOMERANG] Thrower ${thrower_entity} no longer exists, boomerang lost`,
+                );
+                break;
+            }
+
+            console.log(
+                `[BOOMERANG] Spawning return boomerang from (${boomerang_transform.Translation[0].toFixed(2)}, ${boomerang_transform.Translation[1].toFixed(2)}) to thrower ${thrower_entity}`,
+            );
+
+            // Calculate direction from current position back to thrower
+            let to_thrower: Vec2 = [0, 0];
+            vec2_subtract(
+                to_thrower,
+                thrower_transform.Translation,
+                boomerang_transform.Translation,
+            );
+            vec2_normalize(to_thrower, to_thrower);
+
+            // Spawn the return boomerang at current location
+            instantiate(game, [
+                ...blueprint_boomerang_return(to_thrower),
+                copy_position(boomerang_transform.Translation), // Spawn at outward boomerang's position
+                lifespan(boomerang_lifespan.Lifetime), // Same lifespan as outward boomerang
+            ]);
 
             break;
         }

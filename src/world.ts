@@ -2,7 +2,6 @@ import {WorldImpl} from "../lib/world.js";
 import {FLOATS_PER_INSTANCE} from "../materials/layout2d.js";
 import {Aim} from "./components/com_aim.js";
 import {AnimateSprite} from "./components/com_animate_sprite.js";
-import {Boomerang} from "./components/com_boomerang.js";
 import {Camera2D} from "./components/com_camera2d.js";
 import {Children} from "./components/com_children.js";
 import {Collide2D} from "./components/com_collide2d.js";
@@ -30,7 +29,6 @@ import {Weapon} from "./components/com_weapon.js";
 const enum Component {
     Aim,
     AnimateSprite,
-    Boomerang,
     Camera2D,
     Collide2D,
     ControlAi,
@@ -61,7 +59,6 @@ export const enum Has {
     None = 0,
     Aim = 1 << Component.Aim,
     AnimateSprite = 1 << Component.AnimateSprite,
-    Boomerang = 1 << Component.Boomerang,
     Camera2D = 1 << Component.Camera2D,
     Collide2D = 1 << Component.Collide2D,
     ControlAi = 1 << Component.ControlAi,
@@ -96,7 +93,6 @@ export class World extends WorldImpl {
 
     Aim: Array<Aim> = [];
     AnimateSprite: Array<AnimateSprite> = [];
-    Boomerang: Array<Boomerang> = [];
     Camera2D: Array<Camera2D> = [];
     Collide2D: Array<Collide2D> = [];
     ControlAi: Array<ControlAi> = [];
