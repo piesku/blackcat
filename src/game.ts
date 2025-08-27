@@ -13,6 +13,7 @@ import {createFreshGameState, GameState} from "./state.js";
 import {sys_aim} from "./systems/sys_aim.js";
 import {sys_arena_bounds} from "./systems/sys_arena_bounds.js";
 import {sys_camera2d} from "./systems/sys_camera2d.js";
+import {sys_camera_zoom} from "./systems/sys_camera_zoom.js";
 import {sys_collide2d} from "./systems/sys_collide2d.js";
 import {sys_control_ai} from "./systems/sys_control_ai.js";
 import {sys_control_always2d} from "./systems/sys_control_always2d.js";
@@ -124,6 +125,7 @@ export class Game extends Game3D {
         sys_transform2d(this, delta);
 
         // Camera.
+        sys_camera_zoom(this, delta);
         sys_resize2d(this, delta);
         sys_camera2d(this, delta);
 
