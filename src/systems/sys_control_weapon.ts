@@ -7,7 +7,8 @@ import {blueprint_boomerang_outward} from "../blueprints/projectiles/blu_boomera
 import {blueprint_mortar_shell} from "../blueprints/projectiles/blu_mortar_shell.js";
 import {query_down} from "../components/com_children.js";
 import {AiState} from "../components/com_control_ai.js";
-import {label} from "../components/com_label.js";
+import {label, get_root_spawner} from "../components/com_label.js";
+import {spawned_by} from "../components/com_spawned_by.js";
 import {copy_position} from "../components/com_local_transform2d.js";
 import {SpawnMode} from "../components/com_spawn.js";
 import {Weapon} from "../components/com_weapon.js";
@@ -232,13 +233,17 @@ function execute_boomerang_attack(
     mat2d_get_translation(weapon_world_position, weapon_spatial.World);
 
     // Create and launch the boomerang directly at weapon location
+    // Get the fighter entity for damage attribution
+    let fighter_entity = get_root_spawner(game.World, weapon_entity);
+
     instantiate(game, [
         ...blueprint_boomerang_outward(
             target_direction, // direction to target
             aim.DistanceToTarget,
         ),
         copy_position(weapon_world_position), // Spawn at weapon's world position
-        label("boomerang outward", weapon_entity),
+        label("boomerang outward"),
+        spawned_by(fighter_entity),
     ]);
 
     console.log(

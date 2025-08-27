@@ -412,18 +412,9 @@ export class SceneGraphInspector {
 
         if (world.Signature[entityId] & Has.Label) {
             const n = world.Label[entityId];
-            let spawnedByDisplay = "none";
-            if (n.SpawnedBy !== undefined) {
-                const isSpawnerAlive = is_entity_alive(world, n.SpawnedBy);
-                const spawnerName = this.getEntityName(n.SpawnedBy) || `Entity ${n.SpawnedBy}`;
-                const statusIcon = isSpawnerAlive ? "🟢" : "🔴";
-                spawnedByDisplay = `<a href="#" onclick="selectEntity(${n.SpawnedBy}); return false;" style="color: #4a9eff; text-decoration: underline;">${spawnerName}</a> ${statusIcon}`;
-            }
-
             html += `<div class="component">
                 <strong>Label</strong><br>
-                Name: "${n.Name || "none"}"<br>
-                SpawnedBy (Fighter): ${spawnedByDisplay}
+                Name: "${n.Name || "none"}"
             </div>`;
         }
 
@@ -513,6 +504,19 @@ export class SceneGraphInspector {
                 }<br>
                 Interval: ${s.Interval.toFixed(2)}<br>
                 Speed: ${s.SpeedMin.toFixed(1)} - ${s.SpeedMax.toFixed(1)}
+            </div>`;
+        }
+
+        if (world.Signature[entityId] & Has.SpawnedBy) {
+            const s = world.SpawnedBy[entityId];
+            const isSpawnerAlive = is_entity_alive(world, s.Fighter);
+            const spawnerName = this.getEntityName(s.Fighter) || `Entity ${s.Fighter}`;
+            const statusIcon = isSpawnerAlive ? "🟢" : "🔴";
+            const fighterDisplay = `<a href="#" onclick="selectEntity(${s.Fighter}); return false;" style="color: #4a9eff; text-decoration: underline;">${spawnerName}</a> ${statusIcon}`;
+
+            html += `<div class="component">
+                <strong>SpawnedBy</strong><br>
+                Fighter: ${fighterDisplay}
             </div>`;
         }
 

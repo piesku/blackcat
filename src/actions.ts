@@ -5,6 +5,7 @@ import {blueprint_chiquita_banana_spawner} from "./blueprints/blu_chiquita_banan
 import {blueprint_explosion} from "./blueprints/blu_explosion.js";
 import {blueprint_boomerang_return} from "./blueprints/projectiles/blu_boomerang.js";
 import {get_root_spawner, label} from "./components/com_label.js";
+import {spawned_by} from "./components/com_spawned_by.js";
 import {lifespan} from "./components/com_lifespan.js";
 import {copy_position} from "./components/com_local_transform2d.js";
 import {Game, GameView} from "./game.js";
@@ -175,7 +176,8 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
                 ...blueprint_boomerang_return(to_thrower),
                 copy_position(boomerang_transform.Translation), // Spawn at outward boomerang's position
                 lifespan(boomerang_lifespan.Lifetime), // Same lifespan as outward boomerang
-                label("boomerang_return", thrower_entity),
+                label("boomerang_return"),
+                spawned_by(thrower_entity),
             ]);
 
             break;

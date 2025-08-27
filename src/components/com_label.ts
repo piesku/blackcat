@@ -11,22 +11,19 @@ import {Has, World} from "../world.js";
 
 export interface Label {
     Name?: string;
-    SpawnedBy?: number; // Always points to the fighter entity (root spawner), never intermediate spawners
 }
 
 /**
  * Add `Label` to an entity.
  *
  * @param name The name of the entity.
- * @param spawnedBy The fighter entity that ultimately spawned this entity (root spawner).
  */
-export function label(name?: string, spawnedBy?: number) {
+export function label(name?: string) {
     return (game: Game, entity: Entity) => {
         game.World.Signature[entity] |= Has.Label;
 
         game.World.Label[entity] = {
             Name: name,
-            SpawnedBy: spawnedBy,
         };
     };
 }
@@ -49,27 +46,26 @@ export function find_by_name(world: World, name: string, start_at: Entity = 0) {
 
 /**
  * Get the root spawner (fighter entity) for damage attribution.
- * SpawnedBy always points directly to the fighter entity.
+ * Checks SpawnedBy component first, then falls back to spatial hierarchy.
  *
  * @param world The world to search in
  * @param entity The entity to get the root spawner for
  * @returns The root spawner entity, or the entity itself if no spawner is found
  */
 export function get_root_spawner(world: World, entity: Entity): Entity {
-    // Check if entity has Label component with spawner info
-    if (world.Signature[entity] & Has.Label) {
-        let label = world.Label[entity];
-        DEBUG: if (!label) throw new Error("missing label component");
+    // Check if entity has SpawnedBy component
+    if (world.Signature[entity] & Has.SpawnedBy) {
+        let spawned_by = world.SpawnedBy[entity];
+        DEBUG: if (!spawned_by) throw new Error("missing spawned_by component");
 
-        if (label.SpawnedBy !== undefined) {
-            return label.SpawnedBy;
-        }
+        return spawned_by.Fighter;
     }
 
-    // If no SpawnedBy field, check for parent fighter via spatial hierarchy
+    // If no SpawnedBy component, check for parent fighter via spatial hierarchy
     let weapon_node = world.SpatialNode2D[entity];
     if (weapon_node && weapon_node.Parent !== undefined) {
-        return weapon_node.Parent;
+        // Recursively check the parent - it might have a SpawnedBy or be part of a deeper hierarchy
+        return get_root_spawner(world, weapon_node.Parent);
     }
 
     // If no parent fighter is found, return the entity itself

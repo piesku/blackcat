@@ -12,9 +12,10 @@ import {Vec2} from "../../lib/math.js";
 import {float} from "../../lib/random.js";
 import {vec2_normalize, vec2_rotate} from "../../lib/vec2.js";
 import {Entity} from "../../lib/world.js";
-import {label, get_root_spawner} from "../components/com_label.js";
+import {get_root_spawner} from "../components/com_label.js";
 import {copy_position} from "../components/com_local_transform2d.js";
 import {Spawn, SpawnCount, SpawnMode, SpawnTimed} from "../components/com_spawn.js";
+import {spawned_by} from "../components/com_spawned_by.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
@@ -107,23 +108,15 @@ function spawn_single_entity(
     // Random speed within range
     let speed = float(spawn.SpeedMin, spawn.SpeedMax);
 
-    // Create entity using blueprint function (creates fresh blueprint each time)
-    let spawned_entity = instantiate(game, [...spawn.BlueprintCreator(), copy_position(position)]);
-
-    // Track spawner relationship for damage attribution
-    // Use get_root_spawner to find the fighter entity
+    // Resolve fighter entity for damage attribution
     let fighter_entity = get_root_spawner(game.World, spawner_entity);
 
-    // Only set SpawnedBy if we found a different entity (not self-reference)
-    if (fighter_entity !== spawner_entity) {
-        if (game.World.Signature[spawned_entity] & Has.Label) {
-            // Entity already has a Label, update SpawnedBy to point to the fighter
-            game.World.Label[spawned_entity].SpawnedBy = fighter_entity;
-        } else {
-            // Add Label component with fighter entity as spawner
-            label(undefined, fighter_entity)(game, spawned_entity);
-        }
-    }
+    // Create entity with spawner attribution (only if not self-reference)
+    let spawned_entity = instantiate(game, [
+        ...spawn.BlueprintCreator(),
+        copy_position(position),
+        spawned_by(fighter_entity),
+    ]);
 
     // Set initial velocity after all components are set up
     let rigid_body = game.World.RigidBody2D[spawned_entity];

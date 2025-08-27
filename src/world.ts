@@ -21,6 +21,7 @@ import {RigidBody2D} from "./components/com_rigid_body2d.js";
 import {Shake} from "./components/com_shake.js";
 import {SpatialNode2D} from "./components/com_spatial_node2d.js";
 import {Spawn} from "./components/com_spawn.js";
+import {SpawnedBy} from "./components/com_spawned_by.js";
 import {Task} from "./components/com_task.js";
 import {Toggle} from "./components/com_toggle.js";
 import {Trigger} from "./components/com_trigger.js";
@@ -49,6 +50,7 @@ const enum Component {
     Shake,
     SpatialNode2D,
     Spawn,
+    SpawnedBy,
     Task,
     Toggle,
     Trigger,
@@ -79,6 +81,7 @@ export const enum Has {
     Shake = 1 << Component.Shake,
     SpatialNode2D = 1 << Component.SpatialNode2D,
     Spawn = 1 << Component.Spawn,
+    SpawnedBy = 1 << Component.SpawnedBy,
     Task = 1 << Component.Task,
     Toggle = 1 << Component.Toggle,
     Trigger = 1 << Component.Trigger,
@@ -112,6 +115,7 @@ export class World extends WorldImpl {
     Shake: Array<Shake> = [];
     SpatialNode2D: Array<SpatialNode2D> = [];
     Spawn: Array<Spawn> = [];
+    SpawnedBy: Array<SpawnedBy> = [];
     Task: Array<Task> = [];
     Toggle: Array<Toggle> = [];
     Trigger: Array<Trigger> = [];
