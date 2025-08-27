@@ -423,8 +423,7 @@ export class SceneGraphInspector {
             html += `<div class="component">
                 <strong>Label</strong><br>
                 Name: "${n.Name || "none"}"<br>
-                SpawnedBy: ${spawnedByDisplay}<br>
-                SpawnedByGeneration: ${n.SpawnedByGeneration !== undefined ? n.SpawnedByGeneration : "none"}
+                SpawnedBy (Fighter): ${spawnedByDisplay}
             </div>`;
         }
 

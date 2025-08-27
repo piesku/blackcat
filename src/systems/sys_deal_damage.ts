@@ -53,7 +53,7 @@ function handle_collision_damage(
     for (let collision of collider.Collisions) {
         let target_entity = collision.Other;
 
-        // Get original spawner for damage attribution
+        // Get original spawner for damage attribution (SpawnedBy now directly points to fighter)
         let original_spawner = get_root_spawner(game.World, entity);
 
         // Skip self-damage

@@ -5,33 +5,28 @@
  * including its name and spawner relationship for damage attribution.
  */
 
-import {Entity, get_generation, is_entity_alive} from "../../lib/world.js";
+import {Entity} from "../../lib/world.js";
 import {Game} from "../game.js";
 import {Has, World} from "../world.js";
 
 export interface Label {
     Name?: string;
-    SpawnedBy?: number;
-    SpawnedByGeneration?: number; // Store expected generation of SpawnedBy entity
+    SpawnedBy?: number; // Always points to the fighter entity (root spawner), never intermediate spawners
 }
 
 /**
  * Add `Label` to an entity.
  *
  * @param name The name of the entity.
- * @param spawnedBy The entity that spawned this entity.
+ * @param spawnedBy The fighter entity that ultimately spawned this entity (root spawner).
  */
 export function label(name?: string, spawnedBy?: number) {
     return (game: Game, entity: Entity) => {
         game.World.Signature[entity] |= Has.Label;
 
-        let spawnedByGeneration =
-            spawnedBy !== undefined ? get_generation(game.World, spawnedBy) : undefined;
-
         game.World.Label[entity] = {
             Name: name,
             SpawnedBy: spawnedBy,
-            SpawnedByGeneration: spawnedByGeneration,
         };
     };
 }
@@ -53,51 +48,25 @@ export function find_by_name(world: World, name: string, start_at: Entity = 0) {
 }
 
 /**
- * Trace back through the spawner chain to find the original root spawner.
- * This is used for damage attribution - grenades, explosions, etc. can be
- * traced back to the original fighter who spawned them.
+ * Get the root spawner (fighter entity) for damage attribution.
+ * SpawnedBy always points directly to the fighter entity.
  *
  * @param world The world to search in
- * @param entity The entity to trace back from
- * @returns The root spawner entity, or the entity itself if no chain exists
+ * @param entity The entity to get the root spawner for
+ * @returns The root spawner entity, or the entity itself if no spawner is found
  */
 export function get_root_spawner(world: World, entity: Entity): Entity {
-    // Check if entity has Label component with spawner tracking
+    // Check if entity has Label component with spawner info
     if (world.Signature[entity] & Has.Label) {
-        let label_component = world.Label[entity];
-        DEBUG: if (!label_component) throw new Error("missing label component");
+        let label = world.Label[entity];
+        DEBUG: if (!label) throw new Error("missing label component");
 
-        if (
-            label_component.SpawnedBy !== undefined &&
-            label_component.SpawnedByGeneration !== undefined
-        ) {
-            let spawner_id = label_component.SpawnedBy;
-            let expected_generation = label_component.SpawnedByGeneration;
-
-            // Validate generation to detect recycled entities
-            let current_generation = get_generation(world, spawner_id);
-            if (current_generation !== expected_generation) {
-                console.warn(
-                    `[get_root_spawner] Entity ${spawner_id} generation mismatch ` +
-                        `(expected: ${expected_generation}, current: ${current_generation}), treating ${entity} as root`,
-                );
-                return entity;
-            }
-
-            // Check if spawner is alive (has components)
-            if (!is_entity_alive(world, spawner_id)) {
-                console.warn(
-                    `[get_root_spawner] Spawner ${spawner_id} is dead, treating ${entity} as root`,
-                );
-                return entity;
-            }
-
-            // Recursively trace back through the chain
-            return get_root_spawner(world, spawner_id);
+        if (label.SpawnedBy !== undefined) {
+            return label.SpawnedBy;
         }
     }
 
-    // This entity is the root spawner (no SpawnedBy field). Now get the parent fighter.
+    // If no SpawnedBy field, check for parent fighter via spatial hierarchy
     let weapon_node = world.SpatialNode2D[entity];
     if (weapon_node && weapon_node.Parent !== undefined) {
         return weapon_node.Parent;

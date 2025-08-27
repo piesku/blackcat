@@ -146,7 +146,7 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
             let boomerang_lifespan = game.World.Lifespan[outward_boomerang];
             DEBUG: if (!boomerang_lifespan) throw new Error("missing boomerang lifespan");
 
-            // Use get_root_spawner to trace back to the original thrower
+            // Use get_root_spawner to get the original thrower (now directly stored)
             let thrower_entity = get_root_spawner(game.World, outward_boomerang);
             let thrower_transform = game.World.LocalTransform2D[thrower_entity];
 
@@ -175,7 +175,7 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
                 ...blueprint_boomerang_return(to_thrower),
                 copy_position(boomerang_transform.Translation), // Spawn at outward boomerang's position
                 lifespan(boomerang_lifespan.Lifetime), // Same lifespan as outward boomerang
-                label("boomerang_return", outward_boomerang),
+                label("boomerang_return", thrower_entity),
             ]);
 
             break;
