@@ -3,6 +3,7 @@ import {Game} from "../game.js";
 import {UpgradeType} from "../upgrades/types.js";
 import {getFighterStats} from "./entity_queries.js";
 import {dispatch, Action} from "../actions.js";
+import {getStanceName, getStanceEmoji} from "../components/com_control_ai.js";
 
 export function ArenaView(game: Game): string {
     // Get upgrades from game state
@@ -22,8 +23,12 @@ export function ArenaView(game: Game): string {
             >
                 <div style="color: #4CAF50; font-weight: bold; margin-bottom: 3px;">PLAYER</div>
                 <div style="color: #FFF; margin-bottom: 2px;">HP: ${playerHP}</div>
-                <div style="color: #FFD700; margin-bottom: 5px; font-size: clamp(8px, 2vw, 10px);">
+                <div style="color: #FFD700; margin-bottom: 2px; font-size: clamp(8px, 2vw, 10px);">
                     ${playerAIState}
+                </div>
+                <div style="color: #FF9500; margin-bottom: 5px; font-size: clamp(8px, 2vw, 10px);">
+                    ${getStanceEmoji(game.State.selectedStance)}
+                    ${getStanceName(game.State.selectedStance)}
                 </div>
                 ${playerUpgrades
                     .map(
