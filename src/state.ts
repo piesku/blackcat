@@ -1,13 +1,11 @@
 import {ALL_UPGRADES, UpgradeType, WEAPON_UPGRADES, ARMOR_UPGRADES} from "./upgrades/types.js";
 import {set_seed, integer, shuffle} from "../lib/random.js";
-import {CombatStance} from "./components/com_control_ai.js";
 
 export interface GameState {
     currentLevel: number; // 1-33 duels
     playerUpgrades: UpgradeType[]; // Player's accumulated upgrades
     opponentUpgrades: UpgradeType[]; // Current opponent's upgrades
     availableUpgradeChoices: UpgradeType[]; // Player's available upgrade choices for selection
-    selectedStance: CombatStance; // Player's selected combat stance for current duel
     population: number; // Narrative countdown (8 billion -> 1)
     isNewRun: boolean; // Fresh start vs resumed
     runSeed: number; // Unique seed for this run, regenerated for each new run
@@ -76,7 +74,6 @@ export function createFreshGameState(): GameState {
         playerUpgrades: initialPlayerUpgrades,
         opponentUpgrades: generateOpponentUpgrades(1, runSeed),
         availableUpgradeChoices: generatePlayerUpgradeChoices(1, initialPlayerUpgrades, runSeed),
-        selectedStance: CombatStance.Balanced, // Default to balanced stance
         population: 8_000_000_000,
         isNewRun: true,
         runSeed: runSeed,

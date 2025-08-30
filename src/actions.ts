@@ -23,7 +23,6 @@ export const enum Action {
     DuelVictory,
     DuelDefeat,
     UpgradeSelected,
-    StanceSelected,
     ViewTransition,
     RestartRun,
     ClearSave,
@@ -82,18 +81,8 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
             // Add upgrade to player collection
             game.State.playerUpgrades.push(selectedUpgrade);
 
-            // Move to stance selection for strategic choice
-            game.SetView(GameView.StanceSelection);
-            break;
-        }
-        case Action.StanceSelected: {
-            let selectedStance = payload as number; // CombatStance enum value
-
-            // Store selected stance in game state
-            game.State.selectedStance = selectedStance;
-
-            // No need to save after stance selection - already saved before upgrade selection screen
-            // This allows player to try different stances against same opponent if they reload
+            // No need to save after upgrade selection - already saved before upgrade selection screen
+            // This allows player to try different upgrades against same opponent if they reload
 
             // Opponent upgrades are already generated during victory
             // Switch to arena and start new duel

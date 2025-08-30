@@ -46,7 +46,6 @@ export const REAL_UNIT_SIZE = 48;
 
 export const enum GameView {
     UpgradeSelection,
-    StanceSelection,
     Arena,
     Victory,
     Defeat,

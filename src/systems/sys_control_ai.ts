@@ -1,13 +1,7 @@
 import {Vec2} from "../../lib/math.js";
 import {float} from "../../lib/random.js";
 import {vec2_add, vec2_length, vec2_normalize, vec2_scale, vec2_subtract} from "../../lib/vec2.js";
-import {
-    AiState,
-    ControlAi,
-    can_retreat,
-    should_force_dash_attacks,
-    STANCE_MODIFIERS,
-} from "../components/com_control_ai.js";
+import {AiState, ControlAi} from "../components/com_control_ai.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
@@ -189,12 +183,11 @@ function update_ai_state(
         ai.HasRetreatedAtLowHealth = false;
     }
 
-    // Check for low health -> retreat (only if stance allows retreating and haven't retreated yet)
+    // Check for low health -> retreat (only if haven't retreated yet at this health level)
     if (
         health.Current <= LOW_HEALTH_THRESHOLD &&
         ai.State !== AiState.Retreating &&
-        !ai.HasRetreatedAtLowHealth &&
-        can_retreat(ai) // Check stance allows retreating
+        !ai.HasRetreatedAtLowHealth
     ) {
         ai.HasRetreatedAtLowHealth = true; // Mark that we've retreated at this health level
         change_state(ai, AiState.Retreating, game.Time);
@@ -209,20 +202,6 @@ function update_ai_state(
 
     switch (ai.State) {
         case AiState.Circling:
-            // Berserker stance: Force immediate dash attacks (skip normal circling behavior)
-            if (should_force_dash_attacks(ai) && ai.AttackCooldown <= 0) {
-                // Store attack direction and go straight to preparing
-                ai.PrepareDirection[0] = aim.DirectionToTarget[0];
-                ai.PrepareDirection[1] = aim.DirectionToTarget[1];
-                vec2_normalize(ai.PrepareDirection, ai.PrepareDirection);
-                console.log(
-                    `[AI] BERSERKER Entity forcing dash attack at distance ${aim.DistanceToTarget.toFixed(2)}`,
-                );
-                change_state(ai, AiState.Preparing, game.Time);
-                ai.AttackCooldown = (0.5 + float(0, 1.0)) * time_scale; // Shorter cooldown for berserkers
-                break;
-            }
-
             // Check if too close - force separation (but only for higher entity ID to avoid both separating)
             if (aim.DistanceToTarget < scaled_distances.separation) {
                 let target_ai = game.World.ControlAi[aim.TargetEntity];
