@@ -47,8 +47,16 @@ function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapo
     let aim = game.World.Aim[parent_entity];
     DEBUG: if (!ai || !aim) throw new Error("missing component");
 
-    // Player weapons never auto-fire - they require manual input
+    // Player weapons fire when marked by sys_control_player
     if (ai.IsPlayer) {
+        if (weapon.PlayerWantsToFire) {
+            console.log(
+                `[PLAYER_WEAPON] Activating marked player weapon for entity ${parent_entity}`,
+            );
+            // Reset the flag so it doesn't fire again next frame
+            weapon.PlayerWantsToFire = false;
+            return true;
+        }
         return false;
     }
 
@@ -64,7 +72,7 @@ function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapo
 
     if (should_activate) {
         console.log(
-            `[${Date.now()}] [WEAPON] Entity ${parent_entity} activating weapon (AI State: ${getAIStateName(ai.State)}, Target: ${aim.TargetEntity}, Distance: ${aim.DistanceToTarget.toFixed(2)})`,
+            `[AI_WEAPON] Entity ${parent_entity} activating weapon (AI State: ${getAIStateName(ai.State)}, Target: ${aim.TargetEntity}, Distance: ${aim.DistanceToTarget.toFixed(2)})`,
         );
     }
 
