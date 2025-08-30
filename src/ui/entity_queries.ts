@@ -1,3 +1,4 @@
+import {query_down} from "../components/com_children.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 import {getAIStateName} from "./ai_state.js";
@@ -7,6 +8,13 @@ export interface FighterStats {
     opponentHP: string;
     playerAIState: string;
     opponentAIState: string;
+}
+
+export interface WeaponCooldownInfo {
+    name: string;
+    cooldownRemaining: number;
+    totalCooldown: number;
+    isReady: boolean;
 }
 
 export function getFighterStats(game: Game): FighterStats {
@@ -49,4 +57,42 @@ export function getFighterStats(game: Game): FighterStats {
         playerAIState,
         opponentAIState,
     };
+}
+
+export function getPlayerWeaponCooldowns(game: Game): WeaponCooldownInfo[] {
+    let weaponCooldowns: WeaponCooldownInfo[] = [];
+
+    // Find the player entity
+    for (let entity = 0; entity < game.World.Signature.length; entity++) {
+        if (game.World.Signature[entity] & Has.ControlAi) {
+            let ai = game.World.ControlAi[entity];
+            if (!ai || !ai.IsPlayer) continue;
+
+            // Find all weapons attached to this player
+            for (let weapon_entity of query_down(game.World, entity, Has.Weapon)) {
+                let weapon = game.World.Weapon[weapon_entity];
+                if (!weapon) continue;
+
+                // Get weapon name from Label component
+                let weaponName = "Unknown Weapon";
+                if (game.World.Signature[weapon_entity] & Has.Label) {
+                    let label = game.World.Label[weapon_entity];
+                    if (label && label.Name) {
+                        weaponName = label.Name;
+                    }
+                }
+
+                weaponCooldowns.push({
+                    name: weaponName,
+                    cooldownRemaining: Math.max(0, weapon.LastAttackTime),
+                    totalCooldown: weapon.Cooldown,
+                    isReady: weapon.LastAttackTime <= 0,
+                });
+            }
+
+            break; // Found player, no need to continue
+        }
+    }
+
+    return weaponCooldowns;
 }

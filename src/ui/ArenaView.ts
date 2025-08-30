@@ -1,8 +1,50 @@
 import {html} from "../../lib/html.js";
 import {Game} from "../game.js";
 import {UpgradeType} from "../upgrades/types.js";
-import {getFighterStats} from "./entity_queries.js";
+import {getFighterStats, getPlayerWeaponCooldowns, WeaponCooldownInfo} from "./entity_queries.js";
 import {dispatch, Action} from "../actions.js";
+
+function renderWeaponCooldown(weapon: WeaponCooldownInfo): string {
+    // Calculate progress percentage (1.0 = ready, 0.0 = just fired)
+    let progress =
+        weapon.totalCooldown > 0
+            ? Math.max(0, 1.0 - weapon.cooldownRemaining / weapon.totalCooldown)
+            : 1.0;
+
+    let progressPercent = Math.round(progress * 100);
+    let backgroundColor = weapon.isReady ? "#4CAF50" : "#333";
+    let textColor = weapon.isReady ? "#FFF" : "#AAA";
+
+    return `
+        <div style="
+            position: relative;
+            margin-bottom: 2px;
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-size: clamp(7px, 1.8vw, 9px);
+            color: ${textColor};
+            overflow: hidden;
+            border: 1px solid ${weapon.isReady ? "#4CAF50" : "#666"};
+        ">
+            <!-- Background progress fill -->
+            <div style="
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: ${progressPercent}%;
+                background: linear-gradient(90deg, ${backgroundColor}22, ${backgroundColor}44);
+                transition: width 0.1s ease;
+                z-index: -1;
+            "></div>
+            
+            <!-- Weapon name and status -->
+            <span style="position: relative; z-index: 1;">
+                ${weapon.name} ${weapon.isReady ? "●" : Math.ceil(weapon.cooldownRemaining).toFixed(1) + "s"}
+            </span>
+        </div>
+    `;
+}
 
 export function ArenaView(game: Game): string {
     // Get upgrades from game state
@@ -11,6 +53,9 @@ export function ArenaView(game: Game): string {
 
     // Get fighter stats
     let {playerHP, opponentHP, playerAIState, opponentAIState} = getFighterStats(game);
+
+    // Get player weapon cooldowns
+    let playerWeaponCooldowns = getPlayerWeaponCooldowns(game);
 
     return html`
         <div
@@ -33,6 +78,18 @@ export function ArenaView(game: Game): string {
                     .join("")}
                 ${playerUpgrades.length === 0
                     ? '<div style="color: #666; font-size: clamp(8px, 2vw, 10px);">No upgrades</div>'
+                    : ""}
+
+                <!-- Player weapon cooldowns -->
+                ${playerWeaponCooldowns.length > 0
+                    ? `
+                    <div style="margin-top: 8px; padding-top: 5px; border-top: 1px solid #444;">
+                        <div style="color: #FFD700; font-size: clamp(7px, 1.8vw, 9px); margin-bottom: 3px;">
+                            WEAPONS (Click to fire):
+                        </div>
+                        ${playerWeaponCooldowns.map((weapon) => renderWeaponCooldown(weapon)).join("")}
+                    </div>
+                `
                     : ""}
             </div>
 

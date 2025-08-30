@@ -47,7 +47,12 @@ function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapo
     let aim = game.World.Aim[parent_entity];
     DEBUG: if (!ai || !aim) throw new Error("missing component");
 
-    // All weapons are ranged - can activate in Circling, Pursuing, and Dashing states
+    // Player weapons never auto-fire - they require manual input
+    if (ai.IsPlayer) {
+        return false;
+    }
+
+    // AI weapons activate in Circling, Pursuing, and Dashing states
     // AND must have a valid target from the Aim component within range
     let should_activate =
         (ai.State === AiState.Circling ||

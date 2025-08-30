@@ -17,6 +17,7 @@ import {sys_camera_zoom} from "./systems/sys_camera_zoom.js";
 import {sys_collide2d} from "./systems/sys_collide2d.js";
 import {sys_control_ai} from "./systems/sys_control_ai.js";
 import {sys_control_always2d} from "./systems/sys_control_always2d.js";
+import {sys_control_player} from "./systems/sys_control_player.js";
 import {sys_control_weapon} from "./systems/sys_control_weapon.js";
 import {sys_deal_damage} from "./systems/sys_deal_damage.js";
 import {sys_draw2d} from "./systems/sys_draw2d.js";
@@ -99,6 +100,7 @@ export class Game extends Game3D {
         // AI.
         sys_aim(this, delta);
         sys_control_ai(this, delta);
+        sys_control_player(this, delta);
         sys_control_always2d(this, delta);
         sys_control_weapon(this, delta);
 
