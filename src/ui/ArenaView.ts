@@ -1,7 +1,7 @@
 import {html} from "../../lib/html.js";
 import {Game} from "../game.js";
 import {UpgradeType} from "../upgrades/types.js";
-import {getFighterStats, getPlayerEnergy} from "./entity_queries.js";
+import {getFighterStats, getPlayerEnergy, getPlayerHealingStatus} from "./entity_queries.js";
 
 export function ArenaView(game: Game): string {
     // Get upgrades from game state
@@ -11,10 +11,12 @@ export function ArenaView(game: Game): string {
     // Get fighter stats
     let {playerHP, opponentHP, playerAIState, opponentAIState} = getFighterStats(game);
 
-    // Get player unified energy
+    // Get player unified energy and healing status
     let playerEnergy = getPlayerEnergy(game);
     let maxEnergy = 1.0; // Should match MAX_ENERGY from sys_control_player
     let energyPercent = Math.round((playerEnergy / maxEnergy) * 100);
+
+    let healingStatus = getPlayerHealingStatus(game);
 
     return html`
         <div
@@ -82,6 +84,17 @@ export function ArenaView(game: Game): string {
                             "
                             ></div>
                         </div>
+
+                        <!-- Healing status indicator -->
+                        ${healingStatus.isHealing
+                            ? `<div style="margin-top: 3px; color: #4CAF50; font-size: clamp(6px, 1.5vw, 8px);">
+                                 ⚕️ HEALING +0.5/s (No energy)
+                               </div>`
+                            : healingStatus.energy === 0
+                              ? `<div style="margin-top: 3px; color: #FFC107; font-size: clamp(6px, 1.5vw, 8px);">
+                                     ⚕️ Ready to heal (Full health)
+                                 </div>`
+                              : ""}
                     </div>
                 </div>
             </div>

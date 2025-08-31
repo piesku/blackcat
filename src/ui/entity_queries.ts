@@ -109,3 +109,24 @@ export function getPlayerEnergy(game: Game): number {
     }
     return 0;
 }
+
+export function getPlayerHealingStatus(game: Game): {
+    isHealing: boolean;
+    energy: number;
+} {
+    // Find the player entity and return their healing status (based on zero energy)
+    for (let entity = 0; entity < game.World.Signature.length; entity++) {
+        if (game.World.Signature[entity] & Has.ControlPlayer) {
+            let ai = game.World.ControlAi[entity];
+            let health = game.World.Health[entity];
+            if (!ai || !health) continue;
+
+            let isHealing = ai.Energy === 0 && health.Current < health.Max && health.IsAlive;
+            return {
+                isHealing,
+                energy: ai.Energy,
+            };
+        }
+    }
+    return {isHealing: false, energy: 0};
+}

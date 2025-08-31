@@ -1,11 +1,12 @@
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
-const QUERY = Has.ControlPlayer | Has.ControlAi | Has.LocalTransform2D | Has.Move2D;
+const QUERY = Has.ControlPlayer | Has.ControlAi | Has.LocalTransform2D | Has.Move2D | Has.Health;
 
 const BASE_ENERGY_PER_TAP = 0.3; // Base energy gain per tap
 const DIMINISH_FACTOR = 0.5; // How much energy reduces tap effectiveness
 const ENERGY_DECAY_RATE = 1.0; // Constant energy decay per second
+const HEALING_RATE = 0.5; // HP per second when energy is 0
 
 export function sys_control_player(game: Game, delta: number) {
     // Check for tap/click (transition from up to down)
@@ -16,7 +17,8 @@ export function sys_control_player(game: Game, delta: number) {
         if ((game.World.Signature[entity] & QUERY) === QUERY) {
             let ai = game.World.ControlAi[entity];
             let move = game.World.Move2D[entity];
-            DEBUG: if (!ai || !move) throw new Error("missing component");
+            let health = game.World.Health[entity];
+            DEBUG: if (!ai || !move || !health) throw new Error("missing component");
 
             // Add energy on tap/click with diminishing returns
             if (just_tapped) {
@@ -33,6 +35,23 @@ export function sys_control_player(game: Game, delta: number) {
             ai.Energy -= ENERGY_DECAY_RATE * delta;
             if (ai.Energy < 0) {
                 ai.Energy = 0;
+            }
+
+            // Healing when energy is 0 (can't move or shoot)
+            if (ai.Energy === 0 && health.IsAlive && health.Current < health.Max) {
+                let heal_amount = HEALING_RATE * delta;
+                let health_before = health.Current;
+
+                health.Current += heal_amount;
+                if (health.Current > health.Max) {
+                    health.Current = health.Max;
+                }
+
+                if (health.Current > health_before) {
+                    console.log(
+                        `[PLAYER_HEAL] No energy - healing ${(health.Current - health_before).toFixed(2)} HP (${health_before.toFixed(1)} -> ${health.Current.toFixed(1)})`,
+                    );
+                }
             }
 
             // Energy multiplier is now applied in sys_control_ai for movement and sys_control_weapon for shooting
