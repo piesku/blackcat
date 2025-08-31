@@ -156,8 +156,8 @@ export function sys_control_ai(game: Game, delta: number) {
 
                 // For player entities, apply energy multiplier to movement direction
                 let energy_multiplier = 1.0;
-                if (ai.IsPlayer && ai.MovementEnergy !== undefined) {
-                    energy_multiplier = Math.min(1.0, ai.MovementEnergy);
+                if (ai.IsPlayer) {
+                    energy_multiplier = ai.MovementEnergy;
                 }
 
                 move.Direction[0] = movement[0] * flip_multiplier * energy_multiplier;

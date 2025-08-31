@@ -3,8 +3,9 @@ import {Has} from "../world.js";
 
 const QUERY = Has.ControlPlayer | Has.ControlAi | Has.LocalTransform2D | Has.Move2D;
 
-const ENERGY_PER_TAP = 0.3; // Seconds of movement per tap
-const MAX_ENERGY = 1.0; // Maximum stored energy
+const BASE_ENERGY_PER_TAP = 0.3; // Base energy gain per tap
+const DIMINISH_FACTOR = 0.5; // How much energy reduces tap effectiveness
+const ENERGY_DECAY_RATE = 1.0; // Constant energy decay per second
 
 export function sys_control_player(game: Game, delta: number) {
     // Check for tap/click (transition from up to down)
@@ -17,18 +18,19 @@ export function sys_control_player(game: Game, delta: number) {
             let move = game.World.Move2D[entity];
             DEBUG: if (!ai || !move) throw new Error("missing component");
 
-            // Add energy on tap/click
+            // Add energy on tap/click with diminishing returns
             if (just_tapped) {
-                ai.MovementEnergy += ENERGY_PER_TAP;
-                if (ai.MovementEnergy > MAX_ENERGY) {
-                    ai.MovementEnergy = MAX_ENERGY;
-                }
-
-                console.log(`[PLAYER_INPUT] Tap! Energy: ${ai.MovementEnergy.toFixed(1)}s`);
+                // Less energy per tap when you already have more energy
+                let energy_multiplier = 1.0 / (1.0 + ai.MovementEnergy * DIMINISH_FACTOR);
+                let energy_gain = BASE_ENERGY_PER_TAP * energy_multiplier;
+                ai.MovementEnergy += energy_gain;
+                console.log(
+                    `[PLAYER_INPUT] Tap! +${energy_gain.toFixed(2)} energy (${energy_multiplier.toFixed(2)}x multiplier). Total: ${ai.MovementEnergy.toFixed(1)}s`,
+                );
             }
 
-            // Decay energy over time
-            ai.MovementEnergy -= delta;
+            // Constant decay over time
+            ai.MovementEnergy -= ENERGY_DECAY_RATE * delta;
             if (ai.MovementEnergy < 0) {
                 ai.MovementEnergy = 0;
             }
