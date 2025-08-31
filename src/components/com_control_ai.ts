@@ -66,7 +66,7 @@ export function control_ai(is_player: boolean = false) {
             CircleDirection: circle_direction,
             AttackCooldown: attack_delay,
             IsPlayer: is_player,
-            Energy: is_player ? 0 : float(0.7, 1.1),
+            Energy: is_player ? 1.0 : float(0.7, 1.1), // Start player at base energy
 
             // Personality traits
             Aggressiveness: aggressiveness,

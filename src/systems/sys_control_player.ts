@@ -5,13 +5,20 @@ import {Has} from "../world.js";
 const QUERY = Has.ControlPlayer | Has.ControlAi | Has.LocalTransform2D | Has.Move2D | Has.Health;
 
 const BASE_ENERGY_PER_TAP = 0.3; // Base energy gain per tap
-const DIMINISH_FACTOR = 0.5; // How much energy reduces tap effectiveness
+const DIMINISH_FACTOR = 0.2; // How much energy reduces tap effectiveness
 const ENERGY_DECAY_RATE = 1.0; // Constant energy decay per second
-const HEALING_RATE = 1; // HP per second when energy is 0
+const BASE_ENERGY = 1.0; // Minimum energy when idle (not 0)
+const HEALING_RATE = 1; // HP per second when holding (constant)
+const MIN_HEALING_ENERGY = 0.0; // Asymptotic minimum energy (never actually reached)
+const HEALING_DRAIN_STRENGTH = 1.0; // How aggressively energy drains (higher = faster initial drain)
+const HOLD_THRESHOLD = 0.2; // Seconds before hold is considered intentional healing
+
+// Module-level hold timer
+let hold_timer = 0;
 
 export function sys_control_player(game: Game, delta: number) {
-    // Check for tap/click (transition from up to down)
-    let just_tapped = game.InputDelta.Mouse0 === 1 || game.InputDelta.Touch0 === 1;
+    // Check if holding mouse/touch (currently pressed)
+    let is_holding = game.InputState.Mouse0 === 1 || game.InputState.Touch0 === 1;
 
     // Find the player entity and manage unified energy
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
@@ -21,25 +28,46 @@ export function sys_control_player(game: Game, delta: number) {
             let health = game.World.Health[entity];
             DEBUG: if (!ai || !move || !health) throw new Error("missing component");
 
-            // Add energy on tap/click with diminishing returns
-            if (just_tapped) {
-                // Less energy per tap when you already have more energy
-                let energy_multiplier = 1.0 / (1.0 + ai.Energy * DIMINISH_FACTOR);
-                let energy_gain = BASE_ENERGY_PER_TAP * energy_multiplier;
-                ai.Energy += energy_gain;
-                console.log(
-                    `[PLAYER_INPUT] Tap! +${energy_gain.toFixed(2)} energy (${energy_multiplier.toFixed(2)}x multiplier). Total: ${ai.Energy.toFixed(1)}s`,
-                );
+            // Update module-level hold timer
+            if (is_holding) {
+                hold_timer += delta;
+            } else {
+                // Handle tap if just released and was below hold threshold
+                if (game.InputDelta.Mouse0 === -1 || game.InputDelta.Touch0 === -1) {
+                    if (hold_timer > 0 && hold_timer < HOLD_THRESHOLD) {
+                        // This was a quick tap/click - add energy with diminishing returns
+                        let energy_multiplier = 1.0 / (1.0 + ai.Energy * DIMINISH_FACTOR);
+                        let energy_gain = BASE_ENERGY_PER_TAP * energy_multiplier;
+                        ai.Energy += energy_gain;
+                        console.log(
+                            `[PLAYER_INPUT] Click/Tap! +${energy_gain.toFixed(2)} energy (${energy_multiplier.toFixed(2)}x multiplier). Total: ${ai.Energy.toFixed(1)}s`,
+                        );
+                    }
+                }
+                hold_timer = 0;
             }
 
-            // Constant decay over time
-            ai.Energy -= ENERGY_DECAY_RATE * delta;
-            if (ai.Energy < 0) {
-                ai.Energy = 0;
-            }
+            // Handle energy and healing based on hold state
+            let is_intentional_hold = is_holding && hold_timer >= HOLD_THRESHOLD;
 
-            // Healing when energy is 0 (can't move or shoot)
-            if (ai.Energy === 0 && health.IsAlive && health.Current < health.Max) {
+            if (is_intentional_hold && health.IsAlive && health.Current < health.Max) {
+                // HEALING MODE: Intentional holding drains energy and heals
+
+                // Calculate energy drain rate using exponential decay formula
+                // Formula: drain_rate = strength * (current_energy - min_energy)
+                // This creates fast initial drain that slows down as energy approaches minimum
+                let energy_above_minimum = ai.Energy - MIN_HEALING_ENERGY;
+                let drain_rate = HEALING_DRAIN_STRENGTH * energy_above_minimum;
+
+                // Apply the calculated drain rate
+                ai.Energy -= drain_rate * delta;
+
+                // Ensure we never go below the minimum (mathematical safety net)
+                if (ai.Energy < MIN_HEALING_ENERGY) {
+                    ai.Energy = MIN_HEALING_ENERGY;
+                }
+
+                // Heal based on healing rate
                 let heal_amount = HEALING_RATE * delta;
                 let health_before = health.Current;
 
@@ -49,8 +77,10 @@ export function sys_control_player(game: Game, delta: number) {
                 }
 
                 if (health.Current > health_before) {
+                    let current_drain_rate =
+                        HEALING_DRAIN_STRENGTH * (ai.Energy - MIN_HEALING_ENERGY);
                     console.log(
-                        `[PLAYER_HEAL] No energy - healing ${(health.Current - health_before).toFixed(2)} HP (${health_before.toFixed(1)} -> ${health.Current.toFixed(1)})`,
+                        `[PLAYER_HEAL] Holding (${hold_timer.toFixed(1)}s) - healing ${(health.Current - health_before).toFixed(2)} HP (${health_before.toFixed(1)} -> ${health.Current.toFixed(1)}), energy: ${ai.Energy.toFixed(2)} (drain rate: ${current_drain_rate.toFixed(2)}/s)`,
                     );
 
                     // Activate healing particle effects
@@ -62,14 +92,36 @@ export function sys_control_player(game: Game, delta: number) {
                         }
                     }
                 }
+            } else if (!is_holding) {
+                // NORMAL MODE: Not holding - energy restores/decays toward BASE_ENERGY (1.0)
+
+                if (ai.Energy > BASE_ENERGY) {
+                    // Decay high energy back to baseline
+                    ai.Energy -= ENERGY_DECAY_RATE * delta;
+                    if (ai.Energy < BASE_ENERGY) {
+                        ai.Energy = BASE_ENERGY;
+                    }
+                } else if (ai.Energy < BASE_ENERGY) {
+                    // Restore low energy (from healing) back to baseline
+                    ai.Energy += ENERGY_DECAY_RATE * delta;
+                    if (ai.Energy > BASE_ENERGY) {
+                        ai.Energy = BASE_ENERGY;
+                    }
+                }
             }
 
             // Energy multiplier is now applied in sys_control_ai for movement and sys_control_weapon for shooting
-            if (ai.Energy === 0) {
-                console.log(`[PLAYER_ENERGY] No energy - fighter stopped and can't shoot`);
-            } else if (ai.Energy < 0.5) {
+            if (is_holding && health.Current < health.Max) {
                 console.log(
-                    `[PLAYER_ENERGY] Low energy - fighter slowing and shooting slower (${ai.Energy.toFixed(2)}x speed)`,
+                    `[PLAYER_ENERGY] Healing mode - fighter slowing due to healing (${ai.Energy.toFixed(2)}x speed)`,
+                );
+            } else if (ai.Energy < BASE_ENERGY + 0.5) {
+                console.log(
+                    `[PLAYER_ENERGY] Normal energy - fighter at base speed (${ai.Energy.toFixed(2)}x speed)`,
+                );
+            } else {
+                console.log(
+                    `[PLAYER_ENERGY] High energy - fighter moving faster (${ai.Energy.toFixed(2)}x speed)`,
                 );
             }
         }
