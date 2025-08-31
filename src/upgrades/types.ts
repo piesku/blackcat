@@ -107,10 +107,10 @@ export const ARMOR_UPGRADES: UpgradeType[] = [
         description: "Reflects 1 damage back to attackers",
     },
     {
-        id: "bonus_hp",
+        id: "vitality_boost",
         category: UpgradeCategory.Armor,
-        name: "+2 HP",
-        description: "Increases maximum health by 2 points",
+        name: "Vitality Boost",
+        description: "Increases maximum health by 50%",
     },
     {
         id: "damage_reduction",

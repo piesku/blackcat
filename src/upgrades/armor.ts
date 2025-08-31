@@ -30,18 +30,23 @@ export function apply_spiked_vest(game: Game, entity: number, reflect_amount: nu
     );
 }
 
-export function apply_bonus_hp(game: Game, entity: number, bonus_hp: number = 2) {
+export function apply_vitality_boost(game: Game, entity: number) {
     if (!(game.World.Signature[entity] & Has.Health)) {
-        console.warn(`[ARMOR] Cannot apply HP bonus to entity ${entity} - no Health component`);
+        console.warn(
+            `[ARMOR] Cannot apply Vitality Boost to entity ${entity} - no Health component`,
+        );
         return;
     }
 
     let health = game.World.Health[entity];
+
+    // Increase max health by 50% (rounded up)
+    let bonus_hp = Math.ceil(health.Max * 0.5);
     health.Max += bonus_hp;
     health.Current += bonus_hp; // Also heal by the bonus amount
 
     console.log(
-        `[UPGRADE] Applied +${bonus_hp} HP to entity ${entity} - Max HP now ${health.Max}, Current HP now ${health.Current}`,
+        `[UPGRADE] Applied Vitality Boost (+${bonus_hp} HP) to entity ${entity} - Max HP now ${health.Max}, Current HP now ${health.Current}`,
     );
 }
 

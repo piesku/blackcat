@@ -22,14 +22,14 @@ const skin_colors: Vec4[] = [
     [0.26, 0.19, 0.15, 1],
 ];
 
-export function blueprint_eyes(game: Game, color: Vec4 = [0, 0, 0, 1]) {
+export function blueprint_eyes(_game: Game, color: Vec4 = [0, 0, 0, 1]) {
     return [spatial_node2d(), local_transform2d(undefined, 0, [1, 1]), render2d(Tile.Eyes, color)];
 }
 
 export function blueprint_fighter(game: Game, is_player: boolean) {
-    // Calculate health based on arena level: base 2 + 2 per arena level
-    let baseHealth = 2;
-    let arenaLevelBonus = (game.State.currentLevel - 1) * 2; // Level 1 = base health, Level 2 = +2, etc.
+    // Calculate health based on arena level: base 10 + 10 per duel completed
+    let baseHealth = 10;
+    let arenaLevelBonus = (game.State.currentLevel - 1) * 10; // Level 1 = base health, Level 2 = +10, etc.
     let totalHealth = baseHealth + arenaLevelBonus;
 
     return [

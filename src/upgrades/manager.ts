@@ -15,7 +15,7 @@ import {attach_to_parent} from "../components/com_children.js";
 import {spawn_timed} from "../components/com_spawn.js";
 import {Game} from "../game.js";
 import {
-    apply_bonus_hp,
+    apply_vitality_boost,
     apply_damage_reduction,
     apply_scrap_armor,
     apply_spiked_vest,
@@ -129,8 +129,8 @@ function apply_armor_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
             apply_spiked_vest(game, entity, 1);
             break;
 
-        case "bonus_hp":
-            apply_bonus_hp(game, entity, 2);
+        case "vitality_boost":
+            apply_vitality_boost(game, entity);
             break;
 
         case "damage_reduction":
