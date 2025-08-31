@@ -5,11 +5,13 @@ import {vec2_length} from "../../lib/vec2.js";
 import {blueprint_camera} from "../blueprints/blu_camera.js";
 import {blueprint_fighter} from "../blueprints/blu_fighter.js";
 import {blueprint_terrain_block} from "../blueprints/blu_terrain_block.js";
+import {blueprint_heal_particle} from "../blueprints/particles/blu_heal_particle.js";
 import {control_player} from "../components/com_control_player.js";
 import {draw_arc} from "../components/com_draw.js";
 import {label} from "../components/com_label.js";
 import {local_transform2d, set_position} from "../components/com_local_transform2d.js";
 import {spatial_node2d} from "../components/com_spatial_node2d.js";
+import {spawn_count} from "../components/com_spawn.js";
 import {Game, WORLD_CAPACITY} from "../game.js";
 import {
     ARENA_CENTER_X,
@@ -85,6 +87,15 @@ export function scene_arena(game: Game) {
         ...blueprint_fighter(game, true),
         set_position(ARENA_CENTER_X - 4, ARENA_CENTER_Y),
         control_player(),
+        spawn_count(
+            () => blueprint_heal_particle(),
+            0.1, // Interval between spawns (fast for smooth effect)
+            [0, 1],
+            Math.PI / 3, // Spread angle for particles
+            1.0, // Min speed
+            2.5, // Max speed
+            0, // Start inactive (healing system will activate)
+        ),
     ]);
 
     // Opponent fighter (right side)

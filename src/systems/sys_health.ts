@@ -11,7 +11,7 @@ export function sys_health(game: Game, _delta: number) {
         if ((game.World.Signature[entity] & QUERY) === QUERY) {
             let health = game.World.Health[entity];
 
-            if (!health.IsAlive || health.PendingDamage.length === 0) {
+            if (!health.IsAlive) {
                 continue;
             }
 

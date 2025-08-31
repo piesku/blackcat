@@ -1,3 +1,4 @@
+import {SpawnMode} from "../components/com_spawn.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
@@ -6,7 +7,7 @@ const QUERY = Has.ControlPlayer | Has.ControlAi | Has.LocalTransform2D | Has.Mov
 const BASE_ENERGY_PER_TAP = 0.3; // Base energy gain per tap
 const DIMINISH_FACTOR = 0.5; // How much energy reduces tap effectiveness
 const ENERGY_DECAY_RATE = 1.0; // Constant energy decay per second
-const HEALING_RATE = 0.5; // HP per second when energy is 0
+const HEALING_RATE = 1; // HP per second when energy is 0
 
 export function sys_control_player(game: Game, delta: number) {
     // Check for tap/click (transition from up to down)
@@ -51,6 +52,15 @@ export function sys_control_player(game: Game, delta: number) {
                     console.log(
                         `[PLAYER_HEAL] No energy - healing ${(health.Current - health_before).toFixed(2)} HP (${health_before.toFixed(1)} -> ${health.Current.toFixed(1)})`,
                     );
+
+                    // Activate healing particle effects
+                    if (game.World.Signature[entity] & Has.Spawn) {
+                        let spawn = game.World.Spawn[entity];
+                        if (spawn.Mode === SpawnMode.Count) {
+                            // Add particles for healing effect (2-4 particles per healing tick)
+                            spawn.RemainingCount += Math.floor(2 + Math.random() * 3);
+                        }
+                    }
                 }
             }
 
