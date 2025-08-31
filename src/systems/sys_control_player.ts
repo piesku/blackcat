@@ -11,7 +11,7 @@ export function sys_control_player(game: Game, delta: number) {
     // Check for tap/click (transition from up to down)
     let just_tapped = game.InputDelta.Mouse0 === 1 || game.InputDelta.Touch0 === 1;
 
-    // Find the player entity and manage movement energy
+    // Find the player entity and manage unified energy
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
         if ((game.World.Signature[entity] & QUERY) === QUERY) {
             let ai = game.World.ControlAi[entity];
@@ -21,26 +21,26 @@ export function sys_control_player(game: Game, delta: number) {
             // Add energy on tap/click with diminishing returns
             if (just_tapped) {
                 // Less energy per tap when you already have more energy
-                let energy_multiplier = 1.0 / (1.0 + ai.MovementEnergy * DIMINISH_FACTOR);
+                let energy_multiplier = 1.0 / (1.0 + ai.Energy * DIMINISH_FACTOR);
                 let energy_gain = BASE_ENERGY_PER_TAP * energy_multiplier;
-                ai.MovementEnergy += energy_gain;
+                ai.Energy += energy_gain;
                 console.log(
-                    `[PLAYER_INPUT] Tap! +${energy_gain.toFixed(2)} energy (${energy_multiplier.toFixed(2)}x multiplier). Total: ${ai.MovementEnergy.toFixed(1)}s`,
+                    `[PLAYER_INPUT] Tap! +${energy_gain.toFixed(2)} energy (${energy_multiplier.toFixed(2)}x multiplier). Total: ${ai.Energy.toFixed(1)}s`,
                 );
             }
 
             // Constant decay over time
-            ai.MovementEnergy -= ENERGY_DECAY_RATE * delta;
-            if (ai.MovementEnergy < 0) {
-                ai.MovementEnergy = 0;
+            ai.Energy -= ENERGY_DECAY_RATE * delta;
+            if (ai.Energy < 0) {
+                ai.Energy = 0;
             }
 
-            // Energy multiplier is now applied in sys_control_ai to the movement direction
-            if (ai.MovementEnergy === 0) {
-                console.log(`[PLAYER_ENERGY] No energy - fighter stopped`);
-            } else if (ai.MovementEnergy < 0.5) {
+            // Energy multiplier is now applied in sys_control_ai for movement and sys_control_weapon for shooting
+            if (ai.Energy === 0) {
+                console.log(`[PLAYER_ENERGY] No energy - fighter stopped and can't shoot`);
+            } else if (ai.Energy < 0.5) {
                 console.log(
-                    `[PLAYER_ENERGY] Low energy - fighter slowing (${ai.MovementEnergy.toFixed(2)}x speed)`,
+                    `[PLAYER_ENERGY] Low energy - fighter slowing and shooting slower (${ai.Energy.toFixed(2)}x speed)`,
                 );
             }
         }

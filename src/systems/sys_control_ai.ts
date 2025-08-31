@@ -154,14 +154,15 @@ export function sys_control_ai(game: Game, delta: number) {
                 let transform = game.World.LocalTransform2D[entity];
                 let flip_multiplier = transform && transform.Scale[0] < 0 ? -1 : 1;
 
-                // For player entities, apply energy multiplier to movement direction
-                let energy_multiplier = 1.0;
+                move.Direction[0] = movement[0] * flip_multiplier;
+                move.Direction[1] = movement[1];
+
                 if (ai.IsPlayer) {
-                    energy_multiplier = ai.MovementEnergy;
+                    // Player speed scales with energy
+                    move.Direction[0] *= ai.Energy;
+                    move.Direction[1] *= ai.Energy;
                 }
 
-                move.Direction[0] = movement[0] * flip_multiplier * energy_multiplier;
-                move.Direction[1] = movement[1] * energy_multiplier;
                 // Mark entity as dirty since we modified its movement
                 game.World.Signature[entity] |= Has.Dirty;
             }

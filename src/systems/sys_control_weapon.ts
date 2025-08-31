@@ -7,10 +7,10 @@ import {blueprint_boomerang_outward} from "../blueprints/projectiles/blu_boomera
 import {blueprint_mortar_shell} from "../blueprints/projectiles/blu_mortar_shell.js";
 import {query_down} from "../components/com_children.js";
 import {AiState} from "../components/com_control_ai.js";
-import {label, get_root_spawner} from "../components/com_label.js";
-import {spawned_by} from "../components/com_spawned_by.js";
+import {get_root_spawner, label} from "../components/com_label.js";
 import {copy_position} from "../components/com_local_transform2d.js";
 import {SpawnMode} from "../components/com_spawn.js";
+import {spawned_by} from "../components/com_spawned_by.js";
 import {Weapon} from "../components/com_weapon.js";
 import {Game} from "../game.js";
 import {getAIStateName} from "../ui/ai_state.js";
@@ -24,10 +24,8 @@ export function sys_control_weapon(game: Game, delta: number) {
             let weapon = game.World.Weapon[entity];
             DEBUG: if (!weapon) throw new Error("missing component");
 
-            // Update cooldowns
-            if (weapon.LastAttackTime > 0) {
-                weapon.LastAttackTime = Math.max(0, weapon.LastAttackTime - delta);
-            }
+            // Update cooldowns (can go negative for energy scaling)
+            weapon.TimeToNext -= delta;
 
             // Find the wielder (parent entity)
             let spatial_node = game.World.SpatialNode2D[entity];
@@ -47,20 +45,23 @@ function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapo
     let aim = game.World.Aim[parent_entity];
     DEBUG: if (!ai || !aim) throw new Error("missing component");
 
-    // All weapons (including player weapons) now auto-fire based on AI state
-    // Player and AI weapons use the same activation logic
+    // Check basic firing conditions
+    // Scale cooldown comparison based on energy for all entities
+    let cooldown_threshold = weapon.Cooldown - weapon.Cooldown / ai.Energy;
+
     let should_activate =
         (ai.State === AiState.Circling ||
             ai.State === AiState.Pursuing ||
             ai.State === AiState.Dashing) &&
-        weapon.LastAttackTime <= 0 &&
+        weapon.TimeToNext <= cooldown_threshold &&
         aim.TargetEntity !== -1 &&
         aim.DistanceToTarget <= weapon.Range;
 
     if (should_activate) {
         let entityType = ai.IsPlayer ? "PLAYER" : "AI";
+        let energyInfo = ai.IsPlayer ? `, Energy: ${ai.Energy.toFixed(2)}` : "";
         console.log(
-            `[${entityType}_WEAPON] Entity ${parent_entity} activating weapon (AI State: ${getAIStateName(ai.State)}, Target: ${aim.TargetEntity}, Distance: ${aim.DistanceToTarget.toFixed(2)})`,
+            `[${entityType}_WEAPON] Entity ${parent_entity} activating weapon (AI State: ${getAIStateName(ai.State)}, Target: ${aim.TargetEntity}, Distance: ${aim.DistanceToTarget.toFixed(2)}${energyInfo})`,
         );
     }
 
@@ -79,7 +80,7 @@ function activate_weapon(game: Game, wielder_entity: number, weapon_entity: numb
     let weapon = game.World.Weapon[weapon_entity];
 
     // Set weapon on cooldown
-    weapon.LastAttackTime = weapon.Cooldown;
+    weapon.TimeToNext = weapon.Cooldown;
 
     // Apply weapon-specific effects based on weapon name
     let weapon_name = get_weapon_name(game, weapon_entity);

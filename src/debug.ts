@@ -560,7 +560,7 @@ export class SceneGraphInspector {
                 <strong>Weapon</strong><br>
                 Range: ${w.Range}<br>
                 Cooldown: ${w.Cooldown.toFixed(2)}<br>
-                Last Attack: ${w.LastAttackTime.toFixed(2)}
+                Time To Next: ${w.TimeToNext.toFixed(2)}
             </div>`;
         }
 

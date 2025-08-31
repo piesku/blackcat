@@ -84,9 +84,9 @@ export function getPlayerWeaponCooldowns(game: Game): WeaponCooldownInfo[] {
 
                 weaponCooldowns.push({
                     name: weaponName,
-                    cooldownRemaining: Math.max(0, weapon.LastAttackTime),
+                    cooldownRemaining: Math.max(0, weapon.TimeToNext),
                     totalCooldown: weapon.Cooldown,
-                    isReady: weapon.LastAttackTime <= 0,
+                    isReady: weapon.TimeToNext <= 0,
                 });
             }
 
@@ -97,14 +97,14 @@ export function getPlayerWeaponCooldowns(game: Game): WeaponCooldownInfo[] {
     return weaponCooldowns;
 }
 
-export function getPlayerMovementEnergy(game: Game): number {
-    // Find the player entity and return their movement energy
+export function getPlayerEnergy(game: Game): number {
+    // Find the player entity and return their unified energy
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
         if (game.World.Signature[entity] & Has.ControlPlayer) {
             let ai = game.World.ControlAi[entity];
             if (!ai) continue;
 
-            return ai.MovementEnergy || 0;
+            return ai.Energy || 0;
         }
     }
     return 0;

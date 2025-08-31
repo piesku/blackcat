@@ -1,8 +1,7 @@
 import {html} from "../../lib/html.js";
 import {Game} from "../game.js";
 import {UpgradeType} from "../upgrades/types.js";
-import {getFighterStats, getPlayerMovementEnergy} from "./entity_queries.js";
-import {dispatch, Action} from "../actions.js";
+import {getFighterStats, getPlayerEnergy} from "./entity_queries.js";
 
 export function ArenaView(game: Game): string {
     // Get upgrades from game state
@@ -12,8 +11,8 @@ export function ArenaView(game: Game): string {
     // Get fighter stats
     let {playerHP, opponentHP, playerAIState, opponentAIState} = getFighterStats(game);
 
-    // Get player movement energy
-    let playerEnergy = getPlayerMovementEnergy(game);
+    // Get player unified energy
+    let playerEnergy = getPlayerEnergy(game);
     let maxEnergy = 1.0; // Should match MAX_ENERGY from sys_control_player
     let energyPercent = Math.round((playerEnergy / maxEnergy) * 100);
 
@@ -48,13 +47,13 @@ export function ArenaView(game: Game): string {
                         CONTROLS:
                     </div>
                     <div style="color: #AAA; font-size: clamp(7px, 1.8vw, 9px);">
-                        Tap anywhere to energize movement
+                        Tap anywhere to energize movement & shooting
                     </div>
                     <div style="color: #AAA; font-size: clamp(7px, 1.8vw, 9px);">
-                        AI controls direction & shooting
+                        AI controls direction
                     </div>
 
-                    <!-- Movement energy meter -->
+                    <!-- Unified energy meter -->
                     <div style="margin-top: 5px;">
                         <div
                             style="color: #FFD700; font-size: clamp(6px, 1.5vw, 8px); margin-bottom: 2px;"

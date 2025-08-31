@@ -19,8 +19,8 @@ export interface ControlAi {
     SeparationForce: [number, number]; // Collision avoidance force
     HasRetreatedAtLowHealth: boolean; // Prevents repeated retreating at same health level
 
-    // Player movement control
-    MovementEnergy: number; // For player entities: movement energy that decays over time (seconds)
+    // Player energy control
+    Energy: number; // For player entities: unified energy affecting movement speed, weapon cooldowns, and rate of fire (seconds)
 }
 
 export const enum AiState {
@@ -66,7 +66,7 @@ export function control_ai(is_player: boolean = false) {
             CircleDirection: circle_direction,
             AttackCooldown: attack_delay,
             IsPlayer: is_player,
-            MovementEnergy: is_player ? 0 : float(0.7, 1.1),
+            Energy: is_player ? 0 : float(0.7, 1.1),
 
             // Personality traits
             Aggressiveness: aggressiveness,

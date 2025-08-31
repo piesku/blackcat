@@ -4,7 +4,7 @@ import {Has} from "../world.js";
 export interface Weapon {
     Range: number;
     Cooldown: number;
-    LastAttackTime: number;
+    TimeToNext: number; // Countdown timer until next attack is allowed
     TotalAmount: number; // For Count mode: total bullets, For Timed mode: total duration
 }
 
@@ -19,7 +19,7 @@ export function weapon_ranged(
         game.World.Weapon[entity] = {
             Range: range,
             Cooldown: cooldown,
-            LastAttackTime: initialTimeout,
+            TimeToNext: initialTimeout,
             TotalAmount: totalAmount,
         };
     };
