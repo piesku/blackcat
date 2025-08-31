@@ -99,8 +99,8 @@ export class Game extends Game3D {
 
         // AI.
         sys_aim(this, delta);
-        sys_control_ai(this, delta);
         sys_control_player(this, delta);
+        sys_control_ai(this, delta);
         sys_control_always2d(this, delta);
         sys_control_weapon(this, delta);
 

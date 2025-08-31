@@ -5,6 +5,7 @@ import {vec2_length} from "../../lib/vec2.js";
 import {blueprint_camera} from "../blueprints/blu_camera.js";
 import {blueprint_fighter} from "../blueprints/blu_fighter.js";
 import {blueprint_terrain_block} from "../blueprints/blu_terrain_block.js";
+import {control_player} from "../components/com_control_player.js";
 import {draw_arc} from "../components/com_draw.js";
 import {label} from "../components/com_label.js";
 import {local_transform2d, set_position} from "../components/com_local_transform2d.js";
@@ -83,6 +84,7 @@ export function scene_arena(game: Game) {
         label("Player"),
         ...blueprint_fighter(game, true),
         set_position(ARENA_CENTER_X - 4, ARENA_CENTER_Y),
+        control_player(),
     ]);
 
     // Opponent fighter (right side)

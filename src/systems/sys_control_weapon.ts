@@ -47,21 +47,8 @@ function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapo
     let aim = game.World.Aim[parent_entity];
     DEBUG: if (!ai || !aim) throw new Error("missing component");
 
-    // Player weapons fire when marked by sys_control_player
-    if (ai.IsPlayer) {
-        if (weapon.PlayerWantsToFire) {
-            console.log(
-                `[PLAYER_WEAPON] Activating marked player weapon for entity ${parent_entity}`,
-            );
-            // Reset the flag so it doesn't fire again next frame
-            weapon.PlayerWantsToFire = false;
-            return true;
-        }
-        return false;
-    }
-
-    // AI weapons activate in Circling, Pursuing, and Dashing states
-    // AND must have a valid target from the Aim component within range
+    // All weapons (including player weapons) now auto-fire based on AI state
+    // Player and AI weapons use the same activation logic
     let should_activate =
         (ai.State === AiState.Circling ||
             ai.State === AiState.Pursuing ||
@@ -71,8 +58,9 @@ function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapo
         aim.DistanceToTarget <= weapon.Range;
 
     if (should_activate) {
+        let entityType = ai.IsPlayer ? "PLAYER" : "AI";
         console.log(
-            `[AI_WEAPON] Entity ${parent_entity} activating weapon (AI State: ${getAIStateName(ai.State)}, Target: ${aim.TargetEntity}, Distance: ${aim.DistanceToTarget.toFixed(2)})`,
+            `[${entityType}_WEAPON] Entity ${parent_entity} activating weapon (AI State: ${getAIStateName(ai.State)}, Target: ${aim.TargetEntity}, Distance: ${aim.DistanceToTarget.toFixed(2)})`,
         );
     }
 

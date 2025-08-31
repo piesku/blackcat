@@ -6,7 +6,6 @@ export interface Weapon {
     Cooldown: number;
     LastAttackTime: number;
     TotalAmount: number; // For Count mode: total bullets, For Timed mode: total duration
-    PlayerWantsToFire: boolean; // Set by sys_control_player, consumed by sys_control_weapon
 }
 
 export function weapon_ranged(
@@ -22,7 +21,6 @@ export function weapon_ranged(
             Cooldown: cooldown,
             LastAttackTime: initialTimeout,
             TotalAmount: totalAmount,
-            PlayerWantsToFire: false,
         };
     };
 }

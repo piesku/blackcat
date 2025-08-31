@@ -1,53 +1,45 @@
-import {query_down} from "../components/com_children.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
-const QUERY = Has.ControlAi | Has.Aim;
+const QUERY = Has.ControlPlayer | Has.ControlAi | Has.LocalTransform2D | Has.Move2D;
+
+const ENERGY_PER_TAP = 0.3; // Seconds of movement per tap
+const MAX_ENERGY = 1.0; // Maximum stored energy
 
 export function sys_control_player(game: Game, delta: number) {
-    // Check for mouse click or touch input
-    let should_shoot = game.InputDelta.Mouse0 === 1 || game.InputDelta.Touch0 === 1;
+    // Check for tap/click (transition from up to down)
+    let just_tapped = game.InputDelta.Mouse0 === 1 || game.InputDelta.Touch0 === 1;
 
-    if (!should_shoot) {
-        return;
-    }
-
-    // Find the player entity
+    // Find the player entity and manage movement energy
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
         if ((game.World.Signature[entity] & QUERY) === QUERY) {
             let ai = game.World.ControlAi[entity];
-            let aim = game.World.Aim[entity];
-            DEBUG: if (!ai || !aim) throw new Error("missing component");
+            let move = game.World.Move2D[entity];
+            DEBUG: if (!ai || !move) throw new Error("missing component");
 
-            // Only process player entities
-            if (!ai.IsPlayer) {
-                continue;
-            }
-
-            // Must have a valid target to shoot at
-            if (aim.TargetEntity === -1) {
-                console.log(`[PLAYER_INPUT] No target for player entity ${entity}`);
-                continue;
-            }
-
-            // Find all weapons attached to this player and mark the first ready one for firing
-            let weapon_marked = false;
-            for (let weapon_entity of query_down(game.World, entity, Has.Weapon)) {
-                let weapon = game.World.Weapon[weapon_entity];
-                DEBUG: if (!weapon) throw new Error("missing weapon component");
-
-                // Check if weapon is ready (off cooldown) and in range
-                if (weapon.LastAttackTime <= 0 && aim.DistanceToTarget <= weapon.Range) {
-                    // Mark this weapon for firing - sys_control_weapon will handle the actual firing
-                    weapon.PlayerWantsToFire = true;
-                    weapon_marked = true;
-                    console.log(`[PLAYER_INPUT] Marked weapon ${weapon_entity} for firing`);
-                    break; // Only mark one weapon per click
+            // Add energy on tap/click
+            if (just_tapped) {
+                ai.MovementEnergy += ENERGY_PER_TAP;
+                if (ai.MovementEnergy > MAX_ENERGY) {
+                    ai.MovementEnergy = MAX_ENERGY;
                 }
+
+                console.log(`[PLAYER_INPUT] Tap! Energy: ${ai.MovementEnergy.toFixed(1)}s`);
             }
 
-            if (!weapon_marked) {
-                console.log(`[PLAYER_INPUT] No ready weapons for player entity ${entity}`);
+            // Decay energy over time
+            ai.MovementEnergy -= delta;
+            if (ai.MovementEnergy < 0) {
+                ai.MovementEnergy = 0;
+            }
+
+            // Energy multiplier is now applied in sys_control_ai to the movement direction
+            if (ai.MovementEnergy === 0) {
+                console.log(`[PLAYER_ENERGY] No energy - fighter stopped`);
+            } else if (ai.MovementEnergy < 0.5) {
+                console.log(
+                    `[PLAYER_ENERGY] Low energy - fighter slowing (${ai.MovementEnergy.toFixed(2)}x speed)`,
+                );
             }
         }
     }

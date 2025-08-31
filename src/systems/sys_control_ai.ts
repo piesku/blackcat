@@ -35,6 +35,9 @@ export function sys_control_ai(game: Game, delta: number) {
 
             if (!health.IsAlive || !move || !aim) continue;
 
+            // Player entities use the same AI movement logic as opponents
+            // Their speed is controlled by the energy system in sys_control_player
+
             // Calculate speed scaling factor for distance thresholds
             let speed_scale = move.MoveSpeed / BASE_MOVE_SPEED;
             let scaled_distances = {
@@ -151,8 +154,14 @@ export function sys_control_ai(game: Game, delta: number) {
                 let transform = game.World.LocalTransform2D[entity];
                 let flip_multiplier = transform && transform.Scale[0] < 0 ? -1 : 1;
 
-                move.Direction[0] = movement[0] * flip_multiplier;
-                move.Direction[1] = movement[1];
+                // For player entities, apply energy multiplier to movement direction
+                let energy_multiplier = 1.0;
+                if (ai.IsPlayer && ai.MovementEnergy !== undefined) {
+                    energy_multiplier = Math.min(1.0, ai.MovementEnergy);
+                }
+
+                move.Direction[0] = movement[0] * flip_multiplier * energy_multiplier;
+                move.Direction[1] = movement[1] * energy_multiplier;
                 // Mark entity as dirty since we modified its movement
                 game.World.Signature[entity] |= Has.Dirty;
             }

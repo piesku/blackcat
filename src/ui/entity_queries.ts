@@ -40,8 +40,8 @@ export function getFighterStats(game: Game): FighterStats {
             // Get AI state info
             let aiStateInfo = getAIStateName(ai.State);
 
-            // Use IsPlayer property to distinguish
-            if (ai.IsPlayer) {
+            // Use ControlPlayer component to distinguish
+            if (game.World.Signature[entity] & Has.ControlPlayer) {
                 playerHP = healthInfo;
                 playerAIState = aiStateInfo;
             } else {
@@ -64,9 +64,9 @@ export function getPlayerWeaponCooldowns(game: Game): WeaponCooldownInfo[] {
 
     // Find the player entity
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
-        if (game.World.Signature[entity] & Has.ControlAi) {
+        if (game.World.Signature[entity] & Has.ControlPlayer) {
             let ai = game.World.ControlAi[entity];
-            if (!ai || !ai.IsPlayer) continue;
+            if (!ai) continue;
 
             // Find all weapons attached to this player
             for (let weapon_entity of query_down(game.World, entity, Has.Weapon)) {
@@ -95,4 +95,17 @@ export function getPlayerWeaponCooldowns(game: Game): WeaponCooldownInfo[] {
     }
 
     return weaponCooldowns;
+}
+
+export function getPlayerMovementEnergy(game: Game): number {
+    // Find the player entity and return their movement energy
+    for (let entity = 0; entity < game.World.Signature.length; entity++) {
+        if (game.World.Signature[entity] & Has.ControlPlayer) {
+            let ai = game.World.ControlAi[entity];
+            if (!ai) continue;
+
+            return ai.MovementEnergy || 0;
+        }
+    }
+    return 0;
 }
