@@ -4,7 +4,7 @@ import {label} from "../../components/com_label.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
 import {render2d} from "../../components/com_render2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
-import {spawn_timed} from "../../components/com_spawn.js";
+import {spawn_count} from "../../components/com_spawn.js";
 import {weapon_ranged} from "../../components/com_weapon.js";
 import {blueprint_shell_casing} from "../particles/blu_shell_casing.js";
 import {blueprint_bullet} from "../projectiles/blu_bullet.js";
@@ -19,13 +19,13 @@ export function blueprint_minigun() {
             6, // range: medium range
             1.8, // cooldown: fast rate of fire for bursts
             0.2, // initial timeout
-            0.8, // totalAmount: 0.8 second burst duration
+            10, // totalAmount: 10 bullets
         ),
 
-        // Spawner for rapid bullet spray - uses timed spawner for continuous fire
-        spawn_timed(
+        // Spawner for rapid bullet spray - uses count spawner for controlled bursts
+        spawn_count(
             () => blueprint_bullet(1.2),
-            1 / 10,
+            1 / 5, // interval: 5 bullets per second
             null, // direction: Will be set by weapon system
             0.15, // spread: Moderate spread for spray effect
             7.0, // speedMin
@@ -36,9 +36,9 @@ export function blueprint_minigun() {
         children([
             spatial_node2d(),
             local_transform2d([0, 0], 0, [1, 1]), // Same position as parent weapon
-            spawn_timed(
+            spawn_count(
                 () => blueprint_shell_casing(),
-                1 / 10,
+                1 / 5, // interval: match bullet spawn rate
                 [-0.5, 0.3], // direction: eject backwards and slightly up
                 0.3, // spread: casings scatter randomly
                 1.0, // speedMin: casings eject with moderate force
