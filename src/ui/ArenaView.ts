@@ -13,7 +13,7 @@ export function ArenaView(game: Game): string {
 
     // Get player unified energy and healing status
     let playerEnergy = getPlayerEnergy(game);
-    let maxEnergy = 1.0; // Should match MAX_ENERGY from sys_control_player
+    let maxEnergy = 10;
     let energyPercent = Math.round((playerEnergy / maxEnergy) * 100);
 
     let healingStatus = getPlayerHealingStatus(game);
@@ -75,26 +75,15 @@ export function ArenaView(game: Game): string {
                                 style="
                                 width: ${energyPercent}%;
                                 height: 100%;
-                                background: ${playerEnergy > 0.6
-                                    ? "#4CAF50"
-                                    : playerEnergy > 0.3
+                                background: ${playerEnergy > maxEnergy * 0.8
+                                    ? "#F44336"
+                                    : playerEnergy > maxEnergy * 0.6
                                       ? "#FFC107"
-                                      : "#F44336"};
+                                      : "#4CAF50"};
                                 transition: width 0.1s ease, background-color 0.3s ease;
                             "
                             ></div>
                         </div>
-
-                        <!-- Healing status indicator -->
-                        ${healingStatus.isHealing
-                            ? `<div style="margin-top: 3px; color: #4CAF50; font-size: clamp(6px, 1.5vw, 8px);">
-                                 ⚕️ HEALING +0.5/s (No energy)
-                               </div>`
-                            : healingStatus.energy === 0
-                              ? `<div style="margin-top: 3px; color: #FFC107; font-size: clamp(6px, 1.5vw, 8px);">
-                                     ⚕️ Ready to heal (Full health)
-                                 </div>`
-                              : ""}
                     </div>
                 </div>
             </div>
