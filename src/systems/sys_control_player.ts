@@ -20,6 +20,21 @@ export function sys_control_player(game: Game, delta: number) {
     // Check if holding mouse/touch (currently pressed)
     let is_holding = game.InputState.Mouse0 === 1 || game.InputState.Touch0 === 1;
 
+    // Update module-level hold timer (once per frame, outside entity loop)
+    let was_quick_tap = false;
+
+    if (is_holding) {
+        hold_timer += delta;
+    } else {
+        // Handle tap if just released and was below hold threshold
+        if (game.InputDelta.Mouse0 === -1 || game.InputDelta.Touch0 === -1) {
+            if (hold_timer > 0 && hold_timer < HOLD_THRESHOLD) {
+                was_quick_tap = true;
+            }
+        }
+        hold_timer = 0;
+    }
+
     // Find the player entity and manage unified energy
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
         if ((game.World.Signature[entity] & QUERY) === QUERY) {
@@ -28,23 +43,15 @@ export function sys_control_player(game: Game, delta: number) {
             let health = game.World.Health[entity];
             DEBUG: if (!ai || !move || !health) throw new Error("missing component");
 
-            // Update module-level hold timer
-            if (is_holding) {
-                hold_timer += delta;
-            } else {
-                // Handle tap if just released and was below hold threshold
-                if (game.InputDelta.Mouse0 === -1 || game.InputDelta.Touch0 === -1) {
-                    if (hold_timer > 0 && hold_timer < HOLD_THRESHOLD) {
-                        // This was a quick tap/click - add energy with diminishing returns
-                        let energy_multiplier = 1.0 / (1.0 + ai.Energy * DIMINISH_FACTOR);
-                        let energy_gain = BASE_ENERGY_PER_TAP * energy_multiplier;
-                        ai.Energy += energy_gain;
-                        console.log(
-                            `[PLAYER_INPUT] Click/Tap! +${energy_gain.toFixed(2)} energy (${energy_multiplier.toFixed(2)}x multiplier). Total: ${ai.Energy.toFixed(1)}s`,
-                        );
-                    }
-                }
-                hold_timer = 0;
+            // Handle tap energy gain (only for player entities)
+            if (was_quick_tap && ai.IsPlayer) {
+                // This was a quick tap/click - add energy with diminishing returns
+                let energy_multiplier = 1.0 / (1.0 + ai.Energy * DIMINISH_FACTOR);
+                let energy_gain = BASE_ENERGY_PER_TAP * energy_multiplier;
+                ai.Energy += energy_gain;
+                console.log(
+                    `[PLAYER_INPUT] Click/Tap! +${energy_gain.toFixed(2)} energy (${energy_multiplier.toFixed(2)}x multiplier). Total: ${ai.Energy.toFixed(1)}s`,
+                );
             }
 
             // Handle energy and healing based on hold state
