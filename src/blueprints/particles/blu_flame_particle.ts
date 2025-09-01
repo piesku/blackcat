@@ -18,10 +18,10 @@ export function blueprint_flame_particle(damage: number) {
         render2d(Tile.Body), // Flame sprite
 
         // Physics integration via RigidBody2D (replaces move2d)
-        rigid_body2d(RigidKind.Dynamic, 0, 0.9, [0, 1.0]), // Custom gravity: gentle upward drift (flames rise)
+        rigid_body2d(RigidKind.Dynamic, 0, 0.8, [0, 1.0]), // Custom gravity: gentle upward drift (flames rise)
 
         // Flame particle physics and behavior
-        particle(ParticleType.Flame, 0.3, [0.5, 0.5], 0.4), // spread, finalScale, fadeOut
+        particle(ParticleType.Flame, 0.3, [0.5, 0.5], 6), // spread, finalScale, fadeOut
 
         // Collision and damage - particles collide with fighters and terrain but not each other
         collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.1),
