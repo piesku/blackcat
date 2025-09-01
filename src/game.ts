@@ -33,6 +33,7 @@ import {sys_poll} from "./systems/sys_poll.js";
 import {sys_render2d} from "./systems/sys_render2d.js";
 import {sys_render2d_animate} from "./systems/sys_render2d_animate.js";
 import {sys_resize2d} from "./systems/sys_resize2d.js";
+import {sys_reticle} from "./systems/sys_reticle.js";
 import {sys_shake2d} from "./systems/sys_shake2d.js";
 import {sys_spawn2d} from "./systems/sys_spawn2d.js";
 import {sys_toggle} from "./systems/sys_toggle.js";
@@ -99,6 +100,7 @@ export class Game extends Game3D {
 
         // AI.
         sys_aim(this, delta);
+        sys_reticle(this); // Update reticle positions after aiming
         sys_control_player(this, delta);
         sys_control_ai(this, delta);
         sys_control_always2d(this, delta);

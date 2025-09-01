@@ -2,10 +2,11 @@ import {Vec4} from "../../lib/math.js";
 import {element} from "../../lib/random.js";
 import {Tile} from "../../sprites/spritesheet.js";
 import {blueprint_healthbar} from "../blueprints/blu_healthbar.js";
-import {control_ai} from "../components/com_control_ai.js";
+import {blueprint_reticle} from "../blueprints/blu_reticle.js";
 import {aim} from "../components/com_aim.js";
 import {children} from "../components/com_children.js";
 import {collide2d} from "../components/com_collide2d.js";
+import {control_ai} from "../components/com_control_ai.js";
 import {DamageType, deal_damage} from "../components/com_deal_damage.js";
 import {health} from "../components/com_health.js";
 import {local_transform2d} from "../components/com_local_transform2d.js";
@@ -53,6 +54,7 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
         children(
             blueprint_body(game, element(skin_colors)), // Body sprite as child (includes eyes)
             blueprint_healthbar(),
+            blueprint_reticle(),
             // Weapons will be added by apply_upgrades
         ),
 

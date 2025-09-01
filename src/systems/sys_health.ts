@@ -110,11 +110,17 @@ function calculate_armor_reduction(health: Health, incoming_damage: number): num
 function update_healthbar(game: Game, entity: number) {
     let health = game.World.Health[entity];
 
-    for (let healthbar_entity of query_down(game.World, entity, Has.Draw)) {
+    for (let healthbar_entity of query_down(
+        game.World,
+        entity,
+        Has.LocalTransform2D | Has.Draw | Has.Label,
+    )) {
+        let healthbar_label = game.World.Label[healthbar_entity];
         let healthbar_draw = game.World.Draw[healthbar_entity];
         let healthbar_transform = game.World.LocalTransform2D[healthbar_entity];
 
-        if (healthbar_draw && healthbar_transform) {
+        // Only update entities with "healthbar" label
+        if (healthbar_label.Name === "healthbar") {
             // Calculate health percentage
             let health_percentage = health.Max > 0 ? health.Current / health.Max : 0;
 

@@ -134,3 +134,45 @@ export function getPlayerHealingStatus(game: Game): {
     }
     return {isHealing: false, energy: 0};
 }
+
+export function getAimingDebugInfo(game: Game): {
+    playerDirection: string;
+    opponentDirection: string;
+    playerDistance: string;
+    opponentDistance: string;
+} {
+    let playerDirection = "N/A";
+    let opponentDirection = "N/A";
+    let playerDistance = "N/A";
+    let opponentDistance = "N/A";
+
+    for (let entity = 0; entity < game.World.Signature.length; entity++) {
+        if (
+            game.World.Signature[entity] & Has.Aim &&
+            game.World.Signature[entity] & Has.ControlAi
+        ) {
+            let aim = game.World.Aim[entity];
+            if (!aim) continue;
+
+            let directionStr = `[${aim.DirectionToTarget[0].toFixed(2)}, ${aim.DirectionToTarget[1].toFixed(2)}]`;
+            let distanceStr =
+                aim.DistanceToTarget === Infinity ? "∞" : aim.DistanceToTarget.toFixed(2);
+
+            // Use ControlPlayer component to distinguish
+            if (game.World.Signature[entity] & Has.ControlPlayer) {
+                playerDirection = directionStr;
+                playerDistance = distanceStr;
+            } else {
+                opponentDirection = directionStr;
+                opponentDistance = distanceStr;
+            }
+        }
+    }
+
+    return {
+        playerDirection,
+        opponentDirection,
+        playerDistance,
+        opponentDistance,
+    };
+}
