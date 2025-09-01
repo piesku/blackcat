@@ -27,7 +27,6 @@ export function blueprint_sniper_rifle() {
         spawn_count(
             () => blueprint_bullet(3.5),
             0, // interval: instant spawn
-            null, // direction: Will be set by weapon system
             0.01, // spread: Very tight spread for precision
             10, // speedMin
             11, // speedMax

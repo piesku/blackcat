@@ -18,7 +18,6 @@ export const enum SpawnMode {
 
 export interface SpawnBase {
     BlueprintCreator: () => Blueprint<Game>; // Function that creates fresh blueprint each time
-    Direction: Vec2 | null; // Base emission direction (in parent's space), null = weapon system sets direction
     Spread: number; // Cone angle in radians (0 = straight line, π = full circle)
     SpeedMin: number; // Minimum spawn speed
     SpeedMax: number; // Maximum spawn speed
@@ -46,7 +45,6 @@ export type Spawn = SpawnCount | SpawnTimed;
  *
  * @param creator The blueprint creator.
  * @param interval Time between spawns (0 = all at once).
- * @param direction Base emission direction.
  * @param spread Cone angle in radians.
  * @param speedMin Minimum spawn speed.
  * @param speedMax Maximum spawn speed.
@@ -55,7 +53,6 @@ export type Spawn = SpawnCount | SpawnTimed;
 export function spawn_count(
     creator: () => Blueprint<Game>,
     interval: number,
-    direction: Vec2 | null,
     spread: number,
     speedMin: number,
     speedMax: number,
@@ -68,7 +65,6 @@ export function spawn_count(
             RemainingCount: initialCount, // 0 = inactive, >0 = active
             Interval: interval,
             SinceLast: 0,
-            Direction: direction,
             Spread: spread,
             SpeedMin: speedMin,
             SpeedMax: speedMax,
@@ -85,7 +81,6 @@ export function spawn_count(
  *
  * @param creator The blueprint creator.
  * @param interval Time between spawns.
- * @param direction Base emission direction.
  * @param spread Cone angle in radians.
  * @param speedMin Minimum spawn speed.
  * @param speedMax Maximum spawn speed.
@@ -94,7 +89,6 @@ export function spawn_count(
 export function spawn_timed(
     creator: () => Blueprint<Game>,
     interval: number,
-    direction: Vec2 | null,
     spread: number,
     speedMin: number,
     speedMax: number,
@@ -107,7 +101,6 @@ export function spawn_timed(
             Duration: initialDuration, // 0 = inactive, >0 = active
             Interval: interval,
             SinceLast: 0,
-            Direction: direction,
             Spread: spread,
             SpeedMin: speedMin,
             SpeedMax: speedMax,

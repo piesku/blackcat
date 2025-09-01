@@ -1,3 +1,4 @@
+import {query_down} from "../components/com_children.js";
 import {SpawnMode} from "../components/com_spawn.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
@@ -90,12 +91,20 @@ export function sys_control_player(game: Game, delta: number) {
                         `[PLAYER_HEAL] Holding (${hold_timer.toFixed(1)}s) - healing ${(health.Current - health_before).toFixed(2)} HP (${health_before.toFixed(1)} -> ${health.Current.toFixed(1)}), energy: ${ai.Energy.toFixed(2)} (drain rate: ${current_drain_rate.toFixed(2)}/s)`,
                     );
 
-                    // Activate healing particle effects
-                    if (game.World.Signature[entity] & Has.Spawn) {
-                        let spawn = game.World.Spawn[entity];
-                        if (spawn.Mode === SpawnMode.Count) {
-                            // Add particles for healing effect (2-4 particles per healing tick)
-                            spawn.RemainingCount += Math.floor(2 + Math.random() * 3);
+                    // Activate healing particle effects on heal spawner child entity
+                    for (let child_entity of query_down(
+                        game.World,
+                        entity,
+                        Has.Spawn | Has.Label,
+                    )) {
+                        let label = game.World.Label[child_entity];
+                        if (label && label.Name === "heal_spawner") {
+                            let spawn = game.World.Spawn[child_entity];
+                            if (spawn.Mode === SpawnMode.Count) {
+                                // Add particles for healing effect
+                                spawn.RemainingCount ||= 1;
+                            }
+                            break; // Found the heal spawner, no need to continue
                         }
                     }
                 }

@@ -149,7 +149,6 @@ function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType)
             spawn_timed(
                 blueprint_shadow_particle,
                 1.0 / 8.0, // interval
-                [0, 0], // direction: Stationary shadows
                 0, // spread: No spread for trails
                 0, // speedMin
                 0, // speedMax

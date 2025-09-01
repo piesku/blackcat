@@ -16,7 +16,6 @@ export function blueprint_chiquita_banana_spawner(position: [number, number]) {
         spawn_count(
             blueprint_chiquita_banana_simple,
             0, // interval: spawn all bananas almost at once
-            [1, 0], // direction: rightward (will be randomized by spread)
             Math.PI * 2, // spread: full circle (360 degrees)
             5, // speedMin: banana launch speed
             7, // speedMax: banana launch speed

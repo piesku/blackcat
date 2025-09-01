@@ -25,7 +25,6 @@ export function blueprint_spikeballs() {
         spawn_count(
             () => blueprint_spikeball(2), // 2 damage per hit
             0.001, // interval: all at once
-            null, // direction: Will be set by weapon system
             0.2, // spread: Slight spread for unpredictability
             3.5, // speedMin: moderate launching speed
             4.5, // speedMax: moderate launching speed

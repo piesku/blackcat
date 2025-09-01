@@ -27,7 +27,6 @@ export function blueprint_shotgun() {
         spawn_count(
             () => blueprint_bullet(1.0), // Will be configured per shot
             0, // interval: instant spawn (all at once)
-            null, // direction: Will be set by weapon system
             0.5, // spread: Wide cone spread for pellets
             9.0, // speedMin
             11.0, // speedMax

@@ -1,6 +1,6 @@
 import {instantiate} from "../../lib/game.js";
 import {mat2d_get_translation} from "../../lib/mat2d.js";
-import {Vec2} from "../../lib/math.js";
+import {RAD_TO_DEG, Vec2} from "../../lib/math.js";
 import {clamp} from "../../lib/number.js";
 import {vec2_copy, vec2_rotate} from "../../lib/vec2.js";
 import {blueprint_boomerang_outward} from "../blueprints/projectiles/blu_boomerang.js";
@@ -114,23 +114,29 @@ function execute_ranged_attack(
     let spawners_activated = 0;
 
     // Handle all spawners on weapon entity and its children
-    for (let spawn_entity of query_down(game.World, weapon_entity, Has.Spawn)) {
+    for (let spawn_entity of query_down(
+        game.World,
+        weapon_entity,
+        Has.Spawn | Has.LocalTransform2D,
+    )) {
+        let local_transform = game.World.LocalTransform2D[spawn_entity];
         let spawner = game.World.Spawn[spawn_entity];
-        if (spawner) {
-            // Only override direction if spawner wants weapon system to set it
-            if (spawner.Direction === null) {
-                spawner.Direction = [aim.DirectionToTarget[0], aim.DirectionToTarget[1]];
-            }
 
-            // Activate the spawner based on its mode using weapon's TotalAmount
-            if (spawner.Mode === SpawnMode.Count) {
-                spawner.RemainingCount = weapon.TotalAmount;
-            } else {
-                spawner.Duration = weapon.TotalAmount;
-            }
+        // Set spawner rotation to aim direction (convert from direction vector to angle)
+        let angle_radians = Math.atan2(aim.DirectionToTarget[1], aim.DirectionToTarget[0]);
+        local_transform.Rotation = angle_radians * RAD_TO_DEG;
 
-            spawners_activated++;
+        // Mark entity as dirty so transform system updates it
+        game.World.Signature[spawn_entity] |= Has.Dirty;
+
+        // Activate the spawner based on its mode using weapon's TotalAmount
+        if (spawner.Mode === SpawnMode.Count) {
+            spawner.RemainingCount = weapon.TotalAmount;
+        } else {
+            spawner.Duration = weapon.TotalAmount;
         }
+
+        spawners_activated++;
     }
 
     console.log(
@@ -152,10 +158,15 @@ function execute_flamethrower_attack(
     let spawner = game.World.Spawn[weapon_entity];
     DEBUG: if (!spawner) throw new Error("missing component");
 
-    // Set spawn direction toward target
-    if (spawner.Direction === null) {
-        spawner.Direction = [aim.DirectionToTarget[0], aim.DirectionToTarget[1]];
-    }
+    // Set spawner rotation to aim direction
+    let local_transform = game.World.LocalTransform2D[weapon_entity];
+    DEBUG: if (!local_transform) throw new Error("missing component");
+
+    let angle_radians = Math.atan2(aim.DirectionToTarget[1], aim.DirectionToTarget[0]);
+    local_transform.Rotation = angle_radians * RAD_TO_DEG;
+
+    // Mark entity as dirty so transform system updates it
+    game.World.Signature[weapon_entity] |= Has.Dirty;
 
     // Activate the timed spawner using weapon's TotalAmount
     if (spawner.Mode === SpawnMode.Timed) {
@@ -180,9 +191,7 @@ function execute_mortar_attack(
 
     // Find and activate the spawner on the weapon
     let spawner = game.World.Spawn[weapon_entity];
-    DEBUG: if (!spawner) {
-        throw new Error(`[MORTAR] Weapon ${weapon_entity} missing spawn component`);
-    }
+    DEBUG: if (!spawner) throw new Error("missing component");
 
     // Calculate firing angle for mortar (45 degrees up from horizontal direction to target)
     let base_speed = (spawner.SpeedMin + spawner.SpeedMax) * 0.5;
@@ -192,11 +201,16 @@ function execute_mortar_attack(
     let horizontal_speed = base_speed * Math.cos(firing_angle);
 
     // Set spawn direction as angled upward toward target
-    if (spawner.Direction === null) {
-        // Rotate the already-normalized direction by the firing angle (45 degrees upward)
-        vec2_rotate(angled_direction, aim.DirectionToTarget, firing_angle);
-        spawner.Direction = [angled_direction[0], angled_direction[1]];
-    }
+    let local_transform = game.World.LocalTransform2D[weapon_entity];
+    DEBUG: if (!local_transform) throw new Error("missing component");
+
+    // Rotate the already-normalized direction by the firing angle (45 degrees upward)
+    vec2_rotate(angled_direction, aim.DirectionToTarget, firing_angle);
+    let angle_radians = Math.atan2(angled_direction[1], angled_direction[0]);
+    local_transform.Rotation = angle_radians * RAD_TO_DEG;
+
+    // Mark entity as dirty so transform system updates it
+    game.World.Signature[weapon_entity] |= Has.Dirty;
 
     // Approximate flight time based on distance and trajectory
     // Using physics approximation: time = distance / horizontal_speed + extra for arc

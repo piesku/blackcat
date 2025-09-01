@@ -34,7 +34,6 @@ export function blueprint_hoover_crack() {
                 spawn_count(
                     blueprint_hoover_projectile,
                     0, // interval
-                    null, // direction: Will be set by weapon system
                     Math.PI / 6, // spread: 30 degree spread for projectile placement
                     4.0, // speedMin: Slow movement for spinning emitters
                     5.0, // speedMax: Medium speed so they spread out before stopping

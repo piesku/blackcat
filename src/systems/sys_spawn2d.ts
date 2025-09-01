@@ -8,7 +8,7 @@
 
 import {instantiate} from "../../lib/game.js";
 import {mat2d_get_translation} from "../../lib/mat2d.js";
-import {Vec2} from "../../lib/math.js";
+import {DEG_TO_RAD, Vec2} from "../../lib/math.js";
 import {float} from "../../lib/random.js";
 import {vec2_normalize, vec2_rotate} from "../../lib/vec2.js";
 import {Entity} from "../../lib/world.js";
@@ -86,14 +86,10 @@ function spawn_single_entity(
     spawn: Spawn,
     position: Readonly<Vec2>,
 ) {
-    // Set spawn direction (default to forward if null)
-    if (spawn.Direction) {
-        spawn_direction[0] = spawn.Direction[0];
-        spawn_direction[1] = spawn.Direction[1];
-    } else {
-        spawn_direction[0] = 1;
-        spawn_direction[1] = 0;
-    }
+    // Get spawn direction from spawner entity's rotation (0 degrees = spawn to the right)
+    let local_transform = game.World.LocalTransform2D[spawner_entity];
+    spawn_direction[0] = Math.cos(local_transform.Rotation * DEG_TO_RAD);
+    spawn_direction[1] = Math.sin(local_transform.Rotation * DEG_TO_RAD);
 
     // Apply random spread
     if (spawn.Spread > 0) {
@@ -101,7 +97,7 @@ function spawn_single_entity(
         vec2_rotate(spawn_direction, spawn_direction, spread_angle);
     }
 
-    // Normalize direction
+    // Normalize direction (should already be normalized but just in case)
     vec2_normalize(spawn_direction, spawn_direction);
 
     // Random speed within range

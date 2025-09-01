@@ -25,7 +25,6 @@ export function blueprint_chiquita_bomb() {
         spawn_count(
             blueprint_chiquita_main_bomb,
             0.0, // interval: no repeated spawning - single shot
-            null, // direction: Will be set by weapon system
             0.1, // spread: Low spread for accurate throwing
             4.0, // speedMin: moderate throwing speed
             6.0, // speedMax: moderate throwing speed

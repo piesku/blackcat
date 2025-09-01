@@ -24,7 +24,6 @@ export function blueprint_larpa() {
         spawn_count(
             () => blueprint_larpa_rocket(2.5), // Higher damage than regular projectiles
             0.3, // interval: instant spawn
-            null, // direction: Will be set by weapon system
             0.05, // spread: Very tight spread for precision
             5.0, // speedMin: Fast rocket speed
             6.0, // speedMax

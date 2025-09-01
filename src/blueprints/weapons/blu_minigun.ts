@@ -26,20 +26,18 @@ export function blueprint_minigun() {
         spawn_count(
             () => blueprint_bullet(1.2),
             1 / 5, // interval: 5 bullets per second
-            null, // direction: Will be set by weapon system
             0.15, // spread: Moderate spread for spray effect
             7.0, // speedMin
             8.0, // speedMax
         ),
 
-        // Child entity for shell casing effects
+        // Child entity for shell casing effects - rotated to eject backwards and slightly up
         children([
             spatial_node2d(),
-            local_transform2d([0, 0], 0, [1, 1]), // Same position as parent weapon
+            local_transform2d([0, 0], 150, [1, 1]), // Rotated to eject backwards and up
             spawn_count(
                 () => blueprint_shell_casing(),
                 1 / 5, // interval: match bullet spawn rate
-                [-0.5, 0.3], // direction: eject backwards and slightly up
                 0.3, // spread: casings scatter randomly
                 1.0, // speedMin: casings eject with moderate force
                 2.0, // speedMax

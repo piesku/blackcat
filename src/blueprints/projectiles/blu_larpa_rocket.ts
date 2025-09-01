@@ -29,7 +29,6 @@ export function blueprint_larpa_rocket(damage: number) {
         spawn_timed(
             () => blueprint_larpa_trail_particle(),
             0.1, // interval: spawn trail particle every 0.1 seconds
-            [0, -1], // direction: particles fall downward
             0.2, // spread: slight horizontal spread
             0.5, // speedMin: slow falling speed
             1.5, // speedMax

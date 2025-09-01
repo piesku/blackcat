@@ -23,7 +23,6 @@ export function blueprint_hoover_projectile() {
         spawn_timed(
             () => blueprint_hoover_particle(1), // damage=1 per particle
             1 / 16, // interval: spawn every 1/16 seconds (16 particles per second)
-            [1, 0], // direction: Forward direction (particles will spread in all directions)
             Math.PI * 2, // spread: Full circle spread for spinning effect
             2.0, // speedMin: Medium speed for spinning particles
             4.0, // speedMax: Faster particles for dynamic spinning

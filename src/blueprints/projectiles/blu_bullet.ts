@@ -34,7 +34,6 @@ export function blueprint_bullet(damage: number) {
         spawn_timed(
             blueprint_bullet_trail,
             0.05, // interval: spawn trail particles every 0.05 seconds
-            [0, 0], // direction: spawn at projectile position (no offset)
             0.0, // spread: no randomization - precise trail
             0.0, // speedMin: trails stay where spawned
             0.0, // speedMax: no movement
