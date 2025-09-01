@@ -1,4 +1,4 @@
-import {Vec2} from "../../lib/math.js";
+import {Vec2, RAD_TO_DEG} from "../../lib/math.js";
 import {vec2_length, vec2_normalize, vec2_subtract} from "../../lib/vec2.js";
 import {query_down} from "../components/com_children.js";
 import {Game} from "../game.js";
@@ -36,11 +36,17 @@ export function sys_aim(game: Game, delta: number) {
                     if (aim.DistanceToTarget > 0.01) {
                         vec2_normalize(aim.DirectionToTarget, to_target);
 
+                        // Calculate rotation in degrees
+                        aim.RotationToTarget =
+                            Math.atan2(aim.DirectionToTarget[1], aim.DirectionToTarget[0]) *
+                            RAD_TO_DEG;
+
                         // Flip the body sprite to face the target
                         flip_body_sprite_to_target(game, entity, aim.DirectionToTarget);
                     } else {
                         aim.DirectionToTarget[0] = 0;
                         aim.DirectionToTarget[1] = 0;
+                        aim.RotationToTarget = 0;
                     }
                 }
             } else {
@@ -49,6 +55,7 @@ export function sys_aim(game: Game, delta: number) {
                 aim.DistanceToTarget = Infinity;
                 aim.DirectionToTarget[0] = 0;
                 aim.DirectionToTarget[1] = 0;
+                aim.RotationToTarget = 0;
             }
         }
     }

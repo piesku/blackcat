@@ -7,6 +7,7 @@ export interface Aim {
     TargetEntity: Entity;
     DistanceToTarget: number;
     DirectionToTarget: Vec2;
+    RotationToTarget: number; // Angle in degrees
     UpdateInterval: number; // How often to search for new targets (in seconds)
     SinceLastUpdate: number; // Time accumulated since last target search
 }
@@ -18,6 +19,7 @@ export function aim(update_interval: number = 0.1) {
             TargetEntity: -1,
             DistanceToTarget: Infinity,
             DirectionToTarget: [0, 0],
+            RotationToTarget: 0,
             UpdateInterval: update_interval,
             SinceLastUpdate: 0,
         };

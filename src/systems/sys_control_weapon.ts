@@ -2,7 +2,7 @@ import {instantiate} from "../../lib/game.js";
 import {mat2d_get_translation} from "../../lib/mat2d.js";
 import {RAD_TO_DEG, Vec2} from "../../lib/math.js";
 import {clamp} from "../../lib/number.js";
-import {vec2_copy, vec2_rotate} from "../../lib/vec2.js";
+import {vec2_copy} from "../../lib/vec2.js";
 import {blueprint_boomerang_outward} from "../blueprints/projectiles/blu_boomerang.js";
 import {blueprint_mortar_shell} from "../blueprints/projectiles/blu_mortar_shell.js";
 import {query_down} from "../components/com_children.js";
@@ -122,9 +122,8 @@ function execute_ranged_attack(
         let local_transform = game.World.LocalTransform2D[spawn_entity];
         let spawner = game.World.Spawn[spawn_entity];
 
-        // Set spawner rotation to aim direction (convert from direction vector to angle)
-        let angle_radians = Math.atan2(aim.DirectionToTarget[1], aim.DirectionToTarget[0]);
-        local_transform.Rotation = angle_radians * RAD_TO_DEG;
+        // Set spawner rotation to aim direction
+        local_transform.Rotation = aim.RotationToTarget;
 
         // Mark entity as dirty so transform system updates it
         game.World.Signature[spawn_entity] |= Has.Dirty;
@@ -162,8 +161,7 @@ function execute_flamethrower_attack(
     let local_transform = game.World.LocalTransform2D[weapon_entity];
     DEBUG: if (!local_transform) throw new Error("missing component");
 
-    let angle_radians = Math.atan2(aim.DirectionToTarget[1], aim.DirectionToTarget[0]);
-    local_transform.Rotation = angle_radians * RAD_TO_DEG;
+    local_transform.Rotation = aim.RotationToTarget;
 
     // Mark entity as dirty so transform system updates it
     game.World.Signature[weapon_entity] |= Has.Dirty;
@@ -178,8 +176,6 @@ function execute_flamethrower_attack(
     );
 }
 
-let angled_direction: Vec2 = [0, 0];
-
 function execute_mortar_attack(
     game: Game,
     wielder_entity: number,
@@ -193,28 +189,19 @@ function execute_mortar_attack(
     let spawner = game.World.Spawn[weapon_entity];
     DEBUG: if (!spawner) throw new Error("missing component");
 
-    // Calculate firing angle for mortar (45 degrees up from horizontal direction to target)
-    let base_speed = (spawner.SpeedMin + spawner.SpeedMax) * 0.5;
-    let firing_angle = Math.PI * 0.25; // 45 degrees for high arc
-
-    // Calculate initial velocity components for mortar trajectory
-    let horizontal_speed = base_speed * Math.cos(firing_angle);
-
     // Set spawn direction as angled upward toward target
     let local_transform = game.World.LocalTransform2D[weapon_entity];
     DEBUG: if (!local_transform) throw new Error("missing component");
 
-    // Rotate the already-normalized direction by the firing angle (45 degrees upward)
-    vec2_rotate(angled_direction, aim.DirectionToTarget, firing_angle);
-    let angle_radians = Math.atan2(angled_direction[1], angled_direction[0]);
-    local_transform.Rotation = angle_radians * RAD_TO_DEG;
+    // Set mortar angle as 45 degrees upward, but facing left or right toward target
+    let target_is_left = aim.DirectionToTarget[0] < 0;
+    local_transform.Rotation = target_is_left ? 135 : 45; // 135° for left, 45° for right
 
     // Mark entity as dirty so transform system updates it
     game.World.Signature[weapon_entity] |= Has.Dirty;
 
-    // Approximate flight time based on distance and trajectory
-    // Using physics approximation: time = distance / horizontal_speed + extra for arc
-    let approx_lifetime = clamp(0.8, 4.0, (aim.DistanceToTarget / horizontal_speed) * 1.2); // 20% extra for arc
+    // Use shorter flight time for mortar shells (area effect weapon)
+    let approx_lifetime = clamp(0.8, 1.8, 1.0 + aim.DistanceToTarget / 15.0); // Shorter duration
 
     // Update blueprint to use calculated lifetime
     spawner.BlueprintCreator = () => blueprint_mortar_shell(approx_lifetime);
