@@ -1,12 +1,7 @@
 import {html} from "../../lib/html.js";
 import {Game} from "../game.js";
 import {UpgradeType} from "../upgrades/types.js";
-import {
-    getFighterStats,
-    getPlayerEnergy,
-    getPlayerHealingStatus,
-    getAimingDebugInfo,
-} from "./entity_queries.js";
+import {getFighterStats, getPlayerEnergy, getPlayerHealingStatus} from "./entity_queries.js";
 
 export function ArenaView(game: Game): string {
     // Get upgrades from game state
@@ -23,9 +18,6 @@ export function ArenaView(game: Game): string {
 
     let healingStatus = getPlayerHealingStatus(game);
 
-    // Get aiming debug info
-    let aimingDebug = getAimingDebugInfo(game);
-
     return html`
         <div
             style="position: fixed; top: 0; left: 0; right: 0; pointer-events: none; z-index: 100;"
@@ -38,13 +30,6 @@ export function ArenaView(game: Game): string {
                 <div style="color: #FFF; margin-bottom: 2px;">HP: ${playerHP}</div>
                 <div style="color: #FFD700; margin-bottom: 5px; font-size: clamp(8px, 2vw, 10px);">
                     ${playerAIState}
-                </div>
-                <!-- Debug: Direction to target -->
-                <div style="color: #FF6B6B; font-size: clamp(7px, 1.8vw, 9px); margin-bottom: 3px;">
-                    DEBUG: Target Dir: ${aimingDebug.playerDirection}
-                </div>
-                <div style="color: #FF6B6B; font-size: clamp(7px, 1.8vw, 9px); margin-bottom: 5px;">
-                    Distance: ${aimingDebug.playerDistance}
                 </div>
                 ${playerUpgrades
                     .map(
@@ -122,13 +107,6 @@ export function ArenaView(game: Game): string {
                 <div style="color: #FFF; margin-bottom: 2px;">HP: ${opponentHP}</div>
                 <div style="color: #FFD700; margin-bottom: 5px; font-size: clamp(8px, 2vw, 10px);">
                     ${opponentAIState}
-                </div>
-                <!-- Debug: Direction to target -->
-                <div style="color: #FF6B6B; font-size: clamp(7px, 1.8vw, 9px); margin-bottom: 3px;">
-                    DEBUG: Target Dir: ${aimingDebug.opponentDirection}
-                </div>
-                <div style="color: #FF6B6B; font-size: clamp(7px, 1.8vw, 9px); margin-bottom: 5px;">
-                    Distance: ${aimingDebug.opponentDistance}
                 </div>
                 ${opponentUpgrades
                     .map(
