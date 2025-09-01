@@ -1,5 +1,6 @@
 import {Vec2} from "../../lib/math.js";
 import {vec2_length, vec2_normalize, vec2_subtract} from "../../lib/vec2.js";
+import {query_down} from "../components/com_children.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
@@ -87,17 +88,30 @@ function find_nearest_enemy(game: Game, entity: number): number {
 }
 
 function flip_body_sprite_to_target(game: Game, entity: number, direction_to_target: Vec2) {
-    let transform = game.World.LocalTransform2D[entity];
+    // Find the body sprite child (first child with Render2D component)
+    let body_entity = -1;
+    for (let child of query_down(game.World, entity, Has.Render2D)) {
+        if (child !== entity) {
+            // Skip the parent entity itself
+            body_entity = child;
+            break;
+        }
+    }
 
-    // Flip the sprite based on target direction
+    if (body_entity === -1) return; // No body sprite found
+
+    let body_transform = game.World.LocalTransform2D[body_entity];
+    if (!body_transform) return;
+
+    // Flip the body sprite based on target direction
     // If target is to the left (negative x), flip the sprite (negative scale)
     // If target is to the right (positive x), don't flip (positive scale)
     let should_flip = direction_to_target[0] < 0;
     let new_scale_x = should_flip ? -1 : 1;
 
     // Only update if the scale changed to avoid unnecessary dirty marking
-    if (transform.Scale[0] !== new_scale_x) {
-        transform.Scale[0] = new_scale_x;
-        game.World.Signature[entity] |= Has.Dirty;
+    if (body_transform.Scale[0] !== new_scale_x) {
+        body_transform.Scale[0] = new_scale_x;
+        game.World.Signature[body_entity] |= Has.Dirty;
     }
 }

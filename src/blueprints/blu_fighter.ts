@@ -26,6 +26,15 @@ export function blueprint_eyes(_game: Game, color: Vec4 = [0, 0, 0, 1]) {
     return [spatial_node2d(), local_transform2d(undefined, 0, [1, 1]), render2d(Tile.Eyes, color)];
 }
 
+export function blueprint_body(game: Game, skin_color: Vec4) {
+    return [
+        spatial_node2d(),
+        local_transform2d(),
+        render2d(Tile.Body, skin_color),
+        children(blueprint_eyes(game)),
+    ];
+}
+
 export function blueprint_fighter(game: Game, is_player: boolean) {
     // Calculate health based on arena level: base 10 + 10 per duel completed
     let baseHealth = 10;
@@ -36,14 +45,13 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
         spatial_node2d(),
         local_transform2d(),
         collide2d(true, Layer.Player, Layer.Terrain | Layer.Player, 0.5),
-        render2d(Tile.Body, element(skin_colors)),
         // animate_sprite({[Tile.Body]: Math.random()}),
         health(totalHealth),
         move2d(4, 0),
         aim(0.1), // Target search every 0.1 seconds
         control_ai(is_player), // AI will find target automatically via Aim component
         children(
-            blueprint_eyes(game),
+            blueprint_body(game, element(skin_colors)), // Body sprite as child (includes eyes)
             blueprint_healthbar(),
             // Weapons will be added by apply_upgrades
         ),

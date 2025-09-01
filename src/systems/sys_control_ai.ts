@@ -150,11 +150,7 @@ export function sys_control_ai(game: Game, delta: number) {
 
             // Apply movement directly to Move2D component
             if (move) {
-                // Account for sprite flipping: if scale is negative, flip the X movement
-                let transform = game.World.LocalTransform2D[entity];
-                let flip_multiplier = transform && transform.Scale[0] < 0 ? -1 : 1;
-
-                move.Direction[0] = movement[0] * flip_multiplier;
+                move.Direction[0] = movement[0];
                 move.Direction[1] = movement[1];
 
                 if (ai.IsPlayer) {
