@@ -127,33 +127,78 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 ### 5. Companions (8 upgrades) - Cat Allies 🐱
 
-**Strategy**: All companions are cats with different colors and abilities that fight alongside the owner.
+**Strategy**: Reuse existing AI, weapon, and health systems with creative stat combinations and minor behavioral tweaks.
 
 **Companion Cats** (8):
 
-- **Mr. Black** - Most powerful, disables 2 random enemy upgrades for the fight
-- **Mr. Orange** - Fast attacker, 3 HP, quick melee strikes
-- **Mr. Pink** - Ranged fighter, fires small projectiles every 2 seconds
-- **Mr. White** - Tank cat, 5 HP but slow, high damage attacks
-- **Mr. Brown** - Support cat, heals owner for 1 HP every 4 seconds
-- **Mr. Blue** - Berserker cat, gets +50% damage when below 50% HP
-- **Mr. Gray** - Stealth cat, briefly goes invisible before surprise attacks
-- **Mr. Red** - Sacrifice cat, explodes for 4 damage when killed
+- **Mr. Black** - Most powerful, disables 2 random enemy upgrades for the fight (special ability)
+- **Mr. Orange** - Fast melee: Aggressiveness=2.0, MoveSpeed=3.0, Health=3, Battle Axe weapon
+- **Mr. Pink** - Ranged sniper: Aggressiveness=1.2, MoveSpeed=2.0, Health=3, Pistol weapon  
+- **Mr. White** - Tank: Aggressiveness=0.5, MoveSpeed=1.5, Health=5, high weapon damage
+- **Mr. Brown** - Support healer: Periodically retargets owner for healing "attacks"
+- **Mr. Blue** - Berserker: Aggressiveness increases when Health < 50%
+- **Mr. Gray** - Stealth: Brief invisibility phases (render alpha changes)
+- **Mr. Red** - Sacrifice: Spawns explosion particles on death
+
+**Reusable Systems Architecture**:
+
+**✅ Zero Modifications Needed:**
+- `sys_control_ai` - Handles all movement and combat AI
+- `sys_weapon_*` - Cat attacks use existing weapon systems
+- `sys_health` - Cat death/damage processing
+- `sys_move`, `sys_render2d` - Physics and rendering
+- All collision and particle systems
+
+**🔧 Minimal Extensions Required:**
+
+**1. Team Targeting** (5-line change to `sys_aim.ts`):
+```typescript
+// In find_nearest_enemy(): Skip entities with same IsPlayer value
+let other_ai = game.World.ControlAi[other];
+if (other_ai && other_ai.IsPlayer === my_ai.IsPlayer) continue; // Same team!
+```
+
+**2. Cat Blueprints** (creative stat combinations):
+```typescript
+// blueprint_mr_orange(): Fast melee fighter
+control_ai(owner.IsPlayer, 3.0), // Inherit team, high speed
+health(3), move2d(3.0), 
+blueprint_battle_axe(), // Attach weapon as child
+// Aggressiveness=2.0, Patience=0.5 in AI component
+
+// blueprint_mr_white(): Tank with powerful ranged
+control_ai(owner.IsPlayer, 1.5), // Inherit team, slow
+health(5), move2d(1.5),
+blueprint_sniper_rifle(), // High-damage weapon
+// Aggressiveness=0.5, Patience=2.0
+```
+
+**3. Special Behaviors** (system hooks):
+- **Mr. Brown Healing**: Periodically switch `aim.TargetEntity` to owner
+- **Mr. Blue Berserker**: Modify `ai.Aggressiveness` when health drops
+- **Mr. Red Explosion**: Spawn explosion particles in death handler
+- **Mr. Gray Stealth**: Modify render alpha in phases
+
+**4. Companion Management** (upgrade system):
+- Spawn cat when companion upgrade applied
+- Replace existing companion (one active rule)
+- Remove companion when owner dies
 
 **Cat Mechanics**:
 
-- Each cat has unique personality traits (Aggressiveness/Patience)
-- Cats inherit team allegiance from their owner
-- Visual distinction through color and size variations
-- Cats die when owner dies or after taking their HP in damage
-- Only one companion cat can be active at a time (later cats replace earlier ones)
+- **Team Allegiance**: Cats inherit `IsPlayer` from owner (automatic enemy targeting)
+- **Personality Traits**: Each cat has unique Aggressiveness/Patience values
+- **Visual Distinction**: Different sprites, colors, sizes via render components
+- **Death Synchronization**: Companions die when owner dies
+- **Replacement Rule**: Later companions replace earlier ones
 
-**Implementation**:
+**Implementation Benefits**:
 
-- Extend AI system with "team" concept and cat-specific blueprints
-- Companions target enemies of their owner automatically
-- Special visual indicators showing ownership relationship
-- Cat-specific abilities integrated into existing systems
+- **80% System Reuse**: Movement, combat, health, rendering all work unchanged
+- **Emergent Complexity**: Simple stat variations create diverse behaviors
+- **Minimal Code**: ~50 lines for team logic + cat blueprints vs hundreds for new systems
+- **Performance**: No new system overhead, just more entities with existing components
+- **Hackability**: Easy to add new cat types or modify existing ones
 
 ## Upgrade Distribution Summary
 
