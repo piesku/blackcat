@@ -16,29 +16,6 @@ export function ArenaView(game: Game): string {
     let maxEnergy = 5;
     let energyPercent = Math.round((playerEnergy / maxEnergy) * 100);
 
-    // Calculate gradient color based on energy level
-    function getEnergyGradientColor(energy: number, maxEnergy: number): string {
-        let normalizedEnergy = Math.min(energy / maxEnergy, 1.0); // Clamp to 0-1
-
-        if (normalizedEnergy <= 0.5) {
-            // 0-50%: Green to Yellow transition
-            let ratio = normalizedEnergy * 2; // 0-1 within this range
-            let red = Math.round(76 + (255 - 76) * ratio); // 76 -> 255
-            let green = Math.round(175 + (193 - 175) * ratio); // 175 -> 193
-            let blue = Math.round(80 * (1 - ratio)); // 80 -> 0
-            return `rgb(${red}, ${green}, ${blue})`;
-        } else {
-            // 50-100%: Yellow to Red transition
-            let ratio = (normalizedEnergy - 0.5) * 2; // 0-1 within this range
-            let red = 255; // Stay at 255
-            let green = Math.round(193 * (1 - ratio)); // 193 -> 0
-            let blue = 0; // Stay at 0
-            return `rgb(${red}, ${green}, ${blue})`;
-        }
-    }
-
-    let energyColor = getEnergyGradientColor(playerEnergy, maxEnergy);
-
     return html`
         <div
             style="position: fixed; top: 0; left: 0; right: 0; pointer-events: none; z-index: 100;"
@@ -90,14 +67,19 @@ export function ArenaView(game: Game): string {
                             background: #333;
                             border-radius: 2px;
                             overflow: hidden;
+                            position: relative;
                         "
                         >
                             <div
                                 style="
-                                width: ${energyPercent}%;
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                width: 100%;
                                 height: 100%;
-                                background: ${energyColor};
-                                transition: width 0.1s ease, background-color 0.3s ease;
+                                background: linear-gradient(to right, #4CAF50, #FFC107, #F44336);
+                                clip-path: inset(0 ${100 - energyPercent}% 0 0);
+                                transition: clip-path 0.1s ease;
                             "
                             ></div>
                         </div>
