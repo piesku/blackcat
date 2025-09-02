@@ -75,8 +75,8 @@ export function sys_control_player(game: Game, delta: number) {
                     ai.Energy = MIN_HEALING_ENERGY;
                 }
 
-                // Heal based on healing rate
-                let heal_amount = HEALING_RATE * delta;
+                // Heal based on healing rate scaled by current energy
+                let heal_amount = HEALING_RATE * ai.Energy * delta;
                 let health_before = health.Current;
 
                 health.Current += heal_amount;
@@ -88,7 +88,7 @@ export function sys_control_player(game: Game, delta: number) {
                     let current_drain_rate =
                         HEALING_DRAIN_STRENGTH * (ai.Energy - MIN_HEALING_ENERGY);
                     console.log(
-                        `[PLAYER_HEAL] Holding (${hold_timer.toFixed(1)}s) - healing ${(health.Current - health_before).toFixed(2)} HP (${health_before.toFixed(1)} -> ${health.Current.toFixed(1)}), energy: ${ai.Energy.toFixed(2)} (drain rate: ${current_drain_rate.toFixed(2)}/s)`,
+                        `[PLAYER_HEAL] Holding (${hold_timer.toFixed(1)}s) - healing ${(health.Current - health_before).toFixed(2)} HP (${health_before.toFixed(1)} -> ${health.Current.toFixed(1)}), energy: ${ai.Energy.toFixed(2)} (${ai.Energy.toFixed(2)}x heal rate, drain: ${current_drain_rate.toFixed(2)}/s)`,
                     );
 
                     // Activate healing particle effects on heal spawner child entity

@@ -1,7 +1,7 @@
 import {html} from "../../lib/html.js";
 import {Game} from "../game.js";
 import {UpgradeType} from "../upgrades/types.js";
-import {getFighterStats, getPlayerEnergy, getPlayerHealingStatus} from "./entity_queries.js";
+import {getFighterStats, getPlayerEnergy} from "./entity_queries.js";
 
 export function ArenaView(game: Game): string {
     // Get upgrades from game state
@@ -13,10 +13,8 @@ export function ArenaView(game: Game): string {
 
     // Get player unified energy and healing status
     let playerEnergy = getPlayerEnergy(game);
-    let maxEnergy = 10;
+    let maxEnergy = 5;
     let energyPercent = Math.round((playerEnergy / maxEnergy) * 100);
-
-    let healingStatus = getPlayerHealingStatus(game);
 
     return html`
         <div
