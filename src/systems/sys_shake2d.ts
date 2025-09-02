@@ -4,6 +4,7 @@
  * Shake entities randomly.
  */
 
+import {ease_out_quint} from "../../lib/easing.js";
 import {Entity} from "../../lib/world.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
@@ -32,9 +33,14 @@ function update(game: Game, entity: Entity, delta: number) {
         local.Translation[0] = 0;
         local.Translation[1] = 0;
     } else {
-        // Continue shaking
-        local.Translation[0] = (Math.random() - 0.5) * shake.Radius * 2;
-        local.Translation[1] = (Math.random() - 0.5) * shake.Radius * 2;
+        // Calculate intensity using easing function for smooth fade-out
+        let t = shake.Duration / shake.InitialDuration;
+        let intensity = ease_out_quint(t);
+        let effective_radius = shake.Radius * intensity;
+
+        // Continue shaking with eased diminishing intensity
+        local.Translation[0] = (Math.random() - 0.5) * effective_radius * 2;
+        local.Translation[1] = (Math.random() - 0.5) * effective_radius * 2;
     }
 
     game.World.Signature[entity] |= Has.Dirty;

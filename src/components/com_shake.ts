@@ -15,6 +15,7 @@ import {Has} from "../world.js";
 export interface Shake {
     Radius: number;
     Duration: number;
+    InitialDuration: number;
 }
 
 /**
@@ -29,6 +30,7 @@ export function shake(radius: number, duration: number = Infinity) {
         game.World.Shake[entity] = {
             Radius: radius,
             Duration: duration,
+            InitialDuration: duration,
         };
     };
 }
