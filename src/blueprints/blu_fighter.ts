@@ -42,15 +42,19 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
     let arenaLevelBonus = (game.State.currentLevel - 1) * 10; // Level 1 = base health, Level 2 = +10, etc.
     let totalHealth = baseHealth + arenaLevelBonus;
 
+    let base_speed = 4;
+
     return [
         spatial_node2d(),
         local_transform2d(),
+
+        control_ai(is_player, base_speed),
+
         collide2d(true, Layer.Player, Layer.Terrain | Layer.Player, 0.5),
         // animate_sprite({[Tile.Body]: Math.random()}),
         health(totalHealth),
-        move2d(4, 0),
+        move2d(base_speed, 0),
         aim(0.1), // Target search every 0.1 seconds
-        control_ai(is_player), // AI will find target automatically via Aim component
         children(
             blueprint_body(game, element(skin_colors)), // Body sprite as child (includes eyes)
             blueprint_healthbar(),

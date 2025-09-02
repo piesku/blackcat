@@ -21,6 +21,7 @@ export interface ControlAi {
 
     // Player energy control
     Energy: number; // For player entities: unified energy affecting movement speed, weapon cooldowns, and rate of fire (seconds)
+    BaseMoveSpeed: number; // Original movement speed before energy scaling
 }
 
 export const enum AiState {
@@ -33,7 +34,7 @@ export const enum AiState {
     Separating, // New: Active collision avoidance
 }
 
-export function control_ai(is_player: boolean = false) {
+export function control_ai(is_player: boolean, base_move_speed: number) {
     return (game: Game, entity: number) => {
         game.World.Signature[entity] |= Has.ControlAi;
 
@@ -67,6 +68,7 @@ export function control_ai(is_player: boolean = false) {
             AttackCooldown: attack_delay,
             IsPlayer: is_player,
             Energy: is_player ? 1.0 : float(0.7, 1.1), // Start player at base energy
+            BaseMoveSpeed: base_move_speed,
 
             // Personality traits
             Aggressiveness: aggressiveness,

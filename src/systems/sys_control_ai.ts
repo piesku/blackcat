@@ -153,11 +153,9 @@ export function sys_control_ai(game: Game, delta: number) {
                 move.Direction[0] = movement[0];
                 move.Direction[1] = movement[1];
 
-                if (ai.IsPlayer) {
-                    // Player speed scales with energy
-                    move.Direction[0] *= ai.Energy;
-                    move.Direction[1] *= ai.Energy;
-                }
+                // Scale movement speed based on AI energy, smoothing out extreme values.
+                // For opponent fighters, energy is pre-set and constant.
+                move.MoveSpeed = ai.BaseMoveSpeed * Math.sqrt(ai.Energy);
 
                 // Mark entity as dirty since we modified its movement
                 game.World.Signature[entity] |= Has.Dirty;
