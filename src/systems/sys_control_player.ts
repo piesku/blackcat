@@ -13,6 +13,7 @@ const HEALING_RATE = 1; // HP per second when holding (constant)
 const MIN_HEALING_ENERGY = 0.0; // Asymptotic minimum energy (never actually reached)
 const HEALING_DRAIN_STRENGTH = 1.0; // How aggressively energy drains (higher = faster initial drain)
 const HOLD_THRESHOLD = 0.2; // Seconds before hold is considered intentional healing
+const POWER_DECAY_RATE = 16.0; // How fast power scale decays back to 1.0 per second
 
 // Module-level hold timer
 let hold_timer = 0;
@@ -144,8 +145,13 @@ export function sys_control_player(game: Game, delta: number) {
                     let energy_consumed = control.HoldStartEnergy - ai.Energy;
                     control.PowerScale = 1.0 + Math.max(0, energy_consumed);
                 } else {
-                    // Not holding - immediately reset to normal size
-                    control.PowerScale = 1.0;
+                    // Not holding - decay power scale back to 1.0 over a few frames
+                    if (control.PowerScale > 1.0) {
+                        control.PowerScale -= POWER_DECAY_RATE * delta;
+                        if (control.PowerScale < 1.0) {
+                            control.PowerScale = 1.0;
+                        }
+                    }
                     // Reset hold start energy for next session
                     control.HoldStartEnergy = ai.Energy;
                 }
