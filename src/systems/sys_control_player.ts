@@ -42,7 +42,8 @@ export function sys_control_player(game: Game, delta: number) {
             let ai = game.World.ControlAi[entity];
             let move = game.World.Move2D[entity];
             let health = game.World.Health[entity];
-            DEBUG: if (!ai || !move || !health) throw new Error("missing component");
+            let control = game.World.ControlPlayer[entity];
+            DEBUG: if (!ai || !move || !health || !control) throw new Error("missing component");
 
             // Handle tap energy gain (only for player entities)
             if (was_quick_tap && ai.IsPlayer) {
@@ -58,8 +59,8 @@ export function sys_control_player(game: Game, delta: number) {
             // Handle energy and healing based on hold state
             let is_intentional_hold = is_holding && hold_timer >= HOLD_THRESHOLD;
 
-            if (is_intentional_hold && health.IsAlive && health.Current < health.Max) {
-                // HEALING MODE: Intentional holding drains energy and heals
+            if (is_intentional_hold && health.IsAlive) {
+                // POWER MODE: Intentional holding drains energy for both healing and power scaling
 
                 // Calculate energy drain rate using exponential decay formula
                 // Formula: drain_rate = strength * (current_energy - min_energy)
@@ -75,36 +76,39 @@ export function sys_control_player(game: Game, delta: number) {
                     ai.Energy = MIN_HEALING_ENERGY;
                 }
 
-                // Heal based on healing rate scaled by current energy
-                let heal_amount = HEALING_RATE * ai.Energy * delta;
-                let health_before = health.Current;
+                // Only heal if below max health
+                if (health.Current < health.Max) {
+                    // Heal based on healing rate scaled by current energy
+                    let heal_amount = HEALING_RATE * ai.Energy * delta;
+                    let health_before = health.Current;
 
-                health.Current += heal_amount;
-                if (health.Current > health.Max) {
-                    health.Current = health.Max;
-                }
+                    health.Current += heal_amount;
+                    if (health.Current > health.Max) {
+                        health.Current = health.Max;
+                    }
 
-                if (health.Current > health_before) {
-                    let current_drain_rate =
-                        HEALING_DRAIN_STRENGTH * (ai.Energy - MIN_HEALING_ENERGY);
-                    console.log(
-                        `[PLAYER_HEAL] Holding (${hold_timer.toFixed(1)}s) - healing ${(health.Current - health_before).toFixed(2)} HP (${health_before.toFixed(1)} -> ${health.Current.toFixed(1)}), energy: ${ai.Energy.toFixed(2)} (${ai.Energy.toFixed(2)}x heal rate, drain: ${current_drain_rate.toFixed(2)}/s)`,
-                    );
+                    if (health.Current > health_before) {
+                        let current_drain_rate =
+                            HEALING_DRAIN_STRENGTH * (ai.Energy - MIN_HEALING_ENERGY);
+                        console.log(
+                            `[PLAYER_HEAL] Holding (${hold_timer.toFixed(1)}s) - healing ${(health.Current - health_before).toFixed(2)} HP (${health_before.toFixed(1)} -> ${health.Current.toFixed(1)}), energy: ${ai.Energy.toFixed(2)} (${ai.Energy.toFixed(2)}x heal rate, drain: ${current_drain_rate.toFixed(2)}/s)`,
+                        );
 
-                    // Activate healing particle effects on heal spawner child entity
-                    for (let child_entity of query_down(
-                        game.World,
-                        entity,
-                        Has.Spawn | Has.Label,
-                    )) {
-                        let label = game.World.Label[child_entity];
-                        if (label && label.Name === "heal_spawner") {
-                            let spawn = game.World.Spawn[child_entity];
-                            if (spawn.Mode === SpawnMode.Count) {
-                                // Add particles for healing effect
-                                spawn.RemainingCount ||= 1;
+                        // Activate healing particle effects on heal spawner child entity
+                        for (let child_entity of query_down(
+                            game.World,
+                            entity,
+                            Has.Spawn | Has.Label,
+                        )) {
+                            let label = game.World.Label[child_entity];
+                            if (label && label.Name === "heal_spawner") {
+                                let spawn = game.World.Spawn[child_entity];
+                                if (spawn.Mode === SpawnMode.Count) {
+                                    // Add particles for healing effect
+                                    spawn.RemainingCount ||= 1;
+                                }
+                                break; // Found the heal spawner, no need to continue
                             }
-                            break; // Found the heal spawner, no need to continue
                         }
                     }
                 }
@@ -123,6 +127,40 @@ export function sys_control_player(game: Game, delta: number) {
                     if (ai.Energy > BASE_ENERGY) {
                         ai.Energy = BASE_ENERGY;
                     }
+                }
+            }
+
+            // Calculate power scaling based on energy consumed during hold (only for player entities)
+            if (ai.IsPlayer) {
+                if (is_intentional_hold && health.IsAlive) {
+                    // Record initial energy when hold starts
+                    if (hold_timer <= HOLD_THRESHOLD + delta) {
+                        // Just started holding - record the initial energy level
+                        control.HoldStartEnergy = ai.Energy;
+                    }
+
+                    // Power scaling = energy consumed during this hold session
+                    // If started with 4 energy and now have 2 energy, scale = 4 - 2 = 2x
+                    let energy_consumed = control.HoldStartEnergy - ai.Energy;
+                    control.PowerScale = 1.0 + Math.max(0, energy_consumed);
+                } else {
+                    // Not holding - immediately reset to normal size
+                    control.PowerScale = 1.0;
+                    // Reset hold start energy for next session
+                    control.HoldStartEnergy = ai.Energy;
+                }
+
+                console.log(
+                    `[PLAYER_POWER] Energy: ${ai.Energy.toFixed(2)}, Hold: ${hold_timer.toFixed(2)}s, HoldStart: ${control.HoldStartEnergy.toFixed(2)}, Scale: ${control.PowerScale.toFixed(2)}x`,
+                );
+
+                // Apply power scaling to visual scale directly
+                let transform = game.World.LocalTransform2D[entity];
+                if (transform) {
+                    transform.Scale[0] = control.PowerScale;
+                    transform.Scale[1] = control.PowerScale;
+                    // Mark entity as dirty so transform system updates it
+                    game.World.Signature[entity] |= Has.Dirty;
                 }
             }
 

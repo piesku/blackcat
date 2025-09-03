@@ -7,6 +7,7 @@ import {Children} from "./components/com_children.js";
 import {Collide2D} from "./components/com_collide2d.js";
 import {ControlAi} from "./components/com_control_ai.js";
 import {ControlAlways2D} from "./components/com_control_always2d.js";
+import {ControlPlayer} from "./components/com_control_player.js";
 import {DealDamage} from "./components/com_deal_damage.js";
 import {Draw} from "./components/com_draw.js";
 import {Health} from "./components/com_health.js";
@@ -99,6 +100,7 @@ export class World extends WorldImpl {
     Collide2D: Array<Collide2D> = [];
     ControlAi: Array<ControlAi> = [];
     ControlAlways2D: Array<ControlAlways2D> = [];
+    ControlPlayer: Array<ControlPlayer> = [];
     Children: Array<Children> = [];
     DealDamage: Array<DealDamage> = [];
     Draw: Array<Draw> = [];

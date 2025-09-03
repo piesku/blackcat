@@ -72,15 +72,23 @@ function handle_collision_damage(
             continue;
         }
 
-        // Deal damage
+        // Deal damage (scale by original spawner's power if applicable)
+        let final_damage = damage_dealer.Damage;
+        if (game.World.Signature[original_spawner] & Has.ControlPlayer) {
+            let control = game.World.ControlPlayer[original_spawner];
+            if (control) {
+                final_damage *= control.PowerScale;
+            }
+        }
+
         target_health.PendingDamage.push({
-            Amount: damage_dealer.Damage,
+            Amount: final_damage,
             Source: original_spawner,
             Type: damage_dealer.DamageType,
         });
 
         console.log(
-            `[DAMAGE] Entity ${entity} (${damage_dealer.DamageType}) hit target ${target_entity}: adding ${damage_dealer.Damage} damage (original source: ${original_spawner})`,
+            `[DAMAGE] Entity ${entity} (${damage_dealer.DamageType}) hit target ${target_entity}: adding ${final_damage.toFixed(1)} damage (base: ${damage_dealer.Damage}, original source: ${original_spawner})`,
         );
 
         // Add to hit list for piercing
