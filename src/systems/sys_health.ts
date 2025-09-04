@@ -1,4 +1,4 @@
-import {destroy_all, query_down} from "../components/com_children.js";
+import {query_down} from "../components/com_children.js";
 import {DrawKind} from "../components/com_draw.js";
 import {Health} from "../components/com_health.js";
 import {Game} from "../game.js";
@@ -37,24 +37,24 @@ export function sys_health(game: Game, _delta: number) {
                 );
             }
 
+            let health_before = health.Current;
+
             // Apply final damage
             if (total_damage > 0) {
-                let health_before = health.Current;
                 health.Current = Math.max(0, health.Current - total_damage);
                 health.LastDamageTime = game.Time;
+            }
 
-                if (health.Current <= 0) {
-                    health.IsAlive = false;
-                    console.log(
-                        `[DEATH] Entity ${entity} died from ${total_damage.toFixed(1)} damage`,
-                    );
-
-                    destroy_all(game.World, entity);
-                } else {
-                    console.log(
-                        `[HEALTH] Entity ${entity} HP: ${health_before.toFixed(1)} -> ${health.Current.toFixed(1)}`,
-                    );
-                }
+            if (health.IsAlive && health.Current <= 0) {
+                health.IsAlive = false;
+                console.log(
+                    `[DEATH] Entity ${entity} died from ${total_damage.toFixed(1)} damage - marked as dead`,
+                );
+                // Entity destruction will be handled next frame after duel_manager has chance to run
+            } else {
+                console.log(
+                    `[HEALTH] Entity ${entity} HP: ${health_before.toFixed(1)} -> ${health.Current.toFixed(1)}`,
+                );
             }
 
             // Apply reflected damage

@@ -22,6 +22,7 @@ import {sys_control_weapon} from "./systems/sys_control_weapon.js";
 import {sys_deal_damage} from "./systems/sys_deal_damage.js";
 import {sys_draw2d} from "./systems/sys_draw2d.js";
 import {sys_draw2d_debug} from "./systems/sys_draw2d_debug.js";
+import {sys_cleanup_dead} from "./systems/sys_cleanup_dead.js";
 import {sys_duel_manager} from "./systems/sys_duel_manager.js";
 import {sys_health} from "./systems/sys_health.js";
 import {sys_lifespan} from "./systems/sys_lifespan.js";
@@ -58,11 +59,17 @@ export interface VictoryData {
     TimeRemaining: number;
 }
 
+export interface DuelEndData {
+    Type: "victory" | "defeat";
+    DelayRemaining: number;
+}
+
 export class Game extends Game3D {
     World = new World(WORLD_CAPACITY);
     State: GameState = createFreshGameState();
     CurrentView: GameView = GameView.Arena; // Start in arena for now
     VictoryData?: VictoryData;
+    DuelEndData?: DuelEndData;
 
     MaterialRender2D = mat_render2d(this.Gl, Has.Render2D, Has.SpatialNode2D);
     Spritesheet = create_spritesheet_from(this.Gl, document.querySelector("img")!);
@@ -113,6 +120,7 @@ export class Game extends Game3D {
         sys_deal_damage(this, delta);
         sys_health(this, delta);
         sys_duel_manager(this, delta); // Check for victory/defeat after health processing
+        sys_cleanup_dead(this, delta); // Clean up dead entities after duel manager sets delay
 
         // Other systems.
         sys_move2d(this, delta);

@@ -36,19 +36,48 @@ export function sys_duel_manager(game: Game, delta: number) {
         }
     }
 
+    // Handle delayed duel resolution
+    if (game.DuelEndData) {
+        // We're in the delay period, count down
+        game.DuelEndData.DelayRemaining -= delta;
+
+        if (game.DuelEndData.DelayRemaining <= 0) {
+            // Delay finished, trigger the actual victory/defeat
+            if (game.DuelEndData.Type === "victory") {
+                console.log("[DUEL] Victory delay finished - showing victory screen");
+                dispatch(game, Action.DuelVictory);
+            } else {
+                console.log("[DUEL] Defeat delay finished - showing defeat screen");
+                dispatch(game, Action.DuelDefeat);
+            }
+            // Clear the delay data
+            game.DuelEndData = undefined;
+        }
+        return; // Don't check for new resolution while delay is active
+    }
+
     // Check for duel resolution
     if (alivePlayers === 0 && aliveOpponents > 0) {
-        // Player(s) died - defeat
-        console.log("[DUEL] Player defeated!");
-        dispatch(game, Action.DuelDefeat);
+        // Player(s) died - start defeat delay
+        console.log("[DUEL] Player defeated! Starting delay...");
+        game.DuelEndData = {
+            Type: "defeat",
+            DelayRemaining: 3.0, // 3 second delay
+        };
     } else if (aliveOpponents === 0 && alivePlayers > 0) {
-        // Opponent(s) died - victory
-        console.log("[DUEL] Player victorious!");
-        dispatch(game, Action.DuelVictory);
+        // Opponent(s) died - start victory delay
+        console.log("[DUEL] Player victorious! Starting delay...");
+        game.DuelEndData = {
+            Type: "victory",
+            DelayRemaining: 3.0, // 3 second delay
+        };
     } else if (alivePlayers === 0 && aliveOpponents === 0) {
-        // Mutual destruction - count as defeat
-        console.log("[DUEL] Mutual destruction - defeat!");
-        dispatch(game, Action.DuelDefeat);
+        // Mutual destruction - start defeat delay
+        console.log("[DUEL] Mutual destruction! Starting delay...");
+        game.DuelEndData = {
+            Type: "defeat",
+            DelayRemaining: 3.0, // 3 second delay
+        };
     }
     // If both sides have alive entities, continue the duel
 }
