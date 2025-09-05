@@ -1,48 +1,83 @@
 # Cat Companion System
 
-This document provides complete documentation for the cat companion system in 33 Duels, including architecture, implementation, and special behaviors.
+This document provides complete documentation for the cat companion system in 33 Duels, including architecture and pure component-based implementation.
 
 ## Overview
 
-Cat companions are AI allies that fight alongside their owner, inheriting team allegiance and providing strategic variety through unique personalities, weapons, and special abilities. The system leverages existing AI, weapon, and health systems with creative stat combinations.
+Cat companions are AI allies that fight alongside their owner, inheriting team allegiance and providing strategic variety through **pure component combinations**. Each cat's unique behavior emerges from creative combinations of existing components rather than special-case logic.
 
-## 🐱 Companion Cats (8 Total)
+## 🐱 Companion Cats - Pure Component Design
 
-| Cat        | HP  | Speed | Aggressiveness | Patience | Role           | Weapon       | Special Ability |
-| ---------- | --- | ----- | -------------- | -------- | -------------- | ------------ | --------------- |
-| Mr. Black  | 4   | 2.5   | 1.8            | 1.5      | Elite Fighter  | None         | Upgrade Disable |
-| Mr. Orange | 3   | 3.0   | 2.0            | 0.5      | Fast Melee     | None         | None            |
-| Mr. Pink   | 3   | 2.0   | 1.2            | 1.0      | Sniper         | Sniper Rifle | None            |
-| Mr. White  | 5   | 1.5   | 0.5            | 2.0      | Tank           | Shotgun      | None            |
-| Mr. Brown  | 3   | 1.8   | 0.3            | 2.5      | Support Healer | None         | Healing         |
-| Mr. Blue   | 4   | 2.2   | 1.0\*          | 1.0      | Berserker      | None         | Rage Mode      |
-| Mr. Gray   | 3   | 2.5   | 1.5            | 1.0      | Stealth        | None         | Invisibility    |
-| Mr. Red    | 2   | 2.0   | 1.8            | 0.5      | Sacrifice      | None         | Death Explosion |
+| Cat        | HP  | Speed | Aggr | Patience | Melee Dmg | Target Rate | Scale | Special Components |
+| ---------- | --- | ----- | ---- | -------- | --------- | ----------- | ----- | ------------------ |
+| Mr. Black  | 6   | 2.8   | 1.8  | 1.5      | 2         | 0.1         | 0.8   | Cat Summoner       |
+| Mr. Orange | 2   | 4.2   | 2.5  | 0.1      | 2         | 0.02        | 0.7   | Whirlwind barbarian|
+| Mr. Pink   | 3   | 1.8   | 0.8  | 2.0      | 1         | 0.3         | 0.7   | Boomerang ranged   |
+| Mr. White  | 7   | 1.3   | 0.5  | 2.5      | 1         | 0.15        | 0.8   | Shotgun            |
+| Mr. Brown  | 4   | 1.5   | 0.1  | 3.0      | 1         | 0.8         | 0.7   | Bodyguard protector|
+| Mr. Blue   | 2   | 2.8   | 2.0  | 0.1      | 3         | 0.03        | 0.7   | Mortar artillery   |
+| Mr. Gray   | 2   | 3.2   | 1.8  | 0.2      | 3         | 0.1         | 0.4   | Shadow trail       |
+| Mr. Red    | 1   | 2.5   | 1.8  | 0.5      | 1         | 0.1         | 0.6   | Explode on death   |
 
-### Cat Descriptions
+### Pure Component Behaviors
 
-- **Mr. Black** - Most powerful, disables 2 random enemy upgrades for the fight (special ability)
-- **Mr. Orange** - Fast melee: Aggressiveness=2.0, MoveSpeed=3.0, Health=3, pure aggression
-- **Mr. Pink** - Ranged sniper: Aggressiveness=1.2, MoveSpeed=2.0, Health=3, precision attacks
-- **Mr. White** - Tank: Aggressiveness=0.5, MoveSpeed=1.5, Health=5, high weapon damage
-- **Mr. Brown** - Support healer: Periodically retargets owner for healing "attacks"
-- **Mr. Blue** - Berserker: Aggressiveness increases when Health < 50%
-- **Mr. Gray** - Stealth: Brief invisibility phases (render alpha changes)
-- **Mr. Red** - Sacrifice: Spawns explosion particles on death
+Each cat's personality emerges from **component combinations only** - no special logic needed:
 
-## 🏗️ System Architecture
+**Mr. Black - Cat Summoner**
+- Spawns random companion cats every 8 seconds using `spawn_timed` component
+- Superior base stats provide leadership while building cat army
+- Each summoned cat inherits owner's team allegiance
 
-### ✅ Zero Modifications Needed
+**Mr. Orange - Whirlwind Barbarian**  
+- Extreme mobility: very low HP (2), ultra-high speed (4.2), high damage (2)
+- Lightning-fast retargeting (0.02s) + ultra-low patience (0.1) = constant target switching
+- Whirls between enemies in frenzied barbarian rage
 
-- `sys_control_ai` - Handles all movement and combat AI
-- `sys_weapon_*` - Cat attacks use existing weapon systems
-- `sys_health` - Cat death/damage processing
-- `sys_move`, `sys_render2d` - Physics and rendering
-- All collision and particle systems
+**Mr. Pink - Boomerang Marksman**
+- Equipped boomerang weapon for ranged attacks with return damage
+- Slow methodical movement (1.8 speed) keeps distance from enemies
+- Patient personality (2.0) = stays back and throws from safety
 
-### 🔧 Minimal Extensions Required
+**Mr. White - Defensive Tank**
+- Highest HP (7), slowest speed (1.3), equipped shotgun
+- High patience (2.5) = waits for enemies to come to him
+- Close-range power with defensive positioning
 
-**1. Team Targeting** (3-line change to `sys_aim.ts`):
+**Mr. Brown - Loyal Bodyguard**
+- Ultra-low aggression (0.1) = focuses on protection over combat
+- Slower targeting (0.8s) but targets friendlies to stay close and protect them
+- Takes damage in place of nearby allies using damage redirection system
+
+**Mr. Blue - Mortar Artillery**
+- Glass cannon stats (HP=2) with mortar weapon for explosive ranged attacks
+- Fastest targeting (0.03s) + lowest patience (0.1) = rapid artillery bombardment
+- High-arc explosive shells create area damage
+
+**Mr. Gray - Shadow Assassin**  
+- Tiny scale (0.4) = naturally hard to see and hit
+- High speed (3.2) + shadow trail ability = leaves damaging trail behind
+- Hit-and-run ambush attacks with persistent shadow damage
+
+**Mr. Red - Suicide Bomber**
+- Lowest HP (1) = dies in one hit to anything
+- Fast approach (2.5 speed) to reach targets
+- `destroy_on_hit: true` + explosion spawn on death
+
+## 🏗️ Pure Component Architecture
+
+### ✅ Zero System Modifications Needed
+
+**ALL cats use existing systems without any changes:**
+- `sys_control_ai` - Handles all movement and combat AI with personality parameters
+- `sys_weapon_*` - Cat attacks use existing weapon systems (sniper, shotgun, melee)
+- `sys_health` - Cat death/damage processing with existing damage dealing
+- `sys_move`, `sys_render2d` - Physics and rendering with scale variations
+- `sys_spawn` - Existing spawn system for healing particles and explosions
+- All collision and particle systems work unchanged
+
+### 🔧 Minimal Extensions (Only for Enhancement)
+
+**1. Team Targeting** ✅ *Already Implemented* (3-line change to `sys_aim.ts`):
 
 ```typescript
 // In find_nearest_enemy(): Skip entities with same IsPlayer value
@@ -50,32 +85,39 @@ let other_ai = game.World.ControlAi[other];
 if (other_ai && other_ai.IsPlayer === my_ai.IsPlayer) continue; // Same team!
 ```
 
-**2. Cat Blueprints** (creative stat combinations):
-
+**2. Optional: Layer Mask Targeting** (Future Enhancement):
 ```typescript
-// blueprint_mr_orange(): Fast melee fighter
-cat_control_ai(owner.IsPlayer, 3.0, 2.0, 0.5), // Inherit team, high speed, aggressive
-health(3), move2d(3.0),
-// No weapon - relies on melee attacks
-
-// blueprint_mr_white(): Tank with powerful ranged
-cat_control_ai(owner.IsPlayer, 1.5, 0.5, 2.0), // Inherit team, slow, patient
-health(5), move2d(1.5),
-blueprint_shotgun(), // High-damage weapon
+// Extend Aim component for specific target types
+interface Aim {
+    // ... existing properties
+    TargetLayers?: number; // Optional layer mask for valid targets
+}
+// Mr. Brown could target allies: TargetLayers = Layer.Player
+// Others target enemies: TargetLayers = Layer.Enemy
 ```
 
-**3. Special Behaviors** (system hooks):
+**3. Cat Blueprint Examples**:
 
-- **Mr. Brown Healing**: Periodically switch `aim.TargetEntity` to owner
-- **Mr. Blue Berserker**: Modify `ai.Aggressiveness` when health drops
-- **Mr. Red Explosion**: Spawn explosion particles in death handler
-- **Mr. Gray Stealth**: Modify render alpha in phases
+```typescript
+// Mr. Orange: Glass cannon berserker (pure stats)
+cat_control_ai(owner.IsPlayer, 3.5, 2.0, 0.3), // Fast, aggressive, impatient
+health(2), move2d(3.5), // Low HP, high speed
+aim(0.05), // Ultra-fast targeting
+deal_damage(2), // High melee damage
+scale(0.7), // Smaller size
 
-**4. Companion Management** (upgrade system):
+// Mr. Brown: Support healer (uses existing spawn system)
+cat_control_ai(owner.IsPlayer, 1.5, 0.2, 3.0), // Slow, passive, patient
+health(4), move2d(1.5),
+aim(0.5), // Slow targeting (not combat focused)
+spawn_timed(blueprint_heal_spawner, 2.0), // Heals every 2 seconds
+```
 
-- Spawn cat when companion upgrade applied
-- Allow multiple companions for synergistic gameplay
-- Remove companions when owner dies
+**4. Component Combinations for Special Effects**:
+- **Mr. Black Cat Summoning**: `spawn_timed` with random cat blueprints
+- **Mr. Red Explosion**: `destroy_on_hit: true` + spawn explosion on death
+- **Mr. Gray Shadow Trail**: Tiny scale (0.4) + `shadow_trail()` ability
+- **Mr. Brown Bodyguard**: Friendly targeting + damage redirection system
 
 ### Cat Mechanics
 
@@ -84,9 +126,10 @@ blueprint_shotgun(), // High-damage weapon
 - **Visual Distinction**: Different sprites, colors, sizes via render components
 - **Death Synchronization**: Companions die when owner dies
 - **Multiple Companions**: Players can have multiple cats for interesting synergies:
-  - Mr. Pink (sniper) + Mr. White (tank) = ranged support + front-line protection
-  - Mr. Orange (fast melee) + Mr. Brown (healer) = aggressive attacker + sustain support
-  - Mr. Blue (berserker) + Mr. Red (sacrifice) = explosive damage combinations
+  - Mr. Pink (boomerang) + Mr. White (tank) = ranged support + front-line protection
+  - Mr. Orange (whirlwind) + Mr. Brown (bodyguard) = aggressive attacker + protection support
+  - Mr. Blue (mortar) + Mr. Red (sacrifice) = artillery bombardment + explosive combinations
+  - Mr. Black (summoner) + Mr. Gray (shadow) = cat army + stealth assassination
 
 ### Implementation Benefits
 
@@ -98,301 +141,126 @@ blueprint_shotgun(), // High-damage weapon
 
 ---
 
-# Special Behaviors Implementation Guide
+# Pure Component Toolbox
 
-This section outlines the remaining special behaviors needed for cat companions and how they can be implemented using existing systems.
+This section documents the available component combinations that create all cat behaviors without any new systems.
 
-## Current Status
+## 🧰 Available Component Combinations
 
-**Implemented**: Basic combat AI, team targeting, weapon integration, multiple companion support  
-**Missing**: 5 special behaviors that make each cat unique beyond stats
+### Core AI & Movement
+- **Aggressiveness/Patience** - Personality traits (existing ControlAi)
+- **Move Speed** - Movement speed (existing Move2D)  
+- **Target Rate** - How often they search for targets (existing Aim.UpdateInterval)
+- **Scale** - Physical size affecting visibility and hitbox (existing LocalTransform2D)
 
-## 🔧 Implementation Strategy
+### Combat & Damage
+- **Health** - HP amount (existing Health)
+- **Melee Damage** - Claw/bite damage (existing DealDamage)
+- **Weapons** - Attach sniper, shotgun, etc. as children (existing weapon system)
+- **Collision Damage** - Damage on contact (existing collision system)
+- **Death Effects** - Explosions, spawns on death (existing spawn system)
 
-All special behaviors should leverage existing systems wherever possible to maintain the 80% code reuse philosophy.
+### Special Effects (All Existing)
+- **Particle Spawning** - spawn_timed for healing, trails, etc.
+- **Death Explosions** - destroy_on_hit + explosion spawn
+- **Visual Effects** - Color, scale, alpha modifications
+- **Timed Lifespan** - Auto-death after X seconds
 
----
+## 🎯 Pure Component Cat Designs
 
-## 1. 🐱 Mr. Black - Upgrade Disabling
-
-**Current Status**: `// TODO: Add upgrade-disabling special ability`
-
-**Behavior**: Disables 2 random enemy upgrades during combat
-
-**Implementation Options**:
-
-### Option A: Component-Based (Recommended)
+### Mr. Black - Cat Summoner ✅ **Uses Existing Spawn System**
 ```typescript
-// New component: com_upgrade_disabler.ts
-interface UpgradeDisabler {
-    DisabledUpgradeCount: number; // How many to disable
-    HasActivated: boolean; // Once per fight
-    Range: number; // Activation range
-}
-
-// In sys_upgrade_disabler.ts - new system
-// When Mr. Black gets close to enemy, randomly disable their upgrades
-// Could temporarily remove weapon children or modify health properties
+// Superior stats + periodic cat spawning
+health(6), move2d(2.8), deal_damage(2), aim(0.1),
+spawn_timed(blueprint_random_cat, 8.0), // Spawns random cats every 8 seconds
+// Aggressiveness=1.8, Patience=1.5
 ```
 
-### Option B: Combat Event Hook
+### Mr. Orange - Whirlwind Barbarian ✅ **No Special Logic**  
 ```typescript
-// Hook into sys_health.ts damage dealing
-// When Mr. Black first deals damage, trigger disable effect
-// Modify target's components directly (remove weapons, reduce armor)
+// Extreme mobility creates whirlwind behavior naturally
+health(2), move2d(4.2), deal_damage(2), aim(0.02) // Lightning-fast retargeting
+// Aggressiveness=2.5, Patience=0.1 - Constant target switching
 ```
 
-**Existing Systems Used**: Health, Children (weapon removal), LocalTransform2D (range checking)
-
----
-
-## 2. 💚 Mr. Brown - Healing Support
-
-**Current Status**: `// TODO: Add healing behavior`  
-
-**Behavior**: Heals owner for 1 HP every 4 seconds
-
-**Implementation Options**:
-
-### Option A: Targeting Override (Recommended)
-```typescript
-// New component: com_healer.ts
-interface Healer {
-    HealInterval: number; // 4.0 seconds
-    LastHealTime: number;
-    HealAmount: number; // 1 HP
-    OwnerEntity: number; // Who to heal
-}
-
-// In sys_healer.ts - new system
-// Periodically switch aim.TargetEntity to owner
-// Use existing "healing projectiles" or collision-based healing
+### Mr. Pink - Boomerang Marksman ✅ **No Special Logic**
+```typescript  
+// Ranged weapon + slow methodical behavior
+health(3), move2d(1.8), blueprint_boomerang(), aim(0.3) // Slow careful aiming
+// Aggressiveness=0.8, Patience=2.0 - Stays back and throws
 ```
 
-### Option B: Proximity Healing
+### Mr. White - Tank ✅ **No Special Logic**
 ```typescript
-// In sys_companion_special.ts
-// When Mr. Brown is near owner, apply healing over time
-// Modify owner's Health component directly
+// High HP + defensive positioning + close-range weapon
+health(7), move2d(1.3), blueprint_shotgun(), aim(0.15)
+// Aggressiveness=0.5, Patience=2.5 - Waits for enemies
 ```
 
-**Existing Systems Used**: Aim (target switching), Health (healing), LocalTransform2D (proximity)
-
----
-
-## 3. 🔥 Mr. Blue - Berserker Mode
-
-**Current Status**: `// TODO: Add berserker behavior`
-
-**Behavior**: Aggressiveness increases when Health < 50%
-
-**Implementation**:
-
-### Dynamic AI Modification
+### Mr. Brown - Bodyguard ✅ **Uses Friendly Targeting + Damage Redirection**
 ```typescript
-// New component: com_berserker.ts  
-interface Berserker {
-    BaseAggressiveness: number;
-    BerserkerMultiplier: number; // 1.5x when injured
-    HealthThreshold: number; // 50%
-    IsRaging: boolean;
-}
-
-// In sys_berserker.ts - new system
-export function sys_berserker(game: Game, delta: number) {
-    for (let entity = 0; entity < game.World.Signature.length; entity++) {
-        if ((game.World.Signature[entity] & (Has.Berserker | Has.Health | Has.ControlAi)) === (Has.Berserker | Has.Health | Has.ControlAi)) {
-            let berserker = game.World.Berserker[entity];
-            let health = game.World.Health[entity];
-            let ai = game.World.ControlAi[entity];
-            
-            let health_percent = health.Current / health.Max;
-            let should_rage = health_percent < berserker.HealthThreshold;
-            
-            if (should_rage && !berserker.IsRaging) {
-                ai.Aggressiveness = berserker.BaseAggressiveness * berserker.BerserkerMultiplier;
-                berserker.IsRaging = true;
-                console.log(`Mr. Blue entering berserker rage! Aggressiveness: ${ai.Aggressiveness}`);
-            } else if (!should_rage && berserker.IsRaging) {
-                ai.Aggressiveness = berserker.BaseAggressiveness;
-                berserker.IsRaging = false;
-            }
-        }
-    }
-}
+// Protects allies by targeting friendlies and intercepting damage
+health(4), move2d(1.5), aim(0.8, {TargetFriendlies: true}), // Targets allies to protect
+bodyguard(), // Redirects damage from nearby allies to self
+// Aggressiveness=0.1, Patience=3.0 - Protection focused
 ```
 
-**Existing Systems Used**: Health (threshold checking), ControlAi (aggressiveness modification)
-
----
-
-## 4. 👻 Mr. Gray - Stealth
-
-**Current Status**: `// TODO: Add stealth behavior`
-
-**Behavior**: Brief invisibility phases before surprise attacks
-
-**Implementation**:
-
-### Render Alpha Manipulation
-```typescript
-// New component: com_stealth.ts
-interface Stealth {
-    StealthDuration: number; // 2.0 seconds
-    CooldownDuration: number; // 8.0 seconds  
-    LastStealthTime: number;
-    IsStealthed: boolean;
-    OriginalAlpha: number;
-}
-
-// In sys_stealth.ts - new system
-export function sys_stealth(game: Game, delta: number) {
-    for (let entity = 0; entity < game.World.Signature.length; entity++) {
-        if ((game.World.Signature[entity] & (Has.Stealth | Has.Children)) === (Has.Stealth | Has.Children)) {
-            let stealth = game.World.Stealth[entity];
-            
-            // Check if should activate stealth (before attacking)
-            let ai = game.World.ControlAi[entity];
-            let should_stealth = ai.State === AiState.Preparing && !stealth.IsStealthed && 
-                                (game.Time - stealth.LastStealthTime) > stealth.CooldownDuration;
-            
-            if (should_stealth) {
-                // Set body sprite alpha to 0.2 (semi-transparent)
-                set_body_alpha(game, entity, 0.2);
-                stealth.IsStealthed = true;
-                stealth.LastStealthTime = game.Time;
-            } else if (stealth.IsStealthed && (game.Time - stealth.LastStealthTime) > stealth.StealthDuration) {
-                // Restore visibility
-                set_body_alpha(game, entity, stealth.OriginalAlpha);
-                stealth.IsStealthed = false;
-            }
-        }
-    }
-}
-
-function set_body_alpha(game: Game, entity: number, alpha: number) {
-    // Find body sprite child and modify render alpha
-    for (let child of query_down(game.World, entity, Has.Render2D)) {
-        let render = game.World.Render2D[child];
-        render.Color[3] = alpha; // Modify alpha channel
-        game.World.Signature[child] |= Has.Dirty;
-    }
-}
+### Mr. Blue - Mortar Artillery ✅ **No Special Logic**
+```typescript  
+// Glass cannon stats + mortar weapon for rapid bombardment
+health(2), move2d(2.8), blueprint_mortar(), aim(0.03) // Fastest targeting
+// Aggressiveness=2.0, Patience=0.1 - Rapid artillery fire
 ```
 
-**Existing Systems Used**: Render2D (alpha manipulation), ControlAi (state checking), Children (body sprite access)
-
----
-
-## 5. 💥 Mr. Red - Sacrifice Explosion
-
-**Current Status**: `// TODO: Add explosion on death`
-
-**Behavior**: Explodes for 4 damage when killed, hurting nearby enemies
-
-**Implementation**:
-
-### Death Event Hook
+### Mr. Gray - Shadow Assassin ✅ **Uses Shadow Trail Ability**
 ```typescript
-// New component: com_sacrifice.ts
-interface Sacrifice {
-    ExplosionDamage: number; // 4
-    ExplosionRadius: number; // 2.0  
-    HasExploded: boolean; // Prevent multiple explosions
-}
-
-// In sys_sacrifice.ts - new system  
-export function sys_sacrifice(game: Game, delta: number) {
-    for (let entity = 0; entity < game.World.Signature.length; entity++) {
-        if ((game.World.Signature[entity] & (Has.Sacrifice | Has.Health)) === (Has.Sacrifice | Has.Health)) {
-            let sacrifice = game.World.Sacrifice[entity];
-            let health = game.World.Health[entity];
-            
-            // Trigger explosion on death
-            if (!health.IsAlive && !sacrifice.HasExploded) {
-                explode_sacrifice_cat(game, entity, sacrifice);
-                sacrifice.HasExploded = true;
-            }
-        }
-    }
-}
-
-function explode_sacrifice_cat(game: Game, entity: number, sacrifice: Sacrifice) {
-    let transform = game.World.LocalTransform2D[entity];
-    let my_ai = game.World.ControlAi[entity];
-    
-    // Spawn explosion particles (reuse existing explosion blueprint)
-    let explosion = instantiate(game, blueprint_explosion());
-    game.World.LocalTransform2D[explosion].Translation = [...transform.Translation];
-    
-    // Damage nearby enemies
-    for (let other = 0; other < game.World.Signature.length; other++) {
-        if (other === entity) continue;
-        
-        let other_health = game.World.Health[other];
-        let other_ai = game.World.ControlAi[other];
-        let other_transform = game.World.LocalTransform2D[other];
-        
-        // Only damage enemies (different team)
-        if (!other_health?.IsAlive || !other_ai || other_ai.IsPlayer === my_ai.IsPlayer) continue;
-        
-        // Check distance
-        let distance = vec2_distance(transform.Translation, other_transform.Translation);
-        if (distance <= sacrifice.ExplosionRadius) {
-            other_health.PendingDamage.push({
-                Amount: sacrifice.ExplosionDamage,
-                Source: entity,  
-                Type: "explosion"
-            });
-            console.log(`Mr. Red explosion damaged entity ${other} for ${sacrifice.ExplosionDamage} damage`);
-        }
-    }
-}
+// Tiny scale + high speed + shadow trail = stealth with persistent damage
+health(2), move2d(3.2), deal_damage(3), scale(0.4), // Tiny = hard to see
+shadow_trail(), // Leaves damaging trail behind when moving
+// Aggressiveness=1.8, Patience=0.2 - Hit-and-run with trail damage
 ```
 
-**Existing Systems Used**: Health (death detection + damage dealing), LocalTransform2D (position + range), existing explosion particles
+### Mr. Red - Sacrifice ✅ **Uses Existing Death System**
+```typescript
+// Dies in one hit + explosion on death
+health(1), move2d(2.5), 
+deal_damage(1, DamageType.Hand2Hand, {
+    destroy_on_hit: true, // Dies on any damage
+    spawn_on_death: blueprint_explosion, // Explodes when killed
+})
+```
 
----
+## 🎮 Emergent Behaviors
 
-## 📋 Implementation Priority
+**All complex behaviors emerge from simple component combinations:**
 
-### Phase 1: Low-Hanging Fruit (Easy Wins)
-1. **Mr. Blue Berserker** - Simple AI modification based on health percentage  
-2. **Mr. Red Sacrifice** - Death event hook with explosion particles
-3. **Mr. Gray Stealth** - Render alpha manipulation with timing
+- **Cat Summoner** = Superior Stats + Periodic Cat Spawning + Team Leadership
+- **Whirlwind Barbarian** = Ultra-High Speed + Lightning Retargeting + Constant Aggression
+- **Boomerang Marksman** = Ranged Weapon + Slow Movement + High Patience + Distance Keeping
+- **Bodyguard** = Low Aggression + Friendly Targeting + Damage Redirection + Protection Focus
+- **Mortar Artillery** = Glass Cannon Stats + Mortar Weapon + Rapid Targeting + Area Damage
+- **Shadow Assassin** = Tiny Scale + High Speed + Shadow Trail + Hit-and-run Damage
+- **Tank** = High HP + Slow Speed + High Patience + Defensive weapon
+- **Suicide Bomber** = 1 HP + Fast Speed + Explosion on Death
 
-### Phase 2: Medium Complexity
-4. **Mr. Brown Healer** - Target switching or proximity healing  
+## ✅ Implementation Status
 
-### Phase 3: Complex Features  
-5. **Mr. Black Upgrade Disabling** - Component manipulation system
+**Current Status**: All cat behaviors implementable with **zero new systems**
 
-## 🔗 Integration Points
+**Required Work**:
+1. ✅ Team targeting (already implemented - 3 lines in sys_aim.ts)  
+2. 🔧 Update cat blueprints with pure component combinations
+3. 🔧 Create random cat spawner blueprint for Mr. Black
+4. 🔧 Create boomerang weapon blueprint for Mr. Pink
+5. 🔧 Implement friendly targeting system for Mr. Brown
+6. 🔧 Add damage redirection/bodyguard component for Mr. Brown
+7. 🔧 Add explosion-on-death to Mr. Red's deal_damage component
 
-**New Systems Needed**:
-- `sys_berserker.ts` - Dynamic AI personality modification
-- `sys_stealth.ts` - Render alpha manipulation with timing  
-- `sys_sacrifice.ts` - Death event handling with area damage
-- `sys_healer.ts` - Target switching or proximity healing
-- `sys_upgrade_disabler.ts` - Component manipulation for Mr. Black
+**Benefits**:
+- **Zero New Systems** - All behaviors use existing components
+- **Maximum Hackability** - Easy to create new cats by mixing components  
+- **Pure ECS** - Showcases emergent complexity from simple rules
+- **Performance** - No additional system overhead
+- **Maintainability** - No special-case logic to debug
 
-**New Components Needed**:
-- `com_berserker.ts`
-- `com_stealth.ts`  
-- `com_sacrifice.ts`
-- `com_healer.ts`
-- `com_upgrade_disabler.ts`
-
-**System Integration**:
-- Add new systems to `src/game.ts` system execution order
-- Hook into existing health, AI, and render systems where needed
-- Leverage existing explosion and particle systems for visual effects
-
-## 💡 Design Philosophy
-
-**Keep it Simple**: Each special behavior should be implementable in ~50-100 lines
-**Reuse Systems**: Leverage existing health, AI, render, and particle systems  
-**Visual Feedback**: All behaviors should have clear visual/audio indicators
-**Performance**: No heavy computation - simple checks and state changes only
-
-This approach maintains the 80% system reuse principle while adding unique personality to each cat companion!
+This approach demonstrates the true power of ECS: **complex behaviors emerging from simple component combinations!**
