@@ -127,97 +127,15 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 ### 5. Companions (8 upgrades) - Cat Allies 🐱
 
-**Strategy**: Reuse existing AI, weapon, and health systems with creative stat combinations and minor behavioral tweaks.
+**Strategy**: Cat companions that fight alongside the owner using existing AI and weapon systems.
 
-**Companion Cats** (8):
+For complete companion documentation including stats, architecture, and special behaviors implementation guide, see **[@docs/companions.md](companions.md)**
 
-| Cat        | HP  | Speed | Aggressiveness | Patience | Role           | Weapon       |
-| ---------- | --- | ----- | -------------- | -------- | -------------- | ------------ |
-| Mr. Black  | 4   | 2.5   | 1.8            | 1.5      | Elite Fighter  | None         |
-| Mr. Orange | 3   | 3.0   | 2.0            | 0.5      | Fast Melee     | None         |
-| Mr. Pink   | 3   | 2.0   | 1.2            | 1.0      | Sniper         | Sniper Rifle |
-| Mr. White  | 5   | 1.5   | 0.5            | 2.0      | Tank           | Shotgun      |
-| Mr. Brown  | 3   | 1.8   | 0.3            | 2.5      | Support Healer | None         |
-| Mr. Blue   | 4   | 2.2   | 1.0\*          | 1.0      | Berserker      | None         |
-| Mr. Gray   | 3   | 2.5   | 1.5            | 1.0      | Stealth        | None         |
-| Mr. Red    | 2   | 2.0   | 1.8            | 0.5      | Sacrifice      | None         |
-
-- **Mr. Black** - Most powerful, disables 2 random enemy upgrades for the fight (special ability)
-- **Mr. Orange** - Fast melee: Aggressiveness=2.0, MoveSpeed=3.0, Health=3, Battle Axe weapon
-- **Mr. Pink** - Ranged sniper: Aggressiveness=1.2, MoveSpeed=2.0, Health=3, Pistol weapon
-- **Mr. White** - Tank: Aggressiveness=0.5, MoveSpeed=1.5, Health=5, high weapon damage
-- **Mr. Brown** - Support healer: Periodically retargets owner for healing "attacks"
-- **Mr. Blue** - Berserker: Aggressiveness increases when Health < 50%
-- **Mr. Gray** - Stealth: Brief invisibility phases (render alpha changes)
-- **Mr. Red** - Sacrifice: Spawns explosion particles on death
-
-**Reusable Systems Architecture**:
-
-**✅ Zero Modifications Needed:**
-
-- `sys_control_ai` - Handles all movement and combat AI
-- `sys_weapon_*` - Cat attacks use existing weapon systems
-- `sys_health` - Cat death/damage processing
-- `sys_move`, `sys_render2d` - Physics and rendering
-- All collision and particle systems
-
-**🔧 Minimal Extensions Required:**
-
-**1. Team Targeting** (5-line change to `sys_aim.ts`):
-
-```typescript
-// In find_nearest_enemy(): Skip entities with same IsPlayer value
-let other_ai = game.World.ControlAi[other];
-if (other_ai && other_ai.IsPlayer === my_ai.IsPlayer) continue; // Same team!
-```
-
-**2. Cat Blueprints** (creative stat combinations):
-
-```typescript
-// blueprint_mr_orange(): Fast melee fighter
-control_ai(owner.IsPlayer, 3.0), // Inherit team, high speed
-health(3), move2d(3.0),
-blueprint_battle_axe(), // Attach weapon as child
-// Aggressiveness=2.0, Patience=0.5 in AI component
-
-// blueprint_mr_white(): Tank with powerful ranged
-control_ai(owner.IsPlayer, 1.5), // Inherit team, slow
-health(5), move2d(1.5),
-blueprint_sniper_rifle(), // High-damage weapon
-// Aggressiveness=0.5, Patience=2.0
-```
-
-**3. Special Behaviors** (system hooks):
-
-- **Mr. Brown Healing**: Periodically switch `aim.TargetEntity` to owner
-- **Mr. Blue Berserker**: Modify `ai.Aggressiveness` when health drops
-- **Mr. Red Explosion**: Spawn explosion particles in death handler
-- **Mr. Gray Stealth**: Modify render alpha in phases
-
-**4. Companion Management** (upgrade system):
-
-- Spawn cat when companion upgrade applied
-- Allow multiple companions for synergistic gameplay
-- Remove companions when owner dies
-
-**Cat Mechanics**:
-
-- **Team Allegiance**: Cats inherit `IsPlayer` from owner (automatic enemy targeting)
-- **Personality Traits**: Each cat has unique Aggressiveness/Patience values
-- **Visual Distinction**: Different sprites, colors, sizes via render components
-- **Death Synchronization**: Companions die when owner dies
-- **Multiple Companions**: Players can have multiple cats for interesting synergies:
-    - Mr. Pink (sniper) + Mr. White (tank) = ranged support + front-line protection
-    - Mr. Orange (fast melee) + Mr. Brown (healer) = aggressive attacker + sustain support
-    - Mr. Blue (berserker) + Mr. Red (sacrifice) = explosive damage combinations
-
-**Implementation Benefits**:
-
-- **80% System Reuse**: Movement, combat, health, rendering all work unchanged
-- **Emergent Complexity**: Simple stat variations create diverse behaviors
-- **Minimal Code**: ~50 lines for team logic + cat blueprints vs hundreds for new systems
-- **Performance**: No new system overhead, just more entities with existing components
-- **Hackability**: Easy to add new cat types or modify existing ones
+**Quick Reference**:
+- 8 unique cats with different personalities: Mr. Black (elite), Mr. Orange (melee), Mr. Pink (sniper), Mr. White (tank), Mr. Brown (healer), Mr. Blue (berserker), Mr. Gray (stealth), Mr. Red (sacrifice)
+- Team-based targeting via `IsPlayer` inheritance (3-line change to `sys_aim.ts`)
+- Multiple companions allowed for strategic synergies
+- 80% system reuse with existing AI, weapon, and health systems
 
 ## Upgrade Distribution Summary
 
