@@ -1,4 +1,4 @@
-import {Vec2, RAD_TO_DEG} from "../../lib/math.js";
+import {RAD_TO_DEG, Vec2} from "../../lib/math.js";
 import {vec2_length, vec2_normalize, vec2_subtract} from "../../lib/vec2.js";
 import {query_down} from "../components/com_children.js";
 import {Game} from "../game.js";
@@ -73,12 +73,21 @@ function find_nearest_enemy(game: Game, entity: number): number {
     let transform = game.World.LocalTransform2D[entity];
     if (!transform) return -1;
 
+    let my_ai = game.World.ControlAi[entity];
+
     let nearest_entity = -1;
     let nearest_distance = Infinity;
 
     for (let other = 0; other < game.World.Signature.length; other++) {
         if (other === entity) continue;
         if (!is_target_valid(game, other)) continue;
+
+        // Skip entities on the same team
+        let other_ai = game.World.ControlAi[other];
+        if (other_ai && other_ai.IsPlayer === my_ai.IsPlayer) {
+            // Same team!
+            continue;
+        }
 
         let other_transform = game.World.LocalTransform2D[other];
         let distance_vec: Vec2 = [0, 0];

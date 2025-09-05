@@ -130,11 +130,64 @@ export const ABILITY_UPGRADES: UpgradeType[] = [
     },
 ];
 
+// Companion upgrade definitions - Cat allies
+export const COMPANION_UPGRADES: UpgradeType[] = [
+    {
+        id: "mr_black",
+        category: UpgradeCategory.Companion,
+        name: "Mr. Black",
+        description: "Most powerful cat companion, disables enemy upgrades",
+    },
+    {
+        id: "mr_orange",
+        category: UpgradeCategory.Companion,
+        name: "Mr. Orange",
+        description: "Fast melee attacker cat with 3 HP and aggressive personality",
+    },
+    {
+        id: "mr_pink",
+        category: UpgradeCategory.Companion,
+        name: "Mr. Pink",
+        description: "Ranged sniper cat with precision attacks",
+    },
+    {
+        id: "mr_white",
+        category: UpgradeCategory.Companion,
+        name: "Mr. White",
+        description: "Tank cat with 5 HP and powerful ranged attacks",
+    },
+    {
+        id: "mr_brown",
+        category: UpgradeCategory.Companion,
+        name: "Mr. Brown",
+        description: "Support cat that heals owner periodically",
+    },
+    {
+        id: "mr_blue",
+        category: UpgradeCategory.Companion,
+        name: "Mr. Blue",
+        description: "Berserker cat that gets stronger when injured",
+    },
+    {
+        id: "mr_gray",
+        category: UpgradeCategory.Companion,
+        name: "Mr. Gray",
+        description: "Stealth cat with invisibility phases",
+    },
+    {
+        id: "mr_red",
+        category: UpgradeCategory.Companion,
+        name: "Mr. Red",
+        description: "Sacrifice cat that explodes when killed",
+    },
+];
+
 // All upgrades registry
 export const ALL_UPGRADES: UpgradeType[] = [
     ...WEAPON_UPGRADES,
     ...ARMOR_UPGRADES,
     ...ABILITY_UPGRADES,
+    ...COMPANION_UPGRADES,
 ];
 
 // Utility function to get upgrade display name by ID

@@ -131,9 +131,20 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 **Companion Cats** (8):
 
+| Cat        | HP  | Speed | Aggressiveness | Patience | Role           | Weapon       |
+| ---------- | --- | ----- | -------------- | -------- | -------------- | ------------ |
+| Mr. Black  | 4   | 2.5   | 1.8            | 1.5      | Elite Fighter  | None         |
+| Mr. Orange | 3   | 3.0   | 2.0            | 0.5      | Fast Melee     | None         |
+| Mr. Pink   | 3   | 2.0   | 1.2            | 1.0      | Sniper         | Sniper Rifle |
+| Mr. White  | 5   | 1.5   | 0.5            | 2.0      | Tank           | Shotgun      |
+| Mr. Brown  | 3   | 1.8   | 0.3            | 2.5      | Support Healer | None         |
+| Mr. Blue   | 4   | 2.2   | 1.0\*          | 1.0      | Berserker      | None         |
+| Mr. Gray   | 3   | 2.5   | 1.5            | 1.0      | Stealth        | None         |
+| Mr. Red    | 2   | 2.0   | 1.8            | 0.5      | Sacrifice      | None         |
+
 - **Mr. Black** - Most powerful, disables 2 random enemy upgrades for the fight (special ability)
 - **Mr. Orange** - Fast melee: Aggressiveness=2.0, MoveSpeed=3.0, Health=3, Battle Axe weapon
-- **Mr. Pink** - Ranged sniper: Aggressiveness=1.2, MoveSpeed=2.0, Health=3, Pistol weapon  
+- **Mr. Pink** - Ranged sniper: Aggressiveness=1.2, MoveSpeed=2.0, Health=3, Pistol weapon
 - **Mr. White** - Tank: Aggressiveness=0.5, MoveSpeed=1.5, Health=5, high weapon damage
 - **Mr. Brown** - Support healer: Periodically retargets owner for healing "attacks"
 - **Mr. Blue** - Berserker: Aggressiveness increases when Health < 50%
@@ -143,6 +154,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 **Reusable Systems Architecture**:
 
 **✅ Zero Modifications Needed:**
+
 - `sys_control_ai` - Handles all movement and combat AI
 - `sys_weapon_*` - Cat attacks use existing weapon systems
 - `sys_health` - Cat death/damage processing
@@ -152,6 +164,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 **🔧 Minimal Extensions Required:**
 
 **1. Team Targeting** (5-line change to `sys_aim.ts`):
+
 ```typescript
 // In find_nearest_enemy(): Skip entities with same IsPlayer value
 let other_ai = game.World.ControlAi[other];
@@ -159,10 +172,11 @@ if (other_ai && other_ai.IsPlayer === my_ai.IsPlayer) continue; // Same team!
 ```
 
 **2. Cat Blueprints** (creative stat combinations):
+
 ```typescript
 // blueprint_mr_orange(): Fast melee fighter
 control_ai(owner.IsPlayer, 3.0), // Inherit team, high speed
-health(3), move2d(3.0), 
+health(3), move2d(3.0),
 blueprint_battle_axe(), // Attach weapon as child
 // Aggressiveness=2.0, Patience=0.5 in AI component
 
@@ -174,15 +188,17 @@ blueprint_sniper_rifle(), // High-damage weapon
 ```
 
 **3. Special Behaviors** (system hooks):
+
 - **Mr. Brown Healing**: Periodically switch `aim.TargetEntity` to owner
 - **Mr. Blue Berserker**: Modify `ai.Aggressiveness` when health drops
 - **Mr. Red Explosion**: Spawn explosion particles in death handler
 - **Mr. Gray Stealth**: Modify render alpha in phases
 
 **4. Companion Management** (upgrade system):
+
 - Spawn cat when companion upgrade applied
-- Replace existing companion (one active rule)
-- Remove companion when owner dies
+- Allow multiple companions for synergistic gameplay
+- Remove companions when owner dies
 
 **Cat Mechanics**:
 
@@ -190,7 +206,10 @@ blueprint_sniper_rifle(), // High-damage weapon
 - **Personality Traits**: Each cat has unique Aggressiveness/Patience values
 - **Visual Distinction**: Different sprites, colors, sizes via render components
 - **Death Synchronization**: Companions die when owner dies
-- **Replacement Rule**: Later companions replace earlier ones
+- **Multiple Companions**: Players can have multiple cats for interesting synergies:
+    - Mr. Pink (sniper) + Mr. White (tank) = ranged support + front-line protection
+    - Mr. Orange (fast melee) + Mr. Brown (healer) = aggressive attacker + sustain support
+    - Mr. Blue (berserker) + Mr. Red (sacrifice) = explosive damage combinations
 
 **Implementation Benefits**:
 

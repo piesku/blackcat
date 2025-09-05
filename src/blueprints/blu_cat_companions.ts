@@ -1,0 +1,271 @@
+import {Vec4} from "../../lib/math.js";
+import {Tile} from "../../sprites/spritesheet.js";
+import {blueprint_healthbar} from "./blu_healthbar.js";
+import {blueprint_sniper_rifle} from "./weapons/blu_sniper_rifle.js";
+import {blueprint_shotgun} from "./weapons/blu_shotgun.js";
+import {aim} from "../components/com_aim.js";
+import {children} from "../components/com_children.js";
+import {collide2d} from "../components/com_collide2d.js";
+import {AiState} from "../components/com_control_ai.js";
+import {DamageType, deal_damage} from "../components/com_deal_damage.js";
+import {health} from "../components/com_health.js";
+import {local_transform2d} from "../components/com_local_transform2d.js";
+import {move2d} from "../components/com_move2d.js";
+import {render2d} from "../components/com_render2d.js";
+import {spatial_node2d} from "../components/com_spatial_node2d.js";
+import {Game, Layer} from "../game.js";
+import {Has} from "../world.js";
+
+// Custom AI component for cats with specific personality traits
+export function cat_control_ai(
+    owner_is_player: boolean,
+    base_move_speed: number,
+    aggressiveness: number,
+    patience: number,
+) {
+    return (game: Game, entity: number) => {
+        game.World.Signature[entity] |= Has.ControlAi;
+
+        // Cats have minimal initial delays (they're eager)
+        let initial_delay = 0.2;
+        let attack_delay = 0.3;
+        let circle_direction = Math.random() > 0.5 ? 1 : -1;
+
+        game.World.ControlAi[entity] = {
+            State: AiState.Circling,
+            LastStateChange: game.Time,
+            StateTimer: initial_delay,
+            CircleDirection: circle_direction,
+            AttackCooldown: attack_delay,
+            IsPlayer: owner_is_player, // Inherit team from owner
+            Energy: 1.0, // Cats always start with full energy
+            BaseMoveSpeed: base_move_speed,
+
+            // Custom personality traits
+            Aggressiveness: aggressiveness,
+            Patience: patience,
+
+            // State vectors
+            PrepareDirection: [0, 0],
+            SeparationForce: [0, 0],
+            HasRetreatedAtLowHealth: false,
+        };
+    };
+}
+
+// Cat colors for different companions
+const cat_colors = {
+    black: [0.1, 0.1, 0.1, 1] as Vec4,
+    orange: [1.0, 0.5, 0.1, 1] as Vec4,
+    pink: [1.0, 0.7, 0.8, 1] as Vec4,
+    white: [0.9, 0.9, 0.9, 1] as Vec4,
+    brown: [0.6, 0.4, 0.2, 1] as Vec4,
+    blue: [0.3, 0.3, 0.8, 1] as Vec4,
+    gray: [0.5, 0.5, 0.5, 1] as Vec4,
+    red: [0.8, 0.2, 0.2, 1] as Vec4,
+};
+
+// Cat eyes (bright green for all cats)
+export function blueprint_cat_eyes(_game: Game) {
+    return [
+        spatial_node2d(),
+        local_transform2d(undefined, 0, [1, 1]),
+        render2d(Tile.Eyes, [0.2, 1.0, 0.2, 1]), // Bright green cat eyes
+    ];
+}
+
+// Cat body with specific color
+export function blueprint_cat_body(game: Game, color: Vec4, scale: number = 0.7) {
+    return [
+        spatial_node2d(),
+        local_transform2d(undefined, 0, [scale, scale]), // Smaller than humans
+        render2d(Tile.Body, color),
+        children(blueprint_cat_eyes(game)),
+    ];
+}
+
+// Base cat companion with customizable stats
+function blueprint_cat_base(
+    game: Game,
+    owner_is_player: boolean,
+    color: Vec4,
+    hp: number,
+    move_speed: number,
+    aggressiveness: number,
+    patience: number,
+    scale: number = 0.7,
+    weapon_blueprint?: any,
+) {
+    let cat_children = [
+        blueprint_cat_body(game, color, scale),
+        blueprint_healthbar(),
+        // No reticle for cats - they're more instinctual
+    ];
+
+    // Add weapon if provided
+    if (weapon_blueprint) {
+        cat_children.push(weapon_blueprint);
+    }
+
+    return [
+        spatial_node2d(),
+        local_transform2d(),
+
+        // Cats inherit team from owner with custom personality
+        cat_control_ai(owner_is_player, move_speed, aggressiveness, patience),
+
+        collide2d(true, Layer.Player, Layer.Terrain | Layer.Player, 0.4), // Smaller collision
+        health(hp),
+        move2d(move_speed, 0),
+        aim(0.15), // Cats are slightly slower to retarget than humans
+
+        children(...cat_children),
+
+        // Cat melee attacks (claws/bites)
+        deal_damage(1, DamageType.Hand2Hand, {
+            cooldown: 1.5,
+            shake_duration: 0.2,
+            destroy_on_hit: false,
+        }),
+    ];
+}
+
+// Mr. Black - Most powerful, disables enemy upgrades (special ability - placeholder for now)
+export function blueprint_mr_black(game: Game, owner_is_player: boolean) {
+    let blueprint = blueprint_cat_base(
+        game,
+        owner_is_player,
+        cat_colors.black, // color
+        4, // hp
+        2.5, // move_speed
+        1.8, // aggressiveness
+        1.5, // patience
+        0.8, // scale
+    );
+
+    // Manually set enhanced personality after creation
+    return [
+        ...blueprint,
+        // TODO: Add upgrade-disabling special ability
+    ];
+}
+
+// Mr. Orange - Fast melee attacker
+export function blueprint_mr_orange(game: Game, owner_is_player: boolean) {
+    return blueprint_cat_base(
+        game,
+        owner_is_player,
+        cat_colors.orange, // color
+        3, // hp
+        3.0, // move_speed
+        2.0, // aggressiveness
+        0.5, // patience
+        0.7, // scale
+    );
+}
+
+// Mr. Pink - Ranged sniper
+export function blueprint_mr_pink(game: Game, owner_is_player: boolean) {
+    return blueprint_cat_base(
+        game,
+        owner_is_player,
+        cat_colors.pink, // color
+        3, // hp
+        2.0, // move_speed
+        1.2, // aggressiveness
+        1.0, // patience
+        0.7, // scale
+        blueprint_sniper_rifle(), // weapon_blueprint
+    );
+}
+
+// Mr. White - Tank with powerful attacks
+export function blueprint_mr_white(game: Game, owner_is_player: boolean) {
+    return blueprint_cat_base(
+        game,
+        owner_is_player,
+        cat_colors.white, // color
+        5, // hp
+        1.5, // move_speed
+        0.5, // aggressiveness
+        2.0, // patience
+        0.8, // scale
+        blueprint_shotgun(), // weapon_blueprint
+    );
+}
+
+// Mr. Brown - Support healer (special behavior needed)
+export function blueprint_mr_brown(game: Game, owner_is_player: boolean) {
+    let blueprint = blueprint_cat_base(
+        game,
+        owner_is_player,
+        cat_colors.brown, // color
+        3, // hp
+        1.8, // move_speed
+        0.3, // aggressiveness
+        2.5, // patience
+        0.7, // scale
+    );
+
+    return [
+        ...blueprint,
+        // TODO: Add healing behavior
+    ];
+}
+
+// Mr. Blue - Berserker (aggressiveness increases when health drops)
+export function blueprint_mr_blue(game: Game, owner_is_player: boolean) {
+    let blueprint = blueprint_cat_base(
+        game,
+        owner_is_player,
+        cat_colors.blue, // color
+        4, // hp
+        2.2, // move_speed
+        1.0, // aggressiveness (will increase when injured)
+        1.0, // patience
+        0.7, // scale
+    );
+
+    return [
+        ...blueprint,
+        // TODO: Add berserker behavior
+    ];
+}
+
+// Mr. Gray - Stealth cat (invisibility phases)
+export function blueprint_mr_gray(game: Game, owner_is_player: boolean) {
+    let blueprint = blueprint_cat_base(
+        game,
+        owner_is_player,
+        cat_colors.gray, // color
+        3, // hp
+        2.5, // move_speed
+        1.5, // aggressiveness
+        1.0, // patience
+        0.6, // scale (smaller for stealth)
+    );
+
+    return [
+        ...blueprint,
+        // TODO: Add stealth behavior
+    ];
+}
+
+// Mr. Red - Sacrifice cat (explodes on death)
+export function blueprint_mr_red(game: Game, owner_is_player: boolean) {
+    let blueprint = blueprint_cat_base(
+        game,
+        owner_is_player,
+        cat_colors.red, // color
+        2, // hp (low health, high risk/reward)
+        2.0, // move_speed
+        1.8, // aggressiveness
+        0.5, // patience
+        0.6, // scale
+    );
+
+    return [
+        ...blueprint,
+        // TODO: Add explosion on death
+    ];
+}
