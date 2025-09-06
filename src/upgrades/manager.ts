@@ -19,6 +19,7 @@ import {blueprint_mortar} from "../blueprints/weapons/blu_mortar.js";
 import {blueprint_shotgun} from "../blueprints/weapons/blu_shotgun.js";
 import {blueprint_sniper_rifle} from "../blueprints/weapons/blu_sniper_rifle.js";
 import {blueprint_spikeballs} from "../blueprints/weapons/blu_spikeballs.js";
+import {abilities, AbilityType} from "../components/com_abilities.js";
 import {attach_to_parent} from "../components/com_children.js";
 import {spawn_timed} from "../components/com_spawn.js";
 import {Game} from "../game.js";
@@ -204,6 +205,14 @@ function apply_armor_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
 
 function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
     switch (upgrade.id) {
+        case "vampiric":
+            // Add vampiric ability directly
+            abilities([AbilityType.Vampiric])(game, entity);
+            console.log(
+                `[UPGRADE] Applied Vampiric ability to entity ${entity} - heal 1 HP for every 2 damage dealt`,
+            );
+            break;
+
         case "shadow_trail":
             spawn_timed(
                 blueprint_shadow_particle,

@@ -10,6 +10,7 @@
  * All damage detection uses the collision system - no separate radius detection needed.
  */
 
+import {AbilityType, has_ability} from "../components/com_abilities.js";
 import {Collide2D} from "../components/com_collide2d.js";
 import {DealDamage} from "../components/com_deal_damage.js";
 import {get_root_spawner} from "../components/com_label.js";
@@ -90,6 +91,22 @@ function handle_collision_damage(
         console.log(
             `[DAMAGE] Entity ${entity} (${damage_dealer.DamageType}) hit target ${target_entity}: adding ${final_damage.toFixed(1)} damage (base: ${damage_dealer.Damage}, original source: ${original_spawner})`,
         );
+
+        // Handle vampiric healing (heal attacker based on damage about to be dealt)
+        if (has_ability(game, original_spawner, AbilityType.Vampiric)) {
+            let attacker_health = game.World.Health[original_spawner];
+            DEBUG: if (!attacker_health) throw new Error("attacker missing health component");
+
+            let heal_amount = final_damage / 2; // Heal 1 HP for every 2 damage dealt
+            attacker_health.PendingHealing.push({
+                Amount: heal_amount,
+                Source: original_spawner,
+                Type: "vampiric",
+            });
+            console.log(
+                `[VAMPIRIC] Entity ${original_spawner} vampiric healing ${heal_amount.toFixed(2)} HP from dealing ${final_damage.toFixed(1)} damage to entity ${target_entity}`,
+            );
+        }
 
         // Add to hit list for piercing
         if (damage_dealer.HitEntities) {

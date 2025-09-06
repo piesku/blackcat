@@ -146,6 +146,13 @@ export const ARMOR_UPGRADES: UpgradeType[] = [
 // Ability upgrade definitions
 export const ABILITY_UPGRADES: UpgradeType[] = [
     {
+        id: "vampiric",
+        category: UpgradeCategory.Ability,
+        name: "Vampiric",
+        description: "Heal 1 HP for every 2 damage you deal to enemies",
+        rarity: UpgradeRarity.Uncommon,
+    },
+    {
         id: "shadow_trail",
         category: UpgradeCategory.Ability,
         name: "Shadow Trail",
