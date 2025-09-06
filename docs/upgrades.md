@@ -6,29 +6,23 @@ This document outlines the implementation architecture for the upgrade system in
 
 Upgrades are the core mechanic that drives strategic depth and build variety. Players accumulate 33 upgrades over the course of their run, with opponents receiving the same number of randomly assigned upgrades for balanced but unpredictable encounters.
 
-## Complete Upgrade Categories (53 Total)
+## Upgrade Categories
 
-### 1. Weapons (11 upgrades) - Ranged Focus with Particle Effects ✅
+### 1. Weapons - Ranged Focus with Particle Effects 🔫
 
 **Strategy**: Ranged weapons using particle spawn system for spectacular visual effects. Inspired by Liero classics.
 
-**Ranged Weapons** (11):
-
-- **Flamethrower** ✅ - Fire cone with persistent flame particles
-- **Minigun** ✅ - High rate of fire bullet spray with shell casing particles
-- **Shotgun** ✅ - Multi-pellet spread with spark particles
-- **Explosives** ✅ - Thrown bombs that explode on timeout with debris
-- **Spikeballs** ✅ - Bouncing projectiles which persist until timeout
-- **Sniper Rifle** ✅ - Powerful high precision rifle with long reload
-- **Mortar** ✅ - High-arc shells that explode on contact/timeout
-- **Larpa** ✅ - Rockets leaving falling particle damage trails
-- **Chiquita Bomb** ✅ - Timeout bomb spawning multiple banana sub-bombs
-- **Hoover Crack** ✅ - Spinning particle emitter dealing continuous damage
-- **Boomerang** ✅ - Returning projectile that deals damage on the way out and back
-
-**Removed Melee Weapons**:
-
-- Battle Axe, Baseball Bat, Chainsaw (moved to traits/abilities as combat modifiers)
+- **Flamethrower** ✅ _(Uncommon)_ - Emits a cone of flame particles that damage enemies
+- **Minigun** ✅ _(Rare)_ - High rate of fire bullet spray with ejecting shell casings
+- **Shotgun** ✅ _(Common)_ - Spread shot ranged weapon with multiple projectiles
+- **Explosives** ✅ _(Common)_ - Thrown bombs that explode on timeout with debris particles
+- **Spikeballs** ✅ _(Common)_ - Bouncing projectiles that persist and ricochet around the arena
+- **Rifle** ✅ _(Common)_ - High-damage, long-range precision weapon with muzzle flash
+- **Mortar** ✅ _(Uncommon)_ - High-arc explosive shells with area damage
+- **Larpa** ✅ _(Rare)_ - Rockets leaving falling particle damage trails
+- **Chiquita Bomb** ✅ _(Rare)_ - Bomb spawning multiple banana sub-bombs
+- **Hoover Crack** ✅ _(Rare)_ - Spinning particle emitter dealing continuous damage
+- **Boomerang** ✅ _(Uncommon)_ - Returning projectile that deals damage on the way out and back
 
 **Implementation**:
 
@@ -38,126 +32,142 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - Complex behaviors: timeout explosions, bouncing, area effects, trails
 - Visual impact: Every weapon creates spectacular particle displays
 
-### 2. Armor/Defense (10 upgrades) - Component Enhancement ✅
+### 2. Armor - Defensive Enhancement 🛡️
 
-**Strategy**: Enhanced Health component with armor properties + centralized damage processing.
+**Strategy**: Defensive upgrades that enhance survivability through Health component modifications and damage mitigation.
 
-**Current Implemented** (4):
-
-- Scrap Armor - Ignores first damage instance
-- Spiked Vest - Reflects 1 damage back to attacker
-- Ablative Plating - Absorbs first 2 damage, then provides 25% reduction
-- 25% Damage Reduction - Reduces all incoming damage
-
-**New Additions** (6):
-
-- **Shield Generator** - Absorbs next 3 damage, then breaks (renewable on kill)
-- **Reactive Plating** - Damage reduction increases with consecutive hits (25% → 50% → 75%)
-- **Berserker Armor** - Take 50% more damage but deal 100% more damage
-- **Regenerative Mesh** - Slowly heal 1 HP every 3 seconds during combat
-- **Mirror Armor** - 100% reflect damage but you take 50% of reflected amount
-- **Proximity Barrier** - Reduce damage from enemies within melee range by 40%
+- **Scrap Armor** ✅ _(Common)_ - Ignores the first damage instance you take in combat
+- **Spiked Vest** ✅ _(Common)_ - Reflects +1 damage back to attackers (stacks with other reflection)
+- **Vitality Boost** ✅ _(Uncommon)_ - Increases maximum health by +50% of current max (stacks additively)
+- **Reinforced Plating** ✅ _(Uncommon)_ - Reduces all damage taken by 25%
+- **Regenerative Mesh** _(Uncommon)_ - Slowly heal during combat (0.3hp/s)
+- **Mirror Armor** _(Rare)_ - 100% reflect damage but you take 50% of reflected amount
+- **Proximity Barrier** _(Uncommon)_ - Reduce damage from enemies within melee range by 40%
+- **Last Stand** _(Rare)_ - Take 75% less damage when at 1 HP
+- **Thick Hide** _(Uncommon)_ - Gain +1 HP and reduce damage from attacks by 1 (minimum 1)
+- **Tough Skin** _(Common)_ - Reduce all damage by 1 (minimum 1 damage)
 
 **Implementation**:
 
-- Enhanced `Health` component with armor properties
-- New `sys_health` system for centralized damage processing
+- Enhanced `Health` component with armor properties for defensive upgrades
 - Damage accumulation pattern (systems write to `PendingDamage[]`)
-- Armor effects stack multiplicatively
+- Armor effects stack multiplicatively with ability bonuses
 
-### 3. Abilities (11 upgrades) - System Integration & Event Hooks
+### 3. Support - Combat & Movement Enhancement ⚡
 
-**Strategy**: New components for ability tracking + system modifications for ability effects.
+**Strategy**: Active and passive abilities that modify combat behavior and provide tactical advantages.
 
-**Passive Abilities** (9):
-
-- **Ricochet** - Bullets bounce once off arena walls
-- **Shadow Trail** - Movement leaves damaging trail behind you
-- **Piercing Shots** - Projectiles go through first enemy and continue
-- **Double Shot** - Fire an additional projectile with each attack
-- **Vampiric** - Heal 1 HP for every 2 damage you deal
-- **Phase Walk** - Brief invincibility when dashing (0.3s)
-- **Battle Axe Mastery** - Melee attacks deal +2 damage and have wider arc
-- **Baseball Bat Swing** - Melee attacks knock back enemies 2x distance
-- **Chainsaw Fury** - Melee attacks hit 3 times rapidly with DOT effect
-
-**Triggered Abilities** (2):
-
-- **Second Wind** - When reaching 1 HP, instantly heal to 50% max HP (once per fight)
-- **Shock Wave** - Hitting an enemy while dashing releases a damaging shock wave
+- **Vampiric** ✅ _(Uncommon)_ - Heal 1 HP for every 2 damage you deal to enemies
+- **Shadow Trail** ✅ _(Uncommon)_ - Movement leaves damaging shadow particles behind you
+- **Piercing Shots** _(Uncommon)_ - Projectiles go through first enemy and continue
+- **Phase Walk** _(Rare)_ - Brief invincibility when dashing (0.3s)
+- **Dash Master** _(Common)_ - +100% dash range and reduced dash cooldown
+- **Evasion** _(Uncommon)_ - +25% chance to completely avoid damage
 
 **Implementation**:
 
-- New component: `com_abilities.ts` to track active abilities
-- System hooks: Check abilities in relevant systems (combat, movement, etc.)
-- Event system: Use existing action dispatch for ability triggers
-- New system: `sys_abilities.ts` for ability-specific logic
+- Ability component system for active/passive ability tracking
+- System hooks for ability effects in combat and movement systems
+- Event-driven ability triggers through action dispatch
+- Visual effects via particle spawn system
 
-### 4. Traits (13 upgrades) - Combat Enhancement ⚡
+### 4. Companions - Cat Allies 🐱
 
-**Strategy**: Direct combat stat modifications and behavioral changes with clear benefits.
+**Strategy**: Cat companions that fight alongside the owner using pure component combinations - each cat's unique behavior emerges from creative stat and component combinations without special-case logic.
 
-**Speed Traits** (4):
-
-- **Lightning Reflexes** - +50% movement speed and dash speed
-- **Quick Draw** - +40% attack speed (faster weapon cooldowns)
-- **Adrenaline Rush** - +30% speed when below 50% health
-- **Momentum** - Speed increases with consecutive hits (+10% per hit, max 50%)
-
-**Health Traits** (3):
-
-- **Vitality Boost** - +3 maximum health
-- **Regeneration** - Heal 1 HP every 5 seconds during combat
-- **Last Stand** - Take 50% less damage when at 1 HP
-
-**Behavior Traits** (6):
-
-- **Berserker** - +100% aggressiveness, +50% damage, -1 max health
-- **Assassin** - Lower aggressiveness but first attack each fight deals double damage
-- **Brawler** - Higher aggressiveness, shorter dash range but +1 damage to melee attacks
-- **Combo Fighter** - Every 3rd consecutive hit deals double damage
-- **Berserker Mode** - +50% attack speed and movement when below 25% HP
-- **Revenge Strike** - Next attack deals double damage after taking damage
+- **Mr. Black** ✅ _(Rare)_ - Cat summoner - Spawns random companion cats every 8 seconds using spawn system
+- **Mr. Orange** ✅ _(Common)_ - Whirlwind barbarian - Ultra-high speed with lightning-fast retargeting creates frenzied combat
+- **Mr. Pink** ✅ _(Common)_ - Boomerang marksman - Equipped boomerang weapon with slow methodical movement and high patience
+- **Mr. White** ✅ _(Uncommon)_ - Defensive tank - Highest HP, slowest speed, equipped shotgun, waits for enemies to approach
+- **Mr. Brown** ✅ _(Uncommon)_ - Loyal bodyguard - Ultra-low aggression, targets friendlies to stay close and protect allies
+- **Mr. Blue** ✅ _(Common)_ - Mortar artillery - Glass cannon with mortar weapon, fastest targeting for rapid bombardment
+- **Mr. Gray** ✅ _(Rare)_ - Shadow assassin - High speed, shadow trail ability for hit-and-run attacks
+- **Mr. Red** ✅ _(Uncommon)_ - Suicide bomber - Dies in one hit, fast approach, explodes on death
 
 **Implementation**:
 
-- Direct modifications to movement speed, attack rates, health, and damage
-- Clear positive effects that players can immediately feel
-- Behavioral traits modify aggressiveness with tangible benefits
+- **Pure Component Design** - Zero new systems needed, all behaviors from existing components
+- **Team-based targeting** via `IsPlayer` inheritance (3-line change to existing systems)
+- **Personality traits** - Unique Aggressiveness/Patience values create distinct behaviors
+- **80% system reuse** - Uses existing AI, weapon, health, and rendering systems unchanged
+- **Emergent complexity** - Simple stat variations create diverse, complex behaviors
+- **Multiple companions** allowed for strategic synergies and cat army builds
 
-### 5. Companions (8 upgrades) - Cat Allies 🐱
+### 5. Energy - Interactive Enhancement ⚡
 
-**Strategy**: Cat companions that fight alongside the owner using existing AI and weapon systems.
+**Strategy**: Player interaction system that allows clicking/holding for combat bonuses and healing.
 
-For complete companion documentation including stats, architecture, and special behaviors implementation guide, see **[@docs/companions.md](companions.md)**
+- **Energy Efficiency** ✅ _(Common)_ - Click rapidly to boost combat performance (+0.3 energy per tap)
+- **Adrenaline Rush** ✅ _(Uncommon)_ - Enhanced clicking efficiency (+0.5 energy per tap, stacks)
+- **Slow Metabolism** ✅ _(Common)_ - Energy decays 50% slower
+- **Basic Healing** ✅ _(Common)_ - Hold to restore +1 HP per second (stacks with other healing)
+- **Rapid Healing** ✅ _(Uncommon)_ - Hold to restore +2 HP per second (stacks with other healing)
+- **Energy Conservation** ✅ _(Uncommon)_ - Healing drains energy 50% slower
+- **Power Stability** ✅ _(Common)_ - Power decays 75% slower
+- **Hypermetabolism** ✅ _(Rare)_ - Energy decays twice as fast but enables powerful +3 HP/s healing
+- **Combat Stimulant** ✅ _(Rare)_ - Supercharged tapping (+0.8 energy per tap) and instant power recovery
+- **Shockwave Burst** _(Rare)_ - Release a powerful shockwave when energy is full, damaging nearby enemies
+- **Pop!** _(Rare)_ - Spawn particles in all direction when releasing a hold heal
 
-**Quick Reference**:
-- 8 unique cats with different personalities: Mr. Black (elite), Mr. Orange (melee), Mr. Pink (sniper), Mr. White (tank), Mr. Brown (healer), Mr. Blue (berserker), Mr. Gray (stealth), Mr. Red (sacrifice)
-- Team-based targeting via `IsPlayer` inheritance (3-line change to `sys_aim.ts`)
-- Multiple companions allowed for strategic synergies
-- 80% system reuse with existing AI, weapon, and health systems
+**Implementation**:
+
+- `sys_energy` system handles click/hold input detection
+- Energy affects combat performance and healing capabilities
+- Additive stacking for most bonuses (healing rates, tapping efficiency)
+- Trade-off upgrades provide risk/reward mechanics
+
+### 6. Traits - Combat & Behavioral Enhancement 🔥
+
+**Strategy**: Direct combat stat modifications and behavioral changes that dramatically alter playstyle and AI behavior.
+
+- **Lightning Reflexes** _(Uncommon)_ - +50% movement speed and dash speed
+- **Quick Draw** _(Common)_ - +40% attack speed (faster weapon cooldowns)
+- **Brawler** _(Common)_ - Higher aggressiveness, shorter dash range but +1 damage to all H2H attacks
+- **Vitality** _(Common)_ - +2 maximum health
+- **Berserker Mode** _(Uncommon)_ - +50% attack speed and movement when below 25% HP
+- **Pacifist** _(Rare)_ - Much lower aggressiveness but +3 max health and +50% damage reduction
+- **Cautious** _(Common)_ - Lower aggressiveness but +1 max health and better retreat timing
+
+**Implementation**:
+
+- Direct modifications to movement speed, attack rates, health, and damage in entity blueprints
+- Personality traits modify AI aggressiveness and behavior patterns in `com_control_ai`
+- Health traits integrate with existing `Health` component
+- Combat traits modify weapon damage and cooldowns
 
 ## Upgrade Distribution Summary
 
-**Total Upgrades: 53** (Player will see 33 out of 53 in a single run)
+**Current Implemented Upgrades: 34** / **Potential Total: 53**
 
-- **Weapons**: 11 upgrades
-- **Armor/Defense**: 10 upgrades (4 implemented + 6 new)
-- **Abilities**: 11 upgrades (9 passive + 2 triggered)
-- **Traits**: 13 upgrades (4 speed + 3 health + 6 behavior)
-- **Companions**: 8 upgrades (Mr. Black, Mr. Orange, Mr. Pink, etc.)
+- **Weapons**: 11 upgrades ✅ (complete ranged arsenal)
+- **Armor**: 4 upgrades ✅ + 6 ideas (defensive enhancement)
+- **Support**: 2 upgrades ✅ + 4 ideas (combat & movement enhancement)
+- **Companions**: 8 upgrades ✅ (complete cat roster)
+- **Energy**: 9 upgrades ✅ + 2 ideas (interactive system)
+- **Traits**: 0 upgrades + 7 ideas (combat & behavioral enhancement)
 
-**Implementation Strategy**:
+**Rarity Distribution** (Current 34):
+
+- **Common**: 13 upgrades (38%)
+- **Uncommon**: 13 upgrades (38%)
+- **Rare**: 8 upgrades (24%)
+
+**Current Implementation Strategy**:
 
 ```typescript
-// Updated upgrade categories (src/upgrades/types.ts)
+// Current upgrade categories (src/upgrades/types.ts)
 export const enum UpgradeCategory {
-    Weapon = "weapon",
-    Armor = "armor",
-    Ability = "ability",
-    Trait = "trait",
-    Companion = "companion", // Replaces "special"
+    Weapon = "weapon", // 11 upgrades ✅
+    Armor = "armor", // 4 upgrades ✅
+    Ability = "ability", // 2 upgrades ✅ (will become Support)
+    Companion = "companion", // 8 upgrades ✅
+    Energy = "energy", // 9 upgrades ✅
+    Special = "special", // 0 upgrades (future)
 }
+
+// Future expansion categories:
+// Support = "support",   // Ability category rename (combat & movement enhancement)
+// Trait = "trait",       // Combat & behavioral mods (future)
 ```
 
 **Key Design Principles**:
@@ -167,25 +177,3 @@ export const enum UpgradeCategory {
 3. **Synergies**: Upgrades from different categories should combine interestingly
 4. **Visual Feedback**: All upgrades should have clear visual/audio indicators
 5. **Cat Theme**: Companions are all cats fitting the game jam theme
-
-## Implementation Priority
-
-**Next Steps for Implementation:**
-
-1. **Phase 3: Expand Trait System** (High Priority)
-    - Add remaining trait upgrades to personality system
-    - Implement dynamic traits (health-based, combat-based)
-
-2. **Phase 4: Abilities System** (Medium Priority)
-    - Create `com_abilities.ts` component
-    - Implement passive abilities (Ricochet, Shadow Trail, etc.)
-    - Add triggered abilities (Last Stand, Second Wind, etc.)
-
-3. **Phase 5: Companion System** (Medium Priority)
-    - Extend AI system with team concept
-    - Create cat companion blueprints with unique abilities
-    - Black Cat as most powerful companion with upgrade-disabling
-
-4. **Phase 6: New Weapons & Armor** (Low Priority)
-    - Add 4 new weapons (Chainsaw, Flamethrower, Crossbow, Boomerang)
-    - Add 6 new armor types (Shield Generator, Reactive Plating, etc.)
