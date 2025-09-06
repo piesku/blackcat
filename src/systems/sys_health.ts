@@ -1,3 +1,4 @@
+import {vec2_distance_squared} from "../../lib/vec2.js";
 import {query_down} from "../components/com_children.js";
 import {DrawKind} from "../components/com_draw.js";
 import {Health} from "../components/com_health.js";
@@ -21,7 +22,7 @@ export function sys_health(game: Game, _delta: number) {
             let reflect_targets: Array<{entity: number; amount: number}> = [];
 
             for (let damage_instance of health.PendingDamage) {
-                let final_damage = calculate_armor_reduction(health, damage_instance.Amount);
+                let final_damage = calculate_armor_reduction(game, entity, health, damage_instance);
 
                 // Handle reflect damage (before damage is applied)
                 if (health.ReflectDamage && health.ReflectDamage > 0) {
@@ -29,6 +30,27 @@ export function sys_health(game: Game, _delta: number) {
                         entity: damage_instance.Source,
                         amount: health.ReflectDamage,
                     });
+                }
+
+                // Handle Mirror Armor - 100% reflect but take 50% self-damage
+                // Skip mirror armor for self-inflicted recoil damage to prevent infinite loops
+                if (health.MirrorArmor && damage_instance.Type !== "mirror_recoil") {
+                    reflect_targets.push({
+                        entity: damage_instance.Source,
+                        amount: damage_instance.Amount, // Reflect full original damage
+                    });
+
+                    // Add self-damage (50% of reflected amount)
+                    let self_damage = damage_instance.Amount * 0.5;
+                    health.PendingDamage.push({
+                        Amount: self_damage,
+                        Source: entity, // Self-inflicted
+                        Type: "mirror_recoil",
+                    });
+
+                    console.log(
+                        `[MIRROR_ARMOR] Entity ${entity} reflecting ${damage_instance.Amount.toFixed(1)} damage and taking ${self_damage.toFixed(1)} recoil`,
+                    );
                 }
 
                 total_damage += final_damage;
@@ -102,6 +124,24 @@ export function sys_health(game: Game, _delta: number) {
                 activate_heal_particles(game, entity);
             }
 
+            // Process regeneration (Regenerative Mesh armor)
+            if (
+                health.RegenerationRate &&
+                health.RegenerationRate > 0 &&
+                health.Current < health.Max
+            ) {
+                let regen_amount = health.RegenerationRate * _delta;
+                let health_before_regen = health.Current;
+                health.Current = Math.min(health.Max, health.Current + regen_amount);
+                let actual_regen = health.Current - health_before_regen;
+
+                if (actual_regen > 0) {
+                    console.log(
+                        `[REGEN] Entity ${entity} regenerated ${actual_regen.toFixed(2)} HP (${health_before_regen.toFixed(1)} -> ${health.Current.toFixed(1)})`,
+                    );
+                }
+            }
+
             // Clear processed damage and healing
             health.PendingDamage.length = 0;
             health.PendingHealing.length = 0;
@@ -112,16 +152,42 @@ export function sys_health(game: Game, _delta: number) {
     }
 }
 
-function calculate_armor_reduction(health: Health, incoming_damage: number): number {
-    let final_damage = incoming_damage;
+function calculate_armor_reduction(
+    game: Game,
+    defender_entity: number,
+    health: Health,
+    damage_instance: {Amount: number; Source: number; Type?: string},
+): number {
+    let final_damage = damage_instance.Amount;
 
     // Scrap Armor: Ignore first damage instance
     if (health.IgnoreFirstDamage && !health.FirstDamageIgnored) {
         health.FirstDamageIgnored = true;
         console.log(
-            `[ARMOR] Scrap Armor activated - ignoring ${incoming_damage.toFixed(1)} damage`,
+            `[ARMOR] Scrap Armor activated - ignoring ${damage_instance.Amount.toFixed(1)} damage`,
         );
         return 0;
+    }
+
+    // Last Stand: 75% damage reduction when at 1 HP
+    if (health.LastStand && health.Current <= 1) {
+        let reduction = final_damage * 0.75;
+        final_damage -= reduction;
+        console.log(
+            `[ARMOR] Last Stand activated - 75% damage reduction (reducing by ${reduction.toFixed(1)})`,
+        );
+    }
+
+    // Proximity Barrier: Reduce damage from nearby enemies
+    if (health.ProximityBarrier && health.ProximityBarrier > 0) {
+        let is_close_range = check_proximity(game, defender_entity, damage_instance.Source);
+        if (is_close_range) {
+            let reduction = final_damage * health.ProximityBarrier;
+            final_damage -= reduction;
+            console.log(
+                `[ARMOR] Proximity Barrier: ${(health.ProximityBarrier * 100).toFixed(0)}% reduction from nearby enemy - reducing by ${reduction.toFixed(1)}`,
+            );
+        }
     }
 
     // Percentage damage reduction
@@ -133,7 +199,38 @@ function calculate_armor_reduction(health: Health, incoming_damage: number): num
         );
     }
 
+    // Flat damage reduction (applied last, minimum 1 damage)
+    if (health.FlatDamageReduction && health.FlatDamageReduction > 0) {
+        let original_damage = final_damage;
+        final_damage = Math.max(1, final_damage - health.FlatDamageReduction);
+        let actual_reduction = original_damage - final_damage;
+
+        if (actual_reduction > 0) {
+            console.log(
+                `[ARMOR] Flat damage reduction: -${health.FlatDamageReduction} (actual: -${actual_reduction.toFixed(1)}, minimum 1 damage enforced)`,
+            );
+        }
+    }
+
     return final_damage;
+}
+
+function check_proximity(game: Game, defender: number, attacker: number): boolean {
+    // Define melee range distance (same as AI system uses)
+    const MELEE_RANGE_SQUARED = 1.2 * 1.2; // Base separation distance from AI system
+
+    let defender_transform = game.World.LocalTransform2D[defender];
+    let attacker_transform = game.World.LocalTransform2D[attacker];
+
+    if (!defender_transform || !attacker_transform) {
+        return false; // Can't calculate distance without transforms
+    }
+
+    let dist_sq = vec2_distance_squared(
+        defender_transform.Translation,
+        attacker_transform.Translation,
+    );
+    return dist_sq <= MELEE_RANGE_SQUARED;
 }
 
 function activate_heal_particles(game: Game, entity: number) {

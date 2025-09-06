@@ -141,6 +141,48 @@ export const ARMOR_UPGRADES: UpgradeType[] = [
         description: "Reduces all damage taken by 25%",
         rarity: UpgradeRarity.Uncommon,
     },
+    {
+        id: "regenerative_mesh",
+        category: UpgradeCategory.Armor,
+        name: "Regenerative Mesh",
+        description: "Slowly heal during combat (0.3 HP/s)",
+        rarity: UpgradeRarity.Uncommon,
+    },
+    {
+        id: "mirror_armor",
+        category: UpgradeCategory.Armor,
+        name: "Mirror Armor",
+        description: "100% reflect damage but you take 50% of reflected amount",
+        rarity: UpgradeRarity.Rare,
+    },
+    {
+        id: "proximity_barrier",
+        category: UpgradeCategory.Armor,
+        name: "Proximity Barrier",
+        description: "Reduce damage from enemies within melee range by 40%",
+        rarity: UpgradeRarity.Uncommon,
+    },
+    {
+        id: "last_stand",
+        category: UpgradeCategory.Armor,
+        name: "Last Stand",
+        description: "Take 75% less damage when at 1 HP",
+        rarity: UpgradeRarity.Rare,
+    },
+    {
+        id: "thick_hide",
+        category: UpgradeCategory.Armor,
+        name: "Thick Hide",
+        description: "Gain +1 HP and reduce damage from attacks by 1 (minimum 1)",
+        rarity: UpgradeRarity.Uncommon,
+    },
+    {
+        id: "tough_skin",
+        category: UpgradeCategory.Armor,
+        name: "Tough Skin",
+        description: "Reduce all damage by 1 (minimum 1 damage)",
+        rarity: UpgradeRarity.Common,
+    },
 ];
 
 // Ability upgrade definitions

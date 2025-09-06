@@ -26,8 +26,14 @@ import {Game} from "../game.js";
 import {Has} from "../world.js";
 import {
     apply_damage_reduction,
+    apply_last_stand,
+    apply_mirror_armor,
+    apply_proximity_barrier,
+    apply_regenerative_mesh,
     apply_scrap_armor,
     apply_spiked_vest,
+    apply_thick_hide,
+    apply_tough_skin,
     apply_vitality_boost,
 } from "./armor.js";
 import {UpgradeCategory, UpgradeType} from "./types.js";
@@ -195,6 +201,30 @@ function apply_armor_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
 
         case "damage_reduction":
             apply_damage_reduction(game, entity, 0.25);
+            break;
+
+        case "regenerative_mesh":
+            apply_regenerative_mesh(game, entity, 0.3);
+            break;
+
+        case "mirror_armor":
+            apply_mirror_armor(game, entity);
+            break;
+
+        case "proximity_barrier":
+            apply_proximity_barrier(game, entity, 0.4);
+            break;
+
+        case "last_stand":
+            apply_last_stand(game, entity);
+            break;
+
+        case "thick_hide":
+            apply_thick_hide(game, entity);
+            break;
+
+        case "tough_skin":
+            apply_tough_skin(game, entity);
             break;
 
         default:

@@ -40,12 +40,12 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Spiked Vest** ✅ _(Common)_ - Reflects +1 damage back to attackers (stacks with other reflection)
 - **Vitality Boost** ✅ _(Uncommon)_ - Increases maximum health by +50% of current max (stacks additively)
 - **Reinforced Plating** ✅ _(Uncommon)_ - Reduces all damage taken by 25%
-- **Regenerative Mesh** _(Uncommon)_ - Slowly heal during combat (0.3hp/s)
-- **Mirror Armor** _(Rare)_ - 100% reflect damage but you take 50% of reflected amount
-- **Proximity Barrier** _(Uncommon)_ - Reduce damage from enemies within melee range by 40%
-- **Last Stand** _(Rare)_ - Take 75% less damage when at 1 HP
-- **Thick Hide** _(Uncommon)_ - Gain +1 HP and reduce damage from attacks by 1 (minimum 1)
-- **Tough Skin** _(Common)_ - Reduce all damage by 1 (minimum 1 damage)
+- **Regenerative Mesh** ✅ _(Uncommon)_ - Slowly heal during combat (0.3hp/s)
+- **Mirror Armor** ✅ _(Rare)_ - 100% reflect damage but you take 50% of reflected amount
+- **Proximity Barrier** ✅ _(Uncommon)_ - Reduce damage from enemies within melee range by 40%
+- **Last Stand** ✅ _(Rare)_ - Take 75% less damage when at 1 HP
+- **Thick Hide** ✅ _(Uncommon)_ - Gain +1 HP and reduce damage from attacks by 1 (minimum 1)
+- **Tough Skin** ✅ _(Common)_ - Reduce all damage by 1 (minimum 1 damage)
 
 **Implementation**:
 
@@ -137,20 +137,20 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 ## Upgrade Distribution Summary
 
-**Current Implemented Upgrades: 34** / **Potential Total: 53**
+**Current Implemented Upgrades: 40** / **Potential Total: 53**
 
 - **Weapons**: 11 upgrades ✅ (complete ranged arsenal)
-- **Armor**: 4 upgrades ✅ + 6 ideas (defensive enhancement)
+- **Armor**: 10 upgrades ✅ (complete defensive enhancement)
 - **Support**: 2 upgrades ✅ + 4 ideas (combat & movement enhancement)
 - **Companions**: 8 upgrades ✅ (complete cat roster)
 - **Energy**: 9 upgrades ✅ + 2 ideas (interactive system)
 - **Traits**: 0 upgrades + 7 ideas (combat & behavioral enhancement)
 
-**Rarity Distribution** (Current 34):
+**Rarity Distribution** (Current 40):
 
-- **Common**: 13 upgrades (38%)
-- **Uncommon**: 13 upgrades (38%)
-- **Rare**: 8 upgrades (24%)
+- **Common**: 16 upgrades (40%)
+- **Uncommon**: 16 upgrades (40%)
+- **Rare**: 8 upgrades (20%)
 
 **Current Implementation Strategy**:
 
@@ -158,7 +158,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 // Current upgrade categories (src/upgrades/types.ts)
 export const enum UpgradeCategory {
     Weapon = "weapon", // 11 upgrades ✅
-    Armor = "armor", // 4 upgrades ✅
+    Armor = "armor", // 10 upgrades ✅
     Ability = "ability", // 2 upgrades ✅ (will become Support)
     Companion = "companion", // 8 upgrades ✅
     Energy = "energy", // 9 upgrades ✅

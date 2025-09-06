@@ -2,10 +2,8 @@ import {Game} from "../game.js";
 import {Has} from "../world.js";
 
 export function apply_scrap_armor(game: Game, entity: number) {
-    if (!(game.World.Signature[entity] & Has.Health)) {
-        console.warn(`[ARMOR] Cannot apply Scrap Armor to entity ${entity} - no Health component`);
-        return;
-    }
+    DEBUG: if (!(game.World.Signature[entity] & Has.Health))
+        throw new Error(`Cannot apply Scrap Armor to entity ${entity} - no Health component`);
 
     let health = game.World.Health[entity];
     health.IgnoreFirstDamage = true;
@@ -17,10 +15,8 @@ export function apply_scrap_armor(game: Game, entity: number) {
 }
 
 export function apply_spiked_vest(game: Game, entity: number, reflect_amount: number = 1) {
-    if (!(game.World.Signature[entity] & Has.Health)) {
-        console.warn(`[ARMOR] Cannot apply Spiked Vest to entity ${entity} - no Health component`);
-        return;
-    }
+    DEBUG: if (!(game.World.Signature[entity] & Has.Health))
+        throw new Error(`Cannot apply Spiked Vest to entity ${entity} - no Health component`);
 
     let health = game.World.Health[entity];
     health.ReflectDamage = (health.ReflectDamage || 0) + reflect_amount; // Stack with existing reflect
@@ -31,12 +27,8 @@ export function apply_spiked_vest(game: Game, entity: number, reflect_amount: nu
 }
 
 export function apply_vitality_boost(game: Game, entity: number) {
-    if (!(game.World.Signature[entity] & Has.Health)) {
-        console.warn(
-            `[ARMOR] Cannot apply Vitality Boost to entity ${entity} - no Health component`,
-        );
-        return;
-    }
+    DEBUG: if (!(game.World.Signature[entity] & Has.Health))
+        throw new Error(`Cannot apply Vitality Boost to entity ${entity} - no Health component`);
 
     let health = game.World.Health[entity];
 
@@ -55,12 +47,8 @@ export function apply_damage_reduction(
     entity: number,
     reduction_percent: number = 0.25,
 ) {
-    if (!(game.World.Signature[entity] & Has.Health)) {
-        console.warn(
-            `[ARMOR] Cannot apply Damage Reduction to entity ${entity} - no Health component`,
-        );
-        return;
-    }
+    DEBUG: if (!(game.World.Signature[entity] & Has.Health))
+        throw new Error(`Cannot apply Damage Reduction to entity ${entity} - no Health component`);
 
     let health = game.World.Health[entity];
 
@@ -72,5 +60,97 @@ export function apply_damage_reduction(
 
     console.log(
         `[UPGRADE] Applied ${(reduction_percent * 100).toFixed(0)}% Damage Reduction to entity ${entity} - total reduction now ${(health.DamageReduction * 100).toFixed(1)}%`,
+    );
+}
+
+export function apply_regenerative_mesh(game: Game, entity: number, regen_rate: number = 0.3) {
+    DEBUG: if (!(game.World.Signature[entity] & Has.Health))
+        throw new Error(`Cannot apply Regenerative Mesh to entity ${entity} - no Health component`);
+
+    let health = game.World.Health[entity];
+
+    // Stack regeneration rates additively
+    health.RegenerationRate = (health.RegenerationRate || 0) + regen_rate;
+
+    console.log(
+        `[UPGRADE] Applied Regenerative Mesh (+${regen_rate} HP/s) to entity ${entity} - total regen rate now ${health.RegenerationRate} HP/s`,
+    );
+}
+
+export function apply_mirror_armor(game: Game, entity: number) {
+    DEBUG: if (!(game.World.Signature[entity] & Has.Health))
+        throw new Error(`Cannot apply Mirror Armor to entity ${entity} - no Health component`);
+
+    let health = game.World.Health[entity];
+
+    // Mirror Armor provides 100% reflect but with self-damage
+    health.MirrorArmor = true;
+
+    console.log(
+        `[UPGRADE] Applied Mirror Armor to entity ${entity} - 100% damage reflection with 50% self-damage`,
+    );
+}
+
+export function apply_proximity_barrier(
+    game: Game,
+    entity: number,
+    reduction_percent: number = 0.4,
+) {
+    DEBUG: if (!(game.World.Signature[entity] & Has.Health))
+        throw new Error(`Cannot apply Proximity Barrier to entity ${entity} - no Health component`);
+
+    let health = game.World.Health[entity];
+
+    // Set proximity barrier - no stacking needed
+    health.ProximityBarrier = reduction_percent;
+
+    console.log(
+        `[UPGRADE] Applied Proximity Barrier to entity ${entity} - ${(reduction_percent * 100).toFixed(0)}% damage reduction from nearby enemies`,
+    );
+}
+
+export function apply_last_stand(game: Game, entity: number) {
+    DEBUG: if (!(game.World.Signature[entity] & Has.Health))
+        throw new Error(`Cannot apply Last Stand to entity ${entity} - no Health component`);
+
+    let health = game.World.Health[entity];
+
+    // Enable Last Stand ability
+    health.LastStand = true;
+
+    console.log(
+        `[UPGRADE] Applied Last Stand to entity ${entity} - 75% damage reduction when at 1 HP`,
+    );
+}
+
+export function apply_thick_hide(game: Game, entity: number) {
+    DEBUG: if (!(game.World.Signature[entity] & Has.Health))
+        throw new Error(`Cannot apply Thick Hide to entity ${entity} - no Health component`);
+
+    let health = game.World.Health[entity];
+
+    // Add +1 HP (both max and current)
+    health.Max += 1;
+    health.Current += 1;
+
+    // Add flat damage reduction (stacks additively)
+    health.FlatDamageReduction = (health.FlatDamageReduction || 0) + 1;
+
+    console.log(
+        `[UPGRADE] Applied Thick Hide to entity ${entity} - +1 HP (now ${health.Max}/${health.Current}) and +1 flat damage reduction (total: ${health.FlatDamageReduction})`,
+    );
+}
+
+export function apply_tough_skin(game: Game, entity: number) {
+    DEBUG: if (!(game.World.Signature[entity] & Has.Health))
+        throw new Error(`Cannot apply Tough Skin to entity ${entity} - no Health component`);
+
+    let health = game.World.Health[entity];
+
+    // Add flat damage reduction (stacks additively with Thick Hide)
+    health.FlatDamageReduction = (health.FlatDamageReduction || 0) + 1;
+
+    console.log(
+        `[UPGRADE] Applied Tough Skin to entity ${entity} - +1 flat damage reduction (total: ${health.FlatDamageReduction})`,
     );
 }
