@@ -1,5 +1,4 @@
 import {instantiate} from "../../lib/game.js";
-import {blueprint_shadow_particle} from "../blueprints/particles/blu_shadow_particle.js";
 import {blueprint_mr_black} from "../blueprints/companions/blu_mr_black.js";
 import {blueprint_mr_blue} from "../blueprints/companions/blu_mr_blue.js";
 import {blueprint_mr_brown} from "../blueprints/companions/blu_mr_brown.js";
@@ -8,6 +7,7 @@ import {blueprint_mr_orange} from "../blueprints/companions/blu_mr_orange.js";
 import {blueprint_mr_pink} from "../blueprints/companions/blu_mr_pink.js";
 import {blueprint_mr_red} from "../blueprints/companions/blu_mr_red.js";
 import {blueprint_mr_white} from "../blueprints/companions/blu_mr_white.js";
+import {blueprint_shadow_particle} from "../blueprints/particles/blu_shadow_particle.js";
 import {blueprint_boomerang_weapon} from "../blueprints/weapons/blu_boomerang_weapon.js";
 import {blueprint_chiquita_bomb} from "../blueprints/weapons/blu_chiquita_bomb.js";
 import {blueprint_explosives} from "../blueprints/weapons/blu_explosives.js";
@@ -24,10 +24,10 @@ import {spawn_timed} from "../components/com_spawn.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 import {
-    apply_vitality_boost,
     apply_damage_reduction,
     apply_scrap_armor,
     apply_spiked_vest,
+    apply_vitality_boost,
 } from "./armor.js";
 import {UpgradeCategory, UpgradeType} from "./types.js";
 
@@ -79,9 +79,10 @@ function apply_energy_upgrade(game: Game, entity: number, upgrade: UpgradeType) 
     // Apply energy parameters from upgrade data
     if (upgrade.data) {
         if ("energyPerTap" in upgrade.data) {
-            ai.EnergyPerTap = upgrade.data.energyPerTap as number;
+            // Stack energy per tap additively (base = 0)
+            ai.EnergyPerTap += upgrade.data.energyPerTap as number;
             console.log(
-                `[ENERGY_UPGRADE] Applied ${upgrade.name}: energyPerTap = ${ai.EnergyPerTap}`,
+                `[ENERGY_UPGRADE] Applied ${upgrade.name}: added +${upgrade.data.energyPerTap} energy/tap (total: ${ai.EnergyPerTap})`,
             );
         }
         if ("energyDecayRate" in upgrade.data) {
@@ -91,9 +92,10 @@ function apply_energy_upgrade(game: Game, entity: number, upgrade: UpgradeType) 
             );
         }
         if ("healingRate" in upgrade.data) {
-            ai.HealingRate = upgrade.data.healingRate as number;
+            // Stack healing rates additively for multiple healing upgrades
+            ai.HealingRate += upgrade.data.healingRate as number;
             console.log(
-                `[ENERGY_UPGRADE] Applied ${upgrade.name}: healingRate = ${ai.HealingRate}`,
+                `[ENERGY_UPGRADE] Applied ${upgrade.name}: added +${upgrade.data.healingRate} healing (total: ${ai.HealingRate})`,
             );
         }
         if ("healingDrainStrength" in upgrade.data) {

@@ -1,8 +1,15 @@
+export const enum UpgradeRarity {
+    Common = "common", // 70% chance - basic upgrades
+    Uncommon = "uncommon", // 25% chance - enhanced upgrades
+    Rare = "rare", // 5% chance - powerful upgrades
+}
+
 export interface UpgradeType {
     id: string; // "battle_axe", "scrap_armor", etc.
     category: UpgradeCategory;
     name: string; // Display name
     description: string; // UI description
+    rarity: UpgradeRarity; // Determines selection probability
     tier?: number; // For power scaling (optional)
     data?: Record<string, unknown>; // Upgrade-specific parameters (optional)
 }
@@ -30,66 +37,77 @@ export const WEAPON_UPGRADES: UpgradeType[] = [
         category: UpgradeCategory.Weapon,
         name: "Flamethrower",
         description: "Emits a cone of flame particles that damage enemies",
+        rarity: UpgradeRarity.Uncommon,
     },
     {
         id: "shotgun",
         category: UpgradeCategory.Weapon,
         name: "Shotgun",
         description: "Spread shot ranged weapon with multiple projectiles",
+        rarity: UpgradeRarity.Common,
     },
     {
         id: "minigun",
         category: UpgradeCategory.Weapon,
         name: "Minigun",
         description: "High rate of fire bullet spray with ejecting shell casings",
+        rarity: UpgradeRarity.Rare,
     },
     {
         id: "sniper_rifle",
         category: UpgradeCategory.Weapon,
         name: "Rifle",
         description: "High-damage, long-range precision weapon with muzzle flash",
+        rarity: UpgradeRarity.Common,
     },
     {
         id: "mortar",
         category: UpgradeCategory.Weapon,
         name: "Mortar",
         description: "High-arc explosive shells with area damage",
+        rarity: UpgradeRarity.Uncommon,
     },
     {
         id: "boomerang",
         category: UpgradeCategory.Weapon,
         name: "Boomerang",
         description: "Returning projectile that deals damage on the way out and back",
+        rarity: UpgradeRarity.Uncommon,
     },
     {
         id: "explosives",
         category: UpgradeCategory.Weapon,
         name: "Explosives",
         description: "Thrown bombs that explode on timeout with debris particles",
+        rarity: UpgradeRarity.Common,
     },
     {
         id: "spikeballs",
         category: UpgradeCategory.Weapon,
         name: "Spikeballs",
         description: "Bouncing projectiles that persist and ricochet around the arena",
+        rarity: UpgradeRarity.Common,
     },
     {
         id: "larpa",
         category: UpgradeCategory.Weapon,
         name: "Larpa",
         description: "Rockets leaving falling particle damage trails",
+        rarity: UpgradeRarity.Rare,
     },
     {
         id: "hoover_crack",
         category: UpgradeCategory.Weapon,
         name: "Hoover Crack",
         description: "Spinning particle emitter dealing continuous damage",
+        rarity: UpgradeRarity.Rare,
     },
     {
         id: "chiquita_bomb",
         category: UpgradeCategory.Weapon,
         name: "Chiquita Bomb",
         description: "Bomb spawning multiple banana sub-bombs",
+        rarity: UpgradeRarity.Rare,
     },
 ];
 
@@ -100,24 +118,28 @@ export const ARMOR_UPGRADES: UpgradeType[] = [
         category: UpgradeCategory.Armor,
         name: "Scrap Armor",
         description: "Ignores the first damage instance you take in combat",
+        rarity: UpgradeRarity.Common,
     },
     {
         id: "spiked_vest",
         category: UpgradeCategory.Armor,
         name: "Spiked Vest",
-        description: "Reflects 1 damage back to attackers",
+        description: "Reflects +1 damage back to attackers (stacks with other reflection)",
+        rarity: UpgradeRarity.Common,
     },
     {
         id: "vitality_boost",
         category: UpgradeCategory.Armor,
         name: "Vitality Boost",
-        description: "Increases maximum health by 50%",
+        description: "Increases maximum health by +50% of current max (stacks additively)",
+        rarity: UpgradeRarity.Uncommon,
     },
     {
         id: "damage_reduction",
         category: UpgradeCategory.Armor,
         name: "Reinforced Plating",
         description: "Reduces all damage taken by 25%",
+        rarity: UpgradeRarity.Uncommon,
     },
 ];
 
@@ -128,6 +150,7 @@ export const ABILITY_UPGRADES: UpgradeType[] = [
         category: UpgradeCategory.Ability,
         name: "Shadow Trail",
         description: "Movement leaves damaging shadow particles behind you",
+        rarity: UpgradeRarity.Uncommon,
     },
 ];
 
@@ -138,48 +161,56 @@ export const COMPANION_UPGRADES: UpgradeType[] = [
         category: UpgradeCategory.Companion,
         name: "Mr. Black",
         description: "Most powerful cat companion, disables enemy upgrades",
+        rarity: UpgradeRarity.Rare,
     },
     {
         id: "mr_orange",
         category: UpgradeCategory.Companion,
         name: "Mr. Orange",
         description: "Fast melee attacker cat with 3 HP and aggressive personality",
+        rarity: UpgradeRarity.Common,
     },
     {
         id: "mr_pink",
         category: UpgradeCategory.Companion,
         name: "Mr. Pink",
         description: "Ranged sniper cat with precision attacks",
+        rarity: UpgradeRarity.Common,
     },
     {
         id: "mr_white",
         category: UpgradeCategory.Companion,
         name: "Mr. White",
         description: "Tank cat with 5 HP and powerful ranged attacks",
+        rarity: UpgradeRarity.Uncommon,
     },
     {
         id: "mr_brown",
         category: UpgradeCategory.Companion,
         name: "Mr. Brown",
         description: "Support cat that heals owner periodically",
+        rarity: UpgradeRarity.Uncommon,
     },
     {
         id: "mr_blue",
         category: UpgradeCategory.Companion,
         name: "Mr. Blue",
         description: "Berserker cat that gets stronger when injured",
+        rarity: UpgradeRarity.Common,
     },
     {
         id: "mr_gray",
         category: UpgradeCategory.Companion,
         name: "Mr. Gray",
         description: "Stealth cat with invisibility phases",
+        rarity: UpgradeRarity.Rare,
     },
     {
         id: "mr_red",
         category: UpgradeCategory.Companion,
         name: "Mr. Red",
         description: "Sacrifice cat that explodes when killed",
+        rarity: UpgradeRarity.Uncommon,
     },
 ];
 
@@ -189,14 +220,17 @@ export const ENERGY_UPGRADES: UpgradeType[] = [
         id: "energy_efficiency",
         category: UpgradeCategory.Energy,
         name: "Energy Efficiency",
-        description: "Click rapidly to boost combat performance",
+        description: "Click rapidly to boost combat performance (+0.3 energy per tap)",
+        rarity: UpgradeRarity.Common,
         data: {energyPerTap: 0.3}, // Standard tapping rate
     },
     {
         id: "adrenaline_rush",
         category: UpgradeCategory.Energy,
         name: "Adrenaline Rush",
-        description: "Each click provides 67% more energy",
+        description:
+            "Enhanced clicking efficiency (+0.5 energy per tap, stacks with other tapping bonuses)",
+        rarity: UpgradeRarity.Uncommon,
         data: {energyPerTap: 0.5}, // Enhanced tapping rate
     },
     {
@@ -204,27 +238,31 @@ export const ENERGY_UPGRADES: UpgradeType[] = [
         category: UpgradeCategory.Energy,
         name: "Slow Metabolism",
         description: "Energy decays 50% slower",
+        rarity: UpgradeRarity.Common,
         data: {energyDecayRate: 0.5}, // Slower energy decay
     },
     {
         id: "basic_healing",
         category: UpgradeCategory.Energy,
         name: "Basic Healing",
-        description: "Hold to restore 1 HP per second",
-        data: {healingRate: 1.0}, // Basic healing rate
+        description: "Hold to restore +1 HP per second (stacks with other healing)",
+        rarity: UpgradeRarity.Common,
+        data: {healingRate: 1.0}, // Additive healing rate
     },
     {
         id: "rapid_healing",
         category: UpgradeCategory.Energy,
         name: "Rapid Healing",
-        description: "Hold to restore 2 HP per second",
-        data: {healingRate: 2.0}, // Double healing rate
+        description: "Hold to restore +2 HP per second (stacks with other healing)",
+        rarity: UpgradeRarity.Uncommon,
+        data: {healingRate: 2.0}, // Additive healing rate
     },
     {
         id: "energy_conservation",
         category: UpgradeCategory.Energy,
         name: "Energy Conservation",
         description: "Healing drains energy 50% slower",
+        rarity: UpgradeRarity.Uncommon,
         data: {healingDrainStrength: 0.5}, // Slower energy drain while healing
     },
     {
@@ -232,20 +270,24 @@ export const ENERGY_UPGRADES: UpgradeType[] = [
         category: UpgradeCategory.Energy,
         name: "Power Stability",
         description: "Power decays 75% slower",
+        rarity: UpgradeRarity.Common,
         data: {powerDecayRate: 4.0}, // Much slower power decay (16.0 -> 4.0)
     },
     {
         id: "hypermetabolism",
         category: UpgradeCategory.Energy,
         name: "Hypermetabolism",
-        description: "Energy decays twice as fast but enables powerful 3 HP/s healing",
+        description: "Energy decays twice as fast but enables powerful +3 HP/s healing",
+        rarity: UpgradeRarity.Rare,
         data: {energyDecayRate: 2.0, healingRate: 3.0}, // Trade-off upgrade
     },
     {
         id: "combat_stimulant",
         category: UpgradeCategory.Energy,
         name: "Combat Stimulant",
-        description: "Supercharged tapping and instant power recovery for aggressive playstyles",
+        description:
+            "Supercharged tapping (+0.8 energy per tap) and instant power recovery (stacks with other tapping bonuses)",
+        rarity: UpgradeRarity.Rare,
         data: {energyPerTap: 0.8, powerDecayRate: 32.0}, // Very high tapping, very fast power decay
     },
 ];

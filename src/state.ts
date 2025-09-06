@@ -1,5 +1,11 @@
-import {ALL_UPGRADES, UpgradeType, WEAPON_UPGRADES, ARMOR_UPGRADES} from "./upgrades/types.js";
-import {set_seed, integer, shuffle} from "../lib/random.js";
+import {
+    ALL_UPGRADES,
+    UpgradeType,
+    UpgradeRarity,
+    WEAPON_UPGRADES,
+    ARMOR_UPGRADES,
+} from "./upgrades/types.js";
+import {set_seed, integer, shuffle, float} from "../lib/random.js";
 
 export interface GameState {
     currentLevel: number; // 1-33 duels
@@ -49,15 +55,54 @@ export function generatePlayerUpgradeChoices(
         (upgrade) => !playerUpgrades.some((owned) => owned.id === upgrade.id),
     );
 
-    // Shuffle available upgrades using seeded random
-    let shufflableUpgrades = shuffle(availableUpgrades);
-
+    // Use weighted selection based on rarity instead of simple shuffle
     let choices: UpgradeType[] = [];
-    for (let i = 0; i < 3 && i < shufflableUpgrades.length; i++) {
-        choices.push(shufflableUpgrades[i]);
+    for (let i = 0; i < 3 && availableUpgrades.length > 0; i++) {
+        let selectedUpgrade = selectUpgradeByRarity(availableUpgrades);
+        choices.push(selectedUpgrade);
+        // Remove selected upgrade to prevent duplicates
+        availableUpgrades = availableUpgrades.filter((u) => u.id !== selectedUpgrade.id);
     }
 
     return choices;
+}
+
+// Weighted selection based on upgrade rarity
+function selectUpgradeByRarity(availableUpgrades: UpgradeType[]): UpgradeType {
+    // Calculate total weight based on rarity
+    let totalWeight = 0;
+    for (let upgrade of availableUpgrades) {
+        totalWeight += getRarityWeight(upgrade.rarity);
+    }
+
+    // Generate random number from 0 to totalWeight
+    let randomWeight = float() * totalWeight;
+
+    // Select upgrade based on cumulative weights
+    let cumulativeWeight = 0;
+    for (let upgrade of availableUpgrades) {
+        cumulativeWeight += getRarityWeight(upgrade.rarity);
+        if (randomWeight <= cumulativeWeight) {
+            return upgrade;
+        }
+    }
+
+    // Fallback (should never happen)
+    return availableUpgrades[availableUpgrades.length - 1];
+}
+
+// Get weight for rarity (higher weight = more likely to be selected)
+function getRarityWeight(rarity: UpgradeRarity): number {
+    switch (rarity) {
+        case UpgradeRarity.Common:
+            return 70; // 70% chance
+        case UpgradeRarity.Uncommon:
+            return 25; // 25% chance
+        case UpgradeRarity.Rare:
+            return 5; // 5% chance
+        default:
+            return 70; // Default to common
+    }
 }
 
 export function calculatePopulation(level: number): number {
