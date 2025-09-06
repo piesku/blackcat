@@ -32,8 +32,13 @@ import {
 import {UpgradeCategory, UpgradeType} from "./types.js";
 
 export function apply_upgrades(game: Game, entity: number, upgrades: UpgradeType[]) {
-    // Apply upgrades in order: Armor -> Weapons -> Abilities -> Companions
+    // Apply upgrades in order: Energy -> Armor -> Weapons -> Abilities -> Companions
     let categorized = categorize_upgrades(upgrades);
+
+    // Energy (modifies energy system parameters - must be first to enable tapping)
+    for (let energy of categorized.energy) {
+        apply_energy_upgrade(game, entity, energy);
+    }
 
     // Armor (modifies health component)
     for (let armor of categorized.armor) {
@@ -58,12 +63,52 @@ export function apply_upgrades(game: Game, entity: number, upgrades: UpgradeType
 
 function categorize_upgrades(upgrades: UpgradeType[]) {
     return {
+        energy: upgrades.filter((u) => u.category === UpgradeCategory.Energy),
         weapons: upgrades.filter((u) => u.category === UpgradeCategory.Weapon),
         armor: upgrades.filter((u) => u.category === UpgradeCategory.Armor),
         abilities: upgrades.filter((u) => u.category === UpgradeCategory.Ability),
         companions: upgrades.filter((u) => u.category === UpgradeCategory.Companion),
         special: upgrades.filter((u) => u.category === UpgradeCategory.Special),
     };
+}
+
+function apply_energy_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
+    let ai = game.World.ControlAi[entity];
+    DEBUG: if (!ai) throw new Error("missing ControlAi component for energy upgrade");
+
+    // Apply energy parameters from upgrade data
+    if (upgrade.data) {
+        if ("energyPerTap" in upgrade.data) {
+            ai.EnergyPerTap = upgrade.data.energyPerTap as number;
+            console.log(
+                `[ENERGY_UPGRADE] Applied ${upgrade.name}: energyPerTap = ${ai.EnergyPerTap}`,
+            );
+        }
+        if ("energyDecayRate" in upgrade.data) {
+            ai.EnergyDecayRate = upgrade.data.energyDecayRate as number;
+            console.log(
+                `[ENERGY_UPGRADE] Applied ${upgrade.name}: energyDecayRate = ${ai.EnergyDecayRate}`,
+            );
+        }
+        if ("healingRate" in upgrade.data) {
+            ai.HealingRate = upgrade.data.healingRate as number;
+            console.log(
+                `[ENERGY_UPGRADE] Applied ${upgrade.name}: healingRate = ${ai.HealingRate}`,
+            );
+        }
+        if ("healingDrainStrength" in upgrade.data) {
+            ai.HealingDrainStrength = upgrade.data.healingDrainStrength as number;
+            console.log(
+                `[ENERGY_UPGRADE] Applied ${upgrade.name}: healingDrainStrength = ${ai.HealingDrainStrength}`,
+            );
+        }
+        if ("powerDecayRate" in upgrade.data) {
+            ai.PowerDecayRate = upgrade.data.powerDecayRate as number;
+            console.log(
+                `[ENERGY_UPGRADE] Applied ${upgrade.name}: powerDecayRate = ${ai.PowerDecayRate}`,
+            );
+        }
+    }
 }
 
 function apply_weapon_upgrade(game: Game, entity: number, upgrade: UpgradeType) {

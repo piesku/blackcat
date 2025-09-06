@@ -2,6 +2,13 @@ import {float} from "../../lib/random.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
+// Default energy system parameters (can be overridden by upgrades)
+const DEFAULT_ENERGY_PER_TAP = 0.0; // Tapping disabled by default
+const DEFAULT_ENERGY_DECAY_RATE = 1.0;
+const DEFAULT_HEALING_RATE = 0.0; // Healing disabled by default
+const DEFAULT_HEALING_DRAIN_STRENGTH = 1.0;
+const DEFAULT_POWER_DECAY_RATE = 16.0;
+
 export interface ControlAi {
     State: AiState;
     LastStateChange: number; // Game time in seconds when state last changed
@@ -22,6 +29,13 @@ export interface ControlAi {
     // Player energy control
     Energy: number; // For player entities: unified energy affecting movement speed, weapon cooldowns, and rate of fire (seconds)
     BaseMoveSpeed: number; // Original movement speed before energy scaling
+
+    // Energy upgrade properties (initialized to defaults, modified by upgrades)
+    EnergyPerTap: number; // Energy gain per tap (0.0 = disabled, upgrades enable/enhance tapping)
+    EnergyDecayRate: number; // Energy decay rate toward baseline
+    HealingRate: number; // Base healing rate multiplier
+    HealingDrainStrength: number; // Energy drain strength during healing
+    PowerDecayRate: number; // Visual power scaling decay rate
 }
 
 export const enum AiState {
@@ -78,6 +92,13 @@ export function control_ai(is_player: boolean, base_move_speed: number) {
             PrepareDirection: [0, 0],
             SeparationForce: [0, 0],
             HasRetreatedAtLowHealth: false,
+
+            // Energy upgrade properties (initialized to defaults)
+            EnergyPerTap: DEFAULT_ENERGY_PER_TAP,
+            EnergyDecayRate: DEFAULT_ENERGY_DECAY_RATE,
+            HealingRate: DEFAULT_HEALING_RATE,
+            HealingDrainStrength: DEFAULT_HEALING_DRAIN_STRENGTH,
+            PowerDecayRate: DEFAULT_POWER_DECAY_RATE,
         };
     };
 }

@@ -12,6 +12,7 @@ export const enum UpgradeCategory {
     Armor = "armor",
     Ability = "ability",
     Companion = "companion",
+    Energy = "energy",
     Special = "special",
 }
 
@@ -182,12 +183,80 @@ export const COMPANION_UPGRADES: UpgradeType[] = [
     },
 ];
 
+// Energy upgrade definitions - Modify energy system parameters
+export const ENERGY_UPGRADES: UpgradeType[] = [
+    {
+        id: "energy_efficiency",
+        category: UpgradeCategory.Energy,
+        name: "Energy Efficiency",
+        description: "Click rapidly to boost combat performance",
+        data: {energyPerTap: 0.3}, // Standard tapping rate
+    },
+    {
+        id: "adrenaline_rush",
+        category: UpgradeCategory.Energy,
+        name: "Adrenaline Rush",
+        description: "Each click provides 67% more energy",
+        data: {energyPerTap: 0.5}, // Enhanced tapping rate
+    },
+    {
+        id: "slow_metabolism",
+        category: UpgradeCategory.Energy,
+        name: "Slow Metabolism",
+        description: "Energy decays 50% slower",
+        data: {energyDecayRate: 0.5}, // Slower energy decay
+    },
+    {
+        id: "basic_healing",
+        category: UpgradeCategory.Energy,
+        name: "Basic Healing",
+        description: "Hold to restore 1 HP per second",
+        data: {healingRate: 1.0}, // Basic healing rate
+    },
+    {
+        id: "rapid_healing",
+        category: UpgradeCategory.Energy,
+        name: "Rapid Healing",
+        description: "Hold to restore 2 HP per second",
+        data: {healingRate: 2.0}, // Double healing rate
+    },
+    {
+        id: "energy_conservation",
+        category: UpgradeCategory.Energy,
+        name: "Energy Conservation",
+        description: "Healing drains energy 50% slower",
+        data: {healingDrainStrength: 0.5}, // Slower energy drain while healing
+    },
+    {
+        id: "power_stability",
+        category: UpgradeCategory.Energy,
+        name: "Power Stability",
+        description: "Power decays 75% slower",
+        data: {powerDecayRate: 4.0}, // Much slower power decay (16.0 -> 4.0)
+    },
+    {
+        id: "hypermetabolism",
+        category: UpgradeCategory.Energy,
+        name: "Hypermetabolism",
+        description: "Energy decays twice as fast but enables powerful 3 HP/s healing",
+        data: {energyDecayRate: 2.0, healingRate: 3.0}, // Trade-off upgrade
+    },
+    {
+        id: "combat_stimulant",
+        category: UpgradeCategory.Energy,
+        name: "Combat Stimulant",
+        description: "Supercharged tapping and instant power recovery for aggressive playstyles",
+        data: {energyPerTap: 0.8, powerDecayRate: 32.0}, // Very high tapping, very fast power decay
+    },
+];
+
 // All upgrades registry
 export const ALL_UPGRADES: UpgradeType[] = [
     ...WEAPON_UPGRADES,
     ...ARMOR_UPGRADES,
     ...ABILITY_UPGRADES,
     ...COMPANION_UPGRADES,
+    ...ENERGY_UPGRADES,
 ];
 
 // Utility function to get upgrade display name by ID

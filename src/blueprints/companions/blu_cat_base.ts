@@ -47,6 +47,13 @@ export function cat_control_ai(
             PrepareDirection: [0, 0],
             SeparationForce: [0, 0],
             HasRetreatedAtLowHealth: false,
+
+            // Energy properties (cats use defaults, don't get upgrade modifications)
+            EnergyPerTap: 0.0, // Cats don't tap
+            EnergyDecayRate: 1.0,
+            HealingRate: 0.0, // Cats don't heal
+            HealingDrainStrength: 1.0,
+            PowerDecayRate: 16.0,
         };
     };
 }

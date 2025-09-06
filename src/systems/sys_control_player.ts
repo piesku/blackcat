@@ -5,15 +5,10 @@ import {Has} from "../world.js";
 
 const QUERY = Has.ControlPlayer | Has.ControlAi | Has.LocalTransform2D | Has.Move2D | Has.Health;
 
-const BASE_ENERGY_PER_TAP = 0.3; // Base energy gain per tap
 const DIMINISH_FACTOR = 0.2; // How much energy reduces tap effectiveness
-const ENERGY_DECAY_RATE = 1.0; // Constant energy decay per second
-const BASE_ENERGY = 1.0; // Minimum energy when idle (not 0)
-const HEALING_RATE = 1; // HP per second when holding (constant)
+const BASE_ENERGY = 1.0; // Baseline energy when idle
 const MIN_HEALING_ENERGY = 0.0; // Asymptotic minimum energy (never actually reached)
-const HEALING_DRAIN_STRENGTH = 1.0; // How aggressively energy drains (higher = faster initial drain)
 const HOLD_THRESHOLD = 0.2; // Seconds before hold is considered intentional healing
-const POWER_DECAY_RATE = 16.0; // How fast power scale decays back to 1.0 per second
 
 // Module-level hold timer
 let hold_timer = 0;
@@ -48,13 +43,19 @@ export function sys_control_player(game: Game, delta: number) {
 
             // Handle tap energy gain (only for player entities)
             if (was_quick_tap && ai.IsPlayer) {
-                // This was a quick tap/click - add energy with diminishing returns
+                // Apply tapping with diminishing returns (math naturally handles EnergyPerTap = 0)
                 let energy_multiplier = 1.0 / (1.0 + ai.Energy * DIMINISH_FACTOR);
-                let energy_gain = BASE_ENERGY_PER_TAP * energy_multiplier;
+                let energy_gain = ai.EnergyPerTap * energy_multiplier;
                 ai.Energy += energy_gain;
-                console.log(
-                    `[PLAYER_INPUT] Click/Tap! +${energy_gain.toFixed(2)} energy (${energy_multiplier.toFixed(2)}x multiplier). Total: ${ai.Energy.toFixed(1)}s`,
-                );
+
+                // Log only when energy is actually gained
+                if (ai.EnergyPerTap > 0) {
+                    console.log(
+                        `[PLAYER_INPUT] Click/Tap! +${energy_gain.toFixed(2)} energy (${energy_multiplier.toFixed(2)}x multiplier). Total: ${ai.Energy.toFixed(1)}s`,
+                    );
+                } else {
+                    console.log(`[PLAYER_INPUT] Tapping disabled - no energy upgrade equipped`);
+                }
             }
 
             // Handle energy and healing based on hold state
@@ -67,7 +68,7 @@ export function sys_control_player(game: Game, delta: number) {
                 // Formula: drain_rate = strength * (current_energy - min_energy)
                 // This creates fast initial drain that slows down as energy approaches minimum
                 let energy_above_minimum = ai.Energy - MIN_HEALING_ENERGY;
-                let drain_rate = HEALING_DRAIN_STRENGTH * energy_above_minimum;
+                let drain_rate = ai.HealingDrainStrength * energy_above_minimum;
 
                 // Apply the calculated drain rate
                 ai.Energy -= drain_rate * delta;
@@ -77,10 +78,10 @@ export function sys_control_player(game: Game, delta: number) {
                     ai.Energy = MIN_HEALING_ENERGY;
                 }
 
-                // Only heal if below max health
+                // Only heal if below max health and healing is enabled
                 if (health.Current < health.Max) {
                     // Heal based on healing rate scaled by current energy
-                    let heal_amount = HEALING_RATE * ai.Energy * delta;
+                    let heal_amount = ai.HealingRate * ai.Energy * delta;
                     let health_before = health.Current;
 
                     health.Current += heal_amount;
@@ -90,7 +91,7 @@ export function sys_control_player(game: Game, delta: number) {
 
                     if (health.Current > health_before) {
                         let current_drain_rate =
-                            HEALING_DRAIN_STRENGTH * (ai.Energy - MIN_HEALING_ENERGY);
+                            ai.HealingDrainStrength * (ai.Energy - MIN_HEALING_ENERGY);
                         console.log(
                             `[PLAYER_HEAL] Holding (${hold_timer.toFixed(1)}s) - healing ${(health.Current - health_before).toFixed(2)} HP (${health_before.toFixed(1)} -> ${health.Current.toFixed(1)}), energy: ${ai.Energy.toFixed(2)} (${ai.Energy.toFixed(2)}x heal rate, drain: ${current_drain_rate.toFixed(2)}/s)`,
                         );
@@ -111,6 +112,10 @@ export function sys_control_player(game: Game, delta: number) {
                                 break; // Found the heal spawner, no need to continue
                             }
                         }
+                    } else if (ai.HealingRate === 0) {
+                        console.log(
+                            `[PLAYER_HEAL] Holding (${hold_timer.toFixed(1)}s) - healing disabled, no healing upgrade equipped`,
+                        );
                     }
                 }
             } else if (!is_holding) {
@@ -118,13 +123,13 @@ export function sys_control_player(game: Game, delta: number) {
 
                 if (ai.Energy > BASE_ENERGY) {
                     // Decay high energy back to baseline
-                    ai.Energy -= ENERGY_DECAY_RATE * delta;
+                    ai.Energy -= ai.EnergyDecayRate * delta;
                     if (ai.Energy < BASE_ENERGY) {
                         ai.Energy = BASE_ENERGY;
                     }
                 } else if (ai.Energy < BASE_ENERGY) {
                     // Restore low energy (from healing) back to baseline
-                    ai.Energy += ENERGY_DECAY_RATE * delta;
+                    ai.Energy += ai.EnergyDecayRate * delta;
                     if (ai.Energy > BASE_ENERGY) {
                         ai.Energy = BASE_ENERGY;
                     }
@@ -147,7 +152,7 @@ export function sys_control_player(game: Game, delta: number) {
                 } else {
                     // Not holding - decay power scale back to 1.0 over a few frames
                     if (control.PowerScale > 1.0) {
-                        control.PowerScale -= POWER_DECAY_RATE * delta;
+                        control.PowerScale -= ai.PowerDecayRate * delta;
                         if (control.PowerScale < 1.0) {
                             control.PowerScale = 1.0;
                         }
