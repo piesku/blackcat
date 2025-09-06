@@ -1,15 +1,13 @@
 import {instantiate} from "../../lib/game.js";
 import {blueprint_shadow_particle} from "../blueprints/particles/blu_shadow_particle.js";
-import {
-    blueprint_mr_black,
-    blueprint_mr_blue,
-    blueprint_mr_brown,
-    blueprint_mr_gray,
-    blueprint_mr_orange,
-    blueprint_mr_pink,
-    blueprint_mr_red,
-    blueprint_mr_white,
-} from "../blueprints/blu_cat_companions.js";
+import {blueprint_mr_black} from "../blueprints/companions/blu_mr_black.js";
+import {blueprint_mr_blue} from "../blueprints/companions/blu_mr_blue.js";
+import {blueprint_mr_brown} from "../blueprints/companions/blu_mr_brown.js";
+import {blueprint_mr_gray} from "../blueprints/companions/blu_mr_gray.js";
+import {blueprint_mr_orange} from "../blueprints/companions/blu_mr_orange.js";
+import {blueprint_mr_pink} from "../blueprints/companions/blu_mr_pink.js";
+import {blueprint_mr_red} from "../blueprints/companions/blu_mr_red.js";
+import {blueprint_mr_white} from "../blueprints/companions/blu_mr_white.js";
 import {blueprint_boomerang_weapon} from "../blueprints/weapons/blu_boomerang_weapon.js";
 import {blueprint_chiquita_bomb} from "../blueprints/weapons/blu_chiquita_bomb.js";
 import {blueprint_explosives} from "../blueprints/weapons/blu_explosives.js";
