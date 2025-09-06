@@ -1,8 +1,6 @@
 import {Vec4} from "../../lib/math.js";
+import {element} from "../../lib/random.js";
 import {Tile} from "../../sprites/spritesheet.js";
-import {blueprint_healthbar} from "./blu_healthbar.js";
-import {blueprint_sniper_rifle} from "./weapons/blu_sniper_rifle.js";
-import {blueprint_shotgun} from "./weapons/blu_shotgun.js";
 import {aim} from "../components/com_aim.js";
 import {children} from "../components/com_children.js";
 import {collide2d} from "../components/com_collide2d.js";
@@ -13,8 +11,14 @@ import {local_transform2d} from "../components/com_local_transform2d.js";
 import {move2d} from "../components/com_move2d.js";
 import {render2d} from "../components/com_render2d.js";
 import {spatial_node2d} from "../components/com_spatial_node2d.js";
+import {spawn_timed} from "../components/com_spawn.js";
 import {Game, Layer} from "../game.js";
 import {Has} from "../world.js";
+import {blueprint_healthbar} from "./blu_healthbar.js";
+import {blueprint_shadow_particle} from "./particles/blu_shadow_particle.js";
+import {blueprint_boomerang_weapon} from "./weapons/blu_boomerang_weapon.js";
+import {blueprint_mortar} from "./weapons/blu_mortar.js";
+import {blueprint_shotgun} from "./weapons/blu_shotgun.js";
 
 // Custom AI component for cats with specific personality traits
 export function cat_control_ai(
@@ -93,20 +97,7 @@ function blueprint_cat_base(
     move_speed: number,
     aggressiveness: number,
     patience: number,
-    scale: number = 0.7,
-    weapon_blueprint?: any,
 ) {
-    let cat_children = [
-        blueprint_cat_body(game, color, scale),
-        blueprint_healthbar(),
-        // No reticle for cats - they're more instinctual
-    ];
-
-    // Add weapon if provided
-    if (weapon_blueprint) {
-        cat_children.push(weapon_blueprint);
-    }
-
     return [
         spatial_node2d(),
         local_transform2d(),
@@ -117,9 +108,13 @@ function blueprint_cat_base(
         collide2d(true, Layer.Player, Layer.Terrain | Layer.Player, 0.4), // Smaller collision
         health(hp),
         move2d(move_speed, 0),
-        aim(0.15), // Cats are slightly slower to retarget than humans
+        aim(0.1), // Base aim speed for cats (can be overridden)
 
-        children(...cat_children),
+        children(
+            blueprint_cat_body(game, color, 1.0),
+            blueprint_healthbar(),
+            // No reticle for cats - they're more instinctual
+        ),
 
         // Cat melee attacks (claws/bites)
         deal_damage(1, DamageType.Hand2Hand, {
@@ -130,142 +125,166 @@ function blueprint_cat_base(
     ];
 }
 
-// Mr. Black - Most powerful, disables enemy upgrades (special ability - placeholder for now)
+// Random cat spawner function for Mr. Black
+function random_cat_blueprint(game: Game, owner_is_player: boolean) {
+    const cat_blueprints = [
+        blueprint_mr_orange,
+        blueprint_mr_pink,
+        blueprint_mr_white,
+        blueprint_mr_brown,
+        blueprint_mr_blue,
+        blueprint_mr_gray,
+        blueprint_mr_red,
+    ];
+
+    return element(cat_blueprints)(game, owner_is_player);
+}
+
+// Mr. Black - Cat Summoner: Spawns random companion cats periodically
 export function blueprint_mr_black(game: Game, owner_is_player: boolean) {
-    let blueprint = blueprint_cat_base(
-        game,
-        owner_is_player,
-        cat_colors.black, // color
-        4, // hp
-        2.5, // move_speed
-        1.8, // aggressiveness
-        1.5, // patience
-        0.8, // scale
-    );
-
-    // Manually set enhanced personality after creation
     return [
-        ...blueprint,
-        // TODO: Add upgrade-disabling special ability
+        ...blueprint_cat_base(
+            game,
+            owner_is_player,
+            cat_colors.black, // color
+            6, // hp
+            2.8, // move_speed
+            1.8, // aggressiveness
+            1.5, // patience
+        ),
+        // Spawn random cats every 8 seconds
+        spawn_timed(
+            () => random_cat_blueprint(game, owner_is_player),
+            8.0, // interval: 8 seconds between spawns
+            Math.PI * 2, // spread: full circle
+            0.5, // speedMin
+            1.0, // speedMax
+            Infinity, // initialDuration: start spawning immediately
+        ),
     ];
 }
 
-// Mr. Orange - Fast melee attacker
+// Mr. Orange - Whirlwind Barbarian: Ultra-fast retargeting and movement
 export function blueprint_mr_orange(game: Game, owner_is_player: boolean) {
-    return blueprint_cat_base(
-        game,
-        owner_is_player,
-        cat_colors.orange, // color
-        3, // hp
-        3.0, // move_speed
-        2.0, // aggressiveness
-        0.5, // patience
-        0.7, // scale
-    );
+    return [
+        ...blueprint_cat_base(
+            game,
+            owner_is_player,
+            cat_colors.orange, // color
+            3, // hp
+            4.2, // move_speed
+            2.5, // aggressiveness
+            0.1, // patience
+        ),
+        aim(0.02), // Lightning-fast retargeting - overwrites base aim
+    ];
 }
 
-// Mr. Pink - Ranged sniper
+// Mr. Pink - Boomerang Marksman: Ranged combat with return damage
 export function blueprint_mr_pink(game: Game, owner_is_player: boolean) {
-    return blueprint_cat_base(
-        game,
-        owner_is_player,
-        cat_colors.pink, // color
-        3, // hp
-        2.0, // move_speed
-        1.2, // aggressiveness
-        1.0, // patience
-        0.7, // scale
-        blueprint_sniper_rifle(), // weapon_blueprint
-    );
+    return [
+        ...blueprint_cat_base(
+            game,
+            owner_is_player,
+            cat_colors.pink, // color
+            3, // hp
+            1.8, // move_speed (decreased from 2.0)
+            0.8, // aggressiveness (decreased from 1.2)
+            2.0, // patience (increased from 1.0)
+        ),
+        children(blueprint_boomerang_weapon()),
+        aim(0.3), // Slow careful aiming - overwrites base aim
+    ];
 }
 
-// Mr. White - Tank with powerful attacks
+// Mr. White - Defensive Tank: High HP, slow speed, shotgun
 export function blueprint_mr_white(game: Game, owner_is_player: boolean) {
-    return blueprint_cat_base(
-        game,
-        owner_is_player,
-        cat_colors.white, // color
-        5, // hp
-        1.5, // move_speed
-        0.5, // aggressiveness
-        2.0, // patience
-        0.8, // scale
-        blueprint_shotgun(), // weapon_blueprint
-    );
+    return [
+        ...blueprint_cat_base(
+            game,
+            owner_is_player,
+            cat_colors.white, // color
+            7, // hp (increased from 5)
+            1.3, // move_speed (decreased from 1.5)
+            0.5, // aggressiveness
+            2.5, // patience (increased from 2.0)
+        ),
+        children(blueprint_shotgun()),
+        aim(0.15), // Slightly slower targeting for defensive play - overwrites base aim
+    ];
 }
 
-// Mr. Brown - Support healer (special behavior needed)
+// Mr. Brown - Loyal Bodyguard: Ultra-low aggression, protects allies
 export function blueprint_mr_brown(game: Game, owner_is_player: boolean) {
-    let blueprint = blueprint_cat_base(
-        game,
-        owner_is_player,
-        cat_colors.brown, // color
-        3, // hp
-        1.8, // move_speed
-        0.3, // aggressiveness
-        2.5, // patience
-        0.7, // scale
-    );
-
     return [
-        ...blueprint,
-        // TODO: Add healing behavior
+        ...blueprint_cat_base(
+            game,
+            owner_is_player,
+            cat_colors.brown, // color
+            4, // hp (increased from 3)
+            1.5, // move_speed (decreased from 1.8)
+            0.1, // aggressiveness (decreased from 0.3)
+            3.0, // patience (increased from 2.5)
+        ),
+        aim(0.8), // Slow targeting - protection focused - overwrites base aim
+        // TODO: Add damage redirection/bodyguard component
     ];
 }
 
-// Mr. Blue - Berserker (aggressiveness increases when health drops)
+// Mr. Blue - Mortar Artillery: Glass cannon with explosive area damage
 export function blueprint_mr_blue(game: Game, owner_is_player: boolean) {
-    let blueprint = blueprint_cat_base(
-        game,
-        owner_is_player,
-        cat_colors.blue, // color
-        4, // hp
-        2.2, // move_speed
-        1.0, // aggressiveness (will increase when injured)
-        1.0, // patience
-        0.7, // scale
-    );
-
     return [
-        ...blueprint,
-        // TODO: Add berserker behavior
+        ...blueprint_cat_base(
+            game,
+            owner_is_player,
+            cat_colors.blue, // color
+            2, // hp (decreased from 4 - glass cannon)
+            2.8, // move_speed (increased from 2.2)
+            2.0, // aggressiveness (increased from 1.0)
+            0.1, // patience (decreased from 1.0)
+        ),
+        children(blueprint_mortar()),
+        aim(0.03), // Fastest targeting for rapid artillery fire - overwrites base aim
     ];
 }
 
-// Mr. Gray - Stealth cat (invisibility phases)
+// Mr. Gray - Shadow Assassin: High speed + damaging shadow trail
 export function blueprint_mr_gray(game: Game, owner_is_player: boolean) {
-    let blueprint = blueprint_cat_base(
-        game,
-        owner_is_player,
-        cat_colors.gray, // color
-        3, // hp
-        2.5, // move_speed
-        1.5, // aggressiveness
-        1.0, // patience
-        0.6, // scale (smaller for stealth)
-    );
-
     return [
-        ...blueprint,
-        // TODO: Add stealth behavior
+        ...blueprint_cat_base(
+            game,
+            owner_is_player,
+            cat_colors.gray, // color
+            2, // hp (decreased from 3)
+            3.2, // move_speed (increased from 2.5)
+            1.8, // aggressiveness (increased from 1.5)
+            0.2, // patience (decreased from 1.0)
+        ),
+        // Add shadow trail spawning when moving
+        spawn_timed(
+            () => blueprint_shadow_particle(),
+            0.2, // interval: spawn shadow particles frequently
+            0, // spread: no spread, trail behind
+            0, // speedMin: stationary particles
+            0, // speedMax: stationary particles
+            10.0, // initialDuration: active for 10 seconds initially
+        ),
+        // TODO: Integrate shadow trail with movement system
     ];
 }
 
-// Mr. Red - Sacrifice cat (explodes on death)
+// Mr. Red - Suicide Bomber: Dies in one hit, explodes on death
 export function blueprint_mr_red(game: Game, owner_is_player: boolean) {
-    let blueprint = blueprint_cat_base(
-        game,
-        owner_is_player,
-        cat_colors.red, // color
-        2, // hp (low health, high risk/reward)
-        2.0, // move_speed
-        1.8, // aggressiveness
-        0.5, // patience
-        0.6, // scale
-    );
-
     return [
-        ...blueprint,
-        // TODO: Add explosion on death
+        ...blueprint_cat_base(
+            game,
+            owner_is_player,
+            cat_colors.red, // color
+            1, // hp (dies in one hit to anything)
+            2.5, // move_speed (increased from 2.0)
+            1.8, // aggressiveness
+            0.5, // patience
+        ),
+        // TODO: Add destroy_on_hit: true + explosion spawn on death
     ];
 }
