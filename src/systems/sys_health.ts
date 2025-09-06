@@ -1,6 +1,7 @@
 import {query_down} from "../components/com_children.js";
 import {DrawKind} from "../components/com_draw.js";
 import {Health} from "../components/com_health.js";
+import {SpawnMode} from "../components/com_spawn.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
@@ -74,8 +75,36 @@ export function sys_health(game: Game, _delta: number) {
                 }
             }
 
-            // Clear processed damage
+            // Process all pending healing instances
+            let total_healing = 0;
+
+            for (let healing_instance of health.PendingHealing) {
+                // Only heal if not at max health
+                if (health.Current < health.Max) {
+                    total_healing += healing_instance.Amount;
+                    console.log(
+                        `[HEALING] Entity ${entity} receiving ${healing_instance.Amount.toFixed(2)} healing from entity ${healing_instance.Source}`,
+                    );
+                }
+            }
+
+            // Apply healing
+            if (total_healing > 0) {
+                let health_before_heal = health.Current;
+                health.Current = Math.min(health.Max, health.Current + total_healing);
+                let actual_healing = health.Current - health_before_heal;
+
+                console.log(
+                    `[HEALING] Entity ${entity} healed ${actual_healing.toFixed(2)} HP (${health_before_heal.toFixed(1)} -> ${health.Current.toFixed(1)})`,
+                );
+
+                // Activate healing particle effects on heal spawner child entity
+                activate_heal_particles(game, entity);
+            }
+
+            // Clear processed damage and healing
             health.PendingDamage.length = 0;
+            health.PendingHealing.length = 0;
 
             // Update healthbar
             update_healthbar(game, entity);
@@ -105,6 +134,20 @@ function calculate_armor_reduction(health: Health, incoming_damage: number): num
     }
 
     return final_damage;
+}
+
+function activate_heal_particles(game: Game, entity: number) {
+    for (let child_entity of query_down(game.World, entity, Has.Spawn | Has.Label)) {
+        let label = game.World.Label[child_entity];
+        if (label && label.Name === "heal_spawner") {
+            let spawn = game.World.Spawn[child_entity];
+            if (spawn.Mode === SpawnMode.Count) {
+                // Add particles for healing effect
+                spawn.RemainingCount ||= 1;
+            }
+            break; // Found the heal spawner, no need to continue
+        }
+    }
 }
 
 function update_healthbar(game: Game, entity: number) {

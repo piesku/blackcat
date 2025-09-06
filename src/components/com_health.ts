@@ -7,6 +7,12 @@ export interface DamageInstance {
     Type?: string; // Optional damage type for special effects
 }
 
+export interface HealingInstance {
+    Amount: number;
+    Source: number; // Entity ID that caused the healing
+    Type?: string; // Optional healing type for special effects
+}
+
 export interface Health {
     Max: number;
     Current: number;
@@ -19,8 +25,9 @@ export interface Health {
     DamageReduction?: number; // Percentage damage reduction (0.0 to 1.0)
     FirstDamageIgnored?: boolean; // Internal flag tracking if first damage was used
 
-    // Pending damage instances
+    // Pending damage and healing instances
     PendingDamage: DamageInstance[];
+    PendingHealing: HealingInstance[];
 }
 
 export function health(max: number = 3) {
@@ -32,6 +39,7 @@ export function health(max: number = 3) {
             LastDamageTime: 0,
             IsAlive: true,
             PendingDamage: [],
+            PendingHealing: [],
         };
     };
 }

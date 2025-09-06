@@ -1,5 +1,3 @@
-import {query_down} from "../components/com_children.js";
-import {SpawnMode} from "../components/com_spawn.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
@@ -79,44 +77,26 @@ export function sys_control_player(game: Game, delta: number) {
                 }
 
                 // Only heal if below max health and healing is enabled
-                if (health.Current < health.Max) {
-                    // Heal based on healing rate scaled by current energy
+                if (health.Current < health.Max && ai.HealingRate > 0) {
+                    // Calculate heal amount based on healing rate scaled by current energy
                     let heal_amount = ai.HealingRate * ai.Energy * delta;
-                    let health_before = health.Current;
 
-                    health.Current += heal_amount;
-                    if (health.Current > health.Max) {
-                        health.Current = health.Max;
-                    }
+                    // Add to pending healing for sys_health to process
+                    health.PendingHealing.push({
+                        Amount: heal_amount,
+                        Source: entity,
+                        Type: "player_healing",
+                    });
 
-                    if (health.Current > health_before) {
-                        let current_drain_rate =
-                            ai.HealingDrainStrength * (ai.Energy - MIN_HEALING_ENERGY);
-                        console.log(
-                            `[PLAYER_HEAL] Holding (${hold_timer.toFixed(1)}s) - healing ${(health.Current - health_before).toFixed(2)} HP (${health_before.toFixed(1)} -> ${health.Current.toFixed(1)}), energy: ${ai.Energy.toFixed(2)} (${ai.Energy.toFixed(2)}x heal rate, drain: ${current_drain_rate.toFixed(2)}/s)`,
-                        );
-
-                        // Activate healing particle effects on heal spawner child entity
-                        for (let child_entity of query_down(
-                            game.World,
-                            entity,
-                            Has.Spawn | Has.Label,
-                        )) {
-                            let label = game.World.Label[child_entity];
-                            if (label && label.Name === "heal_spawner") {
-                                let spawn = game.World.Spawn[child_entity];
-                                if (spawn.Mode === SpawnMode.Count) {
-                                    // Add particles for healing effect
-                                    spawn.RemainingCount ||= 1;
-                                }
-                                break; // Found the heal spawner, no need to continue
-                            }
-                        }
-                    } else if (ai.HealingRate === 0) {
-                        console.log(
-                            `[PLAYER_HEAL] Holding (${hold_timer.toFixed(1)}s) - healing disabled, no healing upgrade equipped`,
-                        );
-                    }
+                    let current_drain_rate =
+                        ai.HealingDrainStrength * (ai.Energy - MIN_HEALING_ENERGY);
+                    console.log(
+                        `[PLAYER_HEAL] Holding (${hold_timer.toFixed(1)}s) - requesting ${heal_amount.toFixed(2)} HP healing, energy: ${ai.Energy.toFixed(2)} (${ai.Energy.toFixed(2)}x heal rate, drain: ${current_drain_rate.toFixed(2)}/s)`,
+                    );
+                } else if (health.Current < health.Max && ai.HealingRate === 0) {
+                    console.log(
+                        `[PLAYER_HEAL] Holding (${hold_timer.toFixed(1)}s) - healing disabled, no healing upgrade equipped`,
+                    );
                 }
             } else if (!is_holding) {
                 // NORMAL MODE: Not holding - energy restores/decays toward BASE_ENERGY (1.0)
