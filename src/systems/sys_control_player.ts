@@ -122,8 +122,8 @@ export function sys_control_player(game: Game, delta: number) {
                 }
             }
 
-            // Calculate power scaling based on energy consumed during hold (only for player entities)
-            if (ai.IsPlayer) {
+            // Calculate power scaling based on energy consumed during hold (only for player entities with healing upgrades)
+            if (ai.IsPlayer && ai.HealingRate > 0) {
                 if (is_intentional_hold && health.IsAlive) {
                     // Record initial energy when hold starts
                     if (hold_timer <= HOLD_THRESHOLD + delta) {
@@ -187,21 +187,6 @@ export function sys_control_player(game: Game, delta: number) {
                     // Mark entity as dirty so transform system updates it
                     game.World.Signature[entity] |= Has.Dirty;
                 }
-            }
-
-            // Energy multiplier is now applied in sys_control_ai for movement and sys_control_weapon for shooting
-            if (is_holding && health.Current < health.Max) {
-                console.log(
-                    `[PLAYER_ENERGY] Healing mode - fighter slowing due to healing (${ai.Energy.toFixed(2)}x speed)`,
-                );
-            } else if (ai.Energy < BASE_ENERGY + 0.5) {
-                console.log(
-                    `[PLAYER_ENERGY] Normal energy - fighter at base speed (${ai.Energy.toFixed(2)}x speed)`,
-                );
-            } else {
-                console.log(
-                    `[PLAYER_ENERGY] High energy - fighter moving faster (${ai.Energy.toFixed(2)}x speed)`,
-                );
             }
         }
     }
