@@ -53,16 +53,15 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - Damage accumulation pattern (systems write to `PendingDamage[]`)
 - Armor effects stack multiplicatively with ability bonuses
 
-### 3. Support - Combat & Movement Enhancement ⚡
+### 3. Ability - Combat & Movement Enhancement ⚡
 
 **Strategy**: Active and passive abilities that modify combat behavior and provide tactical advantages.
 
 - **Vampiric** ✅ _(Uncommon)_ - Heal 1 HP for every 2 damage you deal to enemies
 - **Shadow Trail** ✅ _(Uncommon)_ - Movement leaves damaging shadow particles behind you
 - **Piercing Shots** ✅ _(Uncommon)_ - Projectiles go through first enemy and continue
-- **Phase Walk** ✅ _(Rare)_ - Brief invincibility when dashing (0.3s)
-- **Dash Master** ✅ _(Common)_ - +100% dash range and reduced dash cooldown
-- **Evasion** ✅ _(Uncommon)_ - +25% chance to completely avoid damage
+- **Phase Walk** ✅ _(Rare)_ - Invincibility for the entire duration of dash attacks
+- **Dash Master** ✅ _(Common)_ - +100% dash range
 
 **Implementation**:
 
@@ -119,13 +118,13 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 **Strategy**: Direct combat stat modifications and behavioral changes that dramatically alter playstyle and AI behavior.
 
-- **Lightning Reflexes** _(Uncommon)_ ✅ - +50% movement speed and dash speed
-- **Quick Draw** _(Common)_ ✅ - +40% attack speed (faster weapon cooldowns)
-- **Brawler** _(Common)_ ✅ - Higher aggressiveness, shorter dash range but +1 damage to all H2H attacks
-- **Vitality** _(Common)_ ✅ - +2 maximum health
-- **Berserker Mode** _(Uncommon)_ ✅ - +50% attack speed and movement when below 25% HP
-- **Pacifist** _(Rare)_ ✅ - Much lower aggressiveness but +3 max health and +50% damage reduction
-- **Cautious** _(Common)_ ✅ - Lower aggressiveness but +1 max health and better retreat timing
+- **Lightning Reflexes** ✅ _(Uncommon)_ - +50% movement speed and dash speed
+- **Quick Draw** ✅ _(Common)_ - +40% attack speed (faster weapon cooldowns)
+- **Brawler** ✅ _(Common)_ - Higher aggressiveness, shorter dash range but +1 damage to all attacks
+- **Vitality** ✅ _(Common)_ - +2 maximum health
+- **Berserker Mode** ✅ _(Uncommon)_ - +50% attack speed and movement when below 25% HP
+- **Pacifist** ✅ _(Rare)_ - Much lower aggressiveness but +3 max health and +50% damage reduction
+- **Cautious** ✅ _(Common)_ - Lower aggressiveness but +1 max health and better retreat timing
 
 **Implementation**:
 
@@ -136,20 +135,20 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 ## Upgrade Distribution Summary
 
-**Current Implemented Upgrades: 40** / **Potential Total: 53**
+**Current Implemented Upgrades: 47** / **Complete System**
 
 - **Weapons**: 11 upgrades ✅ (complete ranged arsenal)
-- **Armor**: 10 upgrades ✅ (complete defensive enhancement)
-- **Support**: 2 upgrades ✅ + 4 ideas (combat & movement enhancement)
+- **Armor**: 11 upgrades ✅ (complete defensive enhancement) 
+- **Ability**: 5 upgrades ✅ (combat & movement enhancement)
 - **Companions**: 8 upgrades ✅ (complete cat roster)
-- **Energy**: 9 upgrades ✅ + 2 ideas (interactive system)
-- **Traits**: 0 upgrades + 7 ideas (combat & behavioral enhancement)
+- **Energy**: 9 upgrades ✅ (interactive system)
+- **Traits**: 7 upgrades ✅ (combat & behavioral enhancement)
 
-**Rarity Distribution** (Current 40):
+**Rarity Distribution** (Current 47):
 
-- **Common**: 16 upgrades (40%)
-- **Uncommon**: 16 upgrades (40%)
-- **Rare**: 8 upgrades (20%)
+- **Common**: 18 upgrades (38%)
+- **Uncommon**: 20 upgrades (43%)
+- **Rare**: 9 upgrades (19%)
 
 **Current Implementation Strategy**:
 
@@ -157,16 +156,13 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 // Current upgrade categories (src/upgrades/types.ts)
 export const enum UpgradeCategory {
     Weapon = "weapon", // 11 upgrades ✅
-    Armor = "armor", // 10 upgrades ✅
-    Ability = "ability", // 2 upgrades ✅ (will become Support)
+    Armor = "armor", // 11 upgrades ✅
+    Ability = "ability", // 5 upgrades ✅
     Companion = "companion", // 8 upgrades ✅
     Energy = "energy", // 9 upgrades ✅
-    Special = "special", // 0 upgrades (future)
+    Trait = "trait", // 7 upgrades ✅
+    Special = "special", // 0 upgrades (reserved)
 }
-
-// Future expansion categories:
-// Support = "support",   // Ability category rename (combat & movement enhancement)
-// Trait = "trait",       // Combat & behavioral mods (future)
 ```
 
 **Key Design Principles**:

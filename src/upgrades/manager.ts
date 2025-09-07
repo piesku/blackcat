@@ -138,9 +138,11 @@ function apply_trait_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
     let move = game.World.Move2D[entity];
     let health = game.World.Health[entity];
 
-    DEBUG: if (!ai) throw new Error("missing ControlAi component for trait upgrade");
-    DEBUG: if (!move) throw new Error("missing Move2D component for trait upgrade");
-    DEBUG: if (!health) throw new Error("missing Health component for trait upgrade");
+    DEBUG: {
+        if (!ai) throw new Error("missing ControlAi component for trait upgrade");
+        if (!move) throw new Error("missing Move2D component for trait upgrade");
+        if (!health) throw new Error("missing Health component for trait upgrade");
+    }
 
     switch (upgrade.id) {
         case "lightning_reflexes":
