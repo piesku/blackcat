@@ -40,96 +40,110 @@ import {
 import {UpgradeCategory, UpgradeType} from "./types.js";
 
 export function apply_upgrades(game: Game, entity: number, upgrades: UpgradeType[]) {
-    // Apply upgrades in order: Energy -> Traits -> Armor -> Weapons -> Abilities -> Companions
-    let categorized = categorize_upgrades(upgrades);
-
-    // Energy (modifies energy system parameters - must be first to enable tapping)
-    for (let energy of categorized.energy) {
-        apply_energy_upgrade(game, entity, energy);
+    // Apply all upgrades - order doesn't matter since categories are independent
+    for (let upgrade of upgrades) {
+        switch (upgrade.category) {
+            case UpgradeCategory.Energy:
+                apply_energy_upgrade(game, entity, upgrade);
+                break;
+            case UpgradeCategory.Trait:
+                apply_trait_upgrade(game, entity, upgrade);
+                break;
+            case UpgradeCategory.Armor:
+                apply_armor_upgrade(game, entity, upgrade);
+                break;
+            case UpgradeCategory.Weapon:
+                apply_weapon_upgrade(game, entity, upgrade);
+                break;
+            case UpgradeCategory.Ability:
+                apply_ability_upgrade(game, entity, upgrade);
+                break;
+            case UpgradeCategory.Companion:
+                apply_companion_upgrade(game, entity, upgrade);
+                break;
+            default:
+                console.warn(`Unknown upgrade category: ${upgrade.category}`);
+                break;
+        }
     }
-
-    // Traits (modifies base stats and AI personality - early to affect other upgrades)
-    for (let trait of categorized.traits) {
-        apply_trait_upgrade(game, entity, trait);
-    }
-
-    // Armor (modifies health component)
-    for (let armor of categorized.armor) {
-        apply_armor_upgrade(game, entity, armor);
-    }
-
-    // Weapons (adds child entities)
-    for (let weapon of categorized.weapons) {
-        apply_weapon_upgrade(game, entity, weapon);
-    }
-
-    // Abilities (modifies entity behavior)
-    for (let ability of categorized.abilities) {
-        apply_ability_upgrade(game, entity, ability);
-    }
-
-    // Companions (spawns cat allies)
-    for (let companion of categorized.companions) {
-        apply_companion_upgrade(game, entity, companion);
-    }
-}
-
-function categorize_upgrades(upgrades: UpgradeType[]) {
-    return {
-        energy: upgrades.filter((u) => u.category === UpgradeCategory.Energy),
-        traits: upgrades.filter((u) => u.category === UpgradeCategory.Trait),
-        weapons: upgrades.filter((u) => u.category === UpgradeCategory.Weapon),
-        armor: upgrades.filter((u) => u.category === UpgradeCategory.Armor),
-        abilities: upgrades.filter((u) => u.category === UpgradeCategory.Ability),
-        companions: upgrades.filter((u) => u.category === UpgradeCategory.Companion),
-        special: upgrades.filter((u) => u.category === UpgradeCategory.Special),
-    };
 }
 
 function apply_energy_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
     let ai = game.World.ControlAi[entity];
     DEBUG: if (!ai) throw new Error("missing ControlAi component for energy upgrade");
 
-    // Apply energy parameters from upgrade data
-    if (upgrade.data) {
-        if ("energyPerTap" in upgrade.data) {
-            // Stack energy per tap additively (base = 0)
-            ai.EnergyPerTap += upgrade.data.energyPerTap as number;
+    switch (upgrade.id) {
+        case "energy_efficiency":
+            ai.EnergyPerTap += 0.3;
             console.log(
-                `[ENERGY_UPGRADE] Applied ${upgrade.name}: added +${upgrade.data.energyPerTap} energy/tap (total: ${ai.EnergyPerTap})`,
+                `[ENERGY_UPGRADE] Applied Energy Efficiency: +0.3 energy/tap (total: ${ai.EnergyPerTap})`,
             );
-        }
-        if ("energyDecayRate" in upgrade.data) {
-            ai.EnergyDecayRate = upgrade.data.energyDecayRate as number;
-            console.log(
-                `[ENERGY_UPGRADE] Applied ${upgrade.name}: energyDecayRate = ${ai.EnergyDecayRate}`,
-            );
-        }
-        if ("healingRate" in upgrade.data) {
-            // Stack healing rates additively for multiple healing upgrades
-            ai.HealingRate += upgrade.data.healingRate as number;
-            console.log(
-                `[ENERGY_UPGRADE] Applied ${upgrade.name}: added +${upgrade.data.healingRate} healing (total: ${ai.HealingRate})`,
-            );
-        }
-        if ("healingDrainStrength" in upgrade.data) {
-            ai.HealingDrainStrength = upgrade.data.healingDrainStrength as number;
-            console.log(
-                `[ENERGY_UPGRADE] Applied ${upgrade.name}: healingDrainStrength = ${ai.HealingDrainStrength}`,
-            );
-        }
-        if ("powerDecayRate" in upgrade.data) {
-            ai.PowerDecayRate = upgrade.data.powerDecayRate as number;
-            console.log(
-                `[ENERGY_UPGRADE] Applied ${upgrade.name}: powerDecayRate = ${ai.PowerDecayRate}`,
-            );
-        }
+            break;
 
-        // Handle shockwave burst upgrade
-        if (upgrade.id === "shockwave_burst") {
+        case "adrenaline_rush":
+            ai.EnergyPerTap += 0.5;
+            console.log(
+                `[ENERGY_UPGRADE] Applied Adrenaline Rush: +0.5 energy/tap (total: ${ai.EnergyPerTap})`,
+            );
+            break;
+
+        case "slow_metabolism":
+            ai.EnergyDecayRate = 0.5;
+            console.log(`[ENERGY_UPGRADE] Applied Slow Metabolism: energy decays 50% slower`);
+            break;
+
+        case "basic_healing":
+            ai.HealingRate += 1.0;
+            console.log(
+                `[ENERGY_UPGRADE] Applied Basic Healing: +1 HP/s healing (total: ${ai.HealingRate})`,
+            );
+            break;
+
+        case "rapid_healing":
+            ai.HealingRate += 2.0;
+            console.log(
+                `[ENERGY_UPGRADE] Applied Rapid Healing: +2 HP/s healing (total: ${ai.HealingRate})`,
+            );
+            break;
+
+        case "energy_conservation":
+            ai.HealingDrainStrength = 0.5;
+            console.log(
+                `[ENERGY_UPGRADE] Applied Energy Conservation: healing drains 50% less energy`,
+            );
+            break;
+
+        case "power_stability":
+            ai.PowerDecayRate = 0.25;
+            console.log(`[ENERGY_UPGRADE] Applied Power Stability: power decays 75% slower`);
+            break;
+
+        case "hypermetabolism":
+            ai.EnergyDecayRate = 2.0;
+            ai.HealingRate += 3.0;
+            console.log(
+                `[ENERGY_UPGRADE] Applied Hypermetabolism: energy decays 2x faster, +3 HP/s healing`,
+            );
+            break;
+
+        case "combat_stimulant":
+            ai.EnergyPerTap += 0.8;
+            ai.PowerDecayRate = 0.1;
+            console.log(
+                `[ENERGY_UPGRADE] Applied Combat Stimulant: +0.8 energy/tap, instant power recovery`,
+            );
+            break;
+
+        case "shockwave_burst":
             ai.ShockwaveBurstEnabled = true;
-            console.log(`[ENERGY_UPGRADE] Applied ${upgrade.name}: shockwave burst enabled`);
-        }
+            console.log(
+                `[ENERGY_UPGRADE] Applied Shockwave Burst: particles spawn when releasing heal`,
+            );
+            break;
+
+        default:
+            console.warn(`Unknown energy upgrade: ${upgrade.id}`);
+            break;
     }
 }
 
@@ -146,135 +160,61 @@ function apply_trait_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
 
     switch (upgrade.id) {
         case "lightning_reflexes":
-            if (upgrade.data && "moveSpeedMultiplier" in upgrade.data) {
-                let speedMultiplier = upgrade.data.moveSpeedMultiplier as number;
-                move.MoveSpeed *= speedMultiplier;
-                ai.BaseMoveSpeed *= speedMultiplier;
-                console.log(
-                    `[TRAIT_UPGRADE] Applied ${upgrade.name}: movement speed *= ${speedMultiplier} (now ${move.MoveSpeed})`,
-                );
-            }
-            if (upgrade.data && "dashSpeedMultiplier" in upgrade.data) {
-                let dashMultiplier = upgrade.data.dashSpeedMultiplier as number;
-                // Store dash speed multiplier for AI system to use
-                ai.DashSpeedMultiplier = (ai.DashSpeedMultiplier || 1.0) * dashMultiplier;
-                console.log(
-                    `[TRAIT_UPGRADE] Applied ${upgrade.name}: dash speed *= ${dashMultiplier}`,
-                );
-            }
+            move.MoveSpeed *= 1.5;
+            ai.BaseMoveSpeed *= 1.5;
+            ai.DashSpeedMultiplier = (ai.DashSpeedMultiplier || 1.0) * 1.5;
+            console.log(`[TRAIT_UPGRADE] Applied Lightning Reflexes: +50% movement and dash speed`);
             break;
 
         case "quick_draw":
-            if (upgrade.data && "attackSpeedMultiplier" in upgrade.data) {
-                let attackMultiplier = upgrade.data.attackSpeedMultiplier as number;
-                // Store attack speed multiplier for weapon systems to use
-                ai.AttackSpeedMultiplier = (ai.AttackSpeedMultiplier || 1.0) * attackMultiplier;
-                console.log(
-                    `[TRAIT_UPGRADE] Applied ${upgrade.name}: attack speed *= ${attackMultiplier}`,
-                );
-            }
+            ai.AttackSpeedMultiplier = (ai.AttackSpeedMultiplier || 1.0) * 1.4;
+            console.log(`[TRAIT_UPGRADE] Applied Quick Draw: +40% attack speed`);
             break;
 
         case "brawler":
-            if (upgrade.data) {
-                if ("aggressivenessBonus" in upgrade.data) {
-                    let aggressivenessBonus = upgrade.data.aggressivenessBonus as number;
-                    ai.Aggressiveness += aggressivenessBonus;
-                    console.log(
-                        `[TRAIT_UPGRADE] Applied ${upgrade.name}: aggressiveness += ${aggressivenessBonus} (now ${ai.Aggressiveness})`,
-                    );
-                }
-                if ("dashRangeMultiplier" in upgrade.data) {
-                    let dashRangeMultiplier = upgrade.data.dashRangeMultiplier as number;
-                    ai.DashRangeMultiplier = (ai.DashRangeMultiplier || 1.0) * dashRangeMultiplier;
-                    console.log(
-                        `[TRAIT_UPGRADE] Applied ${upgrade.name}: dash range *= ${dashRangeMultiplier}`,
-                    );
-                }
-                if ("damageBonus" in upgrade.data) {
-                    let damageBonus = upgrade.data.damageBonus as number;
-                    ai.DamageBonus = (ai.DamageBonus || 0) + damageBonus;
-                    console.log(
-                        `[TRAIT_UPGRADE] Applied ${upgrade.name}: damage bonus += ${damageBonus}`,
-                    );
-                }
-            }
+            ai.Aggressiveness += 0.3;
+            ai.DashRangeMultiplier = (ai.DashRangeMultiplier || 1.0) * 0.8;
+            ai.DamageBonus = (ai.DamageBonus || 0) + 1;
+            console.log(
+                `[TRAIT_UPGRADE] Applied Brawler: higher aggression, shorter dash, +1 damage`,
+            );
             break;
 
         case "vitality":
-            if (upgrade.data && "healthBonus" in upgrade.data) {
-                let healthBonus = upgrade.data.healthBonus as number;
-                health.Max += healthBonus;
-                health.Current += healthBonus;
-                console.log(
-                    `[TRAIT_UPGRADE] Applied ${upgrade.name}: health += ${healthBonus} (now ${health.Max}/${health.Current})`,
-                );
-            }
+            health.Max += 2;
+            health.Current += 2;
+            console.log(`[TRAIT_UPGRADE] Applied Vitality: +2 health (now ${health.Max})`);
             break;
 
         case "berserker_mode":
-            if (upgrade.data) {
-                ai.BerserkerMode = {
-                    LowHealthThreshold: upgrade.data.lowHealthThreshold as number,
-                    SpeedBonus: upgrade.data.lowHealthSpeedBonus as number,
-                    AttackBonus: upgrade.data.lowHealthAttackBonus as number,
-                };
-                console.log(`[TRAIT_UPGRADE] Applied ${upgrade.name}: berserker mode enabled`);
-            }
+            ai.BerserkerMode = {
+                LowHealthThreshold: 0.25,
+                SpeedBonus: 1.5,
+                AttackBonus: 1.5,
+            };
+            console.log(
+                `[TRAIT_UPGRADE] Applied Berserker Mode: +50% speed/attack when below 25% HP`,
+            );
             break;
 
         case "pacifist":
-            if (upgrade.data) {
-                if ("aggressivenessMultiplier" in upgrade.data) {
-                    let aggressivenessMultiplier = upgrade.data.aggressivenessMultiplier as number;
-                    ai.Aggressiveness *= aggressivenessMultiplier;
-                    console.log(
-                        `[TRAIT_UPGRADE] Applied ${upgrade.name}: aggressiveness *= ${aggressivenessMultiplier} (now ${ai.Aggressiveness})`,
-                    );
-                }
-                if ("healthBonus" in upgrade.data) {
-                    let healthBonus = upgrade.data.healthBonus as number;
-                    health.Max += healthBonus;
-                    health.Current += healthBonus;
-                    console.log(
-                        `[TRAIT_UPGRADE] Applied ${upgrade.name}: health += ${healthBonus} (now ${health.Max})`,
-                    );
-                }
-                if ("damageReductionMultiplier" in upgrade.data) {
-                    let damageReductionMultiplier = upgrade.data
-                        .damageReductionMultiplier as number;
-                    // Convert multiplier to percentage reduction (0.5x damage = 50% reduction)
-                    let damageReductionPercent = 1.0 - damageReductionMultiplier;
-                    apply_damage_reduction(game, entity, damageReductionPercent);
-                }
-            }
+            ai.Aggressiveness *= 0.3;
+            health.Max += 3;
+            health.Current += 3;
+            apply_damage_reduction(game, entity, 0.5);
+            console.log(
+                `[TRAIT_UPGRADE] Applied Pacifist: lower aggression, +3 health, +50% damage reduction`,
+            );
             break;
 
         case "cautious":
-            if (upgrade.data) {
-                if ("aggressivenessMultiplier" in upgrade.data) {
-                    let aggressivenessMultiplier = upgrade.data.aggressivenessMultiplier as number;
-                    ai.Aggressiveness *= aggressivenessMultiplier;
-                    console.log(
-                        `[TRAIT_UPGRADE] Applied ${upgrade.name}: aggressiveness *= ${aggressivenessMultiplier} (now ${ai.Aggressiveness})`,
-                    );
-                }
-                if ("healthBonus" in upgrade.data) {
-                    let healthBonus = upgrade.data.healthBonus as number;
-                    health.Max += healthBonus;
-                    health.Current += healthBonus;
-                    console.log(
-                        `[TRAIT_UPGRADE] Applied ${upgrade.name}: health += ${healthBonus} (now ${health.Max})`,
-                    );
-                }
-                if ("retreatHealthThreshold" in upgrade.data) {
-                    let retreatThreshold = upgrade.data.retreatHealthThreshold as number;
-                    ai.RetreatHealthThreshold = retreatThreshold;
-                    console.log(
-                        `[TRAIT_UPGRADE] Applied ${upgrade.name}: retreat threshold = ${retreatThreshold}`,
-                    );
-                }
-            }
+            ai.Aggressiveness *= 0.7;
+            health.Max += 1;
+            health.Current += 1;
+            ai.RetreatHealthThreshold = 2;
+            console.log(
+                `[TRAIT_UPGRADE] Applied Cautious: lower aggression, +1 health, retreat at 2 HP`,
+            );
             break;
 
         default:
@@ -412,7 +352,7 @@ function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType)
 
         case "shadow_trail":
             spawn_timed(
-                (game, spawner) => blueprint_shadow_particle(),
+                () => blueprint_shadow_particle(),
                 1.0 / 8.0, // interval
                 0, // spread: No spread for trails
                 0, // speedMin
@@ -455,10 +395,7 @@ function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType)
 function apply_companion_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
     // Get the owner's team (IsPlayer status)
     let owner_ai = game.World.ControlAi[entity];
-    if (!owner_ai) {
-        console.warn(`Entity ${entity} has no ControlAi component, cannot spawn companion`);
-        return;
-    }
+    DEBUG: if (!owner_ai) throw new Error("missing ControlAi component for companion upgrade");
 
     let owner_is_player = owner_ai.IsPlayer;
     let companion_entity: number;

@@ -11,7 +11,6 @@ export interface UpgradeType {
     description: string; // UI description
     rarity: UpgradeRarity; // Determines selection probability
     tier?: number; // For power scaling (optional)
-    data?: Record<string, unknown>; // Upgrade-specific parameters (optional)
 }
 
 export const enum UpgradeCategory {
@@ -300,7 +299,6 @@ export const ENERGY_UPGRADES: UpgradeType[] = [
         name: "Energy Efficiency",
         description: "Click rapidly to boost combat performance (+0.3 energy per tap)",
         rarity: UpgradeRarity.Common,
-        data: {energyPerTap: 0.3}, // Standard tapping rate
     },
     {
         id: "adrenaline_rush",
@@ -309,7 +307,6 @@ export const ENERGY_UPGRADES: UpgradeType[] = [
         description:
             "Enhanced clicking efficiency (+0.5 energy per tap, stacks with other tapping bonuses)",
         rarity: UpgradeRarity.Uncommon,
-        data: {energyPerTap: 0.5}, // Enhanced tapping rate
     },
     {
         id: "slow_metabolism",
@@ -317,7 +314,6 @@ export const ENERGY_UPGRADES: UpgradeType[] = [
         name: "Slow Metabolism",
         description: "Energy decays 50% slower",
         rarity: UpgradeRarity.Common,
-        data: {energyDecayRate: 0.5}, // Slower energy decay
     },
     {
         id: "basic_healing",
@@ -325,7 +321,6 @@ export const ENERGY_UPGRADES: UpgradeType[] = [
         name: "Basic Healing",
         description: "Hold to restore +1 HP per second (stacks with other healing)",
         rarity: UpgradeRarity.Common,
-        data: {healingRate: 1.0}, // Additive healing rate
     },
     {
         id: "rapid_healing",
@@ -333,7 +328,6 @@ export const ENERGY_UPGRADES: UpgradeType[] = [
         name: "Rapid Healing",
         description: "Hold to restore +2 HP per second (stacks with other healing)",
         rarity: UpgradeRarity.Uncommon,
-        data: {healingRate: 2.0}, // Additive healing rate
     },
     {
         id: "energy_conservation",
@@ -341,7 +335,6 @@ export const ENERGY_UPGRADES: UpgradeType[] = [
         name: "Energy Conservation",
         description: "Healing drains energy 50% slower",
         rarity: UpgradeRarity.Uncommon,
-        data: {healingDrainStrength: 0.5}, // Slower energy drain while healing
     },
     {
         id: "power_stability",
@@ -349,7 +342,6 @@ export const ENERGY_UPGRADES: UpgradeType[] = [
         name: "Power Stability",
         description: "Power decays 75% slower",
         rarity: UpgradeRarity.Common,
-        data: {powerDecayRate: 4.0}, // Much slower power decay (16.0 -> 4.0)
     },
     {
         id: "hypermetabolism",
@@ -357,7 +349,6 @@ export const ENERGY_UPGRADES: UpgradeType[] = [
         name: "Hypermetabolism",
         description: "Energy decays twice as fast but enables powerful +3 HP/s healing",
         rarity: UpgradeRarity.Rare,
-        data: {energyDecayRate: 2.0, healingRate: 3.0}, // Trade-off upgrade
     },
     {
         id: "combat_stimulant",
@@ -366,7 +357,6 @@ export const ENERGY_UPGRADES: UpgradeType[] = [
         description:
             "Supercharged tapping (+0.8 energy per tap) and instant power recovery (stacks with other tapping bonuses)",
         rarity: UpgradeRarity.Rare,
-        data: {energyPerTap: 0.8, powerDecayRate: 32.0}, // Very high tapping, very fast power decay
     },
     {
         id: "shockwave_burst",
@@ -386,7 +376,6 @@ export const TRAIT_UPGRADES: UpgradeType[] = [
         name: "Lightning Reflexes",
         description: "+50% movement speed and dash speed",
         rarity: UpgradeRarity.Uncommon,
-        data: {moveSpeedMultiplier: 1.5, dashSpeedMultiplier: 1.5},
     },
     {
         id: "quick_draw",
@@ -394,7 +383,6 @@ export const TRAIT_UPGRADES: UpgradeType[] = [
         name: "Quick Draw",
         description: "+40% attack speed (faster weapon cooldowns)",
         rarity: UpgradeRarity.Common,
-        data: {attackSpeedMultiplier: 1.4},
     },
     {
         id: "brawler",
@@ -402,7 +390,6 @@ export const TRAIT_UPGRADES: UpgradeType[] = [
         name: "Brawler",
         description: "Higher aggressiveness, shorter dash range but +1 damage to all attacks",
         rarity: UpgradeRarity.Common,
-        data: {aggressivenessBonus: 0.5, dashRangeMultiplier: 0.8, damageBonus: 1},
     },
     {
         id: "vitality",
@@ -410,7 +397,6 @@ export const TRAIT_UPGRADES: UpgradeType[] = [
         name: "Vitality",
         description: "+2 maximum health",
         rarity: UpgradeRarity.Common,
-        data: {healthBonus: 2},
     },
     {
         id: "berserker_mode",
@@ -418,7 +404,6 @@ export const TRAIT_UPGRADES: UpgradeType[] = [
         name: "Berserker Mode",
         description: "+50% attack speed and movement when below 25% HP",
         rarity: UpgradeRarity.Uncommon,
-        data: {lowHealthThreshold: 0.25, lowHealthSpeedBonus: 1.5, lowHealthAttackBonus: 1.5},
     },
     {
         id: "pacifist",
@@ -426,7 +411,6 @@ export const TRAIT_UPGRADES: UpgradeType[] = [
         name: "Pacifist",
         description: "Much lower aggressiveness but +3 max health and +50% damage reduction",
         rarity: UpgradeRarity.Rare,
-        data: {aggressivenessMultiplier: 0.3, healthBonus: 3, damageReductionMultiplier: 0.5},
     },
     {
         id: "cautious",
@@ -434,7 +418,6 @@ export const TRAIT_UPGRADES: UpgradeType[] = [
         name: "Cautious",
         description: "Lower aggressiveness but +1 max health and better retreat timing",
         rarity: UpgradeRarity.Common,
-        data: {aggressivenessMultiplier: 0.7, healthBonus: 1, retreatHealthThreshold: 2},
     },
 ];
 
