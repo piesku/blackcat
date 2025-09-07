@@ -8,7 +8,6 @@
 import {is_entity_alive} from "../lib/world.js";
 import {DrawKind} from "./components/com_draw.js";
 import {SpawnMode} from "./components/com_spawn.js";
-import {TaskKind} from "./components/com_task.js";
 import {Game} from "./game.js";
 import {Has} from "./world.js";
 
@@ -190,9 +189,6 @@ export class SceneGraphInspector {
             [Has.Shake]: "Shake",
             [Has.SpatialNode2D]: "SpatialNode2D",
             [Has.Spawn]: "Spawn",
-            [Has.Task]: "Task",
-            [Has.Toggle]: "Toggle",
-            [Has.Trigger]: "Trigger",
             [Has.Weapon]: "Weapon",
         };
     }
@@ -517,40 +513,6 @@ export class SceneGraphInspector {
             html += `<div class="component">
                 <strong>SpawnedBy</strong><br>
                 Fighter: ${fighterDisplay}
-            </div>`;
-        }
-
-        if (world.Signature[entityId] & Has.Task) {
-            const t = world.Task[entityId];
-            html += `<div class="component">
-                <strong>Task</strong><br>`;
-
-            if (t.Kind === TaskKind.When) {
-                html += `Type: When (predicate)`;
-            } else if (t.Kind === TaskKind.Delay) {
-                html += `Type: Delay<br>Remaining: ${t.Remaining.toFixed(2)}s`;
-            } else if (t.Kind === TaskKind.Then) {
-                html += `Type: Then (callback)`;
-            }
-
-            html += `</div>`;
-        }
-
-        if (world.Signature[entityId] & Has.Toggle) {
-            const t = world.Toggle[entityId];
-            html += `<div class="component">
-                <strong>Toggle</strong><br>
-                Mask: ${t.Mask}<br>
-                Frequency: ${t.Frequency.toFixed(2)}<br>
-                Since Last: ${t.SinceLast.toFixed(2)}
-            </div>`;
-        }
-
-        if (world.Signature[entityId] & Has.Trigger) {
-            const t = world.Trigger[entityId];
-            html += `<div class="component">
-                <strong>Trigger</strong><br>
-                Action: ${t.Action}
             </div>`;
         }
 

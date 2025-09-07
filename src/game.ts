@@ -14,6 +14,7 @@ import {sys_aim} from "./systems/sys_aim.js";
 import {sys_arena_bounds} from "./systems/sys_arena_bounds.js";
 import {sys_camera2d} from "./systems/sys_camera2d.js";
 import {sys_camera_zoom} from "./systems/sys_camera_zoom.js";
+import {sys_cleanup_dead} from "./systems/sys_cleanup_dead.js";
 import {sys_collide2d} from "./systems/sys_collide2d.js";
 import {sys_control_ai} from "./systems/sys_control_ai.js";
 import {sys_control_always2d} from "./systems/sys_control_always2d.js";
@@ -22,7 +23,6 @@ import {sys_control_weapon} from "./systems/sys_control_weapon.js";
 import {sys_deal_damage} from "./systems/sys_deal_damage.js";
 import {sys_draw2d} from "./systems/sys_draw2d.js";
 import {sys_draw2d_debug} from "./systems/sys_draw2d_debug.js";
-import {sys_cleanup_dead} from "./systems/sys_cleanup_dead.js";
 import {sys_duel_manager} from "./systems/sys_duel_manager.js";
 import {sys_health} from "./systems/sys_health.js";
 import {sys_lifespan} from "./systems/sys_lifespan.js";
@@ -30,16 +30,13 @@ import {sys_move2d} from "./systems/sys_move2d.js";
 import {sys_particles} from "./systems/sys_particles.js";
 import {sys_physics2d_integrate} from "./systems/sys_physics2d_integrate.js";
 import {sys_physics2d_resolve} from "./systems/sys_physics2d_resolve.js";
-import {sys_poll} from "./systems/sys_poll.js";
 import {sys_render2d} from "./systems/sys_render2d.js";
 import {sys_render2d_animate} from "./systems/sys_render2d_animate.js";
 import {sys_resize2d} from "./systems/sys_resize2d.js";
 import {sys_reticle} from "./systems/sys_reticle.js";
 import {sys_shake2d} from "./systems/sys_shake2d.js";
 import {sys_spawn2d} from "./systems/sys_spawn2d.js";
-import {sys_toggle} from "./systems/sys_toggle.js";
 import {sys_transform2d} from "./systems/sys_transform2d.js";
-import {sys_trigger2d} from "./systems/sys_trigger2d.js";
 import {sys_ui} from "./systems/sys_ui.js";
 import {sys_victory_timer} from "./systems/sys_victory_timer.js";
 import {Has, World} from "./world.js";
@@ -95,15 +92,11 @@ export class Game extends Game3D {
     }
 
     override FrameUpdate(delta: number) {
-        // Event loop.
-        sys_poll(this, delta);
-
         // Collisions and physics.
         sys_physics2d_integrate(this, delta);
         sys_transform2d(this, delta);
         sys_collide2d(this, delta);
         sys_physics2d_resolve(this, delta);
-        sys_trigger2d(this, delta);
 
         // AI.
         sys_aim(this, delta);
@@ -127,7 +120,6 @@ export class Game extends Game3D {
         sys_arena_bounds(this, delta);
         sys_lifespan(this, delta);
         sys_shake2d(this, delta);
-        sys_toggle(this, delta);
 
         // Commit all positions.
         sys_transform2d(this, delta);
