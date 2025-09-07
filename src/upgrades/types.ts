@@ -1,11 +1,81 @@
 export const enum UpgradeRarity {
-    Common = "common", // 70% chance - basic upgrades
-    Uncommon = "uncommon", // 25% chance - enhanced upgrades
-    Rare = "rare", // 5% chance - powerful upgrades
+    Common, // 70% chance - basic upgrades
+    Uncommon, // 25% chance - enhanced upgrades
+    Rare, // 5% chance - powerful upgrades
+}
+
+// Numeric upgrade IDs for optimal compression
+export const enum UpgradeId {
+    // Weapons
+    Flamethrower,
+    Shotgun,
+    Minigun,
+    SniperRifle,
+    Mortar,
+    Boomerang,
+    Explosives,
+    Spikeballs,
+    Larpa,
+    HooverCrack,
+    ChiquitaBomb,
+
+    // Armor
+    ScrapArmor,
+    SpikedVest,
+    VitalityBoost,
+    DamageReduction,
+    RegenerativeMesh,
+    MirrorArmor,
+    ProximityBarrier,
+    LastStand,
+    ThickHide,
+    ToughSkin,
+    Evasion,
+
+    // Abilities
+    Vampiric,
+    ShadowTrail,
+    PiercingShots,
+    PhaseWalk,
+    DashMaster,
+
+    // Companions
+    MrBlack,
+    MrOrange,
+    MrPink,
+    MrWhite,
+    MrBrown,
+    MrBlue,
+    MrGray,
+    MrRed,
+
+    // Energy
+    EnergyEfficiency,
+    AdrenalineRush,
+    SlowMetabolism,
+    BasicHealing,
+    RapidHealing,
+    EnergyConservation,
+    PowerStability,
+    Hypermetabolism,
+    CombatStimulant,
+    ShockwaveBurst,
+
+    // Traits
+    LightningReflexes,
+    QuickDraw,
+    Brawler,
+    Vitality,
+    BerserkerMode,
+    Pacifist,
+    Cautious,
+
+    // Last entry to determine length
+    Length,
 }
 
 export interface UpgradeType {
-    id: string; // "battle_axe", "scrap_armor", etc.
+    id: UpgradeId; // Numeric ID for optimal compression
     category: UpgradeCategory;
     name: string; // Display name
     description: string; // UI description
@@ -14,13 +84,13 @@ export interface UpgradeType {
 }
 
 export const enum UpgradeCategory {
-    Weapon = "weapon",
-    Armor = "armor",
-    Ability = "ability",
-    Companion = "companion",
-    Energy = "energy",
-    Trait = "trait",
-    Special = "special",
+    Weapon,
+    Armor,
+    Ability,
+    Companion,
+    Energy,
+    Trait,
+    Special,
 }
 
 export interface GameState {
@@ -29,410 +99,5 @@ export interface GameState {
     population: number; // Narrative countdown (8 billion -> 1)
     isNewRun: boolean; // Fresh start vs resumed
 }
-
-// Weapon upgrade definitions - Ranged only, particle-focused
-export const WEAPON_UPGRADES: UpgradeType[] = [
-    {
-        id: "flamethrower",
-        category: UpgradeCategory.Weapon,
-        name: "Flamethrower",
-        description: "Emits a cone of flame particles that damage enemies",
-        rarity: UpgradeRarity.Uncommon,
-    },
-    {
-        id: "shotgun",
-        category: UpgradeCategory.Weapon,
-        name: "Shotgun",
-        description: "Spread shot ranged weapon with multiple projectiles",
-        rarity: UpgradeRarity.Common,
-    },
-    {
-        id: "minigun",
-        category: UpgradeCategory.Weapon,
-        name: "Minigun",
-        description: "High rate of fire bullet spray with ejecting shell casings",
-        rarity: UpgradeRarity.Rare,
-    },
-    {
-        id: "sniper_rifle",
-        category: UpgradeCategory.Weapon,
-        name: "Rifle",
-        description: "High-damage, long-range precision weapon with muzzle flash",
-        rarity: UpgradeRarity.Common,
-    },
-    {
-        id: "mortar",
-        category: UpgradeCategory.Weapon,
-        name: "Mortar",
-        description: "High-arc explosive shells with area damage",
-        rarity: UpgradeRarity.Uncommon,
-    },
-    {
-        id: "boomerang",
-        category: UpgradeCategory.Weapon,
-        name: "Boomerang",
-        description: "Returning projectile that deals damage on the way out and back",
-        rarity: UpgradeRarity.Uncommon,
-    },
-    {
-        id: "explosives",
-        category: UpgradeCategory.Weapon,
-        name: "Explosives",
-        description: "Thrown bombs that explode on timeout with debris particles",
-        rarity: UpgradeRarity.Common,
-    },
-    {
-        id: "spikeballs",
-        category: UpgradeCategory.Weapon,
-        name: "Spikeballs",
-        description: "Bouncing projectiles that persist and ricochet around the arena",
-        rarity: UpgradeRarity.Common,
-    },
-    {
-        id: "larpa",
-        category: UpgradeCategory.Weapon,
-        name: "Larpa",
-        description: "Rockets leaving falling particle damage trails",
-        rarity: UpgradeRarity.Rare,
-    },
-    {
-        id: "hoover_crack",
-        category: UpgradeCategory.Weapon,
-        name: "Hoover Crack",
-        description: "Spinning particle emitter dealing continuous damage",
-        rarity: UpgradeRarity.Rare,
-    },
-    {
-        id: "chiquita_bomb",
-        category: UpgradeCategory.Weapon,
-        name: "Chiquita Bomb",
-        description: "Bomb spawning multiple banana sub-bombs",
-        rarity: UpgradeRarity.Rare,
-    },
-];
-
-// Armor upgrade definitions
-export const ARMOR_UPGRADES: UpgradeType[] = [
-    {
-        id: "scrap_armor",
-        category: UpgradeCategory.Armor,
-        name: "Scrap Armor",
-        description: "Ignores the first damage instance you take in combat",
-        rarity: UpgradeRarity.Common,
-    },
-    {
-        id: "spiked_vest",
-        category: UpgradeCategory.Armor,
-        name: "Spiked Vest",
-        description: "Reflects +1 damage back to attackers (stacks with other reflection)",
-        rarity: UpgradeRarity.Common,
-    },
-    {
-        id: "vitality_boost",
-        category: UpgradeCategory.Armor,
-        name: "Vitality Boost",
-        description: "Increases maximum health by +50% of current max (stacks additively)",
-        rarity: UpgradeRarity.Uncommon,
-    },
-    {
-        id: "damage_reduction",
-        category: UpgradeCategory.Armor,
-        name: "Reinforced Plating",
-        description: "Reduces all damage taken by 25%",
-        rarity: UpgradeRarity.Uncommon,
-    },
-    {
-        id: "regenerative_mesh",
-        category: UpgradeCategory.Armor,
-        name: "Regenerative Mesh",
-        description: "Slowly heal during combat (0.3 HP/s)",
-        rarity: UpgradeRarity.Uncommon,
-    },
-    {
-        id: "mirror_armor",
-        category: UpgradeCategory.Armor,
-        name: "Mirror Armor",
-        description: "100% reflect damage but you take 50% of reflected amount",
-        rarity: UpgradeRarity.Rare,
-    },
-    {
-        id: "proximity_barrier",
-        category: UpgradeCategory.Armor,
-        name: "Proximity Barrier",
-        description: "Reduce damage from enemies within melee range by 40%",
-        rarity: UpgradeRarity.Uncommon,
-    },
-    {
-        id: "last_stand",
-        category: UpgradeCategory.Armor,
-        name: "Last Stand",
-        description: "Take 75% less damage when at 1 HP",
-        rarity: UpgradeRarity.Rare,
-    },
-    {
-        id: "thick_hide",
-        category: UpgradeCategory.Armor,
-        name: "Thick Hide",
-        description: "Gain +1 HP and reduce damage from attacks by 1 (minimum 1)",
-        rarity: UpgradeRarity.Uncommon,
-    },
-    {
-        id: "tough_skin",
-        category: UpgradeCategory.Armor,
-        name: "Tough Skin",
-        description: "Reduce all damage by 1 (minimum 1 damage)",
-        rarity: UpgradeRarity.Common,
-    },
-    {
-        id: "evasion",
-        category: UpgradeCategory.Armor,
-        name: "Evasion",
-        description: "+25% chance to completely avoid damage",
-        rarity: UpgradeRarity.Uncommon,
-    },
-];
-
-// Ability upgrade definitions
-export const ABILITY_UPGRADES: UpgradeType[] = [
-    {
-        id: "vampiric",
-        category: UpgradeCategory.Ability,
-        name: "Vampiric",
-        description: "Heal 1 HP for every 2 damage you deal to enemies",
-        rarity: UpgradeRarity.Uncommon,
-    },
-    {
-        id: "shadow_trail",
-        category: UpgradeCategory.Ability,
-        name: "Shadow Trail",
-        description: "Movement leaves damaging shadow particles behind you",
-        rarity: UpgradeRarity.Uncommon,
-    },
-    {
-        id: "piercing_shots",
-        category: UpgradeCategory.Ability,
-        name: "Piercing Shots",
-        description: "Projectiles go through first enemy and continue",
-        rarity: UpgradeRarity.Uncommon,
-    },
-    {
-        id: "phase_walk",
-        category: UpgradeCategory.Ability,
-        name: "Phase Walk",
-        description: "Invincibility for the entire duration of dash attacks",
-        rarity: UpgradeRarity.Rare,
-    },
-    {
-        id: "dash_master",
-        category: UpgradeCategory.Ability,
-        name: "Dash Master",
-        description: "+100% dash range",
-        rarity: UpgradeRarity.Common,
-    },
-];
-
-// Companion upgrade definitions - Cat allies
-export const COMPANION_UPGRADES: UpgradeType[] = [
-    {
-        id: "mr_black",
-        category: UpgradeCategory.Companion,
-        name: "Mr. Black",
-        description: "Most powerful cat companion, disables enemy upgrades",
-        rarity: UpgradeRarity.Rare,
-    },
-    {
-        id: "mr_orange",
-        category: UpgradeCategory.Companion,
-        name: "Mr. Orange",
-        description: "Fast melee attacker cat with 3 HP and aggressive personality",
-        rarity: UpgradeRarity.Common,
-    },
-    {
-        id: "mr_pink",
-        category: UpgradeCategory.Companion,
-        name: "Mr. Pink",
-        description: "Ranged sniper cat with precision attacks",
-        rarity: UpgradeRarity.Common,
-    },
-    {
-        id: "mr_white",
-        category: UpgradeCategory.Companion,
-        name: "Mr. White",
-        description: "Tank cat with 5 HP and powerful ranged attacks",
-        rarity: UpgradeRarity.Uncommon,
-    },
-    {
-        id: "mr_brown",
-        category: UpgradeCategory.Companion,
-        name: "Mr. Brown",
-        description: "Support cat that heals owner periodically",
-        rarity: UpgradeRarity.Uncommon,
-    },
-    {
-        id: "mr_blue",
-        category: UpgradeCategory.Companion,
-        name: "Mr. Blue",
-        description: "Berserker cat that gets stronger when injured",
-        rarity: UpgradeRarity.Common,
-    },
-    {
-        id: "mr_gray",
-        category: UpgradeCategory.Companion,
-        name: "Mr. Gray",
-        description: "Stealth cat with invisibility phases",
-        rarity: UpgradeRarity.Rare,
-    },
-    {
-        id: "mr_red",
-        category: UpgradeCategory.Companion,
-        name: "Mr. Red",
-        description: "Sacrifice cat that explodes when killed",
-        rarity: UpgradeRarity.Uncommon,
-    },
-];
-
-// Energy upgrade definitions - Modify energy system parameters
-export const ENERGY_UPGRADES: UpgradeType[] = [
-    {
-        id: "energy_efficiency",
-        category: UpgradeCategory.Energy,
-        name: "Energy Efficiency",
-        description: "Click rapidly to boost combat performance (+0.3 energy per tap)",
-        rarity: UpgradeRarity.Common,
-    },
-    {
-        id: "adrenaline_rush",
-        category: UpgradeCategory.Energy,
-        name: "Adrenaline Rush",
-        description:
-            "Enhanced clicking efficiency (+0.5 energy per tap, stacks with other tapping bonuses)",
-        rarity: UpgradeRarity.Uncommon,
-    },
-    {
-        id: "slow_metabolism",
-        category: UpgradeCategory.Energy,
-        name: "Slow Metabolism",
-        description: "Energy decays 50% slower",
-        rarity: UpgradeRarity.Common,
-    },
-    {
-        id: "basic_healing",
-        category: UpgradeCategory.Energy,
-        name: "Basic Healing",
-        description: "Hold to restore +1 HP per second (stacks with other healing)",
-        rarity: UpgradeRarity.Common,
-    },
-    {
-        id: "rapid_healing",
-        category: UpgradeCategory.Energy,
-        name: "Rapid Healing",
-        description: "Hold to restore +2 HP per second (stacks with other healing)",
-        rarity: UpgradeRarity.Uncommon,
-    },
-    {
-        id: "energy_conservation",
-        category: UpgradeCategory.Energy,
-        name: "Energy Conservation",
-        description: "Healing drains energy 50% slower",
-        rarity: UpgradeRarity.Uncommon,
-    },
-    {
-        id: "power_stability",
-        category: UpgradeCategory.Energy,
-        name: "Power Stability",
-        description: "Power decays 75% slower",
-        rarity: UpgradeRarity.Common,
-    },
-    {
-        id: "hypermetabolism",
-        category: UpgradeCategory.Energy,
-        name: "Hypermetabolism",
-        description: "Energy decays twice as fast but enables powerful +3 HP/s healing",
-        rarity: UpgradeRarity.Rare,
-    },
-    {
-        id: "combat_stimulant",
-        category: UpgradeCategory.Energy,
-        name: "Combat Stimulant",
-        description:
-            "Supercharged tapping (+0.8 energy per tap) and instant power recovery (stacks with other tapping bonuses)",
-        rarity: UpgradeRarity.Rare,
-    },
-    {
-        id: "shockwave_burst",
-        category: UpgradeCategory.Energy,
-        name: "Shockwave Burst",
-        description:
-            "Spawn damaging particles in all directions when releasing accumulated power - more particles with higher power",
-        rarity: UpgradeRarity.Rare,
-    },
-];
-
-// Trait upgrade definitions - Combat & behavioral enhancement
-export const TRAIT_UPGRADES: UpgradeType[] = [
-    {
-        id: "lightning_reflexes",
-        category: UpgradeCategory.Trait,
-        name: "Lightning Reflexes",
-        description: "+50% movement speed and dash speed",
-        rarity: UpgradeRarity.Uncommon,
-    },
-    {
-        id: "quick_draw",
-        category: UpgradeCategory.Trait,
-        name: "Quick Draw",
-        description: "+40% attack speed (faster weapon cooldowns)",
-        rarity: UpgradeRarity.Common,
-    },
-    {
-        id: "brawler",
-        category: UpgradeCategory.Trait,
-        name: "Brawler",
-        description: "Higher aggressiveness, shorter dash range but +1 damage to all attacks",
-        rarity: UpgradeRarity.Common,
-    },
-    {
-        id: "vitality",
-        category: UpgradeCategory.Trait,
-        name: "Vitality",
-        description: "+2 maximum health",
-        rarity: UpgradeRarity.Common,
-    },
-    {
-        id: "berserker_mode",
-        category: UpgradeCategory.Trait,
-        name: "Berserker Mode",
-        description: "+50% attack speed and movement when below 25% HP",
-        rarity: UpgradeRarity.Uncommon,
-    },
-    {
-        id: "pacifist",
-        category: UpgradeCategory.Trait,
-        name: "Pacifist",
-        description: "Much lower aggressiveness but +3 max health and +50% damage reduction",
-        rarity: UpgradeRarity.Rare,
-    },
-    {
-        id: "cautious",
-        category: UpgradeCategory.Trait,
-        name: "Cautious",
-        description: "Lower aggressiveness but +1 max health and better retreat timing",
-        rarity: UpgradeRarity.Common,
-    },
-];
-
-// All upgrades registry
-export const ALL_UPGRADES: UpgradeType[] = [
-    ...WEAPON_UPGRADES,
-    ...ARMOR_UPGRADES,
-    ...ABILITY_UPGRADES,
-    ...COMPANION_UPGRADES,
-    ...ENERGY_UPGRADES,
-    ...TRAIT_UPGRADES,
-];
-
-// Utility function to get upgrade display name by ID
-export function getUpgradeDisplayName(upgradeId: string): string {
-    const upgrade = ALL_UPGRADES.find((u) => u.id === upgradeId);
-    return upgrade?.name || upgradeId;
-}
+// Re-export upgrade data from catalog so modules can import from types.ts
+export {ALL_UPGRADES_LIST, ALL_UPGRADES_MAP} from "./catalog.js";

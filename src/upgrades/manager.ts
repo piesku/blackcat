@@ -37,7 +37,7 @@ import {
     apply_tough_skin,
     apply_vitality_boost,
 } from "./armor.js";
-import {UpgradeCategory, UpgradeType} from "./types.js";
+import {UpgradeCategory, UpgradeId, UpgradeType} from "./types.js";
 
 export function apply_upgrades(game: Game, entity: number, upgrades: UpgradeType[]) {
     // Apply all upgrades - order doesn't matter since categories are independent
@@ -73,45 +73,45 @@ function apply_energy_upgrade(game: Game, entity: number, upgrade: UpgradeType) 
     DEBUG: if (!ai) throw new Error("missing ControlAi component for energy upgrade");
 
     switch (upgrade.id) {
-        case "energy_efficiency":
+        case UpgradeId.EnergyEfficiency:
             ai.EnergyPerTap += 0.3;
             break;
 
-        case "adrenaline_rush":
+        case UpgradeId.AdrenalineRush:
             ai.EnergyPerTap += 0.5;
             break;
 
-        case "slow_metabolism":
+        case UpgradeId.SlowMetabolism:
             ai.EnergyDecayRate = 0.5;
             break;
 
-        case "basic_healing":
+        case UpgradeId.BasicHealing:
             ai.HealingRate += 1.0;
             break;
 
-        case "rapid_healing":
+        case UpgradeId.RapidHealing:
             ai.HealingRate += 2.0;
             break;
 
-        case "energy_conservation":
+        case UpgradeId.EnergyConservation:
             ai.HealingDrainStrength = 0.5;
             break;
 
-        case "power_stability":
+        case UpgradeId.PowerStability:
             ai.PowerDecayRate = 0.25;
             break;
 
-        case "hypermetabolism":
+        case UpgradeId.Hypermetabolism:
             ai.EnergyDecayRate = 2.0;
             ai.HealingRate += 3.0;
             break;
 
-        case "combat_stimulant":
+        case UpgradeId.CombatStimulant:
             ai.EnergyPerTap += 0.8;
             ai.PowerDecayRate = 0.1;
             break;
 
-        case "shockwave_burst":
+        case UpgradeId.ShockwaveBurst:
             ai.ShockwaveBurstEnabled = true;
             break;
 
@@ -133,28 +133,28 @@ function apply_trait_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
     }
 
     switch (upgrade.id) {
-        case "lightning_reflexes":
+        case UpgradeId.LightningReflexes:
             move.MoveSpeed *= 1.5;
             ai.BaseMoveSpeed *= 1.5;
             ai.DashSpeedMultiplier = (ai.DashSpeedMultiplier || 1.0) * 1.5;
             break;
 
-        case "quick_draw":
+        case UpgradeId.QuickDraw:
             ai.AttackSpeedMultiplier = (ai.AttackSpeedMultiplier || 1.0) * 1.4;
             break;
 
-        case "brawler":
+        case UpgradeId.Brawler:
             ai.Aggressiveness += 0.3;
             ai.DashRangeMultiplier = (ai.DashRangeMultiplier || 1.0) * 0.8;
             ai.DamageBonus = (ai.DamageBonus || 0) + 1;
             break;
 
-        case "vitality":
+        case UpgradeId.Vitality:
             health.Max += 2;
             health.Current += 2;
             break;
 
-        case "berserker_mode":
+        case UpgradeId.BerserkerMode:
             ai.BerserkerMode = {
                 LowHealthThreshold: 0.25,
                 SpeedBonus: 1.5,
@@ -162,14 +162,14 @@ function apply_trait_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
             };
             break;
 
-        case "pacifist":
+        case UpgradeId.Pacifist:
             ai.Aggressiveness *= 0.3;
             health.Max += 3;
             health.Current += 3;
             apply_damage_reduction(game, entity, 0.5);
             break;
 
-        case "cautious":
+        case UpgradeId.Cautious:
             ai.Aggressiveness *= 0.7;
             health.Max += 1;
             health.Current += 1;
@@ -186,57 +186,57 @@ function apply_weapon_upgrade(game: Game, entity: number, upgrade: UpgradeType) 
     let weapon_entity: number;
 
     switch (upgrade.id) {
-        case "flamethrower":
+        case UpgradeId.Flamethrower:
             weapon_entity = instantiate(game, blueprint_flamethrower());
             attach_to_parent(game, weapon_entity, entity);
             break;
 
-        case "shotgun":
+        case UpgradeId.Shotgun:
             weapon_entity = instantiate(game, blueprint_shotgun());
             attach_to_parent(game, weapon_entity, entity);
             break;
 
-        case "minigun":
+        case UpgradeId.Minigun:
             weapon_entity = instantiate(game, blueprint_minigun());
             attach_to_parent(game, weapon_entity, entity);
             break;
 
-        case "sniper_rifle":
+        case UpgradeId.SniperRifle:
             weapon_entity = instantiate(game, blueprint_sniper_rifle());
             attach_to_parent(game, weapon_entity, entity);
             break;
 
-        case "mortar":
+        case UpgradeId.Mortar:
             weapon_entity = instantiate(game, blueprint_mortar());
             attach_to_parent(game, weapon_entity, entity);
             break;
 
-        case "boomerang":
+        case UpgradeId.Boomerang:
             weapon_entity = instantiate(game, blueprint_boomerang_weapon());
             attach_to_parent(game, weapon_entity, entity);
             break;
 
-        case "explosives":
+        case UpgradeId.Explosives:
             weapon_entity = instantiate(game, blueprint_explosives());
             attach_to_parent(game, weapon_entity, entity);
             break;
 
-        case "spikeballs":
+        case UpgradeId.Spikeballs:
             weapon_entity = instantiate(game, blueprint_spikeballs());
             attach_to_parent(game, weapon_entity, entity);
             break;
 
-        case "larpa":
+        case UpgradeId.Larpa:
             weapon_entity = instantiate(game, blueprint_larpa());
             attach_to_parent(game, weapon_entity, entity);
             break;
 
-        case "hoover_crack":
+        case UpgradeId.HooverCrack:
             weapon_entity = instantiate(game, blueprint_hoover_crack());
             attach_to_parent(game, weapon_entity, entity);
             break;
 
-        case "chiquita_bomb":
+        case UpgradeId.ChiquitaBomb:
             weapon_entity = instantiate(game, blueprint_chiquita_bomb());
             attach_to_parent(game, weapon_entity, entity);
             break;
@@ -249,47 +249,47 @@ function apply_weapon_upgrade(game: Game, entity: number, upgrade: UpgradeType) 
 
 function apply_armor_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
     switch (upgrade.id) {
-        case "scrap_armor":
+        case UpgradeId.ScrapArmor:
             apply_scrap_armor(game, entity);
             break;
 
-        case "spiked_vest":
+        case UpgradeId.SpikedVest:
             apply_spiked_vest(game, entity, 1);
             break;
 
-        case "vitality_boost":
+        case UpgradeId.VitalityBoost:
             apply_vitality_boost(game, entity);
             break;
 
-        case "damage_reduction":
+        case UpgradeId.DamageReduction:
             apply_damage_reduction(game, entity, 0.25);
             break;
 
-        case "regenerative_mesh":
+        case UpgradeId.RegenerativeMesh:
             apply_regenerative_mesh(game, entity, 0.3);
             break;
 
-        case "mirror_armor":
+        case UpgradeId.MirrorArmor:
             apply_mirror_armor(game, entity);
             break;
 
-        case "proximity_barrier":
+        case UpgradeId.ProximityBarrier:
             apply_proximity_barrier(game, entity, 0.4);
             break;
 
-        case "last_stand":
+        case UpgradeId.LastStand:
             apply_last_stand(game, entity);
             break;
 
-        case "thick_hide":
+        case UpgradeId.ThickHide:
             apply_thick_hide(game, entity);
             break;
 
-        case "tough_skin":
+        case UpgradeId.ToughSkin:
             apply_tough_skin(game, entity);
             break;
 
-        case "evasion":
+        case UpgradeId.Evasion:
             apply_evasion(game, entity, 0.25);
             break;
 
@@ -301,12 +301,12 @@ function apply_armor_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
 
 function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
     switch (upgrade.id) {
-        case "vampiric":
+        case UpgradeId.Vampiric:
             // Add vampiric ability directly
             abilities([AbilityType.Vampiric])(game, entity);
             break;
 
-        case "shadow_trail":
+        case UpgradeId.ShadowTrail:
             spawn_timed(
                 () => blueprint_shadow_particle(),
                 1.0 / 8.0, // interval
@@ -317,17 +317,17 @@ function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType)
             )(game, entity);
             break;
 
-        case "piercing_shots":
+        case UpgradeId.PiercingShots:
             // Add piercing shots ability - this will be checked when spawning projectiles
             abilities([AbilityType.PiercingShots])(game, entity);
             break;
 
-        case "phase_walk":
+        case UpgradeId.PhaseWalk:
             // Add phase walk ability - invincibility during dashing
             abilities([AbilityType.PhaseWalk])(game, entity);
             break;
 
-        case "dash_master":
+        case UpgradeId.DashMaster:
             // Add dash master ability - enhanced dash range
             abilities([AbilityType.DashMaster])(game, entity);
             break;
@@ -349,35 +349,35 @@ function apply_companion_upgrade(game: Game, entity: number, upgrade: UpgradeTyp
     // Spawn new companion (multiple companions allowed for interesting synergies)
     // Each companion upgrade adds another cat ally to fight alongside the owner
     switch (upgrade.id) {
-        case "mr_black":
+        case UpgradeId.MrBlack:
             companion_entity = instantiate(game, blueprint_mr_black(game, owner_is_player));
             break;
 
-        case "mr_orange":
+        case UpgradeId.MrOrange:
             companion_entity = instantiate(game, blueprint_mr_orange(game, owner_is_player));
             break;
 
-        case "mr_pink":
+        case UpgradeId.MrPink:
             companion_entity = instantiate(game, blueprint_mr_pink(game, owner_is_player));
             break;
 
-        case "mr_white":
+        case UpgradeId.MrWhite:
             companion_entity = instantiate(game, blueprint_mr_white(game, owner_is_player));
             break;
 
-        case "mr_brown":
+        case UpgradeId.MrBrown:
             companion_entity = instantiate(game, blueprint_mr_brown(game, owner_is_player));
             break;
 
-        case "mr_blue":
+        case UpgradeId.MrBlue:
             companion_entity = instantiate(game, blueprint_mr_blue(game, owner_is_player));
             break;
 
-        case "mr_gray":
+        case UpgradeId.MrGray:
             companion_entity = instantiate(game, blueprint_mr_gray(game, owner_is_player));
             break;
 
-        case "mr_red":
+        case UpgradeId.MrRed:
             companion_entity = instantiate(game, blueprint_mr_red(game, owner_is_player));
             break;
 

@@ -1,12 +1,23 @@
 import {html} from "../../lib/html.js";
-import {Game} from "../game.js";
 import {Action} from "../actions.js";
-import {ALL_UPGRADES, UpgradeType} from "../upgrades/types.js";
+import {Game} from "../game.js";
+import {ALL_UPGRADES_MAP, UpgradeId, UpgradeType} from "../upgrades/types.js";
 
 export function UpgradeSelectionView(game: Game): string {
     // Use persisted upgrade choices from game state instead of generating new ones
     // This prevents players from re-rolling choices by reloading the page
-    let choices = game.State.availableUpgradeChoices;
+    // State stores ids; map to UpgradeType objects for rendering
+    let choices: UpgradeType[] = game.State.availableUpgradeChoices
+        .map((id: UpgradeId) => ALL_UPGRADES_MAP[id])
+        .filter((u): u is UpgradeType => !!u);
+
+    // Player / opponent loadouts (ids -> objects)
+    let playerLoadout: UpgradeType[] = game.State.playerUpgrades
+        .map((id: UpgradeId) => ALL_UPGRADES_MAP[id])
+        .filter((u): u is UpgradeType => !!u);
+    let opponentLoadout: UpgradeType[] = game.State.opponentUpgrades
+        .map((id: UpgradeId) => ALL_UPGRADES_MAP[id])
+        .filter((u): u is UpgradeType => !!u);
 
     return html`
         <style>
@@ -124,8 +135,8 @@ export function UpgradeSelectionView(game: Game): string {
                         YOUR LOADOUT
                     </div>
                     <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
-                        ${game.State.playerUpgrades.length > 0
-                            ? game.State.playerUpgrades
+                        ${playerLoadout.length > 0
+                            ? playerLoadout
                                   .map(
                                       (upgrade: UpgradeType) => `
                                 <span style="background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 3px; font-size: clamp(10px, 2.5vw, 12px);">
@@ -149,7 +160,7 @@ export function UpgradeSelectionView(game: Game): string {
                         OPPONENT LOADOUT
                     </div>
                     <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
-                        ${game.State.opponentUpgrades
+                        ${opponentLoadout
                             .map(
                                 (upgrade: UpgradeType) => `
                             <span style="background: rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 3px; font-size: clamp(10px, 2.5vw, 12px);">

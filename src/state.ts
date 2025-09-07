@@ -1,42 +1,29 @@
-import {
-    ALL_UPGRADES,
-    UpgradeType,
-    UpgradeRarity,
-    WEAPON_UPGRADES,
-    ARMOR_UPGRADES,
-} from "./upgrades/types.js";
-import {set_seed, integer, shuffle, float} from "../lib/random.js";
+import {float, set_seed, shuffle} from "../lib/random.js";
+import {ALL_UPGRADES_LIST, UpgradeId, UpgradeRarity, UpgradeType} from "./upgrades/types.js";
 
 export interface GameState {
     currentLevel: number; // 1-33 duels
-    playerUpgrades: UpgradeType[]; // Player's accumulated upgrades
-    opponentUpgrades: UpgradeType[]; // Current opponent's upgrades
-    availableUpgradeChoices: UpgradeType[]; // Player's available upgrade choices for selection
+    playerUpgrades: UpgradeId[]; // Player's accumulated upgrade ids
+    opponentUpgrades: UpgradeId[]; // Current opponent's upgrade ids
+    availableUpgradeChoices: UpgradeId[]; // Player's available upgrade choice ids for selection
     population: number; // Narrative countdown (8 billion -> 1)
     isNewRun: boolean; // Fresh start vs resumed
     runSeed: number; // Unique seed for this run, regenerated for each new run
 }
 
-export function generateOpponentUpgrades(arenaLevel: number, runSeed: number): UpgradeType[] {
+export function generateOpponentUpgrades(arenaLevel: number, runSeed: number): UpgradeId[] {
     // Use seeded random for consistent upgrades per arena level within a run
     set_seed(runSeed + arenaLevel * 12345);
 
-    let availableUpgrades = ALL_UPGRADES.filter((upgrade) => {
-        if (upgrade.category === "armor") return true;
-        return ["flamethrower", "shotgun", "sniper_rifle", "mortar", "boomerang"].includes(
-            upgrade.id,
-        );
-    });
-
     // Shuffle array using Fisher-Yates with lib/random
-    let shufflableUpgrades = shuffle(availableUpgrades);
+    let shufflableUpgrades = shuffle(ALL_UPGRADES_LIST);
 
-    let selectedUpgrades: UpgradeType[] = [];
+    let selectedUpgrades: UpgradeId[] = [];
     let upgradeCount = arenaLevel;
 
     // Select first N upgrades from shuffled array (no duplicates)
     for (let i = 0; i < upgradeCount && i < shufflableUpgrades.length; i++) {
-        selectedUpgrades.push(shufflableUpgrades[i]);
+        selectedUpgrades.push(shufflableUpgrades[i].id);
     }
 
     return selectedUpgrades;
@@ -44,27 +31,27 @@ export function generateOpponentUpgrades(arenaLevel: number, runSeed: number): U
 
 export function generatePlayerUpgradeChoices(
     arenaLevel: number,
-    playerUpgrades: UpgradeType[],
+    playerUpgrades: UpgradeId[],
     runSeed: number,
-): UpgradeType[] {
+): UpgradeId[] {
     // Use seeded random for consistent upgrade choices per arena level (different seed than opponent)
     set_seed(runSeed + arenaLevel * 54321 + 98765);
 
     // Generate 3 random upgrade choices excluding already owned upgrades
-    let availableUpgrades = ALL_UPGRADES.filter(
-        (upgrade) => !playerUpgrades.some((owned) => owned.id === upgrade.id),
+    let availableUpgrades = ALL_UPGRADES_LIST.filter(
+        (upgrade) => !playerUpgrades.includes(upgrade.id),
     );
 
     // Use weighted selection based on rarity instead of simple shuffle
-    let choices: UpgradeType[] = [];
+    let selectedIds: UpgradeId[] = [];
     for (let i = 0; i < 3 && availableUpgrades.length > 0; i++) {
         let selectedUpgrade = selectUpgradeByRarity(availableUpgrades);
-        choices.push(selectedUpgrade);
+        selectedIds.push(selectedUpgrade.id);
         // Remove selected upgrade to prevent duplicates
         availableUpgrades = availableUpgrades.filter((u) => u.id !== selectedUpgrade.id);
     }
 
-    return choices;
+    return selectedIds;
 }
 
 // Weighted selection based on upgrade rarity
@@ -111,7 +98,7 @@ export function calculatePopulation(level: number): number {
 }
 
 export function createFreshGameState(): GameState {
-    let initialPlayerUpgrades: UpgradeType[] = [];
+    let initialPlayerUpgrades: UpgradeId[] = [];
     let runSeed = Math.floor(Math.random() * 1000000); // Generate random run seed
 
     return {
