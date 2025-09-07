@@ -2,7 +2,7 @@ import {Action, dispatch} from "../actions.js";
 import {Game, GameView} from "../game.js";
 import {Has} from "../world.js";
 
-const QUERY = Has.Health | Has.ControlAi;
+const QUERY = Has.Health | Has.ControlAi | Has.Label;
 
 // TODO Consider checking for victory conditions in action handlers.
 export function sys_duel_manager(game: Game, delta: number) {
@@ -16,21 +16,25 @@ export function sys_duel_manager(game: Game, delta: number) {
     let alivePlayers = 0;
     let aliveOpponents = 0;
 
-    // Find all fighters and categorize them
+    // Find all main fighters (only entities with "Player" or "Opponent" labels)
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
         if ((game.World.Signature[entity] & QUERY) === QUERY) {
             let health = game.World.Health[entity];
             let ai = game.World.ControlAi[entity];
+            let label = game.World.Label[entity];
 
-            if (ai.IsPlayer) {
-                players.push(entity);
-                if (health.IsAlive) {
-                    alivePlayers++;
-                }
-            } else {
-                opponents.push(entity);
-                if (health.IsAlive) {
-                    aliveOpponents++;
+            // Only count main fighters, not companion cats
+            if (label && (label.Name === "Player" || label.Name === "Opponent")) {
+                if (ai.IsPlayer) {
+                    players.push(entity);
+                    if (health.IsAlive) {
+                        alivePlayers++;
+                    }
+                } else {
+                    opponents.push(entity);
+                    if (health.IsAlive) {
+                        aliveOpponents++;
+                    }
                 }
             }
         }

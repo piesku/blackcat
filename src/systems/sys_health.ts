@@ -1,5 +1,5 @@
-import {vec2_distance_squared} from "../../lib/vec2.js";
 import {rand} from "../../lib/random.js";
+import {vec2_distance_squared} from "../../lib/vec2.js";
 import {AbilityType, has_ability} from "../components/com_abilities.js";
 import {query_down} from "../components/com_children.js";
 import {AiState} from "../components/com_control_ai.js";
@@ -91,10 +91,6 @@ export function sys_health(game: Game, _delta: number) {
                     `[DEATH] Entity ${entity} died from ${total_damage.toFixed(1)} damage - marked as dead`,
                 );
                 // Entity destruction will be handled next frame after duel_manager has chance to run
-            } else {
-                console.log(
-                    `[HEALTH] Entity ${entity} HP: ${health_before.toFixed(1)} -> ${health.Current.toFixed(1)}`,
-                );
             }
 
             // Apply reflected damage
