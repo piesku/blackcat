@@ -215,6 +215,13 @@ export const ABILITY_UPGRADES: UpgradeType[] = [
         description: "Invincibility for the entire duration of dash attacks",
         rarity: UpgradeRarity.Rare,
     },
+    {
+        id: "dash_master",
+        category: UpgradeCategory.Ability,
+        name: "Dash Master",
+        description: "+100% dash range",
+        rarity: UpgradeRarity.Common,
+    },
 ];
 
 // Companion upgrade definitions - Cat allies

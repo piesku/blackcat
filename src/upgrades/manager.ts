@@ -271,6 +271,14 @@ function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType)
             );
             break;
 
+        case "dash_master":
+            // Add dash master ability - enhanced dash range
+            abilities([AbilityType.DashMaster])(game, entity);
+            console.log(
+                `[UPGRADE] Applied Dash Master ability to entity ${entity} - +100% dash range`,
+            );
+            break;
+
         default:
             console.warn(`Unknown ability upgrade: ${upgrade.id}`);
             break;

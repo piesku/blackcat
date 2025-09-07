@@ -1,6 +1,7 @@
 import {Vec2} from "../../lib/math.js";
 import {float} from "../../lib/random.js";
 import {vec2_add, vec2_length, vec2_normalize, vec2_scale, vec2_subtract} from "../../lib/vec2.js";
+import {AbilityType, has_ability} from "../components/com_abilities.js";
 import {AiState, ControlAi} from "../components/com_control_ai.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
@@ -40,9 +41,16 @@ export function sys_control_ai(game: Game, delta: number) {
 
             // Calculate speed scaling factor for distance thresholds
             let speed_scale = move.MoveSpeed / BASE_MOVE_SPEED;
+
+            // Check for Dash Master ability (+100% dash range)
+            let dash_range = BASE_DASH_TRIGGER_DISTANCE;
+            if (has_ability(game, entity, AbilityType.DashMaster)) {
+                dash_range *= 2.0;
+            }
+
             let scaled_distances = {
                 circle: BASE_CIRCLE_DISTANCE * speed_scale,
-                dash_trigger: BASE_DASH_TRIGGER_DISTANCE * speed_scale * ai.Aggressiveness,
+                dash_trigger: dash_range * speed_scale * ai.Aggressiveness,
                 dash_target: BASE_DASH_TARGET_DISTANCE * speed_scale,
                 retreat: BASE_RETREAT_DISTANCE * speed_scale,
                 separation: BASE_SEPARATION_DISTANCE * speed_scale,

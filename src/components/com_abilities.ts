@@ -24,6 +24,7 @@ export const enum AbilityType {
     ChainsawFury = "chainsaw_fury",
     SecondWind = "second_wind",
     ShockWave = "shock_wave",
+    DashMaster = "dash_master",
 }
 
 export interface TriggeredAbility {
