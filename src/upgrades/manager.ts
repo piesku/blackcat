@@ -263,6 +263,14 @@ function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType)
             );
             break;
 
+        case "phase_walk":
+            // Add phase walk ability - invincibility during dashing
+            abilities([AbilityType.PhaseWalk])(game, entity);
+            console.log(
+                `[UPGRADE] Applied Phase Walk ability to entity ${entity} - brief invincibility when dashing`,
+            );
+            break;
+
         default:
             console.warn(`Unknown ability upgrade: ${upgrade.id}`);
             break;

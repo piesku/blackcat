@@ -1,5 +1,7 @@
 import {vec2_distance_squared} from "../../lib/vec2.js";
+import {AbilityType, has_ability} from "../components/com_abilities.js";
 import {query_down} from "../components/com_children.js";
+import {AiState} from "../components/com_control_ai.js";
 import {DrawKind} from "../components/com_draw.js";
 import {Health} from "../components/com_health.js";
 import {SpawnMode} from "../components/com_spawn.js";
@@ -15,6 +17,20 @@ export function sys_health(game: Game, _delta: number) {
 
             if (!health.IsAlive) {
                 continue;
+            }
+
+            // Check for Phase Walk invincibility during dashing
+            if (has_ability(game, entity, AbilityType.PhaseWalk)) {
+                let ai = game.World.ControlAi[entity];
+                DEBUG: if (!ai) throw new Error("missing component");
+
+                if (ai.State === AiState.Dashing) {
+                    console.log(
+                        `[PHASE_WALK] Entity ${entity} is invincible while dashing - ignoring all damage`,
+                    );
+                    // Clear all pending damage while dashing
+                    health.PendingDamage.length = 0;
+                }
             }
 
             // Process all pending damage instances

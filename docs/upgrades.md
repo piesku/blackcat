@@ -60,7 +60,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Vampiric** ✅ _(Uncommon)_ - Heal 1 HP for every 2 damage you deal to enemies
 - **Shadow Trail** ✅ _(Uncommon)_ - Movement leaves damaging shadow particles behind you
 - **Piercing Shots** ✅ _(Uncommon)_ - Projectiles go through first enemy and continue
-- **Phase Walk** _(Rare)_ - Brief invincibility when dashing (0.3s)
+- **Phase Walk** ✅ _(Rare)_ - Brief invincibility when dashing (0.3s)
 - **Dash Master** _(Common)_ - +100% dash range and reduced dash cooldown
 - **Evasion** _(Uncommon)_ - +25% chance to completely avoid damage
 

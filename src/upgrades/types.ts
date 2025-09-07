@@ -208,6 +208,13 @@ export const ABILITY_UPGRADES: UpgradeType[] = [
         description: "Projectiles go through first enemy and continue",
         rarity: UpgradeRarity.Uncommon,
     },
+    {
+        id: "phase_walk",
+        category: UpgradeCategory.Ability,
+        name: "Phase Walk",
+        description: "Invincibility for the entire duration of dash attacks",
+        rarity: UpgradeRarity.Rare,
+    },
 ];
 
 // Companion upgrade definitions - Cat allies

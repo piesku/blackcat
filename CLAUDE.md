@@ -67,3 +67,4 @@ This visual verification complements code testing and catches rendering/interact
 - Never run the dev server. it alwasy runs in background
 
 - Always use the proper vector math functions from lib/vec2, lib/vec3, and lib/vec4 instead of writing your own.
+- Use DEBUG assertions instead of truthy checks: DEBUG: if (!com) throw ...; rather than if (com && ...). DEBUG labels get stripped in production builds.
