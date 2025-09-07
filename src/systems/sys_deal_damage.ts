@@ -77,8 +77,18 @@ function handle_collision_damage(
         let final_damage = damage_dealer.Damage;
         if (game.World.Signature[original_spawner] & Has.ControlPlayer) {
             let control = game.World.ControlPlayer[original_spawner];
-            if (control) {
-                final_damage *= control.PowerScale;
+            DEBUG: if (!control) throw new Error("missing control component");
+
+            final_damage *= control.PowerScale;
+        }
+
+        // Apply trait-based damage bonus (Brawler trait)
+        if (game.World.Signature[original_spawner] & Has.ControlAi) {
+            let ai = game.World.ControlAi[original_spawner];
+            DEBUG: if (!ai) throw new Error("missing AI component");
+
+            if (ai.DamageBonus) {
+                final_damage += ai.DamageBonus;
             }
         }
 

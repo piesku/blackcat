@@ -40,12 +40,17 @@ import {
 import {UpgradeCategory, UpgradeType} from "./types.js";
 
 export function apply_upgrades(game: Game, entity: number, upgrades: UpgradeType[]) {
-    // Apply upgrades in order: Energy -> Armor -> Weapons -> Abilities -> Companions
+    // Apply upgrades in order: Energy -> Traits -> Armor -> Weapons -> Abilities -> Companions
     let categorized = categorize_upgrades(upgrades);
 
     // Energy (modifies energy system parameters - must be first to enable tapping)
     for (let energy of categorized.energy) {
         apply_energy_upgrade(game, entity, energy);
+    }
+
+    // Traits (modifies base stats and AI personality - early to affect other upgrades)
+    for (let trait of categorized.traits) {
+        apply_trait_upgrade(game, entity, trait);
     }
 
     // Armor (modifies health component)
@@ -72,6 +77,7 @@ export function apply_upgrades(game: Game, entity: number, upgrades: UpgradeType
 function categorize_upgrades(upgrades: UpgradeType[]) {
     return {
         energy: upgrades.filter((u) => u.category === UpgradeCategory.Energy),
+        traits: upgrades.filter((u) => u.category === UpgradeCategory.Trait),
         weapons: upgrades.filter((u) => u.category === UpgradeCategory.Weapon),
         armor: upgrades.filter((u) => u.category === UpgradeCategory.Armor),
         abilities: upgrades.filter((u) => u.category === UpgradeCategory.Ability),
@@ -124,6 +130,154 @@ function apply_energy_upgrade(game: Game, entity: number, upgrade: UpgradeType) 
             ai.ShockwaveBurstEnabled = true;
             console.log(`[ENERGY_UPGRADE] Applied ${upgrade.name}: shockwave burst enabled`);
         }
+    }
+}
+
+function apply_trait_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
+    let ai = game.World.ControlAi[entity];
+    let move = game.World.Move2D[entity];
+    let health = game.World.Health[entity];
+
+    DEBUG: if (!ai) throw new Error("missing ControlAi component for trait upgrade");
+    DEBUG: if (!move) throw new Error("missing Move2D component for trait upgrade");
+    DEBUG: if (!health) throw new Error("missing Health component for trait upgrade");
+
+    switch (upgrade.id) {
+        case "lightning_reflexes":
+            if (upgrade.data && "moveSpeedMultiplier" in upgrade.data) {
+                let speedMultiplier = upgrade.data.moveSpeedMultiplier as number;
+                move.MoveSpeed *= speedMultiplier;
+                ai.BaseMoveSpeed *= speedMultiplier;
+                console.log(
+                    `[TRAIT_UPGRADE] Applied ${upgrade.name}: movement speed *= ${speedMultiplier} (now ${move.MoveSpeed})`,
+                );
+            }
+            if (upgrade.data && "dashSpeedMultiplier" in upgrade.data) {
+                let dashMultiplier = upgrade.data.dashSpeedMultiplier as number;
+                // Store dash speed multiplier for AI system to use
+                ai.DashSpeedMultiplier = (ai.DashSpeedMultiplier || 1.0) * dashMultiplier;
+                console.log(
+                    `[TRAIT_UPGRADE] Applied ${upgrade.name}: dash speed *= ${dashMultiplier}`,
+                );
+            }
+            break;
+
+        case "quick_draw":
+            if (upgrade.data && "attackSpeedMultiplier" in upgrade.data) {
+                let attackMultiplier = upgrade.data.attackSpeedMultiplier as number;
+                // Store attack speed multiplier for weapon systems to use
+                ai.AttackSpeedMultiplier = (ai.AttackSpeedMultiplier || 1.0) * attackMultiplier;
+                console.log(
+                    `[TRAIT_UPGRADE] Applied ${upgrade.name}: attack speed *= ${attackMultiplier}`,
+                );
+            }
+            break;
+
+        case "brawler":
+            if (upgrade.data) {
+                if ("aggressivenessBonus" in upgrade.data) {
+                    let aggressivenessBonus = upgrade.data.aggressivenessBonus as number;
+                    ai.Aggressiveness += aggressivenessBonus;
+                    console.log(
+                        `[TRAIT_UPGRADE] Applied ${upgrade.name}: aggressiveness += ${aggressivenessBonus} (now ${ai.Aggressiveness})`,
+                    );
+                }
+                if ("dashRangeMultiplier" in upgrade.data) {
+                    let dashRangeMultiplier = upgrade.data.dashRangeMultiplier as number;
+                    ai.DashRangeMultiplier = (ai.DashRangeMultiplier || 1.0) * dashRangeMultiplier;
+                    console.log(
+                        `[TRAIT_UPGRADE] Applied ${upgrade.name}: dash range *= ${dashRangeMultiplier}`,
+                    );
+                }
+                if ("damageBonus" in upgrade.data) {
+                    let damageBonus = upgrade.data.damageBonus as number;
+                    ai.DamageBonus = (ai.DamageBonus || 0) + damageBonus;
+                    console.log(
+                        `[TRAIT_UPGRADE] Applied ${upgrade.name}: damage bonus += ${damageBonus}`,
+                    );
+                }
+            }
+            break;
+
+        case "vitality":
+            if (upgrade.data && "healthBonus" in upgrade.data) {
+                let healthBonus = upgrade.data.healthBonus as number;
+                health.Max += healthBonus;
+                health.Current += healthBonus;
+                console.log(
+                    `[TRAIT_UPGRADE] Applied ${upgrade.name}: health += ${healthBonus} (now ${health.Max}/${health.Current})`,
+                );
+            }
+            break;
+
+        case "berserker_mode":
+            if (upgrade.data) {
+                ai.BerserkerMode = {
+                    LowHealthThreshold: upgrade.data.lowHealthThreshold as number,
+                    SpeedBonus: upgrade.data.lowHealthSpeedBonus as number,
+                    AttackBonus: upgrade.data.lowHealthAttackBonus as number,
+                };
+                console.log(`[TRAIT_UPGRADE] Applied ${upgrade.name}: berserker mode enabled`);
+            }
+            break;
+
+        case "pacifist":
+            if (upgrade.data) {
+                if ("aggressivenessMultiplier" in upgrade.data) {
+                    let aggressivenessMultiplier = upgrade.data.aggressivenessMultiplier as number;
+                    ai.Aggressiveness *= aggressivenessMultiplier;
+                    console.log(
+                        `[TRAIT_UPGRADE] Applied ${upgrade.name}: aggressiveness *= ${aggressivenessMultiplier} (now ${ai.Aggressiveness})`,
+                    );
+                }
+                if ("healthBonus" in upgrade.data) {
+                    let healthBonus = upgrade.data.healthBonus as number;
+                    health.Max += healthBonus;
+                    health.Current += healthBonus;
+                    console.log(
+                        `[TRAIT_UPGRADE] Applied ${upgrade.name}: health += ${healthBonus} (now ${health.Max})`,
+                    );
+                }
+                if ("damageReductionMultiplier" in upgrade.data) {
+                    let damageReductionMultiplier = upgrade.data
+                        .damageReductionMultiplier as number;
+                    // Convert multiplier to percentage reduction (0.5x damage = 50% reduction)
+                    let damageReductionPercent = 1.0 - damageReductionMultiplier;
+                    apply_damage_reduction(game, entity, damageReductionPercent);
+                }
+            }
+            break;
+
+        case "cautious":
+            if (upgrade.data) {
+                if ("aggressivenessMultiplier" in upgrade.data) {
+                    let aggressivenessMultiplier = upgrade.data.aggressivenessMultiplier as number;
+                    ai.Aggressiveness *= aggressivenessMultiplier;
+                    console.log(
+                        `[TRAIT_UPGRADE] Applied ${upgrade.name}: aggressiveness *= ${aggressivenessMultiplier} (now ${ai.Aggressiveness})`,
+                    );
+                }
+                if ("healthBonus" in upgrade.data) {
+                    let healthBonus = upgrade.data.healthBonus as number;
+                    health.Max += healthBonus;
+                    health.Current += healthBonus;
+                    console.log(
+                        `[TRAIT_UPGRADE] Applied ${upgrade.name}: health += ${healthBonus} (now ${health.Max})`,
+                    );
+                }
+                if ("retreatHealthThreshold" in upgrade.data) {
+                    let retreatThreshold = upgrade.data.retreatHealthThreshold as number;
+                    ai.RetreatHealthThreshold = retreatThreshold;
+                    console.log(
+                        `[TRAIT_UPGRADE] Applied ${upgrade.name}: retreat threshold = ${retreatThreshold}`,
+                    );
+                }
+            }
+            break;
+
+        default:
+            console.warn(`Unknown trait upgrade: ${upgrade.id}`);
+            break;
     }
 }
 

@@ -20,6 +20,7 @@ export const enum UpgradeCategory {
     Ability = "ability",
     Companion = "companion",
     Energy = "energy",
+    Trait = "trait",
     Special = "special",
 }
 
@@ -377,6 +378,66 @@ export const ENERGY_UPGRADES: UpgradeType[] = [
     },
 ];
 
+// Trait upgrade definitions - Combat & behavioral enhancement
+export const TRAIT_UPGRADES: UpgradeType[] = [
+    {
+        id: "lightning_reflexes",
+        category: UpgradeCategory.Trait,
+        name: "Lightning Reflexes",
+        description: "+50% movement speed and dash speed",
+        rarity: UpgradeRarity.Uncommon,
+        data: {moveSpeedMultiplier: 1.5, dashSpeedMultiplier: 1.5},
+    },
+    {
+        id: "quick_draw",
+        category: UpgradeCategory.Trait,
+        name: "Quick Draw",
+        description: "+40% attack speed (faster weapon cooldowns)",
+        rarity: UpgradeRarity.Common,
+        data: {attackSpeedMultiplier: 1.4},
+    },
+    {
+        id: "brawler",
+        category: UpgradeCategory.Trait,
+        name: "Brawler",
+        description: "Higher aggressiveness, shorter dash range but +1 damage to all attacks",
+        rarity: UpgradeRarity.Common,
+        data: {aggressivenessBonus: 0.5, dashRangeMultiplier: 0.8, damageBonus: 1},
+    },
+    {
+        id: "vitality",
+        category: UpgradeCategory.Trait,
+        name: "Vitality",
+        description: "+2 maximum health",
+        rarity: UpgradeRarity.Common,
+        data: {healthBonus: 2},
+    },
+    {
+        id: "berserker_mode",
+        category: UpgradeCategory.Trait,
+        name: "Berserker Mode",
+        description: "+50% attack speed and movement when below 25% HP",
+        rarity: UpgradeRarity.Uncommon,
+        data: {lowHealthThreshold: 0.25, lowHealthSpeedBonus: 1.5, lowHealthAttackBonus: 1.5},
+    },
+    {
+        id: "pacifist",
+        category: UpgradeCategory.Trait,
+        name: "Pacifist",
+        description: "Much lower aggressiveness but +3 max health and +50% damage reduction",
+        rarity: UpgradeRarity.Rare,
+        data: {aggressivenessMultiplier: 0.3, healthBonus: 3, damageReductionMultiplier: 0.5},
+    },
+    {
+        id: "cautious",
+        category: UpgradeCategory.Trait,
+        name: "Cautious",
+        description: "Lower aggressiveness but +1 max health and better retreat timing",
+        rarity: UpgradeRarity.Common,
+        data: {aggressivenessMultiplier: 0.7, healthBonus: 1, retreatHealthThreshold: 2},
+    },
+];
+
 // All upgrades registry
 export const ALL_UPGRADES: UpgradeType[] = [
     ...WEAPON_UPGRADES,
@@ -384,6 +445,7 @@ export const ALL_UPGRADES: UpgradeType[] = [
     ...ABILITY_UPGRADES,
     ...COMPANION_UPGRADES,
     ...ENERGY_UPGRADES,
+    ...TRAIT_UPGRADES,
 ];
 
 // Utility function to get upgrade display name by ID

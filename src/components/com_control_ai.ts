@@ -42,6 +42,18 @@ export interface ControlAi {
 
     // Shockwave burst upgrade properties
     ShockwaveBurstEnabled: boolean; // Whether shockwave burst upgrade is active
+
+    // Trait upgrade properties (optional - only set when traits are applied)
+    DashSpeedMultiplier?: number; // Lightning Reflexes dash speed boost
+    DashRangeMultiplier?: number; // Brawler dash range reduction
+    AttackSpeedMultiplier?: number; // Quick Draw attack speed boost
+    DamageBonus?: number; // Brawler damage bonus
+    BerserkerMode?: {
+        LowHealthThreshold: number;
+        SpeedBonus: number;
+        AttackBonus: number;
+    }; // Berserker Mode trait
+    RetreatHealthThreshold?: number; // Cautious trait retreat threshold
 }
 
 export const enum AiState {

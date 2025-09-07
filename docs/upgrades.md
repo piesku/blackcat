@@ -119,13 +119,13 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 **Strategy**: Direct combat stat modifications and behavioral changes that dramatically alter playstyle and AI behavior.
 
-- **Lightning Reflexes** _(Uncommon)_ - +50% movement speed and dash speed
-- **Quick Draw** _(Common)_ - +40% attack speed (faster weapon cooldowns)
-- **Brawler** _(Common)_ - Higher aggressiveness, shorter dash range but +1 damage to all H2H attacks
-- **Vitality** _(Common)_ - +2 maximum health
-- **Berserker Mode** _(Uncommon)_ - +50% attack speed and movement when below 25% HP
-- **Pacifist** _(Rare)_ - Much lower aggressiveness but +3 max health and +50% damage reduction
-- **Cautious** _(Common)_ - Lower aggressiveness but +1 max health and better retreat timing
+- **Lightning Reflexes** _(Uncommon)_ ✅ - +50% movement speed and dash speed
+- **Quick Draw** _(Common)_ ✅ - +40% attack speed (faster weapon cooldowns)
+- **Brawler** _(Common)_ ✅ - Higher aggressiveness, shorter dash range but +1 damage to all H2H attacks
+- **Vitality** _(Common)_ ✅ - +2 maximum health
+- **Berserker Mode** _(Uncommon)_ ✅ - +50% attack speed and movement when below 25% HP
+- **Pacifist** _(Rare)_ ✅ - Much lower aggressiveness but +3 max health and +50% damage reduction
+- **Cautious** _(Common)_ ✅ - Lower aggressiveness but +1 max health and better retreat timing
 
 **Implementation**:
 

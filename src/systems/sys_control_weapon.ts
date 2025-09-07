@@ -1,6 +1,6 @@
 import {instantiate} from "../../lib/game.js";
 import {mat2d_get_translation} from "../../lib/mat2d.js";
-import {RAD_TO_DEG, Vec2} from "../../lib/math.js";
+import {Vec2} from "../../lib/math.js";
 import {clamp} from "../../lib/number.js";
 import {vec2_copy} from "../../lib/vec2.js";
 import {blueprint_boomerang_outward} from "../blueprints/projectiles/blu_boomerang.js";
@@ -78,9 +78,27 @@ function get_weapon_name(game: Game, weapon_entity: number): string | null {
 
 function activate_weapon(game: Game, wielder_entity: number, weapon_entity: number) {
     let weapon = game.World.Weapon[weapon_entity];
+    let ai = game.World.ControlAi[wielder_entity];
+    let health = game.World.Health[wielder_entity];
+    DEBUG: if (!weapon || !ai || !health) throw new Error("missing component");
+
+    // Calculate effective cooldown with trait bonuses
+    let effective_cooldown = weapon.Cooldown;
+
+    // Apply attack speed multiplier from traits (Quick Draw, Berserker Mode)
+    if (ai.AttackSpeedMultiplier) {
+        effective_cooldown /= ai.AttackSpeedMultiplier;
+    }
+
+    // Apply berserker mode attack bonus when at low health
+    if (ai.BerserkerMode) {
+        if (health.Current / health.Max <= ai.BerserkerMode.LowHealthThreshold) {
+            effective_cooldown /= ai.BerserkerMode.AttackBonus;
+        }
+    }
 
     // Set weapon on cooldown
-    weapon.TimeToNext = weapon.Cooldown;
+    weapon.TimeToNext = effective_cooldown;
 
     // Apply weapon-specific effects based on weapon name
     let weapon_name = get_weapon_name(game, weapon_entity);

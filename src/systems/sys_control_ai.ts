@@ -47,6 +47,10 @@ export function sys_control_ai(game: Game, delta: number) {
             if (has_ability(game, entity, AbilityType.DashMaster)) {
                 dash_range *= 2.0;
             }
+            // Apply trait-based dash range multiplier (Brawler reduces range)
+            if (ai.DashRangeMultiplier) {
+                dash_range *= ai.DashRangeMultiplier;
+            }
 
             let scaled_distances = {
                 circle: BASE_CIRCLE_DISTANCE * speed_scale,
@@ -143,6 +147,7 @@ export function sys_control_ai(game: Game, delta: number) {
                         aim.DirectionToTarget,
                         speed_scale,
                         ai.Aggressiveness,
+                        ai.DashSpeedMultiplier,
                     );
                     break;
                 case AiState.Retreating:
@@ -164,6 +169,14 @@ export function sys_control_ai(game: Game, delta: number) {
                 // Scale movement speed based on AI energy, smoothing out extreme values.
                 // For opponent fighters, energy is pre-set and constant.
                 move.MoveSpeed = ai.BaseMoveSpeed * Math.sqrt(ai.Energy);
+
+                // Apply berserker mode speed bonus when at low health
+                if (
+                    ai.BerserkerMode &&
+                    health.Current / health.Max <= ai.BerserkerMode.LowHealthThreshold
+                ) {
+                    move.MoveSpeed *= ai.BerserkerMode.SpeedBonus;
+                }
 
                 // Mark entity as dirty since we modified its movement
                 game.World.Signature[entity] |= Has.Dirty;
@@ -190,14 +203,17 @@ function update_ai_state(
     // Scale time-based durations inversely with speed to maintain consistent behavior
     let time_scale = 1.0 / Math.sqrt(speed_scale); // Square root to moderate the scaling
 
+    // Use trait-based retreat threshold (Cautious trait can increase it)
+    let retreat_threshold = ai.RetreatHealthThreshold || LOW_HEALTH_THRESHOLD;
+
     // Reset retreat flag when health recovers
-    if (health.Current > LOW_HEALTH_THRESHOLD) {
+    if (health.Current > retreat_threshold) {
         ai.HasRetreatedAtLowHealth = false;
     }
 
     // Check for low health -> retreat (only if haven't retreated yet at this health level)
     if (
-        health.Current <= LOW_HEALTH_THRESHOLD &&
+        health.Current <= retreat_threshold &&
         ai.State !== AiState.Retreating &&
         !ai.HasRetreatedAtLowHealth
     ) {
@@ -322,7 +338,7 @@ function update_ai_state(
             let retreat_timeout = 3.0 * time_scale; // Max 3 seconds in retreat to prevent stalemates
             if (
                 (aim.DistanceToTarget > scaled_distances.retreat &&
-                    health.Current > LOW_HEALTH_THRESHOLD) ||
+                    health.Current > retreat_threshold) ||
                 ai.StateTimer > retreat_timeout
             ) {
                 if (ai.StateTimer > retreat_timeout) {
@@ -419,11 +435,14 @@ function attack_movement(
     to_target: Readonly<Vec2>,
     speed_scale: number,
     aggressiveness: number,
+    dash_speed_multiplier: number = 1,
 ) {
     // Enhanced DASH with higher speed and personality
     vec2_normalize(out, to_target);
     // Dramatic speed multiplier that scales with aggressiveness
     let effective_multiplier = BASE_DASH_SPEED_MULTIPLIER * aggressiveness;
+    // Apply trait-based dash speed multiplier (Lightning Reflexes boost)
+    effective_multiplier *= dash_speed_multiplier;
     // Less restrictive capping for more dramatic attacks
     effective_multiplier = Math.min(
         effective_multiplier,
