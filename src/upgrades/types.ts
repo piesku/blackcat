@@ -83,14 +83,14 @@ export interface UpgradeType {
     tier?: number; // For power scaling (optional)
 }
 
-export const enum UpgradeCategory {
-    Weapon,
-    Armor,
-    Ability,
-    Companion,
-    Energy,
-    Trait,
-    Special,
+export enum UpgradeCategory {
+    Weapon = "Weapon",
+    Armor = "Armor",
+    Ability = "Ability",
+    Companion = "Companion",
+    Energy = "Energy",
+    Trait = "Trait",
+    Special = "Special",
 }
 
 export interface GameState {
