@@ -75,70 +75,44 @@ function apply_energy_upgrade(game: Game, entity: number, upgrade: UpgradeType) 
     switch (upgrade.id) {
         case "energy_efficiency":
             ai.EnergyPerTap += 0.3;
-            console.log(
-                `[ENERGY_UPGRADE] Applied Energy Efficiency: +0.3 energy/tap (total: ${ai.EnergyPerTap})`,
-            );
             break;
 
         case "adrenaline_rush":
             ai.EnergyPerTap += 0.5;
-            console.log(
-                `[ENERGY_UPGRADE] Applied Adrenaline Rush: +0.5 energy/tap (total: ${ai.EnergyPerTap})`,
-            );
             break;
 
         case "slow_metabolism":
             ai.EnergyDecayRate = 0.5;
-            console.log(`[ENERGY_UPGRADE] Applied Slow Metabolism: energy decays 50% slower`);
             break;
 
         case "basic_healing":
             ai.HealingRate += 1.0;
-            console.log(
-                `[ENERGY_UPGRADE] Applied Basic Healing: +1 HP/s healing (total: ${ai.HealingRate})`,
-            );
             break;
 
         case "rapid_healing":
             ai.HealingRate += 2.0;
-            console.log(
-                `[ENERGY_UPGRADE] Applied Rapid Healing: +2 HP/s healing (total: ${ai.HealingRate})`,
-            );
             break;
 
         case "energy_conservation":
             ai.HealingDrainStrength = 0.5;
-            console.log(
-                `[ENERGY_UPGRADE] Applied Energy Conservation: healing drains 50% less energy`,
-            );
             break;
 
         case "power_stability":
             ai.PowerDecayRate = 0.25;
-            console.log(`[ENERGY_UPGRADE] Applied Power Stability: power decays 75% slower`);
             break;
 
         case "hypermetabolism":
             ai.EnergyDecayRate = 2.0;
             ai.HealingRate += 3.0;
-            console.log(
-                `[ENERGY_UPGRADE] Applied Hypermetabolism: energy decays 2x faster, +3 HP/s healing`,
-            );
             break;
 
         case "combat_stimulant":
             ai.EnergyPerTap += 0.8;
             ai.PowerDecayRate = 0.1;
-            console.log(
-                `[ENERGY_UPGRADE] Applied Combat Stimulant: +0.8 energy/tap, instant power recovery`,
-            );
             break;
 
         case "shockwave_burst":
             ai.ShockwaveBurstEnabled = true;
-            console.log(
-                `[ENERGY_UPGRADE] Applied Shockwave Burst: particles spawn when releasing heal`,
-            );
             break;
 
         default:
@@ -163,27 +137,21 @@ function apply_trait_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
             move.MoveSpeed *= 1.5;
             ai.BaseMoveSpeed *= 1.5;
             ai.DashSpeedMultiplier = (ai.DashSpeedMultiplier || 1.0) * 1.5;
-            console.log(`[TRAIT_UPGRADE] Applied Lightning Reflexes: +50% movement and dash speed`);
             break;
 
         case "quick_draw":
             ai.AttackSpeedMultiplier = (ai.AttackSpeedMultiplier || 1.0) * 1.4;
-            console.log(`[TRAIT_UPGRADE] Applied Quick Draw: +40% attack speed`);
             break;
 
         case "brawler":
             ai.Aggressiveness += 0.3;
             ai.DashRangeMultiplier = (ai.DashRangeMultiplier || 1.0) * 0.8;
             ai.DamageBonus = (ai.DamageBonus || 0) + 1;
-            console.log(
-                `[TRAIT_UPGRADE] Applied Brawler: higher aggression, shorter dash, +1 damage`,
-            );
             break;
 
         case "vitality":
             health.Max += 2;
             health.Current += 2;
-            console.log(`[TRAIT_UPGRADE] Applied Vitality: +2 health (now ${health.Max})`);
             break;
 
         case "berserker_mode":
@@ -192,9 +160,6 @@ function apply_trait_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
                 SpeedBonus: 1.5,
                 AttackBonus: 1.5,
             };
-            console.log(
-                `[TRAIT_UPGRADE] Applied Berserker Mode: +50% speed/attack when below 25% HP`,
-            );
             break;
 
         case "pacifist":
@@ -202,9 +167,6 @@ function apply_trait_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
             health.Max += 3;
             health.Current += 3;
             apply_damage_reduction(game, entity, 0.5);
-            console.log(
-                `[TRAIT_UPGRADE] Applied Pacifist: lower aggression, +3 health, +50% damage reduction`,
-            );
             break;
 
         case "cautious":
@@ -212,9 +174,6 @@ function apply_trait_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
             health.Max += 1;
             health.Current += 1;
             ai.RetreatHealthThreshold = 2;
-            console.log(
-                `[TRAIT_UPGRADE] Applied Cautious: lower aggression, +1 health, retreat at 2 HP`,
-            );
             break;
 
         default:
@@ -345,9 +304,6 @@ function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType)
         case "vampiric":
             // Add vampiric ability directly
             abilities([AbilityType.Vampiric])(game, entity);
-            console.log(
-                `[UPGRADE] Applied Vampiric ability to entity ${entity} - heal 1 HP for every 2 damage dealt`,
-            );
             break;
 
         case "shadow_trail":
@@ -359,31 +315,21 @@ function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType)
                 0, // speedMax
                 Infinity, // initialDuration: always active
             )(game, entity);
-            console.log(`Applied shadow trail to entity ${entity}`);
             break;
 
         case "piercing_shots":
             // Add piercing shots ability - this will be checked when spawning projectiles
             abilities([AbilityType.PiercingShots])(game, entity);
-            console.log(
-                `[UPGRADE] Applied Piercing Shots ability to entity ${entity} - projectiles now pierce first enemy`,
-            );
             break;
 
         case "phase_walk":
             // Add phase walk ability - invincibility during dashing
             abilities([AbilityType.PhaseWalk])(game, entity);
-            console.log(
-                `[UPGRADE] Applied Phase Walk ability to entity ${entity} - brief invincibility when dashing`,
-            );
             break;
 
         case "dash_master":
             // Add dash master ability - enhanced dash range
             abilities([AbilityType.DashMaster])(game, entity);
-            console.log(
-                `[UPGRADE] Applied Dash Master ability to entity ${entity} - +100% dash range`,
-            );
             break;
 
         default:
@@ -449,8 +395,4 @@ function apply_companion_upgrade(game: Game, entity: number, upgrade: UpgradeTyp
         companion_transform.Translation[1] = owner_transform.Translation[1] + 0.5;
         game.World.Signature[companion_entity] |= Has.Dirty;
     }
-
-    console.log(
-        `Spawned companion ${upgrade.id} (entity ${companion_entity}) for ${owner_is_player ? "player" : "opponent"} (entity ${entity})`,
-    );
 }
