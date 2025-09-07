@@ -9,6 +9,9 @@ const DEFAULT_HEALING_RATE = 0.0; // Healing disabled by default
 const DEFAULT_HEALING_DRAIN_STRENGTH = 1.0;
 const DEFAULT_POWER_DECAY_RATE = 16.0;
 
+// Default shockwave burst parameters
+const DEFAULT_SHOCKWAVE_BURST_ENABLED = false;
+
 export interface ControlAi {
     State: AiState;
     LastStateChange: number; // Game time in seconds when state last changed
@@ -36,6 +39,9 @@ export interface ControlAi {
     HealingRate: number; // Base healing rate multiplier
     HealingDrainStrength: number; // Energy drain strength during healing
     PowerDecayRate: number; // Visual power scaling decay rate
+
+    // Shockwave burst upgrade properties
+    ShockwaveBurstEnabled: boolean; // Whether shockwave burst upgrade is active
 }
 
 export const enum AiState {
@@ -99,6 +105,9 @@ export function control_ai(is_player: boolean, base_move_speed: number) {
             HealingRate: DEFAULT_HEALING_RATE,
             HealingDrainStrength: DEFAULT_HEALING_DRAIN_STRENGTH,
             PowerDecayRate: DEFAULT_POWER_DECAY_RATE,
+
+            // Shockwave burst properties (initialized to defaults)
+            ShockwaveBurstEnabled: DEFAULT_SHOCKWAVE_BURST_ENABLED,
         };
     };
 }

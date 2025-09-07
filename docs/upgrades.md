@@ -106,8 +106,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Power Stability** ✅ _(Common)_ - Power decays 75% slower
 - **Hypermetabolism** ✅ _(Rare)_ - Energy decays twice as fast but enables powerful +3 HP/s healing
 - **Combat Stimulant** ✅ _(Rare)_ - Supercharged tapping (+0.8 energy per tap) and instant power recovery
-- **Shockwave Burst** _(Rare)_ - Release a powerful shockwave when energy is full, damaging nearby enemies
-- **Pop!** _(Rare)_ - Spawn particles in all direction when releasing a hold heal
+- **Shockwave Burst** ✅ _(Rare)_ - Spawn particles in all direction when releasing a hold heal
 
 **Implementation**:
 

@@ -367,6 +367,14 @@ export const ENERGY_UPGRADES: UpgradeType[] = [
         rarity: UpgradeRarity.Rare,
         data: {energyPerTap: 0.8, powerDecayRate: 32.0}, // Very high tapping, very fast power decay
     },
+    {
+        id: "shockwave_burst",
+        category: UpgradeCategory.Energy,
+        name: "Shockwave Burst",
+        description:
+            "Spawn damaging particles in all directions when releasing accumulated power - more particles with higher power",
+        rarity: UpgradeRarity.Rare,
+    },
 ];
 
 // All upgrades registry

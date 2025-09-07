@@ -1,3 +1,8 @@
+import {instantiate} from "../../lib/game.js";
+import {mat2d_get_translation} from "../../lib/mat2d.js";
+import {blueprint_shockwave_burst} from "../blueprints/particles/blu_shockwave_burst.js";
+import {copy_position} from "../components/com_local_transform2d.js";
+import {spawned_by} from "../components/com_spawned_by.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
@@ -15,7 +20,8 @@ export function sys_control_player(game: Game, delta: number) {
     // Check if holding mouse/touch (currently pressed)
     let is_holding = game.InputState.Mouse0 === 1 || game.InputState.Touch0 === 1;
 
-    // Update module-level hold timer (once per frame, outside entity loop)
+    // Calculate transition states (once per frame, outside entity loop)
+    let just_stopped_holding = game.InputDelta.Mouse0 === -1 || game.InputDelta.Touch0 === -1;
     let was_quick_tap = false;
 
     if (is_holding) {
@@ -131,6 +137,34 @@ export function sys_control_player(game: Game, delta: number) {
                     control.PowerScale = 1.0 + Math.max(0, energy_consumed);
                 } else {
                     // Not holding - decay power scale back to 1.0 over a few frames
+
+                    // Shockwave Burst: Trigger when power release begins (just stopped holding with accumulated power)
+                    if (
+                        ai.ShockwaveBurstEnabled &&
+                        control.PowerScale > 1.0 &&
+                        just_stopped_holding
+                    ) {
+                        // Calculate particle count based on accumulated power scale
+                        let particle_count = Math.floor(control.PowerScale * 4); // Base formula: 1x = 4 particles, 2x = 8 particles, etc.
+
+                        // Create a shockwave burst entity that handles particle spawning
+                        let spatial_node = game.World.SpatialNode2D[entity];
+                        if (spatial_node) {
+                            let position: [number, number] = [0, 0];
+                            mat2d_get_translation(position, spatial_node.World);
+
+                            instantiate(game, [
+                                ...blueprint_shockwave_burst(particle_count),
+                                copy_position(position),
+                                spawned_by(entity),
+                            ]);
+                        }
+
+                        console.log(
+                            `[SHOCKWAVE_BURST] Power release - spawning ${particle_count} shockwave particles! (PowerScale: ${control.PowerScale.toFixed(2)}x)`,
+                        );
+                    }
+
                     if (control.PowerScale > 1.0) {
                         control.PowerScale -= ai.PowerDecayRate * delta;
                         if (control.PowerScale < 1.0) {

@@ -118,6 +118,12 @@ function apply_energy_upgrade(game: Game, entity: number, upgrade: UpgradeType) 
                 `[ENERGY_UPGRADE] Applied ${upgrade.name}: powerDecayRate = ${ai.PowerDecayRate}`,
             );
         }
+
+        // Handle shockwave burst upgrade
+        if (upgrade.id === "shockwave_burst") {
+            ai.ShockwaveBurstEnabled = true;
+            console.log(`[ENERGY_UPGRADE] Applied ${upgrade.name}: shockwave burst enabled`);
+        }
     }
 }
 

@@ -54,6 +54,9 @@ export function cat_control_ai(
             HealingRate: 0.0, // Cats don't heal
             HealingDrainStrength: 1.0,
             PowerDecayRate: 16.0,
+
+            // Shockwave burst properties (cats don't use shockwave burst)
+            ShockwaveBurstEnabled: false, // No shockwave burst for companion cats
         };
     };
 }
