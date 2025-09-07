@@ -25,7 +25,7 @@ export function blueprint_sniper_rifle() {
 
         // Spawner for sniper bullets
         spawn_count(
-            () => blueprint_bullet(3.5),
+            blueprint_bullet(3.5),
             0, // interval: instant spawn
             0.01, // spread: Very tight spread for precision
             10, // speedMin

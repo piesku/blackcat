@@ -106,9 +106,12 @@ function spawn_single_entity(
     // Resolve fighter entity for damage attribution
     let fighter_entity = get_root_spawner(game.World, spawner_entity);
 
-    // Create entity with spawner attribution (only if not self-reference)
+    // Get blueprint by calling creator with game and spawner context
+    let blueprint = spawn.BlueprintCreator(game, spawner_entity);
+
+    // Create entity with spawner attribution
     let spawned_entity = instantiate(game, [
-        ...spawn.BlueprintCreator(),
+        ...blueprint,
         copy_position(position),
         spawned_by(fighter_entity),
     ]);

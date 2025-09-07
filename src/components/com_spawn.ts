@@ -17,7 +17,7 @@ export const enum SpawnMode {
 }
 
 export interface SpawnBase {
-    BlueprintCreator: () => Blueprint<Game>; // Function that creates fresh blueprint each time
+    BlueprintCreator: (game: Game, spawner_entity: Entity) => Blueprint<Game>; // Function that creates fresh blueprint each time
     Spread: number; // Cone angle in radians (0 = straight line, π = full circle)
     SpeedMin: number; // Minimum spawn speed
     SpeedMax: number; // Maximum spawn speed
@@ -51,7 +51,7 @@ export type Spawn = SpawnCount | SpawnTimed;
  * @param initialCount Initial count to spawn (0 = inactive, >0 = immediately active).
  */
 export function spawn_count(
-    creator: () => Blueprint<Game>,
+    creator: (game: Game, spawner_entity: Entity) => Blueprint<Game>,
     interval: number,
     spread: number,
     speedMin: number,
@@ -87,7 +87,7 @@ export function spawn_count(
  * @param initialDuration Initial duration to spawn (0 = inactive, >0 = immediately active).
  */
 export function spawn_timed(
-    creator: () => Blueprint<Game>,
+    creator: (game: Game, spawner_entity: Entity) => Blueprint<Game>,
     interval: number,
     spread: number,
     speedMin: number,

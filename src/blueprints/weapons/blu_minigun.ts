@@ -24,7 +24,7 @@ export function blueprint_minigun() {
 
         // Spawner for rapid bullet spray - uses count spawner for controlled bursts
         spawn_count(
-            () => blueprint_bullet(1.2),
+            blueprint_bullet(1.2),
             1 / 5, // interval: 5 bullets per second
             0.15, // spread: Moderate spread for spray effect
             7.0, // speedMin
@@ -36,7 +36,7 @@ export function blueprint_minigun() {
             spatial_node2d(),
             local_transform2d([0, 0], 150, [1, 1]), // Rotated to eject backwards and up
             spawn_count(
-                () => blueprint_shell_casing(),
+                (game, spawner) => blueprint_shell_casing(),
                 1 / 5, // interval: match bullet spawn rate
                 0.3, // spread: casings scatter randomly
                 1.0, // speedMin: casings eject with moderate force

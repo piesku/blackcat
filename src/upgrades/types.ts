@@ -201,6 +201,13 @@ export const ABILITY_UPGRADES: UpgradeType[] = [
         description: "Movement leaves damaging shadow particles behind you",
         rarity: UpgradeRarity.Uncommon,
     },
+    {
+        id: "piercing_shots",
+        category: UpgradeCategory.Ability,
+        name: "Piercing Shots",
+        description: "Projectiles go through first enemy and continue",
+        rarity: UpgradeRarity.Uncommon,
+    },
 ];
 
 // Companion upgrade definitions - Cat allies

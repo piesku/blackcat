@@ -245,7 +245,7 @@ function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType)
 
         case "shadow_trail":
             spawn_timed(
-                blueprint_shadow_particle,
+                (game, spawner) => blueprint_shadow_particle(),
                 1.0 / 8.0, // interval
                 0, // spread: No spread for trails
                 0, // speedMin
@@ -253,6 +253,14 @@ function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType)
                 Infinity, // initialDuration: always active
             )(game, entity);
             console.log(`Applied shadow trail to entity ${entity}`);
+            break;
+
+        case "piercing_shots":
+            // Add piercing shots ability - this will be checked when spawning projectiles
+            abilities([AbilityType.PiercingShots])(game, entity);
+            console.log(
+                `[UPGRADE] Applied Piercing Shots ability to entity ${entity} - projectiles now pierce first enemy`,
+            );
             break;
 
         default:
