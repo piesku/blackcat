@@ -17,18 +17,18 @@ const HOLD_THRESHOLD = 0.2; // Seconds before hold is considered intentional hea
 let hold_timer = 0;
 
 export function sys_control_player(game: Game, delta: number) {
-    // Check if holding mouse/touch (currently pressed)
-    let is_holding = game.InputState.Mouse0 === 1 || game.InputState.Touch0 === 1;
+    // Check if holding pointer (currently pressed)
+    let is_holding = game.PointerState === 1;
 
     // Calculate transition states (once per frame, outside entity loop)
-    let just_stopped_holding = game.InputDelta.Mouse0 === -1 || game.InputDelta.Touch0 === -1;
+    let just_stopped_holding = game.PointerDelta === -1;
     let was_quick_tap = false;
 
     if (is_holding) {
         hold_timer += delta;
     } else {
         // Handle tap if just released and was below hold threshold
-        if (game.InputDelta.Mouse0 === -1 || game.InputDelta.Touch0 === -1) {
+        if (game.PointerDelta === -1) {
             if (hold_timer > 0 && hold_timer < HOLD_THRESHOLD) {
                 was_quick_tap = true;
             }

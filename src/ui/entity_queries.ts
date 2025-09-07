@@ -121,8 +121,8 @@ export function getPlayerHealingStatus(game: Game): {
             let health = game.World.Health[entity];
             if (!ai || !health) continue;
 
-            // Check if holding mouse/touch for healing threshold and can heal
-            let is_holding = game.InputState.Mouse0 === 1 || game.InputState.Touch0 === 1;
+            // Check if holding pointer for healing threshold and can heal
+            let is_holding = game.PointerState === 1;
             // Note: We can't access the module-level timer here, so we'll use basic hold detection
             // The actual healing logic in sys_control_player handles the timer threshold
             let isHealing = is_holding && health.Current < health.Max && health.IsAlive;
