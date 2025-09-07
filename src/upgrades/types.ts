@@ -183,6 +183,13 @@ export const ARMOR_UPGRADES: UpgradeType[] = [
         description: "Reduce all damage by 1 (minimum 1 damage)",
         rarity: UpgradeRarity.Common,
     },
+    {
+        id: "evasion",
+        category: UpgradeCategory.Armor,
+        name: "Evasion",
+        description: "+25% chance to completely avoid damage",
+        rarity: UpgradeRarity.Uncommon,
+    },
 ];
 
 // Ability upgrade definitions

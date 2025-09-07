@@ -26,6 +26,7 @@ import {Game} from "../game.js";
 import {Has} from "../world.js";
 import {
     apply_damage_reduction,
+    apply_evasion,
     apply_last_stand,
     apply_mirror_armor,
     apply_proximity_barrier,
@@ -225,6 +226,10 @@ function apply_armor_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
 
         case "tough_skin":
             apply_tough_skin(game, entity);
+            break;
+
+        case "evasion":
+            apply_evasion(game, entity, 0.25);
             break;
 
         default:

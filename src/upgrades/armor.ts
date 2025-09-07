@@ -101,11 +101,14 @@ export function apply_proximity_barrier(
 
     let health = game.World.Health[entity];
 
-    // Set proximity barrier - no stacking needed
-    health.ProximityBarrier = reduction_percent;
+    // Stack proximity barrier multiplicatively to prevent going over 100%
+    let existing_reduction = health.ProximityBarrier || 0;
+    let remaining_damage = 1 - existing_reduction;
+    let new_reduction = remaining_damage * reduction_percent;
+    health.ProximityBarrier = existing_reduction + new_reduction;
 
     console.log(
-        `[UPGRADE] Applied Proximity Barrier to entity ${entity} - ${(reduction_percent * 100).toFixed(0)}% damage reduction from nearby enemies`,
+        `[UPGRADE] Applied Proximity Barrier (${(reduction_percent * 100).toFixed(0)}%) to entity ${entity} - total proximity barrier now ${(health.ProximityBarrier * 100).toFixed(1)}% damage reduction from nearby enemies`,
     );
 }
 
@@ -152,5 +155,22 @@ export function apply_tough_skin(game: Game, entity: number) {
 
     console.log(
         `[UPGRADE] Applied Tough Skin to entity ${entity} - +1 flat damage reduction (total: ${health.FlatDamageReduction})`,
+    );
+}
+
+export function apply_evasion(game: Game, entity: number, evasion_chance: number = 0.25) {
+    DEBUG: if (!(game.World.Signature[entity] & Has.Health))
+        throw new Error(`Cannot apply Evasion to entity ${entity} - no Health component`);
+
+    let health = game.World.Health[entity];
+
+    // Stack evasion chances multiplicatively to prevent going over 100%
+    let existing_evasion = health.EvasionChance || 0;
+    let remaining_vulnerability = 1 - existing_evasion;
+    let new_evasion = remaining_vulnerability * evasion_chance;
+    health.EvasionChance = existing_evasion + new_evasion;
+
+    console.log(
+        `[UPGRADE] Applied Evasion (${(evasion_chance * 100).toFixed(0)}%) to entity ${entity} - total evasion chance now ${(health.EvasionChance * 100).toFixed(1)}%`,
     );
 }

@@ -29,6 +29,7 @@ export interface Health {
     ProximityBarrier?: number; // Proximity Barrier - damage reduction from nearby enemies
     LastStand?: boolean; // Last Stand - 75% damage reduction when at 1 HP
     FlatDamageReduction?: number; // Thick Hide/Tough Skin - flat damage reduction per attack
+    EvasionChance?: number; // Evasion - chance to completely avoid damage (0.0 to 1.0)
 
     // Pending damage and healing instances
     PendingDamage: DamageInstance[];

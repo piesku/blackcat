@@ -1,4 +1,5 @@
 import {vec2_distance_squared} from "../../lib/vec2.js";
+import {rand} from "../../lib/random.js";
 import {AbilityType, has_ability} from "../components/com_abilities.js";
 import {query_down} from "../components/com_children.js";
 import {AiState} from "../components/com_control_ai.js";
@@ -175,6 +176,17 @@ function calculate_armor_reduction(
     damage_instance: {Amount: number; Source: number; Type?: string},
 ): number {
     let final_damage = damage_instance.Amount;
+
+    // Evasion: Chance to completely avoid damage (checked first, before other armor)
+    if (health.EvasionChance && health.EvasionChance > 0) {
+        let roll = rand(); // Random number between 0 and 1
+        if (roll < health.EvasionChance) {
+            console.log(
+                `[ARMOR] Evasion activated (${(health.EvasionChance * 100).toFixed(1)}% chance, rolled ${(roll * 100).toFixed(1)}%) - completely avoiding ${damage_instance.Amount.toFixed(1)} damage`,
+            );
+            return 0; // Completely avoid all damage
+        }
+    }
 
     // Scrap Armor: Ignore first damage instance
     if (health.IgnoreFirstDamage && !health.FirstDamageIgnored) {
