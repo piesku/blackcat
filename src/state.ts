@@ -1,5 +1,11 @@
 import {float, set_seed, shuffle} from "../lib/random.js";
-import {ALL_UPGRADES_LIST, UpgradeId, UpgradeRarity, UpgradeType} from "./upgrades/types.js";
+import {
+    ALL_UPGRADES_LIST,
+    UpgradeCategory,
+    UpgradeId,
+    UpgradeRarity,
+    UpgradeType,
+} from "./upgrades/types.js";
 
 export interface GameState {
     currentLevel: number; // 1-33 duels
@@ -42,9 +48,22 @@ export function generatePlayerUpgradeChoices(
         (upgrade) => !playerUpgrades.includes(upgrade.id),
     );
 
-    // Use weighted selection based on rarity instead of simple shuffle
+    // For the first duel, ensure at least one weapon is offered
     let selectedIds: UpgradeId[] = [];
-    for (let i = 0; i < 3 && availableUpgrades.length > 0; i++) {
+    if (arenaLevel === 1) {
+        // First choice: guaranteed weapon
+        let availableWeapons = availableUpgrades.filter(
+            (upgrade) => upgrade.category === UpgradeCategory.Weapon,
+        );
+        if (availableWeapons.length > 0) {
+            let weaponUpgrade = selectUpgradeByRarity(availableWeapons);
+            selectedIds.push(weaponUpgrade.id);
+            availableUpgrades = availableUpgrades.filter((u) => u.id !== weaponUpgrade.id);
+        }
+    }
+
+    // Fill remaining slots with weighted selection
+    while (selectedIds.length < 3 && availableUpgrades.length > 0) {
         let selectedUpgrade = selectUpgradeByRarity(availableUpgrades);
         selectedIds.push(selectedUpgrade.id);
         // Remove selected upgrade to prevent duplicates
