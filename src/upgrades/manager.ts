@@ -43,23 +43,17 @@ export function apply_upgrades(game: Game, entity: number, upgrades: UpgradeType
     // Apply all upgrades - order doesn't matter since categories are independent
     for (let upgrade of upgrades) {
         switch (upgrade.category) {
-            case UpgradeCategory.Energy:
-                apply_energy_upgrade(game, entity, upgrade);
-                break;
-            case UpgradeCategory.Trait:
-                apply_trait_upgrade(game, entity, upgrade);
-                break;
-            case UpgradeCategory.Armor:
-                apply_armor_upgrade(game, entity, upgrade);
-                break;
             case UpgradeCategory.Weapon:
                 apply_weapon_upgrade(game, entity, upgrade);
                 break;
-            case UpgradeCategory.Ability:
-                apply_ability_upgrade(game, entity, upgrade);
-                break;
             case UpgradeCategory.Companion:
                 apply_companion_upgrade(game, entity, upgrade);
+                break;
+            case UpgradeCategory.Enhancement:
+                apply_enhancement_upgrade(game, entity, upgrade);
+                break;
+            case UpgradeCategory.Special:
+                apply_special_upgrade(game, entity, upgrade);
                 break;
             default:
                 console.warn(`Unknown upgrade category: ${upgrade.category}`);
@@ -68,104 +62,74 @@ export function apply_upgrades(game: Game, entity: number, upgrades: UpgradeType
     }
 }
 
-function apply_energy_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
-    let ai = game.World.ControlAi[entity];
-    DEBUG: if (!ai) throw new Error("missing ControlAi component for energy upgrade");
-
-    switch (upgrade.id) {
-        // Combat-driven energy generation upgrades
-        case UpgradeId.CombatVeteran:
-            ai.EnergyFromDamageDealt += 0.3;
-            break;
-
-        case UpgradeId.BattleFury:
-            ai.EnergyFromDamageDealt += 0.5;
-            break;
-
-        case UpgradeId.AdrenalineSurge:
-            ai.EnergyFromDamageTaken += 0.2;
-            break;
-
-        case UpgradeId.BerserkersFocus:
-            // Double energy generation when health < 50%
-            ai.BerserkersFocusEnabled = true;
-            break;
-
-        // Energy decay modifiers
-        case UpgradeId.SlowMetabolism:
-            ai.EnergyDecayRate *= 0.5; // Energy decays 50% slower
-            break;
-
-        // Auto-healing upgrades
-        case UpgradeId.CombatMedic:
-            ai.HealingRate += 1.0;
-            break;
-
-        case UpgradeId.FieldSurgeon:
-            ai.HealingRate += 2.0;
-            break;
-
-        case UpgradeId.Hypermetabolism:
-            ai.EnergyDecayRate *= 2.0; // Energy decays twice as fast
-            ai.HealingRate += 3.0; // But powerful healing
-            break;
-
-        case UpgradeId.WeaponMastery:
-            // Enhanced energy generation + conditional damage bonus
-            ai.EnergyFromDamageDealt += 0.8;
-            ai.WeaponMasteryEnabled = true;
-            break;
-
-        case UpgradeId.PainTolerance:
-            // Enhanced energy generation from taking damage + damage reduction
-            ai.EnergyFromDamageTaken += 0.4;
-            apply_pain_tolerance(game, entity);
-            break;
-
-        // Special abilities
-        case UpgradeId.ShockwaveBurst:
-            ai.ShockwaveBurstEnabled = true;
-            break;
-
-        default:
-            console.warn(`Unknown energy upgrade: ${upgrade.id}`);
-            break;
-    }
-}
-
-function apply_trait_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
+function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
     let ai = game.World.ControlAi[entity];
     let move = game.World.Move2D[entity];
     let health = game.World.Health[entity];
 
     DEBUG: {
-        if (!ai) throw new Error("missing ControlAi component for trait upgrade");
-        if (!move) throw new Error("missing Move2D component for trait upgrade");
-        if (!health) throw new Error("missing Health component for trait upgrade");
+        if (!ai) throw new Error("missing ControlAi component for enhancement upgrade");
+        if (!move) throw new Error("missing Move2D component for movement upgrade");
+        if (!health) throw new Error("missing Health component for health upgrade");
     }
 
     switch (upgrade.id) {
+        // === Energy Properties ===
+        case UpgradeId.CombatVeteran:
+            ai.EnergyFromDamageDealt += 0.3;
+            break;
+        case UpgradeId.BattleFury:
+            ai.EnergyFromDamageDealt += 0.5;
+            break;
+        case UpgradeId.AdrenalineSurge:
+            ai.EnergyFromDamageTaken += 0.2;
+            break;
+        case UpgradeId.BerserkersFocus:
+            ai.BerserkersFocusEnabled = true;
+            break;
+        case UpgradeId.SlowMetabolism:
+            ai.EnergyDecayRate *= 0.5;
+            break;
+        case UpgradeId.CombatMedic:
+            ai.HealingRate += 1.0;
+            break;
+        case UpgradeId.FieldSurgeon:
+            ai.HealingRate += 2.0;
+            break;
+        case UpgradeId.Hypermetabolism:
+            ai.EnergyDecayRate *= 2.0;
+            ai.HealingRate += 3.0;
+            break;
+        case UpgradeId.WeaponMastery:
+            ai.EnergyFromDamageDealt += 0.8;
+            ai.WeaponMasteryEnabled = true;
+            break;
+        case UpgradeId.PainTolerance:
+            ai.EnergyFromDamageTaken += 0.4;
+            apply_pain_tolerance(game, entity);
+            break;
+        case UpgradeId.ShockwaveBurst:
+            ai.ShockwaveBurstEnabled = true;
+            break;
+
+        // === Behavioral Properties ===
         case UpgradeId.LightningReflexes:
             move.MoveSpeed *= 1.5;
             ai.BaseMoveSpeed *= 1.5;
             ai.DashSpeedMultiplier = (ai.DashSpeedMultiplier || 1.0) * 1.5;
             break;
-
         case UpgradeId.QuickDraw:
             ai.AttackSpeedMultiplier = (ai.AttackSpeedMultiplier || 1.0) * 1.4;
             break;
-
         case UpgradeId.Brawler:
             ai.Aggressiveness += 0.3;
             ai.DashRangeMultiplier = (ai.DashRangeMultiplier || 1.0) * 0.8;
             ai.DamageBonus = (ai.DamageBonus || 0) + 1;
             break;
-
         case UpgradeId.Vitality:
             health.Max += 2;
             health.Current += 2;
             break;
-
         case UpgradeId.BerserkerMode:
             ai.BerserkerMode = {
                 LowHealthThreshold: 0.25,
@@ -173,14 +137,12 @@ function apply_trait_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
                 AttackBonus: 1.5,
             };
             break;
-
         case UpgradeId.Pacifist:
             ai.Aggressiveness *= 0.3;
             health.Max += 3;
             health.Current += 3;
             apply_damage_reduction(game, entity, 0.5);
             break;
-
         case UpgradeId.Cautious:
             ai.Aggressiveness *= 0.7;
             health.Max += 1;
@@ -188,8 +150,78 @@ function apply_trait_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
             ai.RetreatHealthThreshold = 2;
             break;
 
+        // === Combat Properties (Armor) ===
+        case UpgradeId.ScrapArmor:
+            apply_scrap_armor(game, entity);
+            break;
+        case UpgradeId.SpikedVest:
+            apply_spiked_vest(game, entity, 1);
+            break;
+        case UpgradeId.VitalityBoost:
+            apply_vitality_boost(game, entity);
+            break;
+        case UpgradeId.DamageReduction:
+            apply_damage_reduction(game, entity, 0.25);
+            break;
+        case UpgradeId.RegenerativeMesh:
+            apply_regenerative_mesh(game, entity, 0.3);
+            break;
+        case UpgradeId.MirrorArmor:
+            apply_mirror_armor(game, entity);
+            break;
+        case UpgradeId.ProximityBarrier:
+            apply_proximity_barrier(game, entity, 0.4);
+            break;
+        case UpgradeId.LastStand:
+            apply_last_stand(game, entity);
+            break;
+        case UpgradeId.ThickHide:
+            apply_thick_hide(game, entity);
+            break;
+        case UpgradeId.ToughSkin:
+            apply_tough_skin(game, entity);
+            break;
+        case UpgradeId.Evasion:
+            apply_evasion(game, entity, 0.25);
+            break;
+
+        // === Combat Properties (Abilities) ===
+        case UpgradeId.Vampiric:
+            ai.VampiricHealing = true;
+            break;
+        case UpgradeId.PiercingShots:
+            ai.PiercingShots = true;
+            break;
+        case UpgradeId.PhaseWalk:
+            ai.PhaseWalkEnabled = true;
+            break;
+        case UpgradeId.DashMaster:
+            ai.DashMasterEnabled = true;
+            break;
+
         default:
-            console.warn(`Unknown trait upgrade: ${upgrade.id}`);
+            console.warn(`Unknown enhancement upgrade: ${upgrade.id}`);
+            break;
+    }
+}
+
+function apply_special_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
+    switch (upgrade.id) {
+        case UpgradeId.ShadowTrail:
+            // Spawn system attachment - unique mechanic
+            // TODO Consider attaching a child spawner entity instead of direct component
+            spawn_timed(
+                () => blueprint_shadow_particle(),
+                1.0 / 8.0, // interval
+                0, // spread: No spread for trails
+                0, // speedMin
+                0, // speedMax
+                Infinity, // initialDuration: always active
+            )(game, entity);
+            break;
+
+        default:
+            console.warn(`Unknown special upgrade: ${upgrade.id}`);
             break;
     }
 }
@@ -259,99 +291,8 @@ function apply_weapon_upgrade(game: Game, entity: number, upgrade: UpgradeType) 
     }
 }
 
-function apply_armor_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
-    switch (upgrade.id) {
-        case UpgradeId.ScrapArmor:
-            apply_scrap_armor(game, entity);
-            break;
-
-        case UpgradeId.SpikedVest:
-            apply_spiked_vest(game, entity, 1);
-            break;
-
-        case UpgradeId.VitalityBoost:
-            apply_vitality_boost(game, entity);
-            break;
-
-        case UpgradeId.DamageReduction:
-            apply_damage_reduction(game, entity, 0.25);
-            break;
-
-        case UpgradeId.RegenerativeMesh:
-            apply_regenerative_mesh(game, entity, 0.3);
-            break;
-
-        case UpgradeId.MirrorArmor:
-            apply_mirror_armor(game, entity);
-            break;
-
-        case UpgradeId.ProximityBarrier:
-            apply_proximity_barrier(game, entity, 0.4);
-            break;
-
-        case UpgradeId.LastStand:
-            apply_last_stand(game, entity);
-            break;
-
-        case UpgradeId.ThickHide:
-            apply_thick_hide(game, entity);
-            break;
-
-        case UpgradeId.ToughSkin:
-            apply_tough_skin(game, entity);
-            break;
-
-        case UpgradeId.Evasion:
-            apply_evasion(game, entity, 0.25);
-            break;
-
-        default:
-            console.warn(`Unknown armor upgrade: ${upgrade.id}`);
-            break;
-    }
-}
-
-function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
-    let ai = game.World.ControlAi[entity];
-    DEBUG: if (!ai) throw new Error("missing ControlAi component for ability upgrade");
-
-    switch (upgrade.id) {
-        case UpgradeId.Vampiric:
-            // Enable vampiric healing - heal based on damage dealt
-            ai.VampiricHealing = true;
-            break;
-
-        case UpgradeId.ShadowTrail:
-            spawn_timed(
-                () => blueprint_shadow_particle(),
-                1.0 / 8.0, // interval
-                0, // spread: No spread for trails
-                0, // speedMin
-                0, // speedMax
-                Infinity, // initialDuration: always active
-            )(game, entity);
-            break;
-
-        case UpgradeId.PiercingShots:
-            // Enable piercing shots - projectiles continue through enemies
-            ai.PiercingShots = true;
-            break;
-
-        case UpgradeId.PhaseWalk:
-            // Enable phase walk - invincibility during dashing
-            ai.PhaseWalkEnabled = true;
-            break;
-
-        case UpgradeId.DashMaster:
-            // Enable dash master - +100% dash range
-            ai.DashMasterEnabled = true;
-            break;
-
-        default:
-            console.warn(`Unknown ability upgrade: ${upgrade.id}`);
-            break;
-    }
-}
+// Removed: apply_armor_upgrade and apply_ability_upgrade
+// All enhancement logic now consolidated in apply_enhancement_upgrade()
 
 function apply_companion_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
     // Get the owner's team (IsPlayer status)

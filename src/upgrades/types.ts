@@ -6,7 +6,7 @@ export const enum UpgradeRarity {
 
 // Numeric upgrade IDs for optimal compression
 export const enum UpgradeId {
-    // Weapons
+    // === Weapons (Child entities with blueprints) ===
     Flamethrower,
     Shotgun,
     Minigun,
@@ -19,7 +19,18 @@ export const enum UpgradeId {
     HooverCrack,
     ChiquitaBomb,
 
-    // Armor
+    // === Companions (Root entities with blueprints) ===
+    MrBlack,
+    MrOrange,
+    MrPink,
+    MrWhite,
+    MrBrown,
+    MrBlue,
+    MrGray,
+    MrRed,
+
+    // === Enhancements (ControlAi property modifications) ===
+    // Combat properties
     ScrapArmor,
     SpikedVest,
     VitalityBoost,
@@ -31,25 +42,12 @@ export const enum UpgradeId {
     ThickHide,
     ToughSkin,
     Evasion,
-
-    // Abilities
     Vampiric,
-    ShadowTrail,
     PiercingShots,
     PhaseWalk,
     DashMaster,
 
-    // Companions
-    MrBlack,
-    MrOrange,
-    MrPink,
-    MrWhite,
-    MrBrown,
-    MrBlue,
-    MrGray,
-    MrRed,
-
-    // Energy
+    // Energy properties
     CombatVeteran,
     BattleFury,
     AdrenalineSurge,
@@ -62,7 +60,7 @@ export const enum UpgradeId {
     PainTolerance,
     ShockwaveBurst,
 
-    // Traits
+    // Behavioral properties
     LightningReflexes,
     QuickDraw,
     Brawler,
@@ -70,6 +68,9 @@ export const enum UpgradeId {
     BerserkerMode,
     Pacifist,
     Cautious,
+
+    // === Special (Unique mechanics) ===
+    ShadowTrail, // Spawn system attachment - unique mechanic
 
     // Last entry to determine length
     Length,
@@ -85,13 +86,10 @@ export interface UpgradeType {
 }
 
 export enum UpgradeCategory {
-    Weapon = "Weapon",
-    Armor = "Armor",
-    Ability = "Ability",
-    Companion = "Companion",
-    Energy = "Energy",
-    Trait = "Trait",
-    Special = "Special",
+    Weapon = "Weapon", // Child entities with blueprints
+    Companion = "Companion", // Root entities with blueprints
+    Enhancement = "Enhancement", // ControlAi property modifications (combat, energy, behavioral)
+    Special = "Special", // Unique mechanics that don't fit patterns
 }
 
 export interface GameState {

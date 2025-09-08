@@ -8,7 +8,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 ## Upgrade Categories
 
-### 1. Weapons - Ranged Focus with Particle Effects 🔫
+### 1. Weapons - Child Entities with Blueprints 🔫
 
 **Strategy**: Ranged weapons using particle spawn system for spectacular visual effects. Inspired by Liero classics.
 
@@ -32,45 +32,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - Complex behaviors: timeout explosions, bouncing, area effects, trails
 - Visual impact: Every weapon creates spectacular particle displays
 
-### 2. Armor - Defensive Enhancement 🛡️
-
-**Strategy**: Defensive upgrades that enhance survivability through Health component modifications and damage mitigation.
-
-- **Scrap Armor** ✅ _(Common)_ - Ignores the first damage instance you take in combat
-- **Spiked Vest** ✅ _(Common)_ - Reflects +1 damage back to attackers (stacks with other reflection)
-- **Vitality Boost** ✅ _(Uncommon)_ - Increases maximum health by +50% of current max (stacks additively)
-- **Reinforced Plating** ✅ _(Uncommon)_ - Reduces all damage taken by 25%
-- **Regenerative Mesh** ✅ _(Uncommon)_ - Slowly heal during combat (0.3hp/s)
-- **Mirror Armor** ✅ _(Rare)_ - 100% reflect damage but you take 50% of reflected amount
-- **Proximity Barrier** ✅ _(Uncommon)_ - Reduce damage from enemies within melee range by 40%
-- **Last Stand** ✅ _(Rare)_ - Take 75% less damage when at 1 HP
-- **Thick Hide** ✅ _(Uncommon)_ - Gain +1 HP and reduce damage from attacks by 1 (minimum 1)
-- **Tough Skin** ✅ _(Common)_ - Reduce all damage by 1 (minimum 1 damage)
-
-**Implementation**:
-
-- Enhanced `Health` component with armor properties for defensive upgrades
-- Damage accumulation pattern (systems write to `PendingDamage[]`)
-- Armor effects stack multiplicatively with ability bonuses
-
-### 3. Ability - Combat & Movement Enhancement ⚡
-
-**Strategy**: Active and passive abilities that modify combat behavior and provide tactical advantages.
-
-- **Vampiric** ✅ _(Uncommon)_ - Heal 1 HP for every 2 damage you deal to enemies
-- **Shadow Trail** ✅ _(Uncommon)_ - Movement leaves damaging shadow particles behind you
-- **Piercing Shots** ✅ _(Uncommon)_ - Projectiles go through first enemy and continue
-- **Phase Walk** ✅ _(Rare)_ - Invincibility for the entire duration of dash attacks
-- **Dash Master** ✅ _(Common)_ - +100% dash range
-
-**Implementation**:
-
-- Ability component system for active/passive ability tracking
-- System hooks for ability effects in combat and movement systems
-- Event-driven ability triggers through action dispatch
-- Visual effects via particle spawn system
-
-### 4. Companions - Cat Allies 🐱
+### 2. Companions - Root Entities with Blueprints 🐱
 
 **Strategy**: Cat companions that fight alongside the owner using pure component combinations - each cat's unique behavior emerges from creative stat and component combinations without special-case logic.
 
@@ -92,10 +54,30 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Emergent complexity** - Simple stat variations create diverse, complex behaviors
 - **Multiple companions** allowed for strategic synergies and cat army builds
 
-### 5. Energy - Combat Enhancement ⚡
+### 3. Enhancement - Component Property Modifications ⚡
 
-**Strategy**: Combat-driven energy system that generates power from dealing and taking damage, with fighter size visually representing energy level. Energy replaces manual input with automatic combat rewards and creates dynamic risk/reward scaling through visual size changes.
+**Strategy**: Direct component property modifications that enhance survivability, combat performance, and AI behavior through ControlAi and Health component changes.
 
+#### Armor Properties (Health component modifications)
+- **Scrap Armor** ✅ _(Common)_ - Ignores the first damage instance you take in combat
+- **Spiked Vest** ✅ _(Common)_ - Reflects +1 damage back to attackers (stacks with other reflection)
+- **Vitality Boost** ✅ _(Uncommon)_ - Increases maximum health by +50% of current max (stacks additively)
+- **Damage Reduction** ✅ _(Uncommon)_ - Reduces all damage taken by 25%
+- **Regenerative Mesh** ✅ _(Uncommon)_ - Slowly heal during combat (0.3hp/s)
+- **Mirror Armor** ✅ _(Rare)_ - 100% reflect damage but you take 50% of reflected amount
+- **Proximity Barrier** ✅ _(Uncommon)_ - Reduce damage from enemies within melee range by 40%
+- **Last Stand** ✅ _(Rare)_ - Take 75% less damage when at 1 HP
+- **Thick Hide** ✅ _(Uncommon)_ - Gain +1 HP and reduce damage from attacks by 1 (minimum 1)
+- **Tough Skin** ✅ _(Common)_ - Reduce all damage by 1 (minimum 1 damage)
+- **Evasion** ✅ _(Uncommon)_ - 25% chance to dodge incoming attacks
+
+#### Combat Abilities (ControlAi flags)
+- **Vampiric** ✅ _(Uncommon)_ - Heal 1 HP for every 2 damage you deal to enemies
+- **Piercing Shots** ✅ _(Uncommon)_ - Projectiles go through first enemy and continue
+- **Phase Walk** ✅ _(Rare)_ - Invincibility for the entire duration of dash attacks
+- **Dash Master** ✅ _(Common)_ - +100% dash range
+
+#### Energy Properties (ControlAi energy system)
 - **Combat Veteran** ✅ _(Common)_ - Gain +0.3 energy per damage dealt to enemies
 - **Battle Fury** ✅ _(Uncommon)_ - Enhanced combat energy generation (+0.5 energy per damage dealt, stacks)
 - **Adrenaline Surge** ✅ _(Common)_ - Gain +0.2 energy per damage taken (pain fuels power)
@@ -108,23 +90,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Pain Tolerance** ✅ _(Uncommon)_ - Gain +0.4 energy per damage taken and reduce damage by 1 (minimum 1)
 - **Shockwave Burst** ✅ _(Rare)_ - Automatically spawn damaging particles in all directions when energy reaches maximum
 
-**Implementation**:
-
-- `sys_energy` system handles combat-driven energy generation from damage events
-- **Visual Energy System**: Fighter size scales dynamically with energy level (1.0x → Nx at N = max energy)
-- Energy affects combat performance, auto-healing, power scaling, and visual presence
-- Damage-dealt energy generation triggers on successful weapon hits
-- Damage-taken energy generation triggers when receiving damage
-- Additive stacking for energy generation rates and healing bonuses
-- Energy thresholds enable conditional effects (healing, damage bonuses)
-- **Risk/Reward Scaling**: Higher energy = larger hitbox but greater combat power
-- Real-time visual feedback allows instant assessment of fighter threat levels
-- Trade-off upgrades provide strategic energy management choices
-
-### 6. Traits - Combat & Behavioral Enhancement 🔥
-
-**Strategy**: Direct combat stat modifications and behavioral changes that dramatically alter playstyle and AI behavior.
-
+#### Behavioral Properties (ControlAi traits)
 - **Lightning Reflexes** ✅ _(Uncommon)_ - +50% movement speed and dash speed
 - **Quick Draw** ✅ _(Common)_ - +40% attack speed (faster weapon cooldowns)
 - **Brawler** ✅ _(Common)_ - Higher aggressiveness, shorter dash range but +1 damage to all attacks
@@ -135,40 +101,53 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 **Implementation**:
 
-- Direct modifications to movement speed, attack rates, health, and damage in entity blueprints
-- Personality traits modify AI aggressiveness and behavior patterns in `com_control_ai`
-- Health traits integrate with existing `Health` component
-- Combat traits modify weapon damage and cooldowns
+- Enhanced `Health` component with armor properties for defensive upgrades
+- Direct ControlAi property modifications for combat abilities, energy system, and behavioral traits
+- Damage accumulation pattern (systems write to `PendingDamage[]`)
+- Consolidated upgrade state in single ControlAi component (no separate Abilities component)
+- Visual Energy System: Fighter size scales dynamically with energy level
+- All enhancement effects stack multiplicatively for interesting synergies
+
+### 4. Special - Unique Mechanics 🌟
+
+**Strategy**: Unique upgrade mechanics that don't fit standard patterns and require custom system integration.
+
+- **Shadow Trail** ✅ _(Uncommon)_ - Movement leaves damaging shadow particles behind you using spawn system attachment
+
+**Implementation**:
+
+- Spawn system attachment for unique mechanics
+- Custom particle systems and visual effects
+- Special-case logic that doesn't follow standard component patterns
 
 ## Upgrade Distribution Summary
 
 **Current Implemented Upgrades: 51** / **Complete System ✅**
 
-- **Weapons**: 11 upgrades ✅ (complete ranged arsenal)
-- **Armor**: 11 upgrades ✅ (complete defensive enhancement)
-- **Ability**: 5 upgrades ✅ (combat & movement enhancement)
-- **Companions**: 8 upgrades ✅ (complete cat roster)
-- **Energy**: 11 upgrades ✅ (complete combat-driven system)
-- **Traits**: 7 upgrades ✅ (combat & behavioral enhancement)
+- **Weapons**: 11 upgrades ✅ (child entities with blueprints)
+- **Companions**: 8 upgrades ✅ (root entities with blueprints)
+- **Enhancement**: 33 upgrades ✅ (component property modifications)
+  - Armor Properties: 11 upgrades ✅
+  - Combat Abilities: 4 upgrades ✅
+  - Energy Properties: 11 upgrades ✅
+  - Behavioral Properties: 7 upgrades ✅
+- **Special**: 1 upgrade ✅ (unique mechanics)
 
 **Rarity Distribution** (All 51 Complete):
 
 - **Common**: 21 upgrades (42%)
-- **Uncommon**: 24 upgrades (48%)
-- **Rare**: 5 upgrades (10%)
+- **Uncommon**: 24 upgrades (48%) 
+- **Rare**: 6 upgrades (12%)
 
 **Current Implementation Strategy**:
 
 ```typescript
-// Current upgrade categories (src/upgrades/types.ts)
-export const enum UpgradeCategory {
-    Weapon = "weapon", // 11 upgrades ✅
-    Armor = "armor", // 11 upgrades ✅
-    Ability = "ability", // 5 upgrades ✅
-    Companion = "companion", // 8 upgrades ✅
-    Energy = "energy", // 8 upgrades ✅ / 12 planned
-    Trait = "trait", // 7 upgrades ✅
-    Special = "special", // 0 upgrades (reserved)
+// Simplified upgrade categories (src/upgrades/types.ts)
+export enum UpgradeCategory {
+    Weapon = "Weapon",        // Child entities with blueprints (11 upgrades ✅)
+    Companion = "Companion",  // Root entities with blueprints (8 upgrades ✅)
+    Enhancement = "Enhancement", // ControlAi property modifications (33 upgrades ✅)
+    Special = "Special",      // Unique mechanics that don't fit patterns (1 upgrade ✅)
 }
 ```
 
