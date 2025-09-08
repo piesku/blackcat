@@ -1,6 +1,6 @@
 import {aim} from "../../components/com_aim.js";
 import {Game} from "../../game.js";
-import {blueprint_cat_base, cat_colors} from "./blu_cat_base.js";
+import {blueprint_cat_base} from "./blu_cat_base.js";
 
 // Mr. Brown - Loyal Bodyguard: Ultra-low aggression, protects allies
 export function blueprint_mr_brown(game: Game, owner_is_player: boolean) {
@@ -8,7 +8,7 @@ export function blueprint_mr_brown(game: Game, owner_is_player: boolean) {
         ...blueprint_cat_base(
             game,
             owner_is_player,
-            cat_colors.brown, // color
+            [0.6, 0.4, 0.2, 1], // color
             4, // hp (increased from 3)
             1.5, // move_speed (decreased from 1.8)
             0.1, // aggressiveness (decreased from 0.3)

@@ -1,7 +1,7 @@
 import {element} from "../../../lib/random.js";
 import {spawn_timed} from "../../components/com_spawn.js";
 import {Game} from "../../game.js";
-import {blueprint_cat_base, cat_colors} from "./blu_cat_base.js";
+import {blueprint_cat_base} from "./blu_cat_base.js";
 import {blueprint_mr_orange} from "./blu_mr_orange.js";
 import {blueprint_mr_pink} from "./blu_mr_pink.js";
 import {blueprint_mr_white} from "./blu_mr_white.js";
@@ -31,7 +31,7 @@ export function blueprint_mr_black(game: Game, owner_is_player: boolean) {
         ...blueprint_cat_base(
             game,
             owner_is_player,
-            cat_colors.black, // color
+            [0.1, 0.1, 0.1, 1], // color
             6, // hp
             2.8, // move_speed
             1.8, // aggressiveness

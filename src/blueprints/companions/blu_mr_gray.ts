@@ -1,7 +1,7 @@
 import {spawn_timed} from "../../components/com_spawn.js";
 import {Game} from "../../game.js";
 import {blueprint_shadow_particle} from "../particles/blu_shadow_particle.js";
-import {blueprint_cat_base, cat_colors} from "./blu_cat_base.js";
+import {blueprint_cat_base} from "./blu_cat_base.js";
 
 // Mr. Gray - Shadow Assassin: High speed + damaging shadow trail
 export function blueprint_mr_gray(game: Game, owner_is_player: boolean) {
@@ -9,7 +9,7 @@ export function blueprint_mr_gray(game: Game, owner_is_player: boolean) {
         ...blueprint_cat_base(
             game,
             owner_is_player,
-            cat_colors.gray, // color
+            [0.5, 0.5, 0.5, 1], // color
             2, // hp (decreased from 3)
             3.2, // move_speed (increased from 2.5)
             1.8, // aggressiveness (increased from 1.5)

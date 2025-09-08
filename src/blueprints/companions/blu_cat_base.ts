@@ -60,18 +60,6 @@ export function cat_control_ai(
     };
 }
 
-// Cat colors for different companions
-export const cat_colors = {
-    black: [0.1, 0.1, 0.1, 1] as Vec4,
-    orange: [1.0, 0.5, 0.1, 1] as Vec4,
-    pink: [1.0, 0.7, 0.8, 1] as Vec4,
-    white: [0.9, 0.9, 0.9, 1] as Vec4,
-    brown: [0.6, 0.4, 0.2, 1] as Vec4,
-    blue: [0.3, 0.3, 0.8, 1] as Vec4,
-    gray: [0.5, 0.5, 0.5, 1] as Vec4,
-    red: [0.8, 0.2, 0.2, 1] as Vec4,
-};
-
 // Cat eyes (bright green for all cats)
 export function blueprint_cat_eyes(_game: Game) {
     return [
