@@ -19,7 +19,6 @@ import {blueprint_mortar} from "../blueprints/weapons/blu_mortar.js";
 import {blueprint_shotgun} from "../blueprints/weapons/blu_shotgun.js";
 import {blueprint_sniper_rifle} from "../blueprints/weapons/blu_sniper_rifle.js";
 import {blueprint_spikeballs} from "../blueprints/weapons/blu_spikeballs.js";
-import {abilities, AbilityType} from "../components/com_abilities.js";
 import {attach_to_parent} from "../components/com_children.js";
 import {spawn_timed} from "../components/com_spawn.js";
 import {Game} from "../game.js";
@@ -88,8 +87,8 @@ function apply_energy_upgrade(game: Game, entity: number, upgrade: UpgradeType) 
             break;
 
         case UpgradeId.BerserkersFocus:
-            // Add berserker's focus ability for health-based energy generation bonus
-            abilities([AbilityType.BerserkersFocus])(game, entity);
+            // Double energy generation when health < 50%
+            ai.BerserkersFocusEnabled = true;
             break;
 
         // Energy decay modifiers
@@ -114,14 +113,13 @@ function apply_energy_upgrade(game: Game, entity: number, upgrade: UpgradeType) 
         case UpgradeId.WeaponMastery:
             // Enhanced energy generation + conditional damage bonus
             ai.EnergyFromDamageDealt += 0.8;
-            abilities([AbilityType.WeaponMastery])(game, entity);
+            ai.WeaponMasteryEnabled = true;
             break;
 
         case UpgradeId.PainTolerance:
             // Enhanced energy generation from taking damage + damage reduction
             ai.EnergyFromDamageTaken += 0.4;
             apply_pain_tolerance(game, entity);
-            abilities([AbilityType.PainTolerance])(game, entity);
             break;
 
         // Special abilities
@@ -314,10 +312,13 @@ function apply_armor_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
 }
 
 function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
+    let ai = game.World.ControlAi[entity];
+    DEBUG: if (!ai) throw new Error("missing ControlAi component for ability upgrade");
+
     switch (upgrade.id) {
         case UpgradeId.Vampiric:
-            // Add vampiric ability directly
-            abilities([AbilityType.Vampiric])(game, entity);
+            // Enable vampiric healing - heal based on damage dealt
+            ai.VampiricHealing = true;
             break;
 
         case UpgradeId.ShadowTrail:
@@ -332,18 +333,18 @@ function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType)
             break;
 
         case UpgradeId.PiercingShots:
-            // Add piercing shots ability - this will be checked when spawning projectiles
-            abilities([AbilityType.PiercingShots])(game, entity);
+            // Enable piercing shots - projectiles continue through enemies
+            ai.PiercingShots = true;
             break;
 
         case UpgradeId.PhaseWalk:
-            // Add phase walk ability - invincibility during dashing
-            abilities([AbilityType.PhaseWalk])(game, entity);
+            // Enable phase walk - invincibility during dashing
+            ai.PhaseWalkEnabled = true;
             break;
 
         case UpgradeId.DashMaster:
-            // Add dash master ability - enhanced dash range
-            abilities([AbilityType.DashMaster])(game, entity);
+            // Enable dash master - +100% dash range
+            ai.DashMasterEnabled = true;
             break;
 
         default:

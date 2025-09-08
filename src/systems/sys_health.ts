@@ -1,6 +1,5 @@
 import {rand} from "../../lib/random.js";
 import {vec2_distance_squared} from "../../lib/vec2.js";
-import {AbilityType, has_ability} from "../components/com_abilities.js";
 import {query_down} from "../components/com_children.js";
 import {AiState} from "../components/com_control_ai.js";
 import {DrawKind} from "../components/com_draw.js";
@@ -21,11 +20,11 @@ export function sys_health(game: Game, _delta: number) {
             }
 
             // Check for Phase Walk invincibility during dashing
-            if (has_ability(game, entity, AbilityType.PhaseWalk)) {
+            if (game.World.Signature[entity] & Has.ControlAi) {
                 let ai = game.World.ControlAi[entity];
                 DEBUG: if (!ai) throw new Error("missing component");
 
-                if (ai.State === AiState.Dashing) {
+                if (ai.PhaseWalkEnabled && ai.State === AiState.Dashing) {
                     console.log(
                         `[PHASE_WALK] Entity ${entity} is invincible while dashing - ignoring all damage`,
                     );
@@ -94,7 +93,7 @@ export function sys_health(game: Game, _delta: number) {
                         let energy_gain = total_damage * ai.EnergyFromDamageTaken;
 
                         // Apply Berserker's Focus: double energy generation when below 50% health
-                        if (has_ability(game, entity, AbilityType.BerserkersFocus)) {
+                        if (ai.BerserkersFocusEnabled) {
                             let health_percentage = health.Current / health.Max;
                             if (health_percentage < 0.5) {
                                 energy_gain *= 2.0; // Double energy generation when below 50% health

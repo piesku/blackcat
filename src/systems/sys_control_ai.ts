@@ -1,7 +1,6 @@
 import {Vec2} from "../../lib/math.js";
 import {float} from "../../lib/random.js";
 import {vec2_add, vec2_length, vec2_normalize, vec2_scale, vec2_subtract} from "../../lib/vec2.js";
-import {AbilityType, has_ability} from "../components/com_abilities.js";
 import {AiState, ControlAi} from "../components/com_control_ai.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
@@ -44,8 +43,8 @@ export function sys_control_ai(game: Game, delta: number) {
 
             // Check for Dash Master ability (+100% dash range)
             let dash_range = BASE_DASH_TRIGGER_DISTANCE;
-            if (has_ability(game, entity, AbilityType.DashMaster)) {
-                dash_range *= 2.0;
+            if (ai.DashMasterEnabled) {
+                dash_range *= 2.0; // +100% dash range
             }
             // Apply trait-based dash range multiplier (Brawler reduces range)
             if (ai.DashRangeMultiplier) {

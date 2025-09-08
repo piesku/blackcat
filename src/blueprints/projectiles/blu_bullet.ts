@@ -1,17 +1,16 @@
 import {Tile} from "../../../sprites/spritesheet.js";
-import {AbilityType, has_ability} from "../../components/com_abilities.js";
+// Removed: abilities component - all ability flags now stored in ControlAi
 import {collide2d} from "../../components/com_collide2d.js";
 import {DamageType, deal_damage} from "../../components/com_deal_damage.js";
-import {get_root_spawner} from "../../components/com_label.js";
-import {label} from "../../components/com_label.js";
+import {get_root_spawner, label} from "../../components/com_label.js";
 import {lifespan} from "../../components/com_lifespan.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
 import {render2d} from "../../components/com_render2d.js";
 import {rigid_body2d, RigidKind} from "../../components/com_rigid_body2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {spawn_timed} from "../../components/com_spawn.js";
-import {Game} from "../../game.js";
-import {Layer} from "../../game.js";
+import {Game, Layer} from "../../game.js";
+import {Has} from "../../world.js";
 import {blueprint_bullet_trail} from "../particles/blu_bullet_trail.js";
 
 /**
@@ -23,8 +22,12 @@ export function blueprint_bullet(damage: number) {
         // Find the fighter entity who owns this weapon/spawner
         let fighter_entity = get_root_spawner(game.World, spawner_entity);
 
-        // Check if fighter has piercing shots ability
-        let has_piercing = has_ability(game, fighter_entity, AbilityType.PiercingShots);
+        // Check for piercing shots upgrade via ControlAi flag
+        let has_piercing = false;
+        if (game.World.Signature[fighter_entity] & Has.ControlAi) {
+            let ai = game.World.ControlAi[fighter_entity];
+            has_piercing = ai.PiercingShots === true;
+        }
 
         return [
             label("bullet"),
