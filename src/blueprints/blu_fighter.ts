@@ -37,9 +37,9 @@ export function blueprint_body(game: Game, skin_color: Vec4) {
 }
 
 export function blueprint_fighter(game: Game, is_player: boolean) {
-    // Calculate health based on arena level: base 10 + 10 per duel completed
-    let baseHealth = 10;
-    let arenaLevelBonus = (game.State.currentLevel - 1) * 10; // Level 1 = base health, Level 2 = +10, etc.
+    // Calculate health based on arena level: base 2 + 2 per duel completed
+    let baseHealth = 2;
+    let arenaLevelBonus = (game.State.currentLevel - 1) * 2; // Level 1 = base health, Level 2 = +2, etc.
     let totalHealth = baseHealth + arenaLevelBonus;
 
     let base_speed = 4;
