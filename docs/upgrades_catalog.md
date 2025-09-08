@@ -1,4 +1,4 @@
-# Upgrade System Design
+# Upgrade Catalog
 
 This document outlines the implementation architecture for the upgrade system in 33 Duels, as specified in design.md.
 
