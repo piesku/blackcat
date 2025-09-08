@@ -4,58 +4,61 @@ import {Has} from "../world.js";
 import {getAIStateName} from "./ai_state.js";
 
 export interface FighterStats {
-    playerHP: string;
-    opponentHP: string;
-    playerAIState: string;
-    opponentAIState: string;
+    PlayerHP: {current: number; max: number} | null;
+    OpponentHP: {current: number; max: number} | null;
+    PlayerAIState: string;
+    OpponentAIState: string;
 }
 
 export interface WeaponCooldownInfo {
-    name: string;
-    cooldownRemaining: number;
-    totalCooldown: number;
-    isReady: boolean;
+    Name: string;
+    CooldownRemaining: number;
+    TotalCooldown: number;
+    IsReady: boolean;
 }
 
 export function getFighterStats(game: Game): FighterStats {
-    let playerHP = "?";
-    let opponentHP = "?";
-    let playerAIState = "Unknown";
-    let opponentAIState = "Unknown";
+    let PlayerHP = null;
+    let OpponentHP = null;
+    let PlayerAIState = "Unknown";
+    let OpponentAIState = "Unknown";
 
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
-        if (game.World.Signature[entity] & Has.ControlAi) {
+        if (
+            (game.World.Signature[entity] & (Has.ControlAi | Has.Label)) ===
+            (Has.ControlAi | Has.Label)
+        ) {
             let ai = game.World.ControlAi[entity];
-            if (!ai) continue;
+            let label = game.World.Label[entity];
+            if (!ai || !label.Name) continue;
 
             // Get health info
-            let healthInfo = "?/?";
+            let healthInfo = null;
             if (game.World.Signature[entity] & Has.Health) {
                 let health = game.World.Health[entity];
                 if (health) {
-                    healthInfo = `${Math.ceil(health.Current)}/${health.Max}`;
+                    healthInfo = {current: Math.ceil(health.Current), max: health.Max};
                 }
             }
 
             // Get AI state info
             let aiStateInfo = getAIStateName(ai.State);
 
-            // Use AI IsPlayer field to distinguish
-            if (ai.IsPlayer) {
-                playerHP = healthInfo;
-                playerAIState = aiStateInfo;
-            } else {
-                opponentHP = healthInfo;
-                opponentAIState = aiStateInfo;
+            if (label.Name === "Player") {
+                PlayerHP = healthInfo;
+                PlayerAIState = aiStateInfo;
+            } else if (label.Name === "Opponent") {
+                OpponentHP = healthInfo;
+                OpponentAIState = aiStateInfo;
             }
         }
     }
 
     return {
-        playerHP,
-        opponentHP,
-        playerAIState,
-        opponentAIState,
+        PlayerHP,
+        OpponentHP,
+        PlayerAIState,
+        OpponentAIState,
     };
 }
 
@@ -83,10 +86,10 @@ export function getPlayerWeaponCooldowns(game: Game): WeaponCooldownInfo[] {
                 }
 
                 weaponCooldowns.push({
-                    name: weaponName,
-                    cooldownRemaining: Math.max(0, weapon.TimeToNext),
-                    totalCooldown: weapon.Cooldown,
-                    isReady: weapon.TimeToNext <= 0,
+                    Name: weaponName,
+                    CooldownRemaining: Math.max(0, weapon.TimeToNext),
+                    TotalCooldown: weapon.Cooldown,
+                    IsReady: weapon.TimeToNext <= 0,
                 });
             }
 

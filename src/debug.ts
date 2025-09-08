@@ -6,7 +6,7 @@
  */
 
 import {is_entity_alive} from "../lib/world.js";
-import {DrawKind} from "./components/com_draw.js";
+
 import {SpawnMode} from "./components/com_spawn.js";
 import {Game} from "./game.js";
 import {Has} from "./world.js";
@@ -176,7 +176,6 @@ export class SceneGraphInspector {
             [Has.Children]: "Children",
             [Has.DealDamage]: "DealDamage",
             [Has.Dirty]: "Dirty",
-            [Has.Draw]: "Draw",
             [Has.Health]: "Health",
             [Has.Lifespan]: "Lifespan",
             [Has.LocalTransform2D]: "LocalTransform2D",
@@ -339,25 +338,6 @@ export class SceneGraphInspector {
                 <strong>Dirty</strong><br>
                 <em>Marker component (no data)</em>
             </div>`;
-        }
-
-        if (world.Signature[entityId] & Has.Draw) {
-            const d = world.Draw[entityId];
-            html += `<div class="component">
-                <strong>Draw</strong><br>
-                Kind: ${d.Kind}<br>`;
-
-            if (d.Kind === DrawKind.Text) {
-                html += `Text: "${d.Text}"<br>Font: ${d.Font}<br>Fill: ${d.FillStyle}`;
-            } else if (d.Kind === DrawKind.Rect) {
-                html += `Color: ${d.Color}<br>Size: ${d.Width} × ${d.Height}`;
-            } else if (d.Kind === DrawKind.Arc) {
-                html += `Color: ${d.Color}<br>Radius: ${d.Radius.toFixed(2)}<br>Angles: ${d.StartAngle.toFixed(2)} - ${d.EndAngle.toFixed(2)}`;
-            } else if (d.Kind === DrawKind.Selection) {
-                html += `Color: ${d.Color}<br>Size: ${d.Size.toFixed(2)}`;
-            }
-
-            html += `</div>`;
         }
 
         if (world.Signature[entityId] & Has.Health) {

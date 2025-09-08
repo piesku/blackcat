@@ -1,3 +1,4 @@
+import {Vec4} from "../lib/math.js";
 import {WorldImpl} from "../lib/world.js";
 import {FLOATS_PER_INSTANCE} from "../materials/layout2d.js";
 import {Aim} from "./components/com_aim.js";
@@ -8,7 +9,7 @@ import {Collide2D} from "./components/com_collide2d.js";
 import {ControlAi} from "./components/com_control_ai.js";
 import {ControlAlways2D} from "./components/com_control_always2d.js";
 import {DealDamage} from "./components/com_deal_damage.js";
-import {Draw} from "./components/com_draw.js";
+
 import {Health} from "./components/com_health.js";
 import {Label} from "./components/com_label.js";
 import {Lifespan} from "./components/com_lifespan.js";
@@ -33,7 +34,6 @@ const enum Component {
     Children,
     DealDamage,
     Dirty,
-    Draw,
     Health,
     Label,
     Lifespan,
@@ -60,7 +60,6 @@ export const enum Has {
     Children = 1 << Component.Children,
     DealDamage = 1 << Component.DealDamage,
     Dirty = 1 << Component.Dirty,
-    Draw = 1 << Component.Draw,
     Health = 1 << Component.Health,
     Label = 1 << Component.Label,
     Lifespan = 1 << Component.Lifespan,
@@ -78,7 +77,7 @@ export const enum Has {
 
 export class World extends WorldImpl {
     InstanceData = new Float32Array(this.Capacity * FLOATS_PER_INSTANCE);
-    BackgroundColor = "#eee";
+    ClearColor: Vec4 = [1, 1, 1, 1];
     Width = 24;
     Height = 16;
 
@@ -90,7 +89,6 @@ export class World extends WorldImpl {
     ControlAlways2D: Array<ControlAlways2D> = [];
     Children: Array<Children> = [];
     DealDamage: Array<DealDamage> = [];
-    Draw: Array<Draw> = [];
     Health: Array<Health> = [];
     Label: Array<Label> = [];
     Lifespan: Array<Lifespan> = [];

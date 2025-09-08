@@ -20,8 +20,7 @@ import {sys_control_ai} from "./systems/sys_control_ai.js";
 import {sys_control_always2d} from "./systems/sys_control_always2d.js";
 import {sys_control_weapon} from "./systems/sys_control_weapon.js";
 import {sys_deal_damage} from "./systems/sys_deal_damage.js";
-import {sys_draw2d} from "./systems/sys_draw2d.js";
-import {sys_draw2d_debug} from "./systems/sys_draw2d_debug.js";
+
 import {sys_duel_manager} from "./systems/sys_duel_manager.js";
 import {sys_energy} from "./systems/sys_energy.js";
 import {sys_health} from "./systems/sys_health.js";
@@ -33,7 +32,7 @@ import {sys_physics2d_resolve} from "./systems/sys_physics2d_resolve.js";
 import {sys_render2d} from "./systems/sys_render2d.js";
 import {sys_render2d_animate} from "./systems/sys_render2d_animate.js";
 import {sys_resize2d} from "./systems/sys_resize2d.js";
-import {sys_reticle} from "./systems/sys_reticle.js";
+
 import {sys_shake2d} from "./systems/sys_shake2d.js";
 import {sys_spawn2d} from "./systems/sys_spawn2d.js";
 import {sys_transform2d} from "./systems/sys_transform2d.js";
@@ -100,7 +99,7 @@ export class Game extends Game3D {
 
         // AI.
         sys_aim(this, delta);
-        sys_reticle(this); // Update reticle positions after aiming
+
         sys_control_ai(this, delta);
         sys_control_always2d(this, delta);
         sys_control_weapon(this, delta);
@@ -133,15 +132,8 @@ export class Game extends Game3D {
         sys_resize2d(this, delta);
         sys_camera2d(this, delta);
 
-        // Rendering.
-        sys_draw2d(this, delta);
         sys_render2d_animate(this, delta);
         sys_render2d(this, delta);
-
-        if (false) {
-            // Debug rendering (after all other rendering).
-            sys_draw2d_debug(this);
-        }
 
         // UI and timers.
         sys_victory_timer(this, delta);

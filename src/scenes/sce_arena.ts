@@ -1,16 +1,16 @@
+import {hsla_to_vec4} from "../../lib/color.js";
 import {instantiate} from "../../lib/game.js";
 import {Vec2} from "../../lib/math.js";
-import {element, float, integer} from "../../lib/random.js";
+import {element, float, integer, rand} from "../../lib/random.js";
 import {vec2_length} from "../../lib/vec2.js";
 import {blueprint_camera} from "../blueprints/blu_camera.js";
 import {blueprint_fighter} from "../blueprints/blu_fighter.js";
 import {blueprint_heal_spawner} from "../blueprints/blu_heal_spawner.js";
 import {blueprint_terrain_block} from "../blueprints/blu_terrain_block.js";
 import {children} from "../components/com_children.js";
-import {draw_arc} from "../components/com_draw.js";
+
 import {label} from "../components/com_label.js";
-import {local_transform2d, set_position} from "../components/com_local_transform2d.js";
-import {spatial_node2d} from "../components/com_spatial_node2d.js";
+import {set_position} from "../components/com_local_transform2d.js";
 import {Game, WORLD_CAPACITY} from "../game.js";
 import {
     ARENA_CENTER_X,
@@ -66,20 +66,12 @@ export function scene_arena(game: Game) {
     game.ViewportResized = true;
 
     game.World = new World(WORLD_CAPACITY);
-    game.World.BackgroundColor = "#1a1a33"; // Dark blue background
+    game.World.ClearColor = hsla_to_vec4(rand(), 0.7, 0.6, 1);
     game.World.Width = ARENA_WIDTH;
     game.World.Height = ARENA_HEIGHT;
 
     // Top-down camera at center of arena
     instantiate(game, [...blueprint_camera(game), set_position(ARENA_CENTER_X, ARENA_CENTER_Y)]);
-
-    // Arena circle boundary
-    instantiate(game, [
-        spatial_node2d(),
-        local_transform2d(),
-        set_position(ARENA_CENTER_X, ARENA_CENTER_Y),
-        draw_arc("#444455", ARENA_RADIUS),
-    ]);
 
     // Player fighter (left side)
     let player = instantiate(game, [

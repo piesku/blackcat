@@ -12,7 +12,6 @@ import {render2d} from "../../components/com_render2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {Game, Layer} from "../../game.js";
 import {Has} from "../../world.js";
-import {blueprint_healthbar} from "../blu_healthbar.js";
 
 // Custom AI component for cats with specific personality traits
 export function cat_control_ai(
@@ -103,7 +102,6 @@ export function blueprint_cat_base(
 
         children(
             blueprint_cat_body(game, color, 1.0),
-            blueprint_healthbar(),
             // No reticle for cats - they're more instinctual
         ),
 

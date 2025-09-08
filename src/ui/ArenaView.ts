@@ -15,25 +15,45 @@ export function ArenaView(game: Game): string {
         .map((u) => u.name);
 
     // Get fighter stats
-    let {playerHP, opponentHP, playerAIState, opponentAIState} = getFighterStats(game);
+    let {PlayerHP, OpponentHP, PlayerAIState, OpponentAIState} = getFighterStats(game);
 
     // Get player unified energy and healing status
     let playerEnergy = getPlayerEnergy(game);
     let maxEnergy = 5;
     let energyPercent = Math.round((playerEnergy / maxEnergy) * 100);
 
+    const healthbar = (hp: {current: number; max: number} | null, isPlayer: boolean) => {
+        if (!hp) return "";
+        const percent = (hp.current / hp.max) * 100;
+        const innerStyle = `width: ${percent}%; height: 100%; background: ${isPlayer ? "#4CAF50" : "#F44336"}; ${!isPlayer ? "float: right;" : ""}`;
+
+        return html`
+            <div
+                style="position: absolute; ${isPlayer
+                    ? "left: 10px"
+                    : "right: 10px"}; top: 10px; width: 40%; height: 20px; background: #333; border-radius: 5px; overflow: hidden; border: 2px solid #222;"
+            >
+                <div style="${innerStyle}"></div>
+            </div>
+        `;
+    };
+
     return html`
         <div
             style="position: fixed; top: 0; left: 0; right: 0; pointer-events: none; z-index: 100;"
         >
+            ${healthbar(PlayerHP, true)} ${healthbar(OpponentHP, false)}
+
             <!-- Player info (left side) -->
             <div
-                style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.8); padding: 8px; border-radius: 5px; color: white; font-family: monospace; font-size: clamp(10px, 2.5vw, 12px); max-width: 35vw;"
+                style="position: absolute; top: 40px; left: 10px; background: rgba(0,0,0,0.8); padding: 8px; border-radius: 5px; color: white; font-family: monospace; font-size: clamp(10px, 2.5vw, 12px); max-width: 35vw;"
             >
                 <div style="color: #4CAF50; font-weight: bold; margin-bottom: 3px;">PLAYER</div>
-                <div style="color: #FFF; margin-bottom: 2px;">HP: ${playerHP}</div>
+                <div style="color: #FFF; margin-bottom: 2px;">
+                    HP: ${PlayerHP ? `${PlayerHP.current}/${PlayerHP.max}` : "?"}
+                </div>
                 <div style="color: #FFD700; margin-bottom: 5px; font-size: clamp(8px, 2vw, 10px);">
-                    ${playerAIState}
+                    ${PlayerAIState}
                 </div>
                 ${playerUpgrades
                     .map(
@@ -80,12 +100,14 @@ export function ArenaView(game: Game): string {
 
             <!-- Opponent info (right side) -->
             <div
-                style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 8px; border-radius: 5px; color: white; font-family: monospace; font-size: clamp(10px, 2.5vw, 12px); text-align: right; max-width: 35vw;"
+                style="position: absolute; top: 40px; right: 10px; background: rgba(0,0,0,0.8); padding: 8px; border-radius: 5px; color: white; font-family: monospace; font-size: clamp(10px, 2.5vw, 12px); text-align: right; max-width: 35vw;"
             >
                 <div style="color: #F44336; font-weight: bold; margin-bottom: 3px;">OPPONENT</div>
-                <div style="color: #FFF; margin-bottom: 2px;">HP: ${opponentHP}</div>
+                <div style="color: #FFF; margin-bottom: 2px;">
+                    HP: ${OpponentHP ? `${OpponentHP.current}/${OpponentHP.max}` : "?"}
+                </div>
                 <div style="color: #FFD700; margin-bottom: 5px; font-size: clamp(8px, 2vw, 10px);">
-                    ${opponentAIState}
+                    ${OpponentAIState}
                 </div>
                 ${opponentUpgrades
                     .map(
@@ -102,7 +124,7 @@ export function ArenaView(game: Game): string {
             <div
                 style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); padding: 8px 12px; border-radius: 5px; color: white; font-family: monospace; font-weight: bold; font-size: clamp(10px, 3vw, 14px); white-space: nowrap;"
             >
-                33 DUELS - Arena ${game.State.currentLevel}
+                Arena ${game.State.currentLevel}
             </div>
         </div>
     `;
