@@ -48,12 +48,11 @@ export function cat_control_ai(
             SeparationForce: [0, 0],
             HasRetreatedAtLowHealth: false,
 
-            // Energy properties (cats use defaults, don't get upgrade modifications)
-            EnergyPerTap: 0.0, // Cats don't tap
+            // Combat-driven energy properties (cats use defaults, don't get upgrade modifications)
+            EnergyFromDamageDealt: 0.0, // Cats don't get energy upgrades
+            EnergyFromDamageTaken: 0.0, // Cats don't get energy upgrades
             EnergyDecayRate: 1.0,
             HealingRate: 0.0, // Cats don't heal
-            HealingDrainStrength: 1.0,
-            PowerDecayRate: 16.0,
 
             // Shockwave burst properties (cats don't use shockwave burst)
             ShockwaveBurstEnabled: false, // No shockwave burst for companion cats

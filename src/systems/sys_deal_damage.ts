@@ -73,22 +73,31 @@ function handle_collision_damage(
             continue;
         }
 
-        // Deal damage (scale by original spawner's power if applicable)
+        // Deal damage
         let final_damage = damage_dealer.Damage;
-        if (game.World.Signature[original_spawner] & Has.ControlPlayer) {
-            let control = game.World.ControlPlayer[original_spawner];
-            DEBUG: if (!control) throw new Error("missing control component");
 
-            final_damage *= control.PowerScale;
-        }
-
-        // Apply trait-based damage bonus (Brawler trait)
+        // Apply trait-based damage bonus (Brawler trait) and energy scaling
         if (game.World.Signature[original_spawner] & Has.ControlAi) {
             let ai = game.World.ControlAi[original_spawner];
             DEBUG: if (!ai) throw new Error("missing AI component");
 
+            // Apply trait damage bonus
             if (ai.DamageBonus) {
                 final_damage += ai.DamageBonus;
+            }
+
+            // Apply energy-based damage scaling (higher energy = more damage)
+            // Energy range: 1.0 (baseline) → 5.0 (maximum)
+            // Damage scale: 1.0x → 2.5x (square root for balanced scaling)
+            let energy_multiplier = Math.sqrt(ai.Energy);
+            final_damage *= energy_multiplier;
+
+            // Apply Weapon Mastery: +25% damage when energy > 75% of max
+            if (has_ability(game, original_spawner, AbilityType.WeaponMastery)) {
+                let energy_threshold = 5.0 * 0.75; // 75% of max energy (3.75)
+                if (ai.Energy > energy_threshold) {
+                    final_damage *= 1.25; // +25% weapon damage
+                }
             }
         }
 
@@ -98,9 +107,52 @@ function handle_collision_damage(
             Type: damage_dealer.DamageType,
         });
 
+        // Log energy multiplier and weapon mastery for debugging
+        let energy_info = "";
+        if (game.World.Signature[original_spawner] & Has.ControlAi) {
+            let ai = game.World.ControlAi[original_spawner];
+            let energy_multiplier = Math.sqrt(ai.Energy);
+            energy_info = `, energy: ${ai.Energy.toFixed(1)} (${energy_multiplier.toFixed(2)}x)`;
+
+            // Add Weapon Mastery info
+            if (has_ability(game, original_spawner, AbilityType.WeaponMastery)) {
+                let energy_threshold = 5.0 * 0.75;
+                if (ai.Energy > energy_threshold) {
+                    energy_info += `, mastery: +25%`;
+                }
+            }
+        }
+
         console.log(
-            `[DAMAGE] Entity ${entity} (${damage_dealer.DamageType}) hit target ${target_entity}: adding ${final_damage.toFixed(1)} damage (base: ${damage_dealer.Damage}, original source: ${original_spawner})`,
+            `[DAMAGE] Entity ${entity} (${damage_dealer.DamageType}) hit target ${target_entity}: adding ${final_damage.toFixed(1)} damage (base: ${damage_dealer.Damage}${energy_info}, source: ${original_spawner})`,
         );
+
+        // Generate energy from dealing damage (combat-driven energy system)
+        if (game.World.Signature[original_spawner] & Has.ControlAi) {
+            let attacker_ai = game.World.ControlAi[original_spawner];
+            DEBUG: if (!attacker_ai) throw new Error("missing AI component");
+
+            // Gain energy based on damage dealt and upgrade bonus
+            if (attacker_ai.EnergyFromDamageDealt > 0) {
+                let energy_gain = final_damage * attacker_ai.EnergyFromDamageDealt;
+
+                // Apply Berserker's Focus: double energy generation when below 50% health
+                if (game.World.Signature[original_spawner] & Has.Health) {
+                    let attacker_health = game.World.Health[original_spawner];
+                    if (
+                        attacker_health &&
+                        has_ability(game, original_spawner, AbilityType.BerserkersFocus)
+                    ) {
+                        let health_percentage = attacker_health.Current / attacker_health.Max;
+                        if (health_percentage < 0.5) {
+                            energy_gain *= 2.0; // Double energy generation when below 50% health
+                        }
+                    }
+                }
+
+                attacker_ai.Energy += energy_gain;
+            }
+        }
 
         // Handle vampiric healing (heal attacker based on damage about to be dealt)
         if (has_ability(game, original_spawner, AbilityType.Vampiric)) {

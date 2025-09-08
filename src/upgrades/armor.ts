@@ -130,3 +130,13 @@ export function apply_evasion(game: Game, entity: number, evasion_chance: number
     let new_evasion = remaining_vulnerability * evasion_chance;
     health.EvasionChance = existing_evasion + new_evasion;
 }
+
+export function apply_pain_tolerance(game: Game, entity: number) {
+    DEBUG: if (!(game.World.Signature[entity] & Has.Health))
+        throw new Error(`Cannot apply Pain Tolerance to entity ${entity} - no Health component`);
+
+    let health = game.World.Health[entity];
+
+    // Add flat damage reduction of 1 (same as Tough Skin, stacks additively)
+    health.FlatDamageReduction = (health.FlatDamageReduction || 0) + 1;
+}

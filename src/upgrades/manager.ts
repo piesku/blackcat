@@ -29,6 +29,7 @@ import {
     apply_evasion,
     apply_last_stand,
     apply_mirror_armor,
+    apply_pain_tolerance,
     apply_proximity_barrier,
     apply_regenerative_mesh,
     apply_scrap_armor,
@@ -73,44 +74,57 @@ function apply_energy_upgrade(game: Game, entity: number, upgrade: UpgradeType) 
     DEBUG: if (!ai) throw new Error("missing ControlAi component for energy upgrade");
 
     switch (upgrade.id) {
-        case UpgradeId.EnergyEfficiency:
-            ai.EnergyPerTap += 0.3;
+        // Combat-driven energy generation upgrades
+        case UpgradeId.CombatVeteran:
+            ai.EnergyFromDamageDealt += 0.3;
             break;
 
-        case UpgradeId.AdrenalineRush:
-            ai.EnergyPerTap += 0.5;
+        case UpgradeId.BattleFury:
+            ai.EnergyFromDamageDealt += 0.5;
             break;
 
+        case UpgradeId.AdrenalineSurge:
+            ai.EnergyFromDamageTaken += 0.2;
+            break;
+
+        case UpgradeId.BerserkersFocus:
+            // Add berserker's focus ability for health-based energy generation bonus
+            abilities([AbilityType.BerserkersFocus])(game, entity);
+            break;
+
+        // Energy decay modifiers
         case UpgradeId.SlowMetabolism:
-            ai.EnergyDecayRate = 0.5;
+            ai.EnergyDecayRate *= 0.5; // Energy decays 50% slower
             break;
 
-        case UpgradeId.BasicHealing:
+        // Auto-healing upgrades
+        case UpgradeId.CombatMedic:
             ai.HealingRate += 1.0;
             break;
 
-        case UpgradeId.RapidHealing:
+        case UpgradeId.FieldSurgeon:
             ai.HealingRate += 2.0;
             break;
 
-        case UpgradeId.EnergyConservation:
-            ai.HealingDrainStrength = 0.5;
-            break;
-
-        case UpgradeId.PowerStability:
-            ai.PowerDecayRate = 0.25;
-            break;
-
         case UpgradeId.Hypermetabolism:
-            ai.EnergyDecayRate = 2.0;
-            ai.HealingRate += 3.0;
+            ai.EnergyDecayRate *= 2.0; // Energy decays twice as fast
+            ai.HealingRate += 3.0; // But powerful healing
             break;
 
-        case UpgradeId.CombatStimulant:
-            ai.EnergyPerTap += 0.8;
-            ai.PowerDecayRate = 0.1;
+        case UpgradeId.WeaponMastery:
+            // Enhanced energy generation + conditional damage bonus
+            ai.EnergyFromDamageDealt += 0.8;
+            abilities([AbilityType.WeaponMastery])(game, entity);
             break;
 
+        case UpgradeId.PainTolerance:
+            // Enhanced energy generation from taking damage + damage reduction
+            ai.EnergyFromDamageTaken += 0.4;
+            apply_pain_tolerance(game, entity);
+            abilities([AbilityType.PainTolerance])(game, entity);
+            break;
+
+        // Special abilities
         case UpgradeId.ShockwaveBurst:
             ai.ShockwaveBurstEnabled = true;
             break;

@@ -83,6 +83,27 @@ export function sys_health(game: Game, _delta: number) {
             if (total_damage > 0) {
                 health.Current = Math.max(0, health.Current - total_damage);
                 health.LastDamageTime = game.Time;
+
+                // Generate energy from taking damage (combat-driven energy system)
+                if (game.World.Signature[entity] & Has.ControlAi) {
+                    let ai = game.World.ControlAi[entity];
+                    DEBUG: if (!ai) throw new Error("missing AI component");
+
+                    // Gain energy based on damage taken and upgrade bonus
+                    if (ai.EnergyFromDamageTaken > 0) {
+                        let energy_gain = total_damage * ai.EnergyFromDamageTaken;
+
+                        // Apply Berserker's Focus: double energy generation when below 50% health
+                        if (has_ability(game, entity, AbilityType.BerserkersFocus)) {
+                            let health_percentage = health.Current / health.Max;
+                            if (health_percentage < 0.5) {
+                                energy_gain *= 2.0; // Double energy generation when below 50% health
+                            }
+                        }
+
+                        ai.Energy += energy_gain;
+                    }
+                }
             }
 
             if (health.IsAlive && health.Current <= 0) {

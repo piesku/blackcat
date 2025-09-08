@@ -3,11 +3,10 @@ import {Game} from "../game.js";
 import {Has} from "../world.js";
 
 // Default energy system parameters (can be overridden by upgrades)
-const DEFAULT_ENERGY_PER_TAP = 0.0; // Tapping disabled by default
+const DEFAULT_ENERGY_FROM_DAMAGE_DEALT = 0.0; // Combat energy generation disabled by default
+const DEFAULT_ENERGY_FROM_DAMAGE_TAKEN = 0.0; // Combat energy generation disabled by default
 const DEFAULT_ENERGY_DECAY_RATE = 1.0;
 const DEFAULT_HEALING_RATE = 0.0; // Healing disabled by default
-const DEFAULT_HEALING_DRAIN_STRENGTH = 1.0;
-const DEFAULT_POWER_DECAY_RATE = 16.0;
 
 // Default shockwave burst parameters
 const DEFAULT_SHOCKWAVE_BURST_ENABLED = false;
@@ -33,12 +32,15 @@ export interface ControlAi {
     Energy: number; // For player entities: unified energy affecting movement speed, weapon cooldowns, and rate of fire (seconds)
     BaseMoveSpeed: number; // Original movement speed before energy scaling
 
-    // Energy upgrade properties (initialized to defaults, modified by upgrades)
-    EnergyPerTap: number; // Energy gain per tap (0.0 = disabled, upgrades enable/enhance tapping)
+    // Combat-driven energy upgrade properties (initialized to defaults, modified by upgrades)
+    EnergyFromDamageDealt: number; // Energy gain per damage dealt (0.0 = disabled)
+    EnergyFromDamageTaken: number; // Energy gain per damage taken (0.0 = disabled)
     EnergyDecayRate: number; // Energy decay rate toward baseline
-    HealingRate: number; // Base healing rate multiplier
-    HealingDrainStrength: number; // Energy drain strength during healing
-    PowerDecayRate: number; // Visual power scaling decay rate
+    HealingRate: number; // Base healing rate multiplier (HP/s when energy > threshold)
+
+    // Visual scaling properties
+    BaseScale?: number; // Original scale for size scaling calculations
+    ShockwaveBurstTriggered?: boolean; // Prevents shockwave spam
 
     // Shockwave burst upgrade properties
     ShockwaveBurstEnabled: boolean; // Whether shockwave burst upgrade is active
@@ -111,12 +113,11 @@ export function control_ai(is_player: boolean, base_move_speed: number) {
             SeparationForce: [0, 0],
             HasRetreatedAtLowHealth: false,
 
-            // Energy upgrade properties (initialized to defaults)
-            EnergyPerTap: DEFAULT_ENERGY_PER_TAP,
+            // Combat-driven energy upgrade properties (initialized to defaults)
+            EnergyFromDamageDealt: DEFAULT_ENERGY_FROM_DAMAGE_DEALT,
+            EnergyFromDamageTaken: DEFAULT_ENERGY_FROM_DAMAGE_TAKEN,
             EnergyDecayRate: DEFAULT_ENERGY_DECAY_RATE,
             HealingRate: DEFAULT_HEALING_RATE,
-            HealingDrainStrength: DEFAULT_HEALING_DRAIN_STRENGTH,
-            PowerDecayRate: DEFAULT_POWER_DECAY_RATE,
 
             // Shockwave burst properties (initialized to defaults)
             ShockwaveBurstEnabled: DEFAULT_SHOCKWAVE_BURST_ENABLED,

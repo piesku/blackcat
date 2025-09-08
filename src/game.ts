@@ -18,12 +18,12 @@ import {sys_cleanup_dead} from "./systems/sys_cleanup_dead.js";
 import {sys_collide2d} from "./systems/sys_collide2d.js";
 import {sys_control_ai} from "./systems/sys_control_ai.js";
 import {sys_control_always2d} from "./systems/sys_control_always2d.js";
-import {sys_control_player} from "./systems/sys_control_player.js";
 import {sys_control_weapon} from "./systems/sys_control_weapon.js";
 import {sys_deal_damage} from "./systems/sys_deal_damage.js";
 import {sys_draw2d} from "./systems/sys_draw2d.js";
 import {sys_draw2d_debug} from "./systems/sys_draw2d_debug.js";
 import {sys_duel_manager} from "./systems/sys_duel_manager.js";
+import {sys_energy} from "./systems/sys_energy.js";
 import {sys_health} from "./systems/sys_health.js";
 import {sys_lifespan} from "./systems/sys_lifespan.js";
 import {sys_move2d} from "./systems/sys_move2d.js";
@@ -101,7 +101,6 @@ export class Game extends Game3D {
         // AI.
         sys_aim(this, delta);
         sys_reticle(this); // Update reticle positions after aiming
-        sys_control_player(this, delta);
         sys_control_ai(this, delta);
         sys_control_always2d(this, delta);
         sys_control_weapon(this, delta);
@@ -112,6 +111,7 @@ export class Game extends Game3D {
         // Damage processing.
         sys_deal_damage(this, delta);
         sys_health(this, delta);
+        sys_energy(this, delta); // Combat-driven energy system (after damage, before movement)
         sys_duel_manager(this, delta); // Check for victory/defeat after health processing
         sys_cleanup_dead(this, delta); // Clean up dead entities after duel manager sets delay
 

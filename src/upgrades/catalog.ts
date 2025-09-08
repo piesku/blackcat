@@ -261,21 +261,34 @@ export const COMPANION_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
     },
 };
 
-// Energy upgrade definitions - Modify energy system parameters
+// Energy upgrade definitions - Combat-driven energy system
 export const ENERGY_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
-    [UpgradeId.EnergyEfficiency]: {
-        id: UpgradeId.EnergyEfficiency,
+    [UpgradeId.CombatVeteran]: {
+        id: UpgradeId.CombatVeteran,
         category: UpgradeCategory.Energy,
-        name: "Energy Efficiency",
-        description: "Click rapidly to boost combat performance (+0.3 energy per tap)",
+        name: "Combat Veteran",
+        description: "Gain +0.3 energy per damage dealt to enemies",
         rarity: UpgradeRarity.Common,
     },
-    [UpgradeId.AdrenalineRush]: {
-        id: UpgradeId.AdrenalineRush,
+    [UpgradeId.BattleFury]: {
+        id: UpgradeId.BattleFury,
         category: UpgradeCategory.Energy,
-        name: "Adrenaline Rush",
-        description:
-            "Enhanced clicking efficiency (+0.5 energy per tap, stacks with other tapping bonuses)",
+        name: "Battle Fury",
+        description: "Enhanced combat energy generation (+0.5 energy per damage dealt, stacks)",
+        rarity: UpgradeRarity.Uncommon,
+    },
+    [UpgradeId.AdrenalineSurge]: {
+        id: UpgradeId.AdrenalineSurge,
+        category: UpgradeCategory.Energy,
+        name: "Adrenaline Surge",
+        description: "Gain +0.2 energy per damage taken (pain fuels power)",
+        rarity: UpgradeRarity.Common,
+    },
+    [UpgradeId.BerserkersFocus]: {
+        id: UpgradeId.BerserkersFocus,
+        category: UpgradeCategory.Energy,
+        name: "Berserker's Focus",
+        description: "Double energy generation when below 50% health",
         rarity: UpgradeRarity.Uncommon,
     },
     [UpgradeId.SlowMetabolism]: {
@@ -285,55 +298,47 @@ export const ENERGY_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         description: "Energy decays 50% slower",
         rarity: UpgradeRarity.Common,
     },
-    [UpgradeId.BasicHealing]: {
-        id: UpgradeId.BasicHealing,
+    [UpgradeId.CombatMedic]: {
+        id: UpgradeId.CombatMedic,
         category: UpgradeCategory.Energy,
-        name: "Basic Healing",
-        description: "Hold to restore +1 HP per second (stacks with other healing)",
+        name: "Combat Medic",
+        description: "Auto-heal +1 HP per second when energy > 50% (stacks with other healing)",
         rarity: UpgradeRarity.Common,
     },
-    [UpgradeId.RapidHealing]: {
-        id: UpgradeId.RapidHealing,
+    [UpgradeId.FieldSurgeon]: {
+        id: UpgradeId.FieldSurgeon,
         category: UpgradeCategory.Energy,
-        name: "Rapid Healing",
-        description: "Hold to restore +2 HP per second (stacks with other healing)",
+        name: "Field Surgeon",
+        description: "Auto-heal +2 HP per second when energy > 50% (stacks with other healing)",
         rarity: UpgradeRarity.Uncommon,
-    },
-    [UpgradeId.EnergyConservation]: {
-        id: UpgradeId.EnergyConservation,
-        category: UpgradeCategory.Energy,
-        name: "Energy Conservation",
-        description: "Healing drains energy 50% slower",
-        rarity: UpgradeRarity.Uncommon,
-    },
-    [UpgradeId.PowerStability]: {
-        id: UpgradeId.PowerStability,
-        category: UpgradeCategory.Energy,
-        name: "Power Stability",
-        description: "Power decays 75% slower",
-        rarity: UpgradeRarity.Common,
     },
     [UpgradeId.Hypermetabolism]: {
         id: UpgradeId.Hypermetabolism,
         category: UpgradeCategory.Energy,
         name: "Hypermetabolism",
-        description: "Energy decays twice as fast but enables powerful +3 HP/s healing",
+        description: "Energy decays twice as fast but enables powerful +3 HP/s auto-healing",
         rarity: UpgradeRarity.Rare,
     },
-    [UpgradeId.CombatStimulant]: {
-        id: UpgradeId.CombatStimulant,
+    [UpgradeId.WeaponMastery]: {
+        id: UpgradeId.WeaponMastery,
         category: UpgradeCategory.Energy,
-        name: "Combat Stimulant",
-        description:
-            "Supercharged tapping (+0.8 energy per tap) and instant power recovery (stacks with other tapping bonuses)",
+        name: "Weapon Mastery",
+        description: "Gain +0.8 energy per damage dealt and +25% weapon damage when energy > 75%",
         rarity: UpgradeRarity.Rare,
+    },
+    [UpgradeId.PainTolerance]: {
+        id: UpgradeId.PainTolerance,
+        category: UpgradeCategory.Energy,
+        name: "Pain Tolerance",
+        description: "Gain +0.4 energy per damage taken and reduce damage by 1 (minimum 1)",
+        rarity: UpgradeRarity.Uncommon,
     },
     [UpgradeId.ShockwaveBurst]: {
         id: UpgradeId.ShockwaveBurst,
         category: UpgradeCategory.Energy,
         name: "Shockwave Burst",
         description:
-            "Spawn damaging particles in all directions when releasing accumulated power - more particles with higher power",
+            "Automatically spawn damaging particles in all directions when energy reaches maximum",
         rarity: UpgradeRarity.Rare,
     },
 };

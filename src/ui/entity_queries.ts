@@ -40,8 +40,8 @@ export function getFighterStats(game: Game): FighterStats {
             // Get AI state info
             let aiStateInfo = getAIStateName(ai.State);
 
-            // Use ControlPlayer component to distinguish
-            if (game.World.Signature[entity] & Has.ControlPlayer) {
+            // Use AI IsPlayer field to distinguish
+            if (ai.IsPlayer) {
                 playerHP = healthInfo;
                 playerAIState = aiStateInfo;
             } else {
@@ -64,9 +64,9 @@ export function getPlayerWeaponCooldowns(game: Game): WeaponCooldownInfo[] {
 
     // Find the player entity
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
-        if (game.World.Signature[entity] & Has.ControlPlayer) {
+        if (game.World.Signature[entity] & Has.ControlAi) {
             let ai = game.World.ControlAi[entity];
-            if (!ai) continue;
+            if (!ai || !ai.IsPlayer) continue;
 
             // Find all weapons attached to this player
             for (let weapon_entity of query_down(game.World, entity, Has.Weapon)) {
@@ -100,9 +100,9 @@ export function getPlayerWeaponCooldowns(game: Game): WeaponCooldownInfo[] {
 export function getPlayerEnergy(game: Game): number {
     // Find the player entity and return their unified energy
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
-        if (game.World.Signature[entity] & Has.ControlPlayer) {
+        if (game.World.Signature[entity] & Has.ControlAi) {
             let ai = game.World.ControlAi[entity];
-            if (!ai) continue;
+            if (!ai || !ai.IsPlayer) continue;
 
             return ai.Energy || 0;
         }
@@ -116,10 +116,10 @@ export function getPlayerHealingStatus(game: Game): {
 } {
     // Find the player entity and return their healing status (based on intentional holding)
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
-        if (game.World.Signature[entity] & Has.ControlPlayer) {
+        if (game.World.Signature[entity] & Has.ControlAi) {
             let ai = game.World.ControlAi[entity];
             let health = game.World.Health[entity];
-            if (!ai || !health) continue;
+            if (!ai || !ai.IsPlayer || !health) continue;
 
             // Check if holding pointer for healing threshold and can heal
             let is_holding = game.PointerState === 1;

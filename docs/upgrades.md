@@ -92,27 +92,34 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Emergent complexity** - Simple stat variations create diverse, complex behaviors
 - **Multiple companions** allowed for strategic synergies and cat army builds
 
-### 5. Energy - Interactive Enhancement ⚡
+### 5. Energy - Combat Enhancement ⚡
 
-**Strategy**: Player interaction system that allows clicking/holding for combat bonuses and healing.
+**Strategy**: Combat-driven energy system that generates power from dealing and taking damage, with fighter size visually representing energy level. Energy replaces manual input with automatic combat rewards and creates dynamic risk/reward scaling through visual size changes.
 
-- **Energy Efficiency** ✅ _(Common)_ - Click rapidly to boost combat performance (+0.3 energy per tap)
-- **Adrenaline Rush** ✅ _(Uncommon)_ - Enhanced clicking efficiency (+0.5 energy per tap, stacks)
+- **Combat Veteran** ✅ _(Common)_ - Gain +0.3 energy per damage dealt to enemies
+- **Battle Fury** ✅ _(Uncommon)_ - Enhanced combat energy generation (+0.5 energy per damage dealt, stacks)
+- **Adrenaline Surge** ✅ _(Common)_ - Gain +0.2 energy per damage taken (pain fuels power)
+- **Berserker's Focus** ✅ _(Uncommon)_ - Double energy generation when below 50% health
 - **Slow Metabolism** ✅ _(Common)_ - Energy decays 50% slower
-- **Basic Healing** ✅ _(Common)_ - Hold to restore +1 HP per second (stacks with other healing)
-- **Rapid Healing** ✅ _(Uncommon)_ - Hold to restore +2 HP per second (stacks with other healing)
-- **Energy Conservation** ✅ _(Uncommon)_ - Healing drains energy 50% slower
-- **Power Stability** ✅ _(Common)_ - Power decays 75% slower
-- **Hypermetabolism** ✅ _(Rare)_ - Energy decays twice as fast but enables powerful +3 HP/s healing
-- **Combat Stimulant** ✅ _(Rare)_ - Supercharged tapping (+0.8 energy per tap) and instant power recovery
-- **Shockwave Burst** ✅ _(Rare)_ - Spawn particles in all direction when releasing a hold heal
+- **Combat Medic** ✅ _(Common)_ - Auto-heal +1 HP per second when energy > 50% (stacks with other healing)
+- **Field Surgeon** ✅ _(Uncommon)_ - Auto-heal +2 HP per second when energy > 50% (stacks with other healing)
+- **Hypermetabolism** ✅ _(Rare)_ - Energy decays twice as fast but enables powerful +3 HP/s auto-healing
+- **Weapon Mastery** ✅ _(Rare)_ - Gain +0.8 energy per damage dealt and +25% weapon damage when energy > 75%
+- **Pain Tolerance** ✅ _(Uncommon)_ - Gain +0.4 energy per damage taken and reduce damage by 1 (minimum 1)
+- **Shockwave Burst** ✅ _(Rare)_ - Automatically spawn damaging particles in all directions when energy reaches maximum
 
 **Implementation**:
 
-- `sys_energy` system handles click/hold input detection
-- Energy affects combat performance and healing capabilities
-- Additive stacking for most bonuses (healing rates, tapping efficiency)
-- Trade-off upgrades provide risk/reward mechanics
+- `sys_energy` system handles combat-driven energy generation from damage events
+- **Visual Energy System**: Fighter size scales dynamically with energy level (1.0x → Nx at N = max energy)
+- Energy affects combat performance, auto-healing, power scaling, and visual presence
+- Damage-dealt energy generation triggers on successful weapon hits
+- Damage-taken energy generation triggers when receiving damage
+- Additive stacking for energy generation rates and healing bonuses
+- Energy thresholds enable conditional effects (healing, damage bonuses)
+- **Risk/Reward Scaling**: Higher energy = larger hitbox but greater combat power
+- Real-time visual feedback allows instant assessment of fighter threat levels
+- Trade-off upgrades provide strategic energy management choices
 
 ### 6. Traits - Combat & Behavioral Enhancement 🔥
 
@@ -135,20 +142,20 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 ## Upgrade Distribution Summary
 
-**Current Implemented Upgrades: 47** / **Complete System**
+**Current Implemented Upgrades: 51** / **Complete System ✅**
 
 - **Weapons**: 11 upgrades ✅ (complete ranged arsenal)
-- **Armor**: 11 upgrades ✅ (complete defensive enhancement) 
+- **Armor**: 11 upgrades ✅ (complete defensive enhancement)
 - **Ability**: 5 upgrades ✅ (combat & movement enhancement)
 - **Companions**: 8 upgrades ✅ (complete cat roster)
-- **Energy**: 9 upgrades ✅ (interactive system)
+- **Energy**: 11 upgrades ✅ (complete combat-driven system)
 - **Traits**: 7 upgrades ✅ (combat & behavioral enhancement)
 
-**Rarity Distribution** (Current 47):
+**Rarity Distribution** (All 51 Complete):
 
-- **Common**: 18 upgrades (38%)
-- **Uncommon**: 20 upgrades (43%)
-- **Rare**: 9 upgrades (19%)
+- **Common**: 21 upgrades (42%)
+- **Uncommon**: 24 upgrades (48%)
+- **Rare**: 5 upgrades (10%)
 
 **Current Implementation Strategy**:
 
@@ -159,7 +166,7 @@ export const enum UpgradeCategory {
     Armor = "armor", // 11 upgrades ✅
     Ability = "ability", // 5 upgrades ✅
     Companion = "companion", // 8 upgrades ✅
-    Energy = "energy", // 9 upgrades ✅
+    Energy = "energy", // 8 upgrades ✅ / 12 planned
     Trait = "trait", // 7 upgrades ✅
     Special = "special", // 0 upgrades (reserved)
 }

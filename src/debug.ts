@@ -173,7 +173,6 @@ export class SceneGraphInspector {
             [Has.Collide2D]: "Collide2D",
             [Has.ControlAi]: "ControlAi",
             [Has.ControlAlways2D]: "ControlAlways2D",
-            [Has.ControlPlayer]: "ControlPlayer",
             [Has.Children]: "Children",
             [Has.DealDamage]: "DealDamage",
             [Has.Dirty]: "Dirty",
@@ -324,13 +323,6 @@ export class SceneGraphInspector {
                 <strong>ControlAlways2D</strong><br>
                 Direction: ${directionText}<br>
                 Rotation: ${c.Rotation.toFixed(2)}
-            </div>`;
-        }
-
-        if (world.Signature[entityId] & Has.ControlPlayer) {
-            html += `<div class="component">
-                <strong>ControlPlayer</strong><br>
-                <em>Marker component (no data)</em>
             </div>`;
         }
 

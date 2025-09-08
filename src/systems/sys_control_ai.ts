@@ -37,7 +37,7 @@ export function sys_control_ai(game: Game, delta: number) {
             if (!health.IsAlive || !move || !aim) continue;
 
             // Player entities use the same AI movement logic as opponents
-            // Their speed is controlled by the energy system in sys_control_player
+            // Their speed is controlled by the energy system in sys_energy
 
             // Calculate speed scaling factor for distance thresholds
             let speed_scale = move.MoveSpeed / BASE_MOVE_SPEED;

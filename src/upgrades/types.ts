@@ -50,15 +50,16 @@ export const enum UpgradeId {
     MrRed,
 
     // Energy
-    EnergyEfficiency,
-    AdrenalineRush,
+    CombatVeteran,
+    BattleFury,
+    AdrenalineSurge,
+    BerserkersFocus,
     SlowMetabolism,
-    BasicHealing,
-    RapidHealing,
-    EnergyConservation,
-    PowerStability,
+    CombatMedic,
+    FieldSurgeon,
     Hypermetabolism,
-    CombatStimulant,
+    WeaponMastery,
+    PainTolerance,
     ShockwaveBurst,
 
     // Traits
