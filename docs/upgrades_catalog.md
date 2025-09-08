@@ -61,14 +61,12 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 #### Armor Properties (Health component modifications)
 - **Scrap Armor** ✅ _(Common)_ - Ignores the first damage instance you take in combat
 - **Spiked Vest** ✅ _(Common)_ - Reflects +1 damage back to attackers (stacks with other reflection)
-- **Vitality Boost** ✅ _(Uncommon)_ - Increases maximum health by +50% of current max (stacks additively)
 - **Damage Reduction** ✅ _(Uncommon)_ - Reduces all damage taken by 25%
 - **Regenerative Mesh** ✅ _(Uncommon)_ - Slowly heal during combat (0.3hp/s)
 - **Mirror Armor** ✅ _(Rare)_ - 100% reflect damage but you take 50% of reflected amount
 - **Proximity Barrier** ✅ _(Uncommon)_ - Reduce damage from enemies within melee range by 40%
 - **Last Stand** ✅ _(Rare)_ - Take 75% less damage when at 1 HP
 - **Thick Hide** ✅ _(Uncommon)_ - Gain +1 HP and reduce damage from attacks by 1 (minimum 1)
-- **Tough Skin** ✅ _(Common)_ - Reduce all damage by 1 (minimum 1 damage)
 - **Evasion** ✅ _(Uncommon)_ - 25% chance to dodge incoming attacks
 
 #### Combat Abilities (ControlAi flags)
@@ -81,7 +79,6 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Combat Veteran** ✅ _(Common)_ - Gain +0.3 energy per damage dealt to enemies
 - **Battle Fury** ✅ _(Uncommon)_ - Enhanced combat energy generation (+0.5 energy per damage dealt, stacks)
 - **Adrenaline Surge** ✅ _(Common)_ - Gain +0.2 energy per damage taken (pain fuels power)
-- **Berserker's Focus** ✅ _(Uncommon)_ - Double energy generation when below 50% health
 - **Slow Metabolism** ✅ _(Common)_ - Energy decays 50% slower
 - **Combat Medic** ✅ _(Common)_ - Auto-heal +1 HP per second when energy > 50% (stacks with other healing)
 - **Field Surgeon** ✅ _(Uncommon)_ - Auto-heal +2 HP per second when energy > 50% (stacks with other healing)
@@ -95,7 +92,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Quick Draw** ✅ _(Common)_ - +40% attack speed (faster weapon cooldowns)
 - **Brawler** ✅ _(Common)_ - Higher aggressiveness, shorter dash range but +1 damage to all attacks
 - **Vitality** ✅ _(Common)_ - +2 maximum health
-- **Berserker Mode** ✅ _(Uncommon)_ - +50% attack speed and movement when below 25% HP
+- **Berserker** ✅ _(Uncommon)_ - +50% attack speed and movement when below 25% HP
 - **Pacifist** ✅ _(Rare)_ - Much lower aggressiveness but +3 max health and +50% damage reduction
 - **Cautious** ✅ _(Common)_ - Lower aggressiveness but +1 max health and better retreat timing
 
@@ -122,22 +119,22 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 ## Upgrade Distribution Summary
 
-**Current Implemented Upgrades: 51** / **Complete System ✅**
+**Current Implemented Upgrades: 48** / **Complete System ✅**
 
 - **Weapons**: 11 upgrades ✅ (child entities with blueprints)
 - **Companions**: 8 upgrades ✅ (root entities with blueprints)
-- **Enhancement**: 33 upgrades ✅ (component property modifications)
-  - Armor Properties: 11 upgrades ✅
+- **Enhancement**: 30 upgrades ✅ (component property modifications)
+  - Armor Properties: 9 upgrades ✅
   - Combat Abilities: 4 upgrades ✅
-  - Energy Properties: 11 upgrades ✅
+  - Energy Properties: 10 upgrades ✅
   - Behavioral Properties: 7 upgrades ✅
 - **Special**: 1 upgrade ✅ (unique mechanics)
 
-**Rarity Distribution** (All 51 Complete):
+**Rarity Distribution** (All 48 Complete):
 
-- **Common**: 21 upgrades (42%)
-- **Uncommon**: 24 upgrades (48%) 
-- **Rare**: 6 upgrades (12%)
+- **Common**: 19 upgrades (40%)
+- **Uncommon**: 23 upgrades (48%) 
+- **Rare**: 6 upgrades (13%)
 
 **Current Implementation Strategy**:
 
@@ -146,7 +143,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 export enum UpgradeCategory {
     Weapon = "Weapon",        // Child entities with blueprints (11 upgrades ✅)
     Companion = "Companion",  // Root entities with blueprints (8 upgrades ✅)
-    Enhancement = "Enhancement", // ControlAi property modifications (33 upgrades ✅)
+    Enhancement = "Enhancement", // ControlAi property modifications (30 upgrades ✅)
     Special = "Special",      // Unique mechanics that don't fit patterns (1 upgrade ✅)
 }
 ```

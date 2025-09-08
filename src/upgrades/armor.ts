@@ -18,18 +18,6 @@ export function apply_spiked_vest(game: Game, entity: number, reflect_amount: nu
     health.ReflectDamage = (health.ReflectDamage || 0) + reflect_amount; // Stack with existing reflect
 }
 
-export function apply_vitality_boost(game: Game, entity: number) {
-    DEBUG: if (!(game.World.Signature[entity] & Has.Health))
-        throw new Error(`Cannot apply Vitality Boost to entity ${entity} - no Health component`);
-
-    let health = game.World.Health[entity];
-
-    // Increase max health by 50% (rounded up)
-    let bonus_hp = Math.ceil(health.Max * 0.5);
-    health.Max += bonus_hp;
-    health.Current += bonus_hp; // Also heal by the bonus amount
-}
-
 export function apply_damage_reduction(
     game: Game,
     entity: number,
@@ -105,16 +93,6 @@ export function apply_thick_hide(game: Game, entity: number) {
     health.Current += 1;
 
     // Add flat damage reduction (stacks additively)
-    health.FlatDamageReduction = (health.FlatDamageReduction || 0) + 1;
-}
-
-export function apply_tough_skin(game: Game, entity: number) {
-    DEBUG: if (!(game.World.Signature[entity] & Has.Health))
-        throw new Error(`Cannot apply Tough Skin to entity ${entity} - no Health component`);
-
-    let health = game.World.Health[entity];
-
-    // Add flat damage reduction (stacks additively with Thick Hide)
     health.FlatDamageReduction = (health.FlatDamageReduction || 0) + 1;
 }
 

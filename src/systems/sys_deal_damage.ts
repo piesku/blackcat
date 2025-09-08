@@ -135,18 +135,6 @@ function handle_collision_damage(
             if (attacker_ai.EnergyFromDamageDealt > 0) {
                 let energy_gain = final_damage * attacker_ai.EnergyFromDamageDealt;
 
-                // Apply Berserker's Focus: double energy generation when below 50% health
-                if (
-                    attacker_ai.BerserkersFocusEnabled &&
-                    game.World.Signature[original_spawner] & Has.Health
-                ) {
-                    let attacker_health = game.World.Health[original_spawner];
-                    let health_percentage = attacker_health.Current / attacker_health.Max;
-                    if (health_percentage < 0.5) {
-                        energy_gain *= 2.0; // Double energy generation when below 50% health
-                    }
-                }
-
                 attacker_ai.Energy += energy_gain;
             }
         }

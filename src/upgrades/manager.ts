@@ -34,8 +34,6 @@ import {
     apply_scrap_armor,
     apply_spiked_vest,
     apply_thick_hide,
-    apply_tough_skin,
-    apply_vitality_boost,
 } from "./armor.js";
 import {UpgradeCategory, UpgradeId, UpgradeType} from "./types.js";
 
@@ -83,9 +81,6 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
             break;
         case UpgradeId.AdrenalineSurge:
             ai.EnergyFromDamageTaken += 0.2;
-            break;
-        case UpgradeId.BerserkersFocus:
-            ai.BerserkersFocusEnabled = true;
             break;
         case UpgradeId.SlowMetabolism:
             ai.EnergyDecayRate *= 0.5;
@@ -157,9 +152,6 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
         case UpgradeId.SpikedVest:
             apply_spiked_vest(game, entity, 1);
             break;
-        case UpgradeId.VitalityBoost:
-            apply_vitality_boost(game, entity);
-            break;
         case UpgradeId.DamageReduction:
             apply_damage_reduction(game, entity, 0.25);
             break;
@@ -177,9 +169,6 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
             break;
         case UpgradeId.ThickHide:
             apply_thick_hide(game, entity);
-            break;
-        case UpgradeId.ToughSkin:
-            apply_tough_skin(game, entity);
             break;
         case UpgradeId.Evasion:
             apply_evasion(game, entity, 0.25);

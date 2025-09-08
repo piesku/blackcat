@@ -50,7 +50,6 @@ export interface ControlAi {
     PiercingShots?: boolean; // Piercing Shots upgrade - projectiles continue through enemies
     PhaseWalkEnabled?: boolean; // Phase Walk upgrade - invincibility during dashing
     DashMasterEnabled?: boolean; // Dash Master upgrade - +100% dash range
-    BerserkersFocusEnabled?: boolean; // Berserker's Focus upgrade - double energy generation when health < 50%
     WeaponMasteryEnabled?: boolean; // Weapon Mastery upgrade - +25% damage when energy > 75%
 
     // Trait upgrade properties (optional - only set when traits are applied)
@@ -62,7 +61,7 @@ export interface ControlAi {
         LowHealthThreshold: number;
         SpeedBonus: number;
         AttackBonus: number;
-    }; // Berserker Mode trait
+    }; // Berserker trait
     RetreatHealthThreshold?: number; // Cautious trait retreat threshold
 }
 

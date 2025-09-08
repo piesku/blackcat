@@ -97,13 +97,6 @@ export const ARMOR_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         description: "Reflects +1 damage back to attackers (stacks with other reflection)",
         rarity: UpgradeRarity.Common,
     },
-    [UpgradeId.VitalityBoost]: {
-        id: UpgradeId.VitalityBoost,
-        category: UpgradeCategory.Enhancement,
-        name: "Vitality Boost",
-        description: "Increases maximum health by +50% of current max (stacks additively)",
-        rarity: UpgradeRarity.Uncommon,
-    },
     [UpgradeId.DamageReduction]: {
         id: UpgradeId.DamageReduction,
         category: UpgradeCategory.Enhancement,
@@ -145,13 +138,6 @@ export const ARMOR_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         name: "Thick Hide",
         description: "Gain +1 HP and reduce damage from attacks by 1 (minimum 1)",
         rarity: UpgradeRarity.Uncommon,
-    },
-    [UpgradeId.ToughSkin]: {
-        id: UpgradeId.ToughSkin,
-        category: UpgradeCategory.Enhancement,
-        name: "Tough Skin",
-        description: "Reduce all damage by 1 (minimum 1 damage)",
-        rarity: UpgradeRarity.Common,
     },
     [UpgradeId.Evasion]: {
         id: UpgradeId.Evasion,
@@ -284,13 +270,6 @@ export const ENERGY_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         description: "Gain +0.2 energy per damage taken (pain fuels power)",
         rarity: UpgradeRarity.Common,
     },
-    [UpgradeId.BerserkersFocus]: {
-        id: UpgradeId.BerserkersFocus,
-        category: UpgradeCategory.Enhancement,
-        name: "Berserker's Focus",
-        description: "Double energy generation when below 50% health",
-        rarity: UpgradeRarity.Uncommon,
-    },
     [UpgradeId.SlowMetabolism]: {
         id: UpgradeId.SlowMetabolism,
         category: UpgradeCategory.Enhancement,
@@ -376,7 +355,7 @@ export const TRAIT_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
     [UpgradeId.BerserkerMode]: {
         id: UpgradeId.BerserkerMode,
         category: UpgradeCategory.Enhancement,
-        name: "Berserker Mode",
+        name: "Berserker",
         description: "+50% attack speed and movement when below 25% HP",
         rarity: UpgradeRarity.Uncommon,
     },

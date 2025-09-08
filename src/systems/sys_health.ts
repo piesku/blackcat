@@ -92,14 +92,6 @@ export function sys_health(game: Game, _delta: number) {
                     if (ai.EnergyFromDamageTaken > 0) {
                         let energy_gain = total_damage * ai.EnergyFromDamageTaken;
 
-                        // Apply Berserker's Focus: double energy generation when below 50% health
-                        if (ai.BerserkersFocusEnabled) {
-                            let health_percentage = health.Current / health.Max;
-                            if (health_percentage < 0.5) {
-                                energy_gain *= 2.0; // Double energy generation when below 50% health
-                            }
-                        }
-
                         ai.Energy += energy_gain;
                     }
                 }

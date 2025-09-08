@@ -85,7 +85,7 @@ function activate_weapon(game: Game, wielder_entity: number, weapon_entity: numb
     // Calculate effective cooldown with trait bonuses
     let effective_cooldown = weapon.Cooldown;
 
-    // Apply attack speed multiplier from traits (Quick Draw, Berserker Mode)
+    // Apply attack speed multiplier from traits (Quick Draw, Berserker)
     if (ai.AttackSpeedMultiplier) {
         effective_cooldown /= ai.AttackSpeedMultiplier;
     }
