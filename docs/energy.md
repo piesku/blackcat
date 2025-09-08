@@ -6,16 +6,14 @@ The Energy System in 33 Duels provides a unified resource management mechanic th
 
 The Energy System is a **unified resource** that:
 
-- Increases with quick taps/clicks (diminishing returns)
-- Drains during healing (exponential decay to minimum)
 - Affects movement speed using square root scaling for balanced gameplay
 - Modifies weapon cooldowns as an inverse multiplier
 - Scales healing effectiveness based on current energy level
 - Provides visual power scaling that grows with energy consumption
 - Automatically decays back to baseline (1.0) when idle
-- Creates strategic depth through risk/reward healing mechanics
+- Creates strategic depth through automatic energy management
 
-**Key Design Principle**: Energy serves as both an enhancement resource (tap to boost performance) and a healing cost (hold to heal at the cost of combat effectiveness). The system encourages active engagement while providing meaningful trade-offs between offense, defense, and recovery.
+**Key Design Principle**: Energy serves as both an enhancement resource and a healing cost through automatic systems. The energy fluctuates based on combat activities and provides meaningful trade-offs between offense, defense, and recovery.
 
 ## Energy Mechanics
 
@@ -48,7 +46,7 @@ interface ControlAi {
 **2. Enhanced State (Energy > 1.0)**
 
 - Faster movement and weapon firing
-- Achieved through quick taps/clicks
+- Achieved through automatic combat systems
 - Higher energy provides proportionally better performance
 
 **3. Drained State (Energy < 1.0)**
@@ -59,32 +57,13 @@ interface ControlAi {
 
 ## Player Controls
 
-### Input Detection System
+### Energy Generation System
 
-**Quick Tap/Click**: Brief inputs provide energy enhancement without cost, encouraging active engagement and tactical timing during combat.
+Energy is generated through automatic combat activities and systems rather than player input.
 
-**Intentional Hold**: Extended inputs activate healing mode, creating a clear distinction between offensive enhancement (tapping) and defensive recovery (holding). This binary input system ensures players can reliably access both mechanics without accidental activation.
+### Energy Gain
 
-### Energy Gain (Tapping)
-
-**Diminishing Returns Formula**:
-
-```typescript
-const BASE_ENERGY_PER_TAP = 0.3; // Base energy gain per tap
-const DIMINISH_FACTOR = 0.2; // Diminishing returns strength
-
-let energy_multiplier = 1.0 / (1.0 + current_energy * DIMINISH_FACTOR);
-let energy_gain = BASE_ENERGY_PER_TAP * energy_multiplier;
-```
-
-**Energy Gain Examples**:
-
-- At Energy 1.0: +0.25 per tap (83% effectiveness)
-- At Energy 2.0: +0.21 per tap (71% effectiveness)
-- At Energy 5.0: +0.15 per tap (50% effectiveness)
-- At Energy 10.0: +0.10 per tap (33% effectiveness)
-
-This prevents infinite energy accumulation while rewarding tactical tapping.
+Energy fluctuates automatically based on combat activities and system behaviors.
 
 ### Energy Decay (Idle)
 
@@ -105,69 +84,9 @@ if (ai.Energy > BASE_ENERGY) {
 
 Energy always moves toward 1.0 at 1.0 energy per second when not actively interacting.
 
-## Healing System Integration
+## System Integration
 
-### Healing Activation
-
-**Requirements for Healing**:
-
-1. Hold input for ≥ 0.2 seconds
-2. Fighter must be alive (`health.IsAlive`)
-3. Health must be below maximum (`health.Current < health.Max`)
-
-### Energy Drain During Healing
-
-**Exponential Decay Formula**:
-
-```typescript
-const MIN_HEALING_ENERGY = 0.0; // Asymptotic minimum (never reached)
-const HEALING_DRAIN_STRENGTH = 1.0; // Drain aggressiveness
-
-let energy_above_minimum = ai.Energy - MIN_HEALING_ENERGY;
-let drain_rate = HEALING_DRAIN_STRENGTH * energy_above_minimum;
-ai.Energy -= drain_rate * delta;
-```
-
-**Healing Drain Behavior**:
-
-- **Initial Drain**: Very fast when energy is high
-- **Gradual Slowdown**: Drain rate decreases as energy approaches minimum
-- **Asymptotic Approach**: Never quite reaches 0.0, always some energy remains
-- **Mathematical Safety**: Hard floor at MIN_HEALING_ENERGY prevents negative values
-
-**Example Drain Rates**:
-
-- At Energy 2.0: -2.0 energy/second
-- At Energy 1.0: -1.0 energy/second
-- At Energy 0.5: -0.5 energy/second
-- At Energy 0.1: -0.1 energy/second
-
-### Health Restoration
-
-**Energy-Scaled Healing Rate**:
-
-```typescript
-const HEALING_RATE = 1; // Base HP per second when holding
-
-let heal_amount = HEALING_RATE * ai.Energy * delta;
-health.Current += heal_amount;
-if (health.Current > health.Max) {
-    health.Current = health.Max;
-}
-```
-
-**Healing Mechanics**:
-
-- **Rate**: Base 1 HP per second, scaled by current energy level
-- **Energy Scaling**: Higher energy = faster healing (up to full energy maximum)
-- **Cost**: Exponential energy drain (dependent on current energy)
-- **Duration**: Limited by available energy above minimum
-- **Strategy**: Start healing with high energy for maximum effectiveness, accepting longer recovery time
-- **Efficiency Trade-off**: Higher energy provides faster healing but drains faster, creating optimal timing decisions
-
-**Healing Visual Effects**:
-
-When healing occurs, the system activates heal particle spawners attached to the player entity, providing visual feedback for the healing process.
+Energy integrates with various game systems to provide automatic performance scaling and resource management.
 
 ## Combat Performance Effects
 
@@ -321,11 +240,10 @@ let energyPercent = Math.round((playerEnergy / maxEnergy) * 100);
 
 **Energy Processing Order** (from game.ts):
 
-1. **sys_control_player**: Process input and update energy
-2. **sys_control_ai**: Apply energy multiplier to movement
-3. **sys_control_weapon**: Apply energy multiplier to weapon cooldowns
-4. **sys_health**: Process healing effects
-5. **sys_ui**: Display energy status
+1. **sys_control_ai**: Apply energy multiplier to movement
+2. **sys_control_weapon**: Apply energy multiplier to weapon cooldowns
+3. **sys_health**: Process healing effects
+4. **sys_ui**: Display energy status
 
 ### Component Architecture
 
@@ -339,8 +257,8 @@ let energyPercent = Math.round((playerEnergy / maxEnergy) * 100);
 
 **Data Flow**:
 
-1. Player input → `sys_control_player` → Energy modification
-2. Energy value → `sys_control_ai` → Movement scaling
+1. System activities → Energy modification
+2. Energy value → `sys_control_ai` → Movement scaling  
 3. Energy value → `sys_control_weapon` → Weapon cooldown scaling
 4. Energy value → UI systems → Visual feedback
 
@@ -357,7 +275,6 @@ let energyPercent = Math.round((playerEnergy / maxEnergy) * 100);
 
 ### Core Systems
 
-- `src/systems/sys_control_player.ts` - Input processing and energy management
 - `src/systems/sys_control_ai.ts` - Movement speed scaling (line 158-159)
 - `src/systems/sys_control_weapon.ts` - Weapon cooldown scaling (line 50)
 - `src/components/com_control_ai.ts` - Energy property definition (line 23)
@@ -378,15 +295,10 @@ let energyPercent = Math.round((playerEnergy / maxEnergy) * 100);
 **Energy System Tuning Parameters**:
 
 ```typescript
-const BASE_ENERGY_PER_TAP = 0.3; // Base tap energy gain
-const DIMINISH_FACTOR = 0.2; // Diminishing returns strength
 const ENERGY_DECAY_RATE = 1.0; // Idle energy decay rate (toward baseline)
 const BASE_ENERGY = 1.0; // Baseline energy level (not zero)
-const HEALING_RATE = 1; // Base HP per second (energy-scaled)
-const HEALING_DRAIN_STRENGTH = 1.0; // Energy drain aggressiveness
-const HOLD_THRESHOLD = 0.2; // Tap vs hold detection time
+const HEALING_RATE = 1; // Base HP per second (energy-scaled)  
 const POWER_DECAY_RATE = 16.0; // Visual power scaling decay rate
-const MIN_HEALING_ENERGY = 0.0; // Asymptotic minimum (never reached)
 ```
 
 **Design Philosophy**:

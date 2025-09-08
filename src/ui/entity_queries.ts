@@ -109,28 +109,3 @@ export function getPlayerEnergy(game: Game): number {
     }
     return 0;
 }
-
-export function getPlayerHealingStatus(game: Game): {
-    isHealing: boolean;
-    energy: number;
-} {
-    // Find the player entity and return their healing status (based on intentional holding)
-    for (let entity = 0; entity < game.World.Signature.length; entity++) {
-        if (game.World.Signature[entity] & Has.ControlAi) {
-            let ai = game.World.ControlAi[entity];
-            let health = game.World.Health[entity];
-            if (!ai || !ai.IsPlayer || !health) continue;
-
-            // Check if holding pointer for healing threshold and can heal
-            let is_holding = game.PointerState === 1;
-            // Note: We can't access the module-level timer here, so we'll use basic hold detection
-            // The actual healing logic in sys_control_player handles the timer threshold
-            let isHealing = is_holding && health.Current < health.Max && health.IsAlive;
-            return {
-                isHealing,
-                energy: ai.Energy,
-            };
-        }
-    }
-    return {isHealing: false, energy: 0};
-}

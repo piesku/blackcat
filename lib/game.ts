@@ -8,8 +8,7 @@ const fps_span = document.getElementById("fps");
 /**
  * The base Game class.
  *
- * This class is the base class for all games. It runs the main loop and
- * registers event listeners for input handling.
+ * This class is the base class for all games. It runs the main loop.
  */
 export abstract class GameImpl {
     IsRunning = 0;
@@ -22,13 +21,6 @@ export abstract class GameImpl {
     ViewportHeight = window.innerHeight;
     ViewportResized = true;
 
-    // State of pointer during this frame.
-    // 1 = down, 0 = up.
-    PointerState = 0;
-    // Changes of PointerState that happened right before this frame.
-    // 1 = pressed, -1 = released, 0 = no change.
-    PointerDelta = 0;
-
     Ui = document.querySelector("main")!;
 
     constructor() {
@@ -37,27 +29,6 @@ export abstract class GameImpl {
         );
 
         this.Ui.addEventListener("contextmenu", (evt) => evt.preventDefault());
-
-        this.Ui.addEventListener("pointerdown", (evt) => {
-            if (evt.button === 0 && evt.isPrimary) {
-                evt.preventDefault();
-                this.PointerState = 1;
-                this.PointerDelta = 1;
-            }
-        });
-        this.Ui.addEventListener("pointerup", (evt) => {
-            if (evt.button === 0 && evt.isPrimary) {
-                evt.preventDefault();
-                this.PointerState = 0;
-                this.PointerDelta = -1;
-            }
-        });
-        this.Ui.addEventListener("pointercancel", (evt) => {
-            if (evt.isPrimary) {
-                this.PointerState = 0;
-                this.PointerDelta = -1;
-            }
-        });
     }
 
     Start() {
@@ -91,8 +62,6 @@ export abstract class GameImpl {
 
     FrameReset(delta: number) {
         this.ViewportResized = false;
-
-        this.PointerDelta = 0;
 
         let update = performance.now() - this.Milliseconds;
         if (update_span) {

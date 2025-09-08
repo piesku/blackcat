@@ -45,50 +45,35 @@ export function ArenaView(game: Game): string {
                     ? '<div style="color: #666; font-size: clamp(8px, 2vw, 10px);">No upgrades</div>'
                     : ""}
 
-                <!-- Player movement controls -->
+                <!-- Unified energy meter -->
                 <div style="margin-top: 8px; padding-top: 5px; border-top: 1px solid #444;">
                     <div
-                        style="color: #FFD700; font-size: clamp(7px, 1.8vw, 9px); margin-bottom: 3px;"
+                        style="color: #FFD700; font-size: clamp(6px, 1.5vw, 8px); margin-bottom: 2px;"
                     >
-                        CONTROLS:
+                        ENERGY: ${playerEnergy.toFixed(1)}s
                     </div>
-                    <div style="color: #AAA; font-size: clamp(7px, 1.8vw, 9px);">
-                        Tap anywhere to energize movement & shooting
-                    </div>
-                    <div style="color: #AAA; font-size: clamp(7px, 1.8vw, 9px);">
-                        AI controls direction
-                    </div>
-
-                    <!-- Unified energy meter -->
-                    <div style="margin-top: 5px;">
-                        <div
-                            style="color: #FFD700; font-size: clamp(6px, 1.5vw, 8px); margin-bottom: 2px;"
-                        >
-                            ENERGY: ${playerEnergy.toFixed(1)}s
-                        </div>
+                    <div
+                        style="
+                        width: 100%;
+                        height: 4px;
+                        background: #333;
+                        border-radius: 2px;
+                        overflow: hidden;
+                        position: relative;
+                    "
+                    >
                         <div
                             style="
+                            position: absolute;
+                            top: 0;
+                            left: 0;
                             width: 100%;
-                            height: 4px;
-                            background: #333;
-                            border-radius: 2px;
-                            overflow: hidden;
-                            position: relative;
+                            height: 100%;
+                            background: linear-gradient(to right, #4CAF50, #FFC107, #F44336);
+                            clip-path: inset(0 ${100 - energyPercent}% 0 0);
+                            transition: clip-path 0.1s ease;
                         "
-                        >
-                            <div
-                                style="
-                                position: absolute;
-                                top: 0;
-                                left: 0;
-                                width: 100%;
-                                height: 100%;
-                                background: linear-gradient(to right, #4CAF50, #FFC107, #F44336);
-                                clip-path: inset(0 ${100 - energyPercent}% 0 0);
-                                transition: clip-path 0.1s ease;
-                            "
-                            ></div>
-                        </div>
+                        ></div>
                     </div>
                 </div>
             </div>
@@ -113,18 +98,11 @@ export function ArenaView(game: Game): string {
                     : ""}
             </div>
 
-            <!-- Game title and restart button -->
+            <!-- Game title -->
             <div
-                style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); padding: 8px 12px; border-radius: 5px; color: white; font-family: monospace; font-weight: bold; font-size: clamp(10px, 3vw, 14px); white-space: nowrap; display: flex; align-items: center; gap: 12px;"
+                style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); padding: 8px 12px; border-radius: 5px; color: white; font-family: monospace; font-weight: bold; font-size: clamp(10px, 3vw, 14px); white-space: nowrap;"
             >
-                <span>33 DUELS - Arena ${game.State.currentLevel}</span>
-                <button
-                    onclick="window.$(5)"
-                    style="background: #F44336; color: white; border: none; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: clamp(8px, 2vw, 10px); cursor: pointer; pointer-events: auto;"
-                    title="Restart run from level 1"
-                >
-                    RESTART
-                </button>
+                33 DUELS - Arena ${game.State.currentLevel}
             </div>
         </div>
     `;

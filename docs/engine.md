@@ -50,7 +50,7 @@ The project builds upon the structure provided by Goodluck and extends it with s
 
 ### Directory and File Structure
 
-- **`lib/`**: Contains core Goodluck framework modules, such as vector math (e.g., `vec2.ts`, `mat2d.ts`), rendering (e.g., `texture.ts`, `material.ts`), game logic (e.g., `game.ts`, `world.ts`), input handling (`input.ts`), and other utilities (e.g., `aabb2d.ts`, `random.ts`).
+- **`lib/`**: Contains core Goodluck framework modules, such as vector math (e.g., `vec2.ts`, `mat2d.ts`), rendering (e.g., `texture.ts`, `material.ts`), game logic (e.g., `game.ts`, `world.ts`), and other utilities (e.g., `aabb2d.ts`, `random.ts`).
 - **`materials/`**: Definitions of materials and layouts for WebGL rendering, including 2D specifics (`layout2d.ts`, `mat_render2d.ts`).
 - **`src/`**: Main application code.
     - **`actions.ts`**: Defines possible actions in the game (currently only `NoOp`).
@@ -62,7 +62,7 @@ The project builds upon the structure provided by Goodluck and extends it with s
     - **`maps/`**: Contains map definitions, e.g., `map_platforms.ts`.
     - **`scenes/`**: Scene definitions, e.g., `sce_platforms.ts`, `sce_stage.ts`, and "blueprints" for specific entities (`blu_camera.ts`, `blu_player.ts`, `blu_square.ts`).
     - **`sprites/`**: Graphical assets, including `atlas.ts` defining the sprite atlas.
-    - **`systems/`**: ECS system implementations, e.g., `sys_camera2d.ts`, `sys_collide2d.ts`, `sys_control_keyboard.ts`, `sys_render2d.ts`, `sys_transform2d.ts`, etc.
+    - **`systems/`**: ECS system implementations, e.g., `sys_camera2d.ts`, `sys_collide2d.ts`, `sys_render2d.ts`, `sys_transform2d.ts`, etc.
     - **`ui/`**: User interface components, e.g., `App.ts`.
 - **`play/`**: Configured for building an optimized version of the game.
 
@@ -89,26 +89,22 @@ The project builds upon the structure provided by Goodluck and extends it with s
 - A common workflow is to use the **Tiled Map Editor** to design levels and export them as JSON files (`.tmj`). A provided script, like `maps/tmj2map.cjs`, can then be used to convert this JSON data into a TypeScript module.
 - A helper function, such as the one in `src/tiled.ts`, can then parse this module at runtime to instantiate entities and build the scene, effectively separating level design from game code.
 
-### Input Handling
-
-- Basic input state (mouse position, button states, keyboard keys) is captured in `lib/game.ts` every frame and stored in the `InputState` and `InputDelta` records.
-- Systems like `sys_control_mouse.ts` or `sys_control_keyboard.ts` are responsible for interpreting these raw inputs. They translate user actions into changes in component data, for example, by updating a `ControlPlayer` component or directly manipulating an entity's `LocalTransform2D` for camera movement.
 
 ### User Interface
 
 - The UI is rendered using HTML elements overlaid on the game canvas.
 - A `sys_ui` system is responsible for updating the UI. It typically generates an HTML string by calling various UI component functions (often located in `src/ui/`).
 - To simplify the creation of HTML strings, a template literal tag `htm` is provided in `lib/html.ts`.
-- The system compares the newly generated HTML string with the content from the previous frame and, if they differ, updates the DOM using `innerHTML`. This approach is simple and effective for displaying information but may not be suitable for stateful elements like input fields.
+- The system compares the newly generated HTML string with the content from the previous frame and, if they differ, updates the DOM using `innerHTML`. This approach is simple and effective for displaying information.
 
 ### Action System
 
-- The `actions.ts` file provides a centralized way to handle game events and state changes. This decouples the event trigger (e.g., a UI button click) from the implementation of the resulting logic.
+- The `actions.ts` file provides a centralized way to handle game events and state changes. This decouples the event trigger from the implementation of the resulting logic.
 - It consists of two main parts:
     - An `Action` enum that defines all possible actions in the game (e.g., `NewGame`).
     - A `dispatch(game, action, payload)` function that acts as a single entry point for all actions.
 - Inside `dispatch`, a `switch` statement executes the appropriate logic for the given action. This logic can modify the game state, instantiate new entities, or interact with any part of the game.
-- UI elements or other systems can trigger complex game logic without needing to know the implementation details, simply by calling the `dispatch` function with the correct action and payload.
+- Other systems can trigger complex game logic without needing to know the implementation details, simply by calling the `dispatch` function with the correct action and payload.
 
 ### Audio
 
