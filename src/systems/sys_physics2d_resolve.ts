@@ -9,15 +9,15 @@
  * sawpped, too.
  */
 
-import {penetrate_circle} from "../../lib/circle2d.js";
 import {Vec2} from "../../lib/math.js";
 import {
     vec2_add,
     vec2_copy,
-    vec2_dot,
+    vec2_distance,
     vec2_normalize,
     vec2_scale,
     vec2_set,
+    vec2_subtract,
 } from "../../lib/vec2.js";
 import {Entity} from "../../lib/world.js";
 import {RigidKind} from "../components/com_rigid_body2d.js";
@@ -45,10 +45,12 @@ export function sys_physics2d_resolve(game: Game, delta: number) {
     }
 }
 
-// Temp vector used to compute the reflection off of a static body.
-let a: Vec2 = [0, 0];
 // The combined response translation for all collisions.
 let response: Vec2 = [0, 0];
+// Temp vector for direction calculations.
+let direction: Vec2 = [0, 0];
+// Temp vector for velocity calculations.
+let velocity_reflection: Vec2 = [0, 0];
 
 function update(game: Game, entity: Entity) {
     let local = game.World.LocalTransform2D[entity];
@@ -57,31 +59,43 @@ function update(game: Game, entity: Entity) {
 
     if (rigid_body.Kind === RigidKind.Dynamic) {
         vec2_set(response, 0, 0);
+        vec2_copy(rigid_body.VelocityResolved, rigid_body.VelocityLinear);
 
         for (let i = 0; i < collide.Collisions.length; i++) {
             let other_entity = collide.Collisions[i];
             if (game.World.Signature[other_entity] & Has.RigidBody2D) {
                 let other_body = game.World.RigidBody2D[other_entity];
                 if (other_body.Kind === RigidKind.Static) {
-                    // Only calculate penetration for static collisions that need physics resolution
+                    // Simple separation: push dynamic collider away from static collider
                     let other_collider = game.World.Collide2D[other_entity];
-                    let hit = penetrate_circle(collide, other_collider);
 
-                    // Use the hit vector for position correction and velocity reflection
-                    vec2_add(response, response, hit);
+                    // Calculate direction from other center to this center
+                    vec2_subtract(direction, collide.Center, other_collider.Center);
+                    let distance = vec2_distance(collide.Center, other_collider.Center);
 
-                    // Compute the reflection vector as r = v - 2 * (v·n) * n
-                    // where v is the incident velocity and n is the collision normal
-                    vec2_normalize(a, hit);
-                    vec2_scale(a, a, -2 * vec2_dot(rigid_body.VelocityLinear, a));
-                    vec2_add(rigid_body.VelocityResolved, rigid_body.VelocityLinear, a);
+                    // Handle case where centers are at same position
+                    if (distance === 0) {
+                        vec2_set(direction, 1, 0); // Push horizontally
+                        distance = 1;
+                    }
 
-                    // When Bounciness = 1, collisions are 100% elastic.
-                    vec2_scale(
-                        rigid_body.VelocityResolved,
-                        rigid_body.VelocityResolved,
-                        rigid_body.Bounciness,
-                    );
+                    // Calculate required separation distance
+                    let required_distance = collide.Radius + other_collider.Radius;
+
+                    // Only separate if currently overlapping
+                    if (distance < required_distance) {
+                        // Normalize direction to get collision normal
+                        vec2_normalize(direction, direction);
+
+                        // Calculate and apply position separation
+                        let separation_needed = required_distance - distance;
+                        vec2_scale(velocity_reflection, direction, separation_needed); // Reuse temp vector for separation
+                        vec2_add(response, response, velocity_reflection);
+
+                        // Simple approach: set velocity to move away from collision
+                        // Use penetration distance as velocity magnitude (more penetration = faster bounce)
+                        vec2_scale(rigid_body.VelocityResolved, direction, separation_needed);
+                    }
                 }
                 // Note: Dynamic-to-dynamic collisions are handled by damage systems,
                 // not physics resolution
@@ -92,9 +106,13 @@ function update(game: Game, entity: Entity) {
             // Apply collision response position correction
             vec2_add(local.Translation, local.Translation, response);
             game.World.Signature[entity] |= Has.Dirty;
-        } else {
-            // No collision; the entity's resolved velocity is its linear velocity.
-            vec2_copy(rigid_body.VelocityResolved, rigid_body.VelocityLinear);
+
+            // Apply bounciness to the already-reflected velocity
+            vec2_scale(
+                rigid_body.VelocityResolved,
+                rigid_body.VelocityResolved,
+                rigid_body.Bounciness,
+            );
         }
     }
 }
