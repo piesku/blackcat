@@ -27,8 +27,6 @@ export interface RigidBody2D {
     Acceleration: Vec2;
     VelocityLinear: Vec2;
     VelocityResolved: Vec2;
-    VelocityAngular: number;
-    IsGrounded: boolean;
 }
 
 /**
@@ -55,8 +53,6 @@ export function rigid_body2d(
             Acceleration: [0, 0],
             VelocityLinear: [0, 0],
             VelocityResolved: [0, 0],
-            VelocityAngular: 0,
-            IsGrounded: false,
         };
     };
 }

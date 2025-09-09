@@ -56,7 +56,6 @@ function update(game: Game, entity: Entity) {
     let collide = game.World.Collide2D[entity];
 
     if (rigid_body.Kind === RigidKind.Dynamic) {
-        rigid_body.IsGrounded = false;
         vec2_set(response, 0, 0);
 
         for (let i = 0; i < collide.Collisions.length; i++) {
@@ -83,11 +82,6 @@ function update(game: Game, entity: Entity) {
                         rigid_body.VelocityResolved,
                         rigid_body.Bounciness,
                     );
-
-                    if (hit[1] > 0) {
-                        // Collision from the bottom means the body is grounded.
-                        rigid_body.IsGrounded = true;
-                    }
                 }
                 // Note: Dynamic-to-dynamic collisions are handled by damage systems,
                 // not physics resolution

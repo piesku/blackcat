@@ -47,7 +47,6 @@ function update(game: Game, entity: Entity, delta: number) {
         // Apply velocity to position.
         vec2_scale(velocity_delta, rigid_body.VelocityLinear, delta);
         vec2_add(local.Translation, local.Translation, velocity_delta);
-        local.Rotation += rigid_body.VelocityAngular * delta;
         game.World.Signature[entity] |= Has.Dirty;
 
         // Reset force/acceleration.
