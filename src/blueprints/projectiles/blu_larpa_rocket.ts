@@ -21,7 +21,6 @@ export function blueprint_larpa_rocket(damage: number) {
         rigid_body2d(RigidKind.Dynamic, 0, 0, [0, 0]),
         deal_damage(damage, {
             destroy_on_hit: true,
-            shake_duration: 0.25,
         }),
         lifespan(5), // Longer flight time than regular projectiles
 

@@ -27,7 +27,6 @@ export function blueprint_shockwave_particle(damage: number = 0.5) {
         collide2d(true, Layer.Particle, Layer.Player | Layer.Object, 0.1),
         deal_damage(damage, {
             cooldown: 0.0,
-            shake_duration: 0.1,
             destroy_on_hit: true,
         }),
 

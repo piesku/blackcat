@@ -21,8 +21,6 @@ export function blueprint_spikeball(damage: number) {
         deal_damage(damage, {
             destroy_on_hit: false, // Spikeball continues after hitting
             cooldown: 0.3, // Brief cooldown to prevent multiple hits on same target
-            shake_radius: 0.4,
-            shake_duration: 0.25,
         }),
 
         // Long lifespan - persists until timeout as per upgrade description

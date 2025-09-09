@@ -27,7 +27,6 @@ export function blueprint_debris_particle() {
         collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.1),
         deal_damage(0.1, {
             cooldown: 0.0,
-            shake_duration: 0.05,
             destroy_on_hit: true,
         }),
 

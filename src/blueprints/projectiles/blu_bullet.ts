@@ -28,7 +28,6 @@ export function blueprint_bullet(damage: number) {
 
         deal_damage(damage, {
             destroy_on_hit: true,
-            shake_duration: 0.15,
         }),
 
         lifespan(4),

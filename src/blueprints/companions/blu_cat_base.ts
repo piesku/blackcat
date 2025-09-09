@@ -108,7 +108,6 @@ export function blueprint_cat_base(
         // Cat melee attacks (claws/bites)
         deal_damage(1, {
             cooldown: 1.5,
-            shake_duration: 0.2,
             destroy_on_hit: false,
         }),
     ];

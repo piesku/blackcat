@@ -4,6 +4,7 @@ import {Has} from "../world.js";
 /**
  * Component for entities that can deal damage on collision or proximity.
  * Unifies projectile, combat, and area damage functionality.
+ * Screen shake is computed dynamically based on damage amount.
  */
 export interface DealDamage {
     /** Damage amount per hit */
@@ -15,10 +16,6 @@ export interface DealDamage {
     /** Time remaining until next damage can be dealt */
     LastDamageTime: number;
 
-    /** Screen shake properties for damage impact */
-    ShakeRadius?: number;
-    ShakeDuration?: number;
-
     /** Whether this damage dealer destroys itself after hitting */
     DestroyOnHit?: boolean;
 }
@@ -29,13 +26,12 @@ export interface DealDamage {
 /**
  * Create a damage dealer that responds to collision detection.
  * Works for both point collision (small radius) and area effects (large radius).
+ * Screen shake intensity is computed dynamically based on damage amount.
  */
 export function deal_damage(
     damage: number,
     options: {
         cooldown?: number;
-        shake_radius?: number;
-        shake_duration?: number;
         destroy_on_hit?: boolean;
     } = {},
 ) {
@@ -45,8 +41,6 @@ export function deal_damage(
             Damage: damage,
             Cooldown: options.cooldown || 0,
             LastDamageTime: 0,
-            ShakeRadius: options.shake_radius || 0.5,
-            ShakeDuration: options.shake_duration || 0.2,
             DestroyOnHit: options.destroy_on_hit !== false, // Default true
         };
     };

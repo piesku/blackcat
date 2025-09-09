@@ -150,9 +150,11 @@ function handle_collision_damage(
             }
         }
 
-        // Apply screen shake
-        if (game.Camera !== undefined && damage_dealer.ShakeRadius && damage_dealer.ShakeDuration) {
-            shake(damage_dealer.ShakeRadius, damage_dealer.ShakeDuration)(game, game.Camera);
+        // Apply screen shake based on damage amount
+        if (game.Camera !== undefined) {
+            let shake_radius = Math.min(1.0, final_damage * 0.2); // Scale with damage (0.2 to 1.0+)
+            let shake_duration = Math.min(0.5, final_damage * 0.1); // Scale with damage (0.1 to 0.5+)
+            shake(shake_radius, shake_duration)(game, game.Camera);
         }
 
         hit_something = true;

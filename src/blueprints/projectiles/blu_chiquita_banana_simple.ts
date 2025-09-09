@@ -31,7 +31,6 @@ export function blueprint_chiquita_banana_simple() {
         // Damage on impact - bananas explode when they hit something
         deal_damage(3.14, {
             destroy_on_hit: true,
-            shake_duration: 0.2,
         }),
 
         // Also explode on timeout like mortar shells - creates explosion area effect

@@ -27,7 +27,6 @@ export function blueprint_hoover_particle(damage: number) {
         collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.15),
         deal_damage(damage, {
             cooldown: 0.1, // Short cooldown for continuous damage
-            shake_duration: 0.02,
             destroy_on_hit: false, // Don't destroy on hit - continuous damage
         }),
 

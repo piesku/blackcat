@@ -27,7 +27,6 @@ export function blueprint_larpa_trail_particle() {
         collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.05),
         deal_damage(0.5, {
             cooldown: 0.2, // Prevent rapid damage from same particle
-            shake_duration: 0.1,
             destroy_on_hit: true,
         }),
 

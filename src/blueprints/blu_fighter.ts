@@ -64,7 +64,6 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
         // Fighter-vs-fighter collision damage (low damage, long cooldown)
         deal_damage(0.5, {
             cooldown: 2.0,
-            shake_duration: 0.4,
             destroy_on_hit: false, // Fighters don't destroy themselves on collision
         }),
     ];

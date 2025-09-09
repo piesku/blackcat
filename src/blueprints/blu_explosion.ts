@@ -21,7 +21,6 @@ export function blueprint_explosion(
         collide2d(true, Layer.Object, Layer.Player, radius), // Explosion collision radius
         deal_damage(damage, {
             cooldown: 0.0, // Instant damage
-            shake_duration: 0.5, // Big screen shake
             destroy_on_hit: false, // Hit multiple targets
         }),
         lifespan(duration), // Brief explosion area
