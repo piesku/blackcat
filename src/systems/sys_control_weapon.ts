@@ -3,7 +3,6 @@ import {mat2d_get_translation} from "../../lib/mat2d.js";
 import {Vec2} from "../../lib/math.js";
 import {clamp} from "../../lib/number.js";
 import {vec2_copy} from "../../lib/vec2.js";
-import {blueprint_muzzle_flash} from "../blueprints/blu_muzzle_flash.js";
 import {blueprint_boomerang_outward} from "../blueprints/projectiles/blu_boomerang.js";
 import {blueprint_mortar_shell} from "../blueprints/projectiles/blu_mortar_shell.js";
 import {query_down} from "../components/com_children.js";
@@ -104,9 +103,6 @@ function activate_weapon(game: Game, wielder_entity: number, weapon_entity: numb
     // Apply weapon-specific effects based on weapon name
     let weapon_name = get_weapon_name(game, weapon_entity);
     switch (weapon_name) {
-        case "flamethrower":
-            execute_flamethrower_attack(game, wielder_entity, weapon, weapon_entity);
-            break;
         case "mortar":
             execute_mortar_attack(game, wielder_entity, weapon, weapon_entity);
             break;
@@ -159,39 +155,6 @@ function execute_ranged_attack(
 
     console.log(
         `[RANGED] Entity ${wielder_entity} activated ${spawners_activated} spawner(s) toward target ${aim.TargetEntity}`,
-    );
-}
-
-function execute_flamethrower_attack(
-    game: Game,
-    wielder_entity: number,
-    weapon: Weapon,
-    weapon_entity: number,
-) {
-    // Get direction from Aim component
-    let aim = game.World.Aim[wielder_entity];
-    DEBUG: if (!aim) throw new Error("wielder missing aim component");
-
-    // Find and activate the spawner on the weapon
-    let spawner = game.World.Spawn[weapon_entity];
-    DEBUG: if (!spawner) throw new Error("missing component");
-
-    // Set spawner rotation to aim direction
-    let local_transform = game.World.LocalTransform2D[weapon_entity];
-    DEBUG: if (!local_transform) throw new Error("missing component");
-
-    local_transform.Rotation = aim.RotationToTarget;
-
-    // Mark entity as dirty so transform system updates it
-    game.World.Signature[weapon_entity] |= Has.Dirty;
-
-    // Activate the timed spawner using weapon's TotalAmount
-    if (spawner.Mode === SpawnMode.Timed) {
-        spawner.Duration = weapon.TotalAmount;
-    }
-
-    console.log(
-        `[${Date.now()}] [FLAMETHROWER] Entity ${wielder_entity} activated spawner toward target ${aim.TargetEntity}`,
     );
 }
 
