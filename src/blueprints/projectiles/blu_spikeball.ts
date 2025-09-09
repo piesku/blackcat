@@ -21,7 +21,6 @@ export function blueprint_spikeball(damage: number) {
         deal_damage(damage, DamageType.Projectile, {
             destroy_on_hit: false, // Spikeball continues after hitting
             cooldown: 0.3, // Brief cooldown to prevent multiple hits on same target
-            piercing: true, // Can hit multiple enemies
             shake_radius: 0.4,
             shake_duration: 0.25,
         }),

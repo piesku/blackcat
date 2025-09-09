@@ -47,7 +47,6 @@ export interface ControlAi {
 
     // Ability upgrade flags (optional - only set when abilities are applied)
     VampiricHealing?: boolean; // Vampiric upgrade - heal based on damage dealt
-    PiercingShots?: boolean; // Piercing Shots upgrade - projectiles continue through enemies
     PhaseWalkEnabled?: boolean; // Phase Walk upgrade - invincibility during dashing
     DashMasterEnabled?: boolean; // Dash Master upgrade - +100% dash range
     WeaponMasteryEnabled?: boolean; // Weapon Mastery upgrade - +25% damage when energy > 75%

@@ -178,9 +178,6 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
         case UpgradeId.Vampiric:
             ai.VampiricHealing = true;
             break;
-        case UpgradeId.PiercingShots:
-            ai.PiercingShots = true;
-            break;
         case UpgradeId.PhaseWalk:
             ai.PhaseWalkEnabled = true;
             break;

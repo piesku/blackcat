@@ -24,7 +24,7 @@ export function blueprint_minigun() {
 
         // Spawner for rapid bullet spray - uses count spawner for controlled bursts
         spawn_count(
-            blueprint_bullet(1.2),
+            () => blueprint_bullet(1.2),
             1 / 5, // interval: 5 bullets per second
             0.15, // spread: Moderate spread for spray effect
             7.0, // speedMin

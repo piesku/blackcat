@@ -22,9 +22,6 @@ export interface DealDamage {
     ShakeRadius?: number;
     ShakeDuration?: number;
 
-    /** For piercing damage - entities already hit */
-    HitEntities?: Set<number>;
-
     /** Whether this damage dealer destroys itself after hitting */
     DestroyOnHit?: boolean;
 }
@@ -32,7 +29,6 @@ export interface DealDamage {
 export const enum DamageType {
     Hand2Hand = "hand-to-hand",
     Projectile = "projectile",
-    Piercing = "piercing",
     Fire = "fire",
     Melee = "melee",
     Chainsaw = "chainsaw",
@@ -53,7 +49,6 @@ export function deal_damage(
         cooldown?: number;
         shake_radius?: number;
         shake_duration?: number;
-        piercing?: boolean;
         destroy_on_hit?: boolean;
     } = {},
 ) {
@@ -66,7 +61,6 @@ export function deal_damage(
             LastDamageTime: 0,
             ShakeRadius: options.shake_radius || 0.5,
             ShakeDuration: options.shake_duration || 0.2,
-            HitEntities: options.piercing ? new Set<number>() : undefined,
             DestroyOnHit: options.destroy_on_hit !== false, // Default true
         };
     };

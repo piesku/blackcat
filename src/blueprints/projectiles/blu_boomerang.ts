@@ -44,7 +44,6 @@ export function blueprint_boomerang_outward(target_direction: Vec2, max_range: n
         // Damage throughout flight
         deal_damage(1, DamageType.Projectile, {
             cooldown: 0.5,
-            piercing: true,
             destroy_on_hit: false,
             shake_radius: 0.3,
             shake_duration: 0.2,
@@ -85,7 +84,6 @@ export function blueprint_boomerang_return(thrower_direction: Vec2) {
         // Damage on return trip
         deal_damage(1, DamageType.Projectile, {
             cooldown: 0.5,
-            piercing: true,
             destroy_on_hit: false,
             shake_radius: 0.3,
             shake_duration: 0.2,

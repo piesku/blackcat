@@ -67,11 +67,6 @@ function handle_collision_damage(
         let target_health = game.World.Health[target_entity];
         if (!target_health.IsAlive) continue;
 
-        // For piercing damage, skip if already hit this entity
-        if (damage_dealer.HitEntities && damage_dealer.HitEntities.has(target_entity)) {
-            continue;
-        }
-
         // Deal damage
         let final_damage = damage_dealer.Damage;
 
@@ -158,11 +153,6 @@ function handle_collision_damage(
             }
         }
 
-        // Add to hit list for piercing
-        if (damage_dealer.HitEntities) {
-            damage_dealer.HitEntities.add(target_entity);
-        }
-
         // Apply screen shake
         if (game.Camera !== undefined && damage_dealer.ShakeRadius && damage_dealer.ShakeDuration) {
             shake(damage_dealer.ShakeRadius, damage_dealer.ShakeDuration)(game, game.Camera);
@@ -170,10 +160,8 @@ function handle_collision_damage(
 
         hit_something = true;
 
-        // For non-piercing damage, only hit the first target
-        if (!damage_dealer.HitEntities) {
-            break;
-        }
+        // Only hit the first target (no piercing)
+        break;
     }
 
     // Handle post-hit effects
@@ -182,7 +170,7 @@ function handle_collision_damage(
         damage_dealer.LastDamageTime = damage_dealer.Cooldown;
 
         // Destroy entity if configured to do so
-        if (damage_dealer.DestroyOnHit && !damage_dealer.HitEntities) {
+        if (damage_dealer.DestroyOnHit) {
             game.World.Signature[entity] = 0;
         }
     }

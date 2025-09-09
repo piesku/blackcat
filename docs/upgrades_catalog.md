@@ -71,7 +71,6 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 #### Combat Abilities (ControlAi flags)
 - **Vampiric** ✅ _(Uncommon)_ - Heal 1 HP for every 2 damage you deal to enemies
-- **Piercing Shots** ✅ _(Uncommon)_ - Projectiles go through first enemy and continue
 - **Phase Walk** ✅ _(Rare)_ - Invincibility for the entire duration of dash attacks
 - **Dash Master** ✅ _(Common)_ - +100% dash range
 
@@ -119,21 +118,21 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 ## Upgrade Distribution Summary
 
-**Current Implemented Upgrades: 48** / **Complete System ✅**
+**Current Implemented Upgrades: 47** / **Complete System ✅**
 
 - **Weapons**: 11 upgrades ✅ (child entities with blueprints)
 - **Companions**: 8 upgrades ✅ (root entities with blueprints)
-- **Enhancement**: 30 upgrades ✅ (component property modifications)
+- **Enhancement**: 29 upgrades ✅ (component property modifications)
   - Armor Properties: 9 upgrades ✅
-  - Combat Abilities: 4 upgrades ✅
+  - Combat Abilities: 3 upgrades ✅
   - Energy Properties: 10 upgrades ✅
   - Behavioral Properties: 7 upgrades ✅
 - **Special**: 1 upgrade ✅ (unique mechanics)
 
-**Rarity Distribution** (All 48 Complete):
+**Rarity Distribution** (All 47 Complete):
 
 - **Common**: 19 upgrades (40%)
-- **Uncommon**: 23 upgrades (48%) 
+- **Uncommon**: 22 upgrades (47%) 
 - **Rare**: 6 upgrades (13%)
 
 **Current Implementation Strategy**:
@@ -143,7 +142,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 export enum UpgradeCategory {
     Weapon = "Weapon",        // Child entities with blueprints (11 upgrades ✅)
     Companion = "Companion",  // Root entities with blueprints (8 upgrades ✅)
-    Enhancement = "Enhancement", // ControlAi property modifications (30 upgrades ✅)
+    Enhancement = "Enhancement", // ControlAi property modifications (29 upgrades ✅)
     Special = "Special",      // Unique mechanics that don't fit patterns (1 upgrade ✅)
 }
 ```

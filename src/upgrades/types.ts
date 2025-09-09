@@ -41,7 +41,6 @@ export const enum UpgradeId {
     ThickHide,
     Evasion,
     Vampiric,
-    PiercingShots,
     PhaseWalk,
     DashMaster,
 

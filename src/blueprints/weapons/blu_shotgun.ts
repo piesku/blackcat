@@ -25,7 +25,7 @@ export function blueprint_shotgun() {
 
         // Spawner for shotgun pellets
         spawn_count(
-            blueprint_bullet(1.0),
+            () => blueprint_bullet(1.0),
             0, // interval: instant spawn (all at once)
             0.5, // spread: Wide cone spread for pellets
             9.0, // speedMin

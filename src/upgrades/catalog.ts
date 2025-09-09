@@ -164,13 +164,6 @@ export const ABILITY_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         description: "Movement leaves damaging shadow particles behind you",
         rarity: UpgradeRarity.Uncommon,
     },
-    [UpgradeId.PiercingShots]: {
-        id: UpgradeId.PiercingShots,
-        category: UpgradeCategory.Enhancement,
-        name: "Piercing Shots",
-        description: "Projectiles go through first enemy and continue",
-        rarity: UpgradeRarity.Uncommon,
-    },
     [UpgradeId.PhaseWalk]: {
         id: UpgradeId.PhaseWalk,
         category: UpgradeCategory.Enhancement,
