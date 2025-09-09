@@ -1,7 +1,7 @@
 import {html} from "../../lib/html.js";
 import {Game} from "../game.js";
 import {ALL_UPGRADES_MAP, UpgradeId, UpgradeType} from "../upgrades/types.js";
-import {getFighterStats, getPlayerEnergy} from "./entity_queries.js";
+import {getFighterStats} from "./entity_queries.js";
 
 export function ArenaView(game: Game): string {
     // Get upgrades from game state (state stores ids)
@@ -15,11 +15,7 @@ export function ArenaView(game: Game): string {
         .map((u) => u.name);
 
     // Get fighter stats
-    let {PlayerHP, OpponentHP, PlayerAIState, OpponentAIState} = getFighterStats(game);
-
-    // Get player unified energy and healing status
-    let playerEnergy = getPlayerEnergy(game);
-    let maxEnergy = 5;
+    let {PlayerHP, OpponentHP} = getFighterStats(game);
 
     const healthbar = (hp: {current: number; max: number} | null, isPlayer: boolean) => {
         if (!hp) return "";
@@ -63,12 +59,6 @@ export function ArenaView(game: Game): string {
                             `<div style="font-size: clamp(8px, 2vw, 10px);">• ${upgrade}</div>`,
                     )
                     .join("")}
-            </div>
-
-            <div
-                style="position: absolute; top: 5%; left: 50%; transform: translate(-50%, -50%); background: #000c; padding: 8px 12px; color: white; font-family: monospace; font-weight: bold; font-size: clamp(10px, 3vw, 14px); white-space: nowrap;"
-            >
-                Arena ${game.State.currentLevel}
             </div>
         </div>
     `;

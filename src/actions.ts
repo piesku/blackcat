@@ -29,6 +29,7 @@ export const enum Action {
     ExplodeArea,
     ExplodeBananas,
     SpawnBoomerangReturn,
+    ArenaIntroComplete,
 }
 
 export function dispatch(game: Game, action: Action, payload?: unknown) {
@@ -85,8 +86,8 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
             // This allows player to try different upgrades against same opponent if they reload
 
             // Opponent upgrades are already generated during victory
-            // Switch to arena and start new duel
-            game.SetView(GameView.Arena);
+            // Switch to arena intro first, then arena
+            game.SetView(GameView.ArenaIntro);
             scene_arena(game);
             break;
         }
@@ -180,6 +181,11 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
                 spawned_by(thrower_entity),
             ]);
 
+            break;
+        }
+        case Action.ArenaIntroComplete: {
+            // Transition from arena intro to main arena view
+            game.SetView(GameView.Arena);
             break;
         }
     }
