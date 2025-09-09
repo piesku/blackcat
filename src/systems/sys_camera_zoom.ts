@@ -7,7 +7,7 @@
  */
 
 import {Game, REAL_UNIT_SIZE} from "../game.js";
-import {ARENA_CENTER_X, ARENA_CENTER_Y} from "../maps/arena.js";
+import {ARENA_CENTER_X, ARENA_CENTER_Y} from "../scenes/sce_arena.js";
 import {Has} from "../world.js";
 
 // Camera zoom configuration

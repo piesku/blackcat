@@ -12,16 +12,21 @@ import {children} from "../components/com_children.js";
 import {label} from "../components/com_label.js";
 import {set_position} from "../components/com_local_transform2d.js";
 import {Game, WORLD_CAPACITY} from "../game.js";
-import {
-    ARENA_CENTER_X,
-    ARENA_CENTER_Y,
-    ARENA_HEIGHT,
-    ARENA_RADIUS,
-    ARENA_WIDTH,
-} from "../maps/arena.js";
 import {apply_upgrades} from "../upgrades/manager.js";
 import {ALL_UPGRADES_MAP, UpgradeType} from "../upgrades/types.js";
 import {World} from "../world.js";
+
+export const ARENA_WIDTH = 20;
+export const ARENA_HEIGHT = 20;
+export const ARENA_RADIUS = 8;
+
+// Derived constants
+export const ARENA_CENTER_X = ARENA_WIDTH / 2; // 10
+export const ARENA_CENTER_Y = ARENA_HEIGHT / 2; // 10
+
+// Fighter bounds - keep fighters slightly inside the arena circle
+export const FIGHTER_RADIUS = 0.5; // Half the collider size to keep the full fighter inside
+export const ARENA_MAX_FIGHTER_DISTANCE = ARENA_RADIUS - FIGHTER_RADIUS;
 
 /**
  * Generate random destructible terrain clusters in the arena
