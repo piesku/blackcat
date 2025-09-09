@@ -9,6 +9,7 @@
  * sawpped, too.
  */
 
+import {penetrate_circle} from "../../lib/circle2d.js";
 import {Vec2} from "../../lib/math.js";
 import {
     vec2_add,
@@ -59,38 +60,37 @@ function update(game: Game, entity: Entity) {
         vec2_set(response, 0, 0);
 
         for (let i = 0; i < collide.Collisions.length; i++) {
-            let collision = collide.Collisions[i];
-            if (game.World.Signature[collision.Other] & Has.RigidBody2D) {
-                // Assume mass = 1 for all rigid bodies. On collision,
-                // velocities are swapped, unless the other body is a static
-                // one (and behaves as if it had infinite mass).
-                let other_body = game.World.RigidBody2D[collision.Other];
+            let other_entity = collide.Collisions[i];
+            if (game.World.Signature[other_entity] & Has.RigidBody2D) {
+                let other_body = game.World.RigidBody2D[other_entity];
                 if (other_body.Kind === RigidKind.Static) {
-                    // For circle colliders, the hit vector points from the collision
-                    // point toward the dynamic body's center. We can use this directly
-                    // for position correction and velocity reflection.
-                    vec2_add(response, response, collision.Hit);
+                    // Only calculate penetration for static collisions that need physics resolution
+                    let other_collider = game.World.Collide2D[other_entity];
+                    let hit = penetrate_circle(collide, other_collider);
+
+                    // Use the hit vector for position correction and velocity reflection
+                    vec2_add(response, response, hit);
 
                     // Compute the reflection vector as r = v - 2 * (v·n) * n
                     // where v is the incident velocity and n is the collision normal
-                    vec2_normalize(a, collision.Hit);
+                    vec2_normalize(a, hit);
                     vec2_scale(a, a, -2 * vec2_dot(rigid_body.VelocityLinear, a));
                     vec2_add(rigid_body.VelocityResolved, rigid_body.VelocityLinear, a);
+
+                    // When Bounciness = 1, collisions are 100% elastic.
+                    vec2_scale(
+                        rigid_body.VelocityResolved,
+                        rigid_body.VelocityResolved,
+                        rigid_body.Bounciness,
+                    );
+
+                    if (hit[1] > 0) {
+                        // Collision from the bottom means the body is grounded.
+                        rigid_body.IsGrounded = true;
+                    }
                 }
                 // Note: Dynamic-to-dynamic collisions are handled by damage systems,
                 // not physics resolution
-
-                // When Bounciness = 1, collisions are 100% elastic.
-                vec2_scale(
-                    rigid_body.VelocityResolved,
-                    rigid_body.VelocityResolved,
-                    rigid_body.Bounciness,
-                );
-
-                if (collision.Hit[1] > 0) {
-                    // Collision from the bottom means the body is grounded.
-                    rigid_body.IsGrounded = true;
-                }
             }
         }
 

@@ -19,7 +19,7 @@
  * Static vs. static collisions are not checked at all.
  */
 
-import {compute_circle_position, intersect_circle, penetrate_circle} from "../../lib/circle2d.js";
+import {compute_circle_position, intersect_circle} from "../../lib/circle2d.js";
 import {Collide2D} from "../components/com_collide2d.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
@@ -93,18 +93,11 @@ function check_collisions(collider: Collide2D, colliders: Array<Collide2D>, leng
         let other_can_intersect = other.Mask & collider.Layers;
         if (collider_can_intersect || other_can_intersect) {
             if (intersect_circle(collider, other)) {
-                let hit = penetrate_circle(collider, other);
                 if (collider_can_intersect) {
-                    collider.Collisions.push({
-                        Other: other.EntityId,
-                        Hit: hit,
-                    });
+                    collider.Collisions.push(other.EntityId);
                 }
                 if (other_can_intersect) {
-                    other.Collisions.push({
-                        Other: collider.EntityId,
-                        Hit: [-hit[0], -hit[1]],
-                    });
+                    other.Collisions.push(collider.EntityId);
                 }
             }
         }

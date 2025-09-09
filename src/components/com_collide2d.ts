@@ -29,7 +29,7 @@ export interface Collide2D extends Circle2D {
     Dynamic: boolean;
     Layers: Layer;
     Mask: Layer;
-    Collisions: Array<Collision>;
+    Collisions: Array<Entity>;
 }
 
 /**
@@ -55,11 +55,4 @@ export function collide2d(dynamic: boolean, layers: Layer, mask: Layer, radius: 
             Collisions: [],
         };
     };
-}
-
-export interface Collision {
-    /** The other entity in the collision. */
-    Other: Entity;
-    /** The direction and magnitude of the hit from this collider's POV. */
-    Hit: Vec2;
 }
