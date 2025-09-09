@@ -1,6 +1,6 @@
 import {Tile} from "../../../sprites/spritesheet.js";
 import {collide2d} from "../../components/com_collide2d.js";
-import {DamageType, deal_damage} from "../../components/com_deal_damage.js";
+import {deal_damage} from "../../components/com_deal_damage.js";
 import {label} from "../../components/com_label.js";
 import {lifespan} from "../../components/com_lifespan.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
@@ -25,7 +25,7 @@ export function blueprint_larpa_trail_particle() {
 
         // Collision and damage
         collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.05),
-        deal_damage(0.5, DamageType.Projectile, {
+        deal_damage(0.5, {
             cooldown: 0.2, // Prevent rapid damage from same particle
             shake_duration: 0.1,
             destroy_on_hit: true,

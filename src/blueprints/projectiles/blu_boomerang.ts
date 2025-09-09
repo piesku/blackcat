@@ -5,7 +5,7 @@ import {Action} from "../../actions.js";
 import {children} from "../../components/com_children.js";
 import {collide2d} from "../../components/com_collide2d.js";
 import {control_always2d} from "../../components/com_control_always2d.js";
-import {DamageType, deal_damage} from "../../components/com_deal_damage.js";
+import {deal_damage} from "../../components/com_deal_damage.js";
 import {label} from "../../components/com_label.js";
 import {lifespan} from "../../components/com_lifespan.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
@@ -42,7 +42,7 @@ export function blueprint_boomerang_outward(target_direction: Vec2, max_range: n
         lifespan(outward_time, Action.SpawnBoomerangReturn),
 
         // Damage throughout flight
-        deal_damage(1, DamageType.Projectile, {
+        deal_damage(1, {
             cooldown: 0.5,
             destroy_on_hit: false,
             shake_radius: 0.3,
@@ -82,7 +82,7 @@ export function blueprint_boomerang_return(thrower_direction: Vec2) {
         // Lifespan added in the action handler.
 
         // Damage on return trip
-        deal_damage(1, DamageType.Projectile, {
+        deal_damage(1, {
             cooldown: 0.5,
             destroy_on_hit: false,
             shake_radius: 0.3,

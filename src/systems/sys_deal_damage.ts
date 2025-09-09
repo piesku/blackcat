@@ -96,7 +96,6 @@ function handle_collision_damage(
         target_health.PendingDamage.push({
             Amount: final_damage,
             Source: original_spawner,
-            Type: damage_dealer.DamageType,
         });
 
         // Log energy multiplier and weapon mastery for debugging
@@ -116,7 +115,7 @@ function handle_collision_damage(
         }
 
         console.log(
-            `[DAMAGE] Entity ${entity} (${damage_dealer.DamageType}) hit target ${target_entity}: adding ${final_damage.toFixed(1)} damage (base: ${damage_dealer.Damage}${energy_info}, source: ${original_spawner})`,
+            `[DAMAGE] Entity ${entity} hit target ${target_entity}: adding ${final_damage.toFixed(1)} damage (base: ${damage_dealer.Damage}${energy_info}, source: ${original_spawner})`,
         );
 
         // Generate energy from dealing damage (combat-driven energy system)

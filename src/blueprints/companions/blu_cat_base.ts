@@ -4,7 +4,7 @@ import {aim} from "../../components/com_aim.js";
 import {children} from "../../components/com_children.js";
 import {collide2d} from "../../components/com_collide2d.js";
 import {AiState} from "../../components/com_control_ai.js";
-import {DamageType, deal_damage} from "../../components/com_deal_damage.js";
+import {deal_damage} from "../../components/com_deal_damage.js";
 import {health} from "../../components/com_health.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
 import {move2d} from "../../components/com_move2d.js";
@@ -106,7 +106,7 @@ export function blueprint_cat_base(
         ),
 
         // Cat melee attacks (claws/bites)
-        deal_damage(1, DamageType.Hand2Hand, {
+        deal_damage(1, {
             cooldown: 1.5,
             shake_duration: 0.2,
             destroy_on_hit: false,

@@ -1,6 +1,6 @@
 import {Tile} from "../../../sprites/spritesheet.js";
 import {collide2d} from "../../components/com_collide2d.js";
-import {DamageType, deal_damage} from "../../components/com_deal_damage.js";
+import {deal_damage} from "../../components/com_deal_damage.js";
 import {label} from "../../components/com_label.js";
 import {lifespan} from "../../components/com_lifespan.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
@@ -25,7 +25,7 @@ export function blueprint_shockwave_particle(damage: number = 0.5) {
 
         // Collision and damage - damages objects and other fighters
         collide2d(true, Layer.Particle, Layer.Player | Layer.Object, 0.1),
-        deal_damage(damage, DamageType.Explosion, {
+        deal_damage(damage, {
             cooldown: 0.0,
             shake_duration: 0.1,
             destroy_on_hit: true,

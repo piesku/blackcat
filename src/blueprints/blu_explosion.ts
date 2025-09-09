@@ -1,7 +1,7 @@
 import {Vec2} from "../../lib/math.js";
 import {integer} from "../../lib/random.js";
 import {collide2d} from "../components/com_collide2d.js";
-import {DamageType, deal_damage} from "../components/com_deal_damage.js";
+import {deal_damage} from "../components/com_deal_damage.js";
 import {lifespan} from "../components/com_lifespan.js";
 import {local_transform2d} from "../components/com_local_transform2d.js";
 import {spatial_node2d} from "../components/com_spatial_node2d.js";
@@ -19,7 +19,7 @@ export function blueprint_explosion(
         spatial_node2d(),
         local_transform2d(position),
         collide2d(true, Layer.Object, Layer.Player, radius), // Explosion collision radius
-        deal_damage(damage, DamageType.Explosion, {
+        deal_damage(damage, {
             cooldown: 0.0, // Instant damage
             shake_duration: 0.5, // Big screen shake
             destroy_on_hit: false, // Hit multiple targets

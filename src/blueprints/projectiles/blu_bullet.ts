@@ -1,6 +1,6 @@
 import {Tile} from "../../../sprites/spritesheet.js";
 import {collide2d} from "../../components/com_collide2d.js";
-import {DamageType, deal_damage} from "../../components/com_deal_damage.js";
+import {deal_damage} from "../../components/com_deal_damage.js";
 import {label} from "../../components/com_label.js";
 import {lifespan} from "../../components/com_lifespan.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
@@ -26,7 +26,7 @@ export function blueprint_bullet(damage: number) {
         collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.05),
         rigid_body2d(RigidKind.Dynamic, 0, 0, [0, 0]),
 
-        deal_damage(damage, DamageType.Projectile, {
+        deal_damage(damage, {
             destroy_on_hit: true,
             shake_duration: 0.15,
         }),

@@ -9,9 +9,6 @@ export interface DealDamage {
     /** Damage amount per hit */
     Damage: number;
 
-    /** Type of damage for logging and effects */
-    DamageType: DamageType;
-
     /** Cooldown between damage instances (seconds) */
     Cooldown: number;
 
@@ -26,15 +23,6 @@ export interface DealDamage {
     DestroyOnHit?: boolean;
 }
 
-export const enum DamageType {
-    Hand2Hand = "hand-to-hand",
-    Projectile = "projectile",
-    Fire = "fire",
-    Melee = "melee",
-    Chainsaw = "chainsaw",
-    Explosion = "explosion",
-}
-
 // All damage detection now uses the collision system
 // Area effects just use collision detection with large radius
 
@@ -44,7 +32,6 @@ export const enum DamageType {
  */
 export function deal_damage(
     damage: number,
-    damage_type: DamageType,
     options: {
         cooldown?: number;
         shake_radius?: number;
@@ -56,7 +43,6 @@ export function deal_damage(
         game.World.Signature[entity] |= Has.DealDamage;
         game.World.DealDamage[entity] = {
             Damage: damage,
-            DamageType: damage_type,
             Cooldown: options.cooldown || 0,
             LastDamageTime: 0,
             ShakeRadius: options.shake_radius || 0.5,

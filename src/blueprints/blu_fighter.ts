@@ -6,7 +6,7 @@ import {aim} from "../components/com_aim.js";
 import {children} from "../components/com_children.js";
 import {collide2d} from "../components/com_collide2d.js";
 import {control_ai} from "../components/com_control_ai.js";
-import {DamageType, deal_damage} from "../components/com_deal_damage.js";
+import {deal_damage} from "../components/com_deal_damage.js";
 import {health} from "../components/com_health.js";
 import {local_transform2d} from "../components/com_local_transform2d.js";
 import {move2d} from "../components/com_move2d.js";
@@ -62,7 +62,7 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
         ),
 
         // Fighter-vs-fighter collision damage (low damage, long cooldown)
-        deal_damage(0.5, DamageType.Hand2Hand, {
+        deal_damage(0.5, {
             cooldown: 2.0,
             shake_duration: 0.4,
             destroy_on_hit: false, // Fighters don't destroy themselves on collision
