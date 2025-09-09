@@ -83,6 +83,9 @@ export function sys_health(game: Game, _delta: number) {
                 health.Current = Math.max(0, health.Current - total_damage);
                 health.LastDamageTime = game.Time;
 
+                // Activate blood splatter particles when taking damage
+                activate_blood_particles(game, entity, total_damage);
+
                 // Generate energy from taking damage (combat-driven energy system)
                 if (game.World.Signature[entity] & Has.ControlAi) {
                     let ai = game.World.ControlAi[entity];
@@ -273,9 +276,24 @@ function activate_heal_particles(game: Game, entity: number) {
             let spawn = game.World.Spawn[child_entity];
             if (spawn.Mode === SpawnMode.Count) {
                 // Add particles for healing effect
-                spawn.RemainingCount ||= 1;
+                spawn.Count ||= 1;
             }
             break; // Found the heal spawner, no need to continue
+        }
+    }
+}
+
+function activate_blood_particles(game: Game, entity: number, damage: number) {
+    for (let child_entity of query_down(game.World, entity, Has.Spawn | Has.Label)) {
+        let label = game.World.Label[child_entity];
+        if (label && label.Name === "blood_spawner") {
+            let spawn = game.World.Spawn[child_entity];
+            if (spawn.Mode === SpawnMode.Count) {
+                // Add blood particles based on damage amount (more damage = more blood)
+                let blood_count = Math.ceil(damage * 2); // 2 particles per point of damage
+                spawn.Count = (spawn.Count || 0) + blood_count;
+            }
+            break; // Found the blood spawner, no need to continue
         }
     }
 }

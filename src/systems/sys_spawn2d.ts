@@ -46,14 +46,14 @@ function update(game: Game, entity: Entity, delta: number) {
 }
 
 function update_count_spawner(game: Game, entity: Entity, spawn: SpawnCount, delta: number) {
-    if (spawn.RemainingCount <= 0) {
+    if (spawn.Count <= 0) {
         return;
     }
 
     spawn.SinceLast += delta;
-    while (spawn.SinceLast >= spawn.Interval && spawn.RemainingCount > 0) {
+    while (spawn.SinceLast >= spawn.Interval && spawn.Count > 0) {
         spawn.SinceLast -= spawn.Interval;
-        spawn.RemainingCount--;
+        spawn.Count--;
 
         let spatial_node = game.World.SpatialNode2D[entity];
         mat2d_get_translation(world_position, spatial_node.World);

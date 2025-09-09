@@ -145,7 +145,7 @@ function execute_ranged_attack(
 
         // Activate the spawner based on its mode using weapon's TotalAmount
         if (spawner.Mode === SpawnMode.Count) {
-            spawner.RemainingCount = weapon.TotalAmount;
+            spawner.Count = weapon.TotalAmount;
         } else {
             spawner.Duration = weapon.TotalAmount;
         }
@@ -190,7 +190,7 @@ function execute_mortar_attack(
 
     // Activate the count-based spawner using weapon's TotalAmount
     if (spawner.Mode === SpawnMode.Count) {
-        spawner.RemainingCount = weapon.TotalAmount;
+        spawner.Count = weapon.TotalAmount;
     }
 
     console.log(

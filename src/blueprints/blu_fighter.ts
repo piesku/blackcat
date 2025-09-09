@@ -13,6 +13,7 @@ import {move2d} from "../components/com_move2d.js";
 import {render2d} from "../components/com_render2d.js";
 import {spatial_node2d} from "../components/com_spatial_node2d.js";
 import {Game, Layer} from "../game.js";
+import {blueprint_blood_spawner} from "./blu_blood_spawner.js";
 
 const skin_colors: Vec4[] = [
     [1.0, 0.8, 0.66, 1],
@@ -56,6 +57,7 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
         aim(0.1), // Target search every 0.1 seconds
         children(
             blueprint_body(game, element(skin_colors)), // Body sprite as child (includes eyes)
+            blueprint_blood_spawner(), // Blood splatter spawner for damage effects
             // Weapons will be added by apply_upgrades
         ),
 

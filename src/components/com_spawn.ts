@@ -6,7 +6,6 @@
  */
 
 import {Blueprint} from "../../lib/game.js";
-import {Vec2} from "../../lib/math.js";
 import {Entity} from "../../lib/world.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
@@ -25,16 +24,16 @@ export interface SpawnBase {
 
 export interface SpawnCount extends SpawnBase {
     Mode: SpawnMode.Count;
-    RemainingCount: number; // Entities left to spawn
     Interval: number; // Time between spawns (0 = all at once)
     SinceLast: number; // Time since last spawn
+    Count: number; // Entities left to spawn
 }
 
 export interface SpawnTimed extends SpawnBase {
     Mode: SpawnMode.Timed;
-    Duration: number; // Time remaining (counts down to 0)
     Interval: number; // Time between spawns
     SinceLast: number; // Time since last spawn
+    Duration: number; // Time remaining (counts down to 0)
 }
 
 export type Spawn = SpawnCount | SpawnTimed;
@@ -62,7 +61,7 @@ export function spawn_count(
         const spawner: SpawnCount = {
             Mode: SpawnMode.Count,
             BlueprintCreator: creator,
-            RemainingCount: initialCount, // 0 = inactive, >0 = active
+            Count: initialCount, // 0 = inactive, >0 = active
             Interval: interval,
             SinceLast: 0,
             Spread: spread,
