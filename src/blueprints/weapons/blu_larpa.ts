@@ -1,10 +1,12 @@
 import {Tile} from "../../../sprites/spritesheet.js";
+import {children} from "../../components/com_children.js";
 import {label} from "../../components/com_label.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
 import {render2d} from "../../components/com_render2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {spawn_count} from "../../components/com_spawn.js";
 import {weapon_ranged} from "../../components/com_weapon.js";
+import {blueprint_muzzle_flash_spawner} from "../blu_muzzle_flash_spawner.js";
 import {blueprint_larpa_rocket} from "../projectiles/blu_larpa_rocket.js";
 
 export function blueprint_larpa() {
@@ -28,5 +30,8 @@ export function blueprint_larpa() {
             5.0, // speedMin: Fast rocket speed
             6.0, // speedMax
         ),
+
+        // Muzzle flash effect
+        children(blueprint_muzzle_flash_spawner(0.3)),
     ];
 }

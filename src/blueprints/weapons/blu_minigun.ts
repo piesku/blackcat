@@ -6,6 +6,7 @@ import {render2d} from "../../components/com_render2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {spawn_count} from "../../components/com_spawn.js";
 import {weapon_ranged} from "../../components/com_weapon.js";
+import {blueprint_muzzle_flash_spawner} from "../blu_muzzle_flash_spawner.js";
 import {blueprint_shell_casing} from "../particles/blu_shell_casing.js";
 import {blueprint_bullet} from "../projectiles/blu_bullet.js";
 
@@ -31,17 +32,22 @@ export function blueprint_minigun() {
             8.0, // speedMax
         ),
 
-        // Child entity for shell casing effects - rotated to eject backwards and slightly up
-        children([
-            spatial_node2d(),
-            local_transform2d([0, 0], 150, [1, 1]), // Rotated to eject backwards and up
-            spawn_count(
-                (game, spawner) => blueprint_shell_casing(),
-                1 / 5, // interval: match bullet spawn rate
-                0.3, // spread: casings scatter randomly
-                1.0, // speedMin: casings eject with moderate force
-                2.0, // speedMax
-            ),
-        ]),
+        // Child entities for visual effects
+        children(
+            // Muzzle flash spawner - creates flash for each bullet
+            blueprint_muzzle_flash_spawner(1 / 5), // Match bullet spawn rate: 5 flashes per second
+            [
+                // Shell casing effects - rotated to eject backwards and slightly up
+                spatial_node2d(),
+                local_transform2d([0, 0], 150, [1, 1]), // Rotated to eject backwards and up
+                spawn_count(
+                    (game, spawner) => blueprint_shell_casing(),
+                    1 / 5, // interval: match bullet spawn rate
+                    0.3, // spread: casings scatter randomly
+                    1.0, // speedMin: casings eject with moderate force
+                    2.0, // speedMax
+                ),
+            ],
+        ),
     ];
 }

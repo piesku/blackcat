@@ -3,6 +3,7 @@ import {mat2d_get_translation} from "../../lib/mat2d.js";
 import {Vec2} from "../../lib/math.js";
 import {clamp} from "../../lib/number.js";
 import {vec2_copy} from "../../lib/vec2.js";
+import {blueprint_muzzle_flash} from "../blueprints/blu_muzzle_flash.js";
 import {blueprint_boomerang_outward} from "../blueprints/projectiles/blu_boomerang.js";
 import {blueprint_mortar_shell} from "../blueprints/projectiles/blu_mortar_shell.js";
 import {query_down} from "../components/com_children.js";

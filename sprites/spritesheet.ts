@@ -6,4 +6,5 @@ export const enum Tile {
     Flamethrower,
     Boomerang,
     Rifle,
+    MuzzleFlash,
 }
