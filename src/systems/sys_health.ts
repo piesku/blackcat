@@ -290,8 +290,7 @@ function activate_blood_particles(game: Game, entity: number, damage: number) {
             let spawn = game.World.Spawn[child_entity];
             if (spawn.Mode === SpawnMode.Count) {
                 // Add blood particles based on damage amount (more damage = more blood)
-                let blood_count = Math.ceil(damage * 2); // 2 particles per point of damage
-                spawn.Count = (spawn.Count || 0) + blood_count;
+                spawn.Count += damage;
             }
             break; // Found the blood spawner, no need to continue
         }

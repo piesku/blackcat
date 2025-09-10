@@ -32,10 +32,13 @@ function update(game: Game, entity: Entity, delta: number) {
         // Reset position to [0, 0]
         local.Translation[0] = 0;
         local.Translation[1] = 0;
+    } else if (shake.InitialDuration === Infinity) {
+        // Infinite duration shake - constant intensity
+        local.Translation[0] = (Math.random() - 0.5) * shake.Radius * 2;
+        local.Translation[1] = (Math.random() - 0.5) * shake.Radius * 2;
     } else {
         // Calculate intensity using easing function for smooth fade-out
-        let t = shake.Duration / shake.InitialDuration;
-        let intensity = ease_out_quint(t);
+        let intensity = ease_out_quint(shake.Duration / shake.InitialDuration);
         let effective_radius = shake.Radius * intensity;
 
         // Continue shaking with eased diminishing intensity
