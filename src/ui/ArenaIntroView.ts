@@ -6,10 +6,10 @@ export function ArenaIntroView(game: Game): string {
     return html`
         <div>
             <div
-                style="position: absolute; left: 50%; transform: translate(-50%, -50%); background: #000c; padding: 8px 12px; color: white; font-family: monospace; font-weight: bold; font-size: 10vw; animation: titleSlide 2s ease-in-out forwards;"
+                style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); animation: titleSlide 1s ease forwards;"
                 onanimationend="$(${Action.ArenaIntroComplete})"
             >
-                Duel ${game.State.currentLevel}
+                <h2>DUEL ${game.State.currentLevel}</h2>
             </div>
 
             <style>
@@ -17,11 +17,11 @@ export function ArenaIntroView(game: Game): string {
                     0% {
                         top: -20%;
                     }
-                    30% {
-                        top: 50%;
+                    20% {
+                        top: 45%;
                     }
                     80% {
-                        top: 50%;
+                        top: 47%;
                     }
                     100% {
                         top: 120%;
