@@ -1,11 +1,9 @@
 import {float} from "../../../lib/random.js";
-import {Tile} from "../../../sprites/spritesheet.js";
 import {children} from "../../components/com_children.js";
 import {control_always2d} from "../../components/com_control_always2d.js";
 import {label} from "../../components/com_label.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
 import {move2d} from "../../components/com_move2d.js";
-import {render2d} from "../../components/com_render2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {spawn_count} from "../../components/com_spawn.js";
 import {weapon_ranged} from "../../components/com_weapon.js";
@@ -15,7 +13,6 @@ export function blueprint_hoover_crack() {
     return [
         spatial_node2d(),
         local_transform2d(),
-        render2d(Tile.Rifle), // Using rifle sprite, could be updated to specific spinning emitter sprite
         label("hoover crack"), // Name for identification
         weapon_ranged(
             5, // range: medium range for particle emitter

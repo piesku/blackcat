@@ -1,8 +1,6 @@
-import {Tile} from "../../../sprites/spritesheet.js";
 import {children} from "../../components/com_children.js";
 import {label} from "../../components/com_label.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
-import {render2d} from "../../components/com_render2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {spawn_count} from "../../components/com_spawn.js";
 import {weapon_ranged} from "../../components/com_weapon.js";
@@ -14,7 +12,6 @@ export function blueprint_minigun() {
     return [
         spatial_node2d(),
         local_transform2d([0, 0], 0, [1.0, 1.0]), // Standard weapon size
-        render2d(Tile.Rifle), // Using rifle sprite for now, could be updated to specific minigun sprite
         label("minigun"), // Name for identification
         weapon_ranged(
             6, // range: medium range
