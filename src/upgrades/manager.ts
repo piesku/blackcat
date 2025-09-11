@@ -29,7 +29,6 @@ import {
     apply_last_stand,
     apply_mirror_armor,
     apply_pain_tolerance,
-    apply_proximity_barrier,
     apply_regenerative_mesh,
     apply_scrap_armor,
     apply_spiked_vest,
@@ -160,9 +159,6 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
             break;
         case UpgradeId.MirrorArmor:
             apply_mirror_armor(game, entity);
-            break;
-        case UpgradeId.ProximityBarrier:
-            apply_proximity_barrier(game, entity, 0.4);
             break;
         case UpgradeId.LastStand:
             apply_last_stand(game, entity);

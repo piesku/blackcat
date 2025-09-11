@@ -36,7 +36,6 @@ export const enum UpgradeId {
     DamageReduction,
     RegenerativeMesh,
     MirrorArmor,
-    ProximityBarrier,
     LastStand,
     ThickHide,
     Evasion,

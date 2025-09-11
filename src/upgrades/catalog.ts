@@ -107,13 +107,6 @@ export const ARMOR_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         Description: "Reflect all damage, take 50%",
         Rarity: UpgradeRarity.Rare,
     },
-    [UpgradeId.ProximityBarrier]: {
-        Id: UpgradeId.ProximityBarrier,
-        Category: UpgradeCategory.Enhancement,
-        Name: "Proximity Barrier",
-        Description: "Reduce close combat damage 40%",
-        Rarity: UpgradeRarity.Uncommon,
-    },
     [UpgradeId.LastStand]: {
         Id: UpgradeId.LastStand,
         Category: UpgradeCategory.Enhancement,

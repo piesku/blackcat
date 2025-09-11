@@ -55,23 +55,6 @@ export function apply_mirror_armor(game: Game, entity: number) {
     health.MirrorArmor = true;
 }
 
-export function apply_proximity_barrier(
-    game: Game,
-    entity: number,
-    reduction_percent: number = 0.4,
-) {
-    DEBUG: if (!(game.World.Signature[entity] & Has.Health))
-        throw new Error(`Cannot apply Proximity Barrier to entity ${entity} - no Health component`);
-
-    let health = game.World.Health[entity];
-
-    // Stack proximity barrier multiplicatively to prevent going over 100%
-    let existing_reduction = health.ProximityBarrier || 0;
-    let remaining_damage = 1 - existing_reduction;
-    let new_reduction = remaining_damage * reduction_percent;
-    health.ProximityBarrier = existing_reduction + new_reduction;
-}
-
 export function apply_last_stand(game: Game, entity: number) {
     DEBUG: if (!(game.World.Signature[entity] & Has.Health))
         throw new Error(`Cannot apply Last Stand to entity ${entity} - no Health component`);

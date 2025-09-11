@@ -26,7 +26,6 @@ export interface Health {
     FirstDamageIgnored?: boolean; // Internal flag tracking if first damage was used
     RegenerationRate?: number; // Regenerative Mesh - HP per second during combat
     MirrorArmor?: boolean; // Mirror Armor - 100% reflect but take 50% of reflected damage
-    ProximityBarrier?: number; // Proximity Barrier - damage reduction from nearby enemies
     LastStand?: boolean; // Last Stand - 75% damage reduction when at 1 HP
     FlatDamageReduction?: number; // Thick Hide/Tough Skin - flat damage reduction per attack
     EvasionChance?: number; // Evasion - chance to completely avoid damage (0.0 to 1.0)

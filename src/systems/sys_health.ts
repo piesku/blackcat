@@ -1,5 +1,4 @@
 import {rand} from "../../lib/random.js";
-import {vec2_distance_squared} from "../../lib/vec2.js";
 import {query_down} from "../components/com_children.js";
 import {AiState} from "../components/com_control_ai.js";
 
@@ -222,18 +221,6 @@ function calculate_armor_reduction(
         );
     }
 
-    // Proximity Barrier: Reduce damage from nearby enemies
-    if (health.ProximityBarrier && health.ProximityBarrier > 0) {
-        let is_close_range = check_proximity(game, defender_entity, damage_instance.Source);
-        if (is_close_range) {
-            let reduction = final_damage * health.ProximityBarrier;
-            final_damage -= reduction;
-            console.log(
-                `[ARMOR] Proximity Barrier: ${(health.ProximityBarrier * 100).toFixed(0)}% reduction from nearby enemy - reducing by ${reduction.toFixed(1)}`,
-            );
-        }
-    }
-
     // Percentage damage reduction
     if (health.DamageReduction && health.DamageReduction > 0) {
         let reduction = final_damage * health.DamageReduction;
@@ -257,24 +244,6 @@ function calculate_armor_reduction(
     }
 
     return final_damage;
-}
-
-function check_proximity(game: Game, defender: number, attacker: number): boolean {
-    // Define melee range distance (same as AI system uses)
-    const MELEE_RANGE_SQUARED = 1.2 * 1.2; // Base separation distance from AI system
-
-    let defender_transform = game.World.LocalTransform2D[defender];
-    let attacker_transform = game.World.LocalTransform2D[attacker];
-
-    if (!defender_transform || !attacker_transform) {
-        return false; // Can't calculate distance without transforms
-    }
-
-    let dist_sq = vec2_distance_squared(
-        defender_transform.Translation,
-        attacker_transform.Translation,
-    );
-    return dist_sq <= MELEE_RANGE_SQUARED;
 }
 
 function activate_heal_particles(game: Game, entity: number) {

@@ -64,7 +64,6 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Damage Reduction** ✅ _(Uncommon)_ - Reduces all damage taken by 25%
 - **Regenerative Mesh** ✅ _(Uncommon)_ - Slowly heal during combat (0.3hp/s)
 - **Mirror Armor** ✅ _(Rare)_ - 100% reflect damage but you take 50% of reflected amount
-- **Proximity Barrier** ✅ _(Uncommon)_ - Reduce damage from enemies within melee range by 40%
 - **Last Stand** ✅ _(Rare)_ - Take 75% less damage when at 1 HP
 - **Thick Hide** ✅ _(Uncommon)_ - Gain +1 HP and reduce damage from attacks by 1 (minimum 1)
 - **Evasion** ✅ _(Uncommon)_ - 25% chance to dodge incoming attacks
@@ -118,21 +117,21 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 ## Upgrade Distribution Summary
 
-**Current Implemented Upgrades: 47** / **Complete System ✅**
+**Current Implemented Upgrades: 46** / **Complete System ✅**
 
 - **Weapons**: 11 upgrades ✅ (child entities with blueprints)
 - **Companions**: 8 upgrades ✅ (root entities with blueprints)
-- **Enhancement**: 29 upgrades ✅ (component property modifications)
-  - Armor Properties: 9 upgrades ✅
+- **Enhancement**: 28 upgrades ✅ (component property modifications)
+  - Armor Properties: 8 upgrades ✅
   - Combat Abilities: 3 upgrades ✅
   - Energy Properties: 10 upgrades ✅
   - Behavioral Properties: 7 upgrades ✅
 - **Special**: 1 upgrade ✅ (unique mechanics)
 
-**Rarity Distribution** (All 47 Complete):
+**Rarity Distribution** (All 46 Complete):
 
-- **Common**: 19 upgrades (40%)
-- **Uncommon**: 22 upgrades (47%) 
+- **Common**: 19 upgrades (41%)
+- **Uncommon**: 21 upgrades (46%) 
 - **Rare**: 6 upgrades (13%)
 
 **Current Implementation Strategy**:
@@ -142,7 +141,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 export enum UpgradeCategory {
     Weapon = "Weapon",        // Child entities with blueprints (11 upgrades ✅)
     Companion = "Companion",  // Root entities with blueprints (8 upgrades ✅)
-    Enhancement = "Enhancement", // ControlAi property modifications (29 upgrades ✅)
+    Enhancement = "Enhancement", // ControlAi property modifications (28 upgrades ✅)
     Special = "Special",      // Unique mechanics that don't fit patterns (1 upgrade ✅)
 }
 ```
