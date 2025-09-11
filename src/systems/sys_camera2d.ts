@@ -5,7 +5,7 @@
  * rendering.
  */
 
-import {mat2d_copy, mat2d_multiply} from "../../lib/mat2d.js";
+import {mat2d_multiply} from "../../lib/mat2d.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
@@ -19,8 +19,7 @@ export function sys_camera2d(game: Game, delta: number) {
             let camera = game.World.Camera2D[ent];
             let camera_node = game.World.SpatialNode2D[ent];
 
-            mat2d_multiply(camera.Pv, camera.Projection.Projection, camera_node.Self);
-            mat2d_copy(camera.World, camera_node.World);
+            mat2d_multiply(camera.Pv, camera.Projection, camera_node.Self);
 
             game.Camera = ent;
             return;

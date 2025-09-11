@@ -266,11 +266,9 @@ export class SceneGraphInspector {
         }
 
         if (world.Signature[entityId] & Has.Camera2D) {
-            const c = world.Camera2D[entityId];
             html += `<div class="component">
                 <strong>Camera2D</strong><br>
-                Radius: [${c.Projection.Radius[0].toFixed(2)}, ${c.Projection.Radius[1].toFixed(2)}]<br>
-                Viewport: ${c.ViewportWidth} × ${c.ViewportHeight}
+                Viewport: ${this.game.ViewportWidth} × ${this.game.ViewportHeight}
             </div>`;
         }
 

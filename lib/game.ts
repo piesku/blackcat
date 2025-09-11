@@ -1,4 +1,3 @@
-import {RenderTarget} from "./framebuffer.js";
 import {GL_CULL_FACE, GL_DEPTH_TEST, GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA} from "./webgl.js";
 import {Entity, WorldImpl, create_entity} from "./world.js";
 
@@ -80,18 +79,11 @@ export abstract class GameImpl {
  * Context2D instances for drawing behind and in front of the scene.
  */
 export abstract class Game3D extends GameImpl {
-    BackgroundCanvas = document.querySelector("#background")! as HTMLCanvasElement;
-    BackgroundContext = this.BackgroundCanvas.getContext("2d")!;
-
-    ForegroundCanvas = document.querySelector("#foreground")! as HTMLCanvasElement;
-    ForegroundContext = this.ForegroundCanvas.getContext("2d")!;
-
     SceneCanvas = document.querySelector("#scene")! as HTMLCanvasElement;
     Gl = this.SceneCanvas.getContext("webgl2")!;
 
     Audio = new AudioContext();
     Camera?: Entity;
-    Targets: Record<string, RenderTarget> = {};
 
     constructor() {
         super();
