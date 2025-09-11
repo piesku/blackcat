@@ -11,7 +11,7 @@ import {ARENA_CENTER_X, ARENA_CENTER_Y} from "../scenes/sce_arena.js";
 import {Has} from "../world.js";
 
 // Camera zoom configuration
-const MIN_ZOOM = 1; // Farthest zoom (smaller UnitSize multiplier = zoomed out)
+const MIN_ZOOM = 0.5; // Farthest zoom (smaller UnitSize multiplier = zoomed out)
 const MAX_ZOOM = 2.5; // Closest zoom (larger UnitSize multiplier = zoomed in)
 const ZOOM_PADDING = 2.0; // Extra space around fighters for projectiles/movement
 const ZOOM_LERP_SPEED = 3.0; // Speed of zoom transitions (higher = faster)
@@ -26,26 +26,39 @@ export function sys_camera_zoom(game: Game, delta: number) {
     }
 
     // Find all active fighters (entities with Health that are alive)
-    let active_fighters: number[] = [];
+    let all_alive: number[] = [];
+    let alive_fighters: number[] = [];
+
     for (let ent = 0; ent < game.World.Signature.length; ent++) {
         if ((game.World.Signature[ent] & QUERY) === QUERY) {
             let health = game.World.Health[ent];
             if (health && health.IsAlive) {
-                active_fighters.push(ent);
+                all_alive.push(ent);
+
+                // Check if this is a main fighter (Player or Opponent)
+                if (game.World.Signature[ent] & Has.Label) {
+                    let label = game.World.Label[ent];
+                    if (label.Name === "Player" || label.Name === "Opponent") {
+                        alive_fighters.push(ent);
+                    }
+                }
             }
         }
     }
+
+    // Use main fighters if there's a winner (one main fighter left), otherwise all active fighters
+    let focus_targets = alive_fighters.length === 1 ? alive_fighters : all_alive;
 
     let target_zoom: number;
     let target_center_x = ARENA_CENTER_X;
     let target_center_y = ARENA_CENTER_Y;
 
-    if (active_fighters.length === 0) {
+    if (focus_targets.length === 0) {
         // No fighters - use default view
         target_zoom = DEFAULT_ZOOM;
-    } else if (active_fighters.length === 1) {
+    } else if (focus_targets.length === 1) {
         // Single fighter - use maximum zoom focused on fighter
-        let fighter = active_fighters[0];
+        let fighter = focus_targets[0];
         let fighter_transform = game.World.LocalTransform2D[fighter];
         target_center_x = fighter_transform.Translation[0];
         target_center_y = fighter_transform.Translation[1];
@@ -57,7 +70,7 @@ export function sys_camera_zoom(game: Game, delta: number) {
         let min_y = Infinity;
         let max_y = -Infinity;
 
-        for (let fighter of active_fighters) {
+        for (let fighter of focus_targets) {
             let fighter_transform = game.World.LocalTransform2D[fighter];
             let x = fighter_transform.Translation[0];
             let y = fighter_transform.Translation[1];
