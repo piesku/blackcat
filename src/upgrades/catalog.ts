@@ -93,7 +93,7 @@ export const ARMOR_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
     [UpgradeId.RegenerativeMesh]: {
         Id: UpgradeId.RegenerativeMesh,
         Category: UpgradeCategory.Enhancement,
-        Name: "Regen +0.3 HP/s",
+        Name: "Regen +0.3 life/s",
         Rarity: UpgradeRarity.Uncommon,
     },
     [UpgradeId.MirrorArmor]: {
@@ -111,13 +111,13 @@ export const ARMOR_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
     [UpgradeId.LastStand]: {
         Id: UpgradeId.LastStand,
         Category: UpgradeCategory.Enhancement,
-        Name: "-75% damage at 1 hp",
+        Name: "-75% damage at 1 life",
         Rarity: UpgradeRarity.Rare,
     },
     [UpgradeId.ThickHide]: {
         Id: UpgradeId.ThickHide,
         Category: UpgradeCategory.Enhancement,
-        Name: "+1 hp, -1 damage",
+        Name: "+1 life, -1 damage",
         Rarity: UpgradeRarity.Uncommon,
     },
     [UpgradeId.Evasion]: {
@@ -213,61 +213,61 @@ export const ENERGY_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
     [UpgradeId.CombatVeteran]: {
         Id: UpgradeId.CombatVeteran,
         Category: UpgradeCategory.Enhancement,
-        Name: "+0.3 power/damage",
+        Name: "+0.3 mana/dmg",
         Rarity: UpgradeRarity.Common,
     },
     [UpgradeId.BattleFury]: {
         Id: UpgradeId.BattleFury,
         Category: UpgradeCategory.Enhancement,
-        Name: "+0.5 power/damage",
+        Name: "+0.5 mana/dmg",
         Rarity: UpgradeRarity.Uncommon,
     },
     [UpgradeId.AdrenalineSurge]: {
         Id: UpgradeId.AdrenalineSurge,
         Category: UpgradeCategory.Enhancement,
-        Name: "+0.2 power when hit",
+        Name: "+0.2 mana when hit",
         Rarity: UpgradeRarity.Common,
     },
     [UpgradeId.SlowMetabolism]: {
         Id: UpgradeId.SlowMetabolism,
         Category: UpgradeCategory.Enhancement,
-        Name: "-50% power decay",
+        Name: "-50% mana decay",
         Rarity: UpgradeRarity.Common,
     },
     [UpgradeId.CombatMedic]: {
         Id: UpgradeId.CombatMedic,
         Category: UpgradeCategory.Enhancement,
-        Name: "+1 HP/s at >50% power",
+        Name: "+1 life/s at >50% mana",
         Rarity: UpgradeRarity.Common,
     },
     [UpgradeId.FieldSurgeon]: {
         Id: UpgradeId.FieldSurgeon,
         Category: UpgradeCategory.Enhancement,
-        Name: "+2 HP/s at >50% power",
+        Name: "+2 life/s at >50% mana",
         Rarity: UpgradeRarity.Uncommon,
     },
     [UpgradeId.Hypermetabolism]: {
         Id: UpgradeId.Hypermetabolism,
         Category: UpgradeCategory.Enhancement,
-        Name: "+3 HP/s, 2x power decay",
+        Name: "+3 life/s, 2x mana decay",
         Rarity: UpgradeRarity.Rare,
     },
     [UpgradeId.WeaponMastery]: {
         Id: UpgradeId.WeaponMastery,
         Category: UpgradeCategory.Enhancement,
-        Name: "+0.8 power, +25% dmg",
+        Name: "+0.8 mana, +25% dmg",
         Rarity: UpgradeRarity.Rare,
     },
     [UpgradeId.PainTolerance]: {
         Id: UpgradeId.PainTolerance,
         Category: UpgradeCategory.Enhancement,
-        Name: "+0.4 power, -1 dmg",
+        Name: "+0.4 mana, -1 dmg",
         Rarity: UpgradeRarity.Uncommon,
     },
     [UpgradeId.ShockwaveBurst]: {
         Id: UpgradeId.ShockwaveBurst,
         Category: UpgradeCategory.Enhancement,
-        Name: "Burst at max power",
+        Name: "Burst at max mana",
         Rarity: UpgradeRarity.Rare,
     },
 };
@@ -289,31 +289,31 @@ export const TRAIT_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
     [UpgradeId.Brawler]: {
         Id: UpgradeId.Brawler,
         Category: UpgradeCategory.Enhancement,
-        Name: "+1 damage, aggressive",
+        Name: "+1 dmg, aggressive",
         Rarity: UpgradeRarity.Common,
     },
     [UpgradeId.Vitality]: {
         Id: UpgradeId.Vitality,
         Category: UpgradeCategory.Enhancement,
-        Name: "+2 max HP",
+        Name: "+2 max life",
         Rarity: UpgradeRarity.Common,
     },
     [UpgradeId.BerserkerMode]: {
         Id: UpgradeId.BerserkerMode,
         Category: UpgradeCategory.Enhancement,
-        Name: "+50% speed at <25% HP",
+        Name: "+50% speed at <25% life",
         Rarity: UpgradeRarity.Uncommon,
     },
     [UpgradeId.Pacifist]: {
         Id: UpgradeId.Pacifist,
         Category: UpgradeCategory.Enhancement,
-        Name: "+3 HP, -50% damage",
+        Name: "+3 life, -50% dmg",
         Rarity: UpgradeRarity.Rare,
     },
     [UpgradeId.Cautious]: {
         Id: UpgradeId.Cautious,
         Category: UpgradeCategory.Enhancement,
-        Name: "+1 HP, defensive",
+        Name: "+1 life, defensive",
         Rarity: UpgradeRarity.Common,
     },
 };
