@@ -105,6 +105,14 @@ export function sys_health(game: Game, _delta: number) {
                 console.log(
                     `[DEATH] Entity ${entity} died from ${total_damage.toFixed(1)} damage - marked as dead`,
                 );
+
+                // Rotate the fighter sideways to show they're lying down
+                if (game.World.Signature[entity] & Has.LocalTransform2D) {
+                    let transform = game.World.LocalTransform2D[entity];
+                    DEBUG: if (!transform) throw new Error("missing transform");
+                    transform.Rotation = 90;
+                }
+
                 // Entity destruction will be handled next frame after duel_manager has chance to run
             }
 

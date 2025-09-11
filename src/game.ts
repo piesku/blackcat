@@ -1,12 +1,6 @@
 import {Game3D} from "../lib/game.js";
 import {create_spritesheet_from} from "../lib/texture.js";
-import {
-    GL_BLEND,
-    GL_CULL_FACE,
-    GL_DEPTH_TEST,
-    GL_ONE_MINUS_SRC_ALPHA,
-    GL_SRC_ALPHA,
-} from "../lib/webgl.js";
+import {GL_BLEND, GL_DEPTH_TEST, GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA} from "../lib/webgl.js";
 import {setup_render2d_buffers} from "../materials/layout2d.js";
 import {mat_render2d} from "../materials/mat_render2d.js";
 import {createFreshGameState, GameState} from "./state.js";
@@ -14,7 +8,6 @@ import {sys_aim} from "./systems/sys_aim.js";
 import {sys_arena_bounds} from "./systems/sys_arena_bounds.js";
 import {sys_camera2d} from "./systems/sys_camera2d.js";
 import {sys_camera_zoom} from "./systems/sys_camera_zoom.js";
-import {sys_cleanup_dead} from "./systems/sys_cleanup_dead.js";
 import {sys_collide2d} from "./systems/sys_collide2d.js";
 import {sys_control_ai} from "./systems/sys_control_ai.js";
 import {sys_control_always2d} from "./systems/sys_control_always2d.js";
@@ -78,7 +71,6 @@ export class Game extends Game3D {
         super();
 
         this.Gl.disable(GL_DEPTH_TEST);
-        this.Gl.disable(GL_CULL_FACE);
         this.Gl.enable(GL_BLEND);
         this.Gl.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -112,7 +104,6 @@ export class Game extends Game3D {
         sys_health(this, delta);
         sys_energy(this, delta); // Combat-driven energy system (after damage, before movement)
         sys_duel_manager(this, delta); // Check for victory/defeat after health processing
-        sys_cleanup_dead(this, delta); // Clean up dead entities after duel manager sets delay
 
         // Other systems.
         sys_move2d(this, delta);
