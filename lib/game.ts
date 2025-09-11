@@ -17,7 +17,7 @@ export abstract class Game3D {
     ViewportResized = true;
 
     Ui = document.querySelector("main")!;
-    SceneCanvas = document.querySelector("#scene")! as HTMLCanvasElement;
+    SceneCanvas = document.querySelector("canvas")! as HTMLCanvasElement;
     Gl = this.SceneCanvas.getContext("webgl2")!;
 
     Audio = new AudioContext();

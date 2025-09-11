@@ -6,18 +6,45 @@ export function VictoryView(game: Game): string {
     let isFinalVictory = game.VictoryData?.IsFinalVictory || false;
 
     return html`
+        <style>
+            .rotate-background {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+            }
+            .rotate-background::before {
+                content: "";
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                right: -50%;
+                bottom: -50%;
+                background: repeating-conic-gradient(
+                    from 0deg at 50% 50%,
+                    #4caf50cc 0 6deg,
+                    #2d8f2dcc 0 12deg
+                );
+                animation: rotate-background 12s linear infinite;
+                z-index: -1;
+            }
+        </style>
         <div
             onclick="window.$(${Action.ViewTransition}, {view: ${GameView.UpgradeSelection}})"
-            style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: repeating-conic-gradient(from 0deg at 50% 50%, #4CAF5099 0 6deg, #2d8f2d99 0 12deg); z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;"
+            class="rotate-background"
         >
-            <h2>
-                ${isFinalVictory ? "YOU WIN!" : `DUEL ${game.State.currentLevel - 1} COMPLETE!`}
-            </h2>
+            <h2>${isFinalVictory ? "YOU WIN!" : `DUEL ${game.State.currentLevel - 1} WON!`}</h2>
 
             ${!isFinalVictory
                 ? `
             <h2>
-                    You gain +2 HP!
+                    +2 LIFE!
             </h2>
             <button>
                 CONTINUE
