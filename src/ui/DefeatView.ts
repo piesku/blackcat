@@ -20,25 +20,24 @@ export function DefeatView(game: Game): string {
             .rotate-background::before {
                 content: "";
                 position: absolute;
-                top: -50%;
-                left: -50%;
-                right: -50%;
-                bottom: -50%;
+                top: -100%;
+                left: -100%;
+                right: -100%;
+                bottom: -100%;
                 background: repeating-conic-gradient(
                     from 0deg at 50% 50%,
                     #f44336cc 0 6deg,
                     #d32f2fcc 0 12deg
                 );
-                animation: rotate-background 12s linear infinite;
+                animation: rotate-background 20s linear infinite;
                 z-index: -1;
             }
         </style>
         <div class="rotate-background">
-            <h2>Oops!</h2>
+            <h2>OH NO!</h2>
 
-            <h2>Reached Duel ${game.State.currentLevel}</h2>
+            <h2>DUEL ${game.State.currentLevel} LOST!</h2>
 
-            <!-- Restart button -->
             <button onclick="window.$(${Action.RestartRun})">TRY AGAIN</button>
         </div>
     `;

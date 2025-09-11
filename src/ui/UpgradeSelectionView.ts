@@ -20,12 +20,40 @@ export function UpgradeSelectionView(game: Game): string {
         .filter((u): u is UpgradeType => !!u);
 
     return html`
-        <div
-            style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: #ffea64; background-image: radial-gradient(#fddd50 20%, transparent 0), radial-gradient(#fddd50 20%, transparent 0); background-size: 20px 20px; background-position: 0 0, 10px 10px;"
-        >
+        <style>
+            .translate-background {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                background: #ffea64;
+            }
+            .translate-background::before {
+                content: "";
+                position: absolute;
+                top: -100%;
+                left: -100%;
+                right: -100%;
+                bottom: -100%;
+                background-image:
+                    radial-gradient(#fddd50 20%, transparent 0),
+                    radial-gradient(#fddd50 20%, transparent 0);
+                background-size: 20px 20px;
+                background-position:
+                    0 0,
+                    10px 10px;
+                animation: translate-background 4s linear infinite;
+                z-index: -1;
+            }
+        </style>
+        <div class="translate-background">
             <h2>DUEL&nbsp;${game.State.currentLevel}</h2>
 
-            <!-- Upgrade choices -->
             <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
                 ${choices
                     .map(

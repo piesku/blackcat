@@ -22,16 +22,16 @@ export function VictoryView(game: Game): string {
             .rotate-background::before {
                 content: "";
                 position: absolute;
-                top: -50%;
-                left: -50%;
-                right: -50%;
-                bottom: -50%;
+                top: -100%;
+                left: -100%;
+                right: -100%;
+                bottom: -100%;
                 background: repeating-conic-gradient(
                     from 0deg at 50% 50%,
                     #4caf50cc 0 6deg,
                     #2d8f2dcc 0 12deg
                 );
-                animation: rotate-background 12s linear infinite;
+                animation: rotate-background 20s linear infinite;
                 z-index: -1;
             }
         </style>

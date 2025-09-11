@@ -1,4 +1,3 @@
-import {Vec4} from "../lib/math.js";
 import {WorldImpl} from "../lib/world.js";
 import {FLOATS_PER_INSTANCE} from "../materials/layout2d.js";
 import {Aim} from "./components/com_aim.js";
@@ -77,7 +76,6 @@ export const enum Has {
 
 export class World extends WorldImpl {
     InstanceData = new Float32Array(this.Capacity * FLOATS_PER_INSTANCE);
-    ClearColor: Vec4 = [1, 1, 1, 1];
     Width = 24;
     Height = 16;
 

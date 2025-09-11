@@ -1,7 +1,6 @@
-import {hsla_to_vec4} from "../../lib/color.js";
 import {instantiate} from "../../lib/game.js";
 import {Vec2} from "../../lib/math.js";
-import {element, float, integer, rand} from "../../lib/random.js";
+import {element, float, integer} from "../../lib/random.js";
 import {vec2_length} from "../../lib/vec2.js";
 import {blueprint_camera} from "../blueprints/blu_camera.js";
 import {blueprint_fighter} from "../blueprints/blu_fighter.js";
@@ -71,7 +70,6 @@ export function scene_arena(game: Game) {
     game.ViewportResized = true;
 
     game.World = new World(WORLD_CAPACITY);
-    game.World.ClearColor = hsla_to_vec4(rand(), 0.7, 0.6, 1);
     game.World.Width = ARENA_WIDTH;
     game.World.Height = ARENA_HEIGHT;
 

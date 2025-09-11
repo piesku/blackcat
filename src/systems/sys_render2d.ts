@@ -38,7 +38,6 @@ export function sys_render2d(game: Game, delta: number) {
         let camera = game.World.Camera2D[game.Camera];
         game.Gl.bindFramebuffer(GL_FRAMEBUFFER, null);
         game.Gl.viewport(0, 0, game.ViewportWidth, game.ViewportHeight);
-        game.Gl.clearColor(...game.World.ClearColor);
         game.Gl.clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         render_all(game, camera);
     }
