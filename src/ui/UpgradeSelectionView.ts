@@ -48,17 +48,17 @@ export function UpgradeSelectionView(game: Game): string {
                         onmouseout="this.style.transform='skewX(-10deg) rotate(-2deg)'; this.style.boxShadow='4px 4px 0 #000c'"
                     >
                         <h3 style="color: ${
-                            upgrade.category === UpgradeCategory.Weapon
+                            upgrade.Category === UpgradeCategory.Weapon
                                 ? "#ff4a4a"
-                                : upgrade.category === UpgradeCategory.Enhancement
+                                : upgrade.Category === UpgradeCategory.Enhancement
                                   ? "#8bc34a"
-                                  : upgrade.category === UpgradeCategory.Companion
+                                  : upgrade.Category === UpgradeCategory.Companion
                                     ? "#55ceff"
-                                    : upgrade.category === UpgradeCategory.Special
+                                    : upgrade.Category === UpgradeCategory.Special
                                       ? "#e75dff"
                                       : "#000"
                         };">
-                            ${upgrade.name}
+                            ${upgrade.Name}
                         </h3>
                     </div>
                 `,

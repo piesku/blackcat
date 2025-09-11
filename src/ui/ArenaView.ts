@@ -8,11 +8,11 @@ export function ArenaView(game: Game): string {
     let playerUpgrades = game.State.playerUpgrades
         .map((id: UpgradeId) => ALL_UPGRADES_MAP[id])
         .filter((u): u is UpgradeType => !!u)
-        .map((u) => u.name);
+        .map((u) => u.Name);
     let opponentUpgrades = game.State.opponentUpgrades
         .map((id: UpgradeId) => ALL_UPGRADES_MAP[id])
         .filter((u): u is UpgradeType => !!u)
-        .map((u) => u.name);
+        .map((u) => u.Name);
 
     // Get fighter stats
     let {PlayerHP, OpponentHP} = getFighterStats(game);

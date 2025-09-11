@@ -29,7 +29,7 @@ export function generateOpponentUpgrades(arenaLevel: number, runSeed: number): U
 
     // Select first N upgrades from shuffled array (no duplicates)
     for (let i = 0; i < upgradeCount && i < shufflableUpgrades.length; i++) {
-        selectedUpgrades.push(shufflableUpgrades[i].id);
+        selectedUpgrades.push(shufflableUpgrades[i].Id);
     }
 
     return selectedUpgrades;
@@ -45,7 +45,7 @@ export function generatePlayerUpgradeChoices(
 
     // Generate 3 random upgrade choices excluding already owned upgrades
     let availableUpgrades = ALL_UPGRADES_LIST.filter(
-        (upgrade) => !playerUpgrades.includes(upgrade.id),
+        (upgrade) => !playerUpgrades.includes(upgrade.Id),
     );
 
     // For the first duel, ensure at least one weapon is offered
@@ -53,21 +53,21 @@ export function generatePlayerUpgradeChoices(
     if (arenaLevel === 1) {
         // First choice: guaranteed weapon
         let availableWeapons = availableUpgrades.filter(
-            (upgrade) => upgrade.category === UpgradeCategory.Weapon,
+            (upgrade) => upgrade.Category === UpgradeCategory.Weapon,
         );
         if (availableWeapons.length > 0) {
             let weaponUpgrade = selectUpgradeByRarity(availableWeapons);
-            selectedIds.push(weaponUpgrade.id);
-            availableUpgrades = availableUpgrades.filter((u) => u.id !== weaponUpgrade.id);
+            selectedIds.push(weaponUpgrade.Id);
+            availableUpgrades = availableUpgrades.filter((u) => u.Id !== weaponUpgrade.Id);
         }
     }
 
     // Fill remaining slots with weighted selection
     while (selectedIds.length < 3 && availableUpgrades.length > 0) {
         let selectedUpgrade = selectUpgradeByRarity(availableUpgrades);
-        selectedIds.push(selectedUpgrade.id);
+        selectedIds.push(selectedUpgrade.Id);
         // Remove selected upgrade to prevent duplicates
-        availableUpgrades = availableUpgrades.filter((u) => u.id !== selectedUpgrade.id);
+        availableUpgrades = availableUpgrades.filter((u) => u.Id !== selectedUpgrade.Id);
     }
 
     return selectedIds;
@@ -78,7 +78,7 @@ function selectUpgradeByRarity(availableUpgrades: UpgradeType[]): UpgradeType {
     // Calculate total weight based on rarity
     let totalWeight = 0;
     for (let upgrade of availableUpgrades) {
-        totalWeight += getRarityWeight(upgrade.rarity);
+        totalWeight += getRarityWeight(upgrade.Rarity);
     }
 
     // Generate random number from 0 to totalWeight
@@ -87,7 +87,7 @@ function selectUpgradeByRarity(availableUpgrades: UpgradeType[]): UpgradeType {
     // Select upgrade based on cumulative weights
     let cumulativeWeight = 0;
     for (let upgrade of availableUpgrades) {
-        cumulativeWeight += getRarityWeight(upgrade.rarity);
+        cumulativeWeight += getRarityWeight(upgrade.Rarity);
         if (randomWeight <= cumulativeWeight) {
             return upgrade;
         }

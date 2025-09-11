@@ -40,7 +40,7 @@ import {UpgradeCategory, UpgradeId, UpgradeType} from "./types.js";
 export function apply_upgrades(game: Game, entity: number, upgrades: UpgradeType[]) {
     // Apply all upgrades - order doesn't matter since categories are independent
     for (let upgrade of upgrades) {
-        switch (upgrade.category) {
+        switch (upgrade.Category) {
             case UpgradeCategory.Weapon:
                 apply_weapon_upgrade(game, entity, upgrade);
                 break;
@@ -54,7 +54,7 @@ export function apply_upgrades(game: Game, entity: number, upgrades: UpgradeType
                 apply_special_upgrade(game, entity, upgrade);
                 break;
             default:
-                console.warn(`Unknown upgrade category: ${upgrade.category}`);
+                console.warn(`Unknown upgrade category: ${upgrade.Category}`);
                 break;
         }
     }
@@ -71,7 +71,7 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
         if (!health) throw new Error("missing Health component for health upgrade");
     }
 
-    switch (upgrade.id) {
+    switch (upgrade.Id) {
         // === Energy Properties ===
         case UpgradeId.CombatVeteran:
             ai.EnergyFromDamageDealt += 0.3;
@@ -186,13 +186,13 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
             break;
 
         default:
-            console.warn(`Unknown enhancement upgrade: ${upgrade.id}`);
+            console.warn(`Unknown enhancement upgrade: ${upgrade.Id}`);
             break;
     }
 }
 
 function apply_special_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
-    switch (upgrade.id) {
+    switch (upgrade.Id) {
         case UpgradeId.ShadowTrail:
             // Spawn system attachment - unique mechanic
             // TODO Consider attaching a child spawner entity instead of direct component
@@ -207,7 +207,7 @@ function apply_special_upgrade(game: Game, entity: number, upgrade: UpgradeType)
             break;
 
         default:
-            console.warn(`Unknown special upgrade: ${upgrade.id}`);
+            console.warn(`Unknown special upgrade: ${upgrade.Id}`);
             break;
     }
 }
@@ -215,7 +215,7 @@ function apply_special_upgrade(game: Game, entity: number, upgrade: UpgradeType)
 function apply_weapon_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
     let weapon_entity: number;
 
-    switch (upgrade.id) {
+    switch (upgrade.Id) {
         case UpgradeId.Flamethrower:
             weapon_entity = instantiate(game, blueprint_flamethrower());
             attach_to_parent(game, weapon_entity, entity);
@@ -272,7 +272,7 @@ function apply_weapon_upgrade(game: Game, entity: number, upgrade: UpgradeType) 
             break;
 
         default:
-            console.warn(`Unknown weapon upgrade: ${upgrade.id}`);
+            console.warn(`Unknown weapon upgrade: ${upgrade.Id}`);
             break;
     }
 }
@@ -290,7 +290,7 @@ function apply_companion_upgrade(game: Game, entity: number, upgrade: UpgradeTyp
 
     // Spawn new companion (multiple companions allowed for interesting synergies)
     // Each companion upgrade adds another cat ally to fight alongside the owner
-    switch (upgrade.id) {
+    switch (upgrade.Id) {
         case UpgradeId.MrBlack:
             companion_entity = instantiate(game, blueprint_mr_black(game, owner_is_player));
             break;
@@ -324,7 +324,7 @@ function apply_companion_upgrade(game: Game, entity: number, upgrade: UpgradeTyp
             break;
 
         default:
-            console.warn(`Unknown companion upgrade: ${upgrade.id}`);
+            console.warn(`Unknown companion upgrade: ${upgrade.Id}`);
             return;
     }
 

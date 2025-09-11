@@ -73,14 +73,13 @@ export const enum UpgradeId {
 }
 
 export interface UpgradeType {
-    id: UpgradeId; // Numeric ID for optimal compression
-    category: UpgradeCategory;
-    name: string; // Display name (formerly description)
-    rarity: UpgradeRarity; // Determines selection probability
-    tier?: number; // For power scaling (optional)
+    Id: UpgradeId; // Numeric ID for optimal compression
+    Category: UpgradeCategory;
+    Name: string; // Display name (formerly description)
+    Rarity: UpgradeRarity; // Determines selection probability
 }
 
-export enum UpgradeCategory {
+export const enum UpgradeCategory {
     Weapon = "Weapon", // Child entities with blueprints
     Companion = "Companion", // Root entities with blueprints
     Enhancement = "Enhancement", // ControlAi property modifications (combat, energy, behavioral)
