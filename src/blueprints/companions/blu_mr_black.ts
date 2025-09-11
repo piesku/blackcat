@@ -31,7 +31,7 @@ export function blueprint_mr_black(game: Game, owner_is_player: boolean) {
         ...blueprint_cat_base(
             game,
             owner_is_player,
-            [0.1, 0.1, 0.1, 1], // color
+            [0.1, 0.1, 0.1, 1], // black eye color
             6, // hp
             2.8, // move_speed
             1.8, // aggressiveness

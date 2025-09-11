@@ -10,7 +10,7 @@ export function blueprint_mr_pink(game: Game, owner_is_player: boolean) {
         ...blueprint_cat_base(
             game,
             owner_is_player,
-            [1.0, 0.7, 0.8, 1], // color
+            [1.0, 0.7, 0.8, 1], // pink eye color
             3, // hp
             1.8, // move_speed (decreased from 2.0)
             0.8, // aggressiveness (decreased from 1.2)

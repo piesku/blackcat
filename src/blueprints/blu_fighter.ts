@@ -1,5 +1,4 @@
 import {Vec4} from "../../lib/math.js";
-import {element} from "../../lib/random.js";
 import {Tile} from "../../sprites/spritesheet.js";
 
 import {aim} from "../components/com_aim.js";
@@ -15,24 +14,21 @@ import {spatial_node2d} from "../components/com_spatial_node2d.js";
 import {Game, Layer} from "../game.js";
 import {blueprint_blood_spawner} from "./blu_blood_spawner.js";
 
-const skin_colors: Vec4[] = [
-    [1.0, 0.8, 0.66, 1],
-    [1.0, 0.8, 0.66, 1],
-    [1.0, 0.8, 0.66, 1],
-    [0.33, 0.25, 0.2, 1],
-    [0.26, 0.19, 0.15, 1],
-];
+// Team colors: blue for player, red for opponent
+export const PLAYER_TEAM_COLOR: Vec4 = [0.2, 0.4, 0.8, 1]; // Blue
+export const OPPONENT_TEAM_COLOR: Vec4 = [0.8, 0.2, 0.2, 1]; // Red
 
 export function blueprint_eyes(_game: Game, color: Vec4 = [0, 0, 0, 1]) {
     return [spatial_node2d(), local_transform2d(undefined, 0, [1, 1]), render2d(Tile.Eyes, color)];
 }
 
-export function blueprint_body(game: Game, skin_color: Vec4) {
+export function blueprint_body(game: Game, is_player: boolean) {
+    let team_color = is_player ? PLAYER_TEAM_COLOR : OPPONENT_TEAM_COLOR;
     return [
         spatial_node2d(),
         local_transform2d(),
-        render2d(Tile.Body, skin_color),
-        children(blueprint_eyes(game)),
+        render2d(Tile.Body, team_color),
+        children(blueprint_eyes(game, [1, 1, 1, 1])),
     ];
 }
 
@@ -56,7 +52,7 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
         move2d(base_speed, 0),
         aim(0.1), // Target search every 0.1 seconds
         children(
-            blueprint_body(game, element(skin_colors)), // Body sprite as child (includes eyes)
+            blueprint_body(game, is_player), // Body sprite as child (includes eyes)
             blueprint_blood_spawner(), // Blood splatter spawner for damage effects
             // Weapons will be added by apply_upgrades
         ),

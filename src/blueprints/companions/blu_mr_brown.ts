@@ -8,7 +8,7 @@ export function blueprint_mr_brown(game: Game, owner_is_player: boolean) {
         ...blueprint_cat_base(
             game,
             owner_is_player,
-            [0.6, 0.4, 0.2, 1], // color
+            [0.6, 0.4, 0.2, 1], // brown eye color
             4, // hp (increased from 3)
             1.5, // move_speed (decreased from 1.8)
             0.1, // aggressiveness (decreased from 0.3)

@@ -8,7 +8,7 @@ export function blueprint_mr_orange(game: Game, owner_is_player: boolean) {
         ...blueprint_cat_base(
             game,
             owner_is_player,
-            [1.0, 0.5, 0.1, 1], // color
+            [1.0, 0.5, 0.1, 1], // orange eye color
             3, // hp
             4.2, // move_speed
             2.5, // aggressiveness

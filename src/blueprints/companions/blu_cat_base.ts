@@ -12,6 +12,7 @@ import {render2d} from "../../components/com_render2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {Game, Layer} from "../../game.js";
 import {Has} from "../../world.js";
+import {OPPONENT_TEAM_COLOR, PLAYER_TEAM_COLOR} from "../blu_fighter.js";
 
 // Custom AI component for cats with specific personality traits
 export function cat_control_ai(
@@ -59,22 +60,28 @@ export function cat_control_ai(
     };
 }
 
-// Cat eyes (bright green for all cats)
-export function blueprint_cat_eyes(_game: Game) {
+// Cat eyes with specific color based on cat type
+export function blueprint_cat_eyes(_game: Game, eye_color: Vec4 = [0.2, 1.0, 0.2, 1]) {
     return [
         spatial_node2d(),
         local_transform2d(undefined, 0, [1, 1]),
-        render2d(Tile.Eyes, [0.2, 1.0, 0.2, 1]), // Bright green cat eyes
+        render2d(Tile.Eyes, eye_color),
     ];
 }
 
-// Cat body with specific color
-export function blueprint_cat_body(game: Game, color: Vec4, scale: number = 1.0) {
+// Cat body with team color and specific eye color
+export function blueprint_cat_body(
+    game: Game,
+    owner_is_player: boolean,
+    eye_color: Vec4,
+    scale: number = 1.0,
+) {
+    let team_color = owner_is_player ? PLAYER_TEAM_COLOR : OPPONENT_TEAM_COLOR;
     return [
         spatial_node2d(),
         local_transform2d(undefined, 0, [scale, scale]),
-        render2d(Tile.Body, color),
-        children(blueprint_cat_eyes(game)),
+        render2d(Tile.Body, team_color),
+        children(blueprint_cat_eyes(game, eye_color)),
     ];
 }
 
@@ -82,7 +89,7 @@ export function blueprint_cat_body(game: Game, color: Vec4, scale: number = 1.0)
 export function blueprint_cat_base(
     game: Game,
     owner_is_player: boolean,
-    color: Vec4,
+    eye_color: Vec4,
     hp: number,
     move_speed: number,
     aggressiveness: number,
@@ -101,7 +108,7 @@ export function blueprint_cat_base(
         aim(0.1), // Base aim speed for cats (can be overridden)
 
         children(
-            blueprint_cat_body(game, color, 1.0),
+            blueprint_cat_body(game, owner_is_player, eye_color, 1.0),
             // No reticle for cats - they're more instinctual
         ),
 

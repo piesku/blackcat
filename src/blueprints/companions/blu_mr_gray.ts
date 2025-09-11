@@ -9,7 +9,7 @@ export function blueprint_mr_gray(game: Game, owner_is_player: boolean) {
         ...blueprint_cat_base(
             game,
             owner_is_player,
-            [0.5, 0.5, 0.5, 1], // color
+            [0.5, 0.5, 0.5, 1], // gray eye color
             2, // hp (decreased from 3)
             3.2, // move_speed (increased from 2.5)
             1.8, // aggressiveness (increased from 1.5)

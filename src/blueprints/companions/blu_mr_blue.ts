@@ -10,7 +10,7 @@ export function blueprint_mr_blue(game: Game, owner_is_player: boolean) {
         ...blueprint_cat_base(
             game,
             owner_is_player,
-            [0.3, 0.3, 0.8, 1], // color
+            [0.3, 0.3, 0.8, 1], // blue eye color
             2, // hp (decreased from 4 - glass cannon)
             2.8, // move_speed (increased from 2.2)
             2.0, // aggressiveness (increased from 1.0)
