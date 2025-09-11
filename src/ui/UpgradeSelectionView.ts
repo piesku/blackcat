@@ -57,39 +57,46 @@ export function UpgradeSelectionView(game: Game): string {
             <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
                 ${choices
                     .map(
-                        (upgrade: UpgradeType, index: number) => `
-                    <div 
-                        onclick="window.$(${Action.UpgradeSelected}, ${index})"
-                        style="
-                            border: 4px solid #000;
-                            background: #fff;
-                            transition: all 0.2s;
-                            width: calc(100% - 80px);
-                            box-shadow: 4px 4px 0 #000c;
-                            transform: skewX(-10deg) rotate(-2deg);
-                            text-align: center;
-                            padding: 20px;
-                            margin: 0 20px;
-                            cursor: pointer;
-                        "
-                        onmouseover="this.style.transform='skewX(-10deg) rotate(-2deg) scale(1.05)'; this.style.boxShadow='6px 6px 0 #000c'"
-                        onmouseout="this.style.transform='skewX(-10deg) rotate(-2deg)'; this.style.boxShadow='4px 4px 0 #000c'"
-                    >
-                        <h3 style="color: ${
-                            upgrade.Category === UpgradeCategory.Weapon
-                                ? "#ff4a4a"
-                                : upgrade.Category === UpgradeCategory.Enhancement
-                                  ? "#8bc34a"
-                                  : upgrade.Category === UpgradeCategory.Companion
-                                    ? "#55ceff"
-                                    : upgrade.Category === UpgradeCategory.Special
-                                      ? "#e75dff"
-                                      : "#000"
-                        };">
-                            ${upgrade.Name}
-                        </h3>
-                    </div>
-                `,
+                        (upgrade: UpgradeType, index: number) => html`
+                            <div
+                                onclick="window.$(${Action.UpgradeSelected}, ${index})"
+                                style="
+                                    border: 4px solid #000;
+                                    background: #fff;
+                                    transition: all 0.2s;
+                                    width: calc(100% - 80px);
+                                    box-shadow: 4px 4px 0 #000c;
+                                    transform: skewX(-10deg) rotate(-2deg);
+                                    text-align: center;
+                                    padding: 1em;
+                                    margin: 0 20px;
+                                    cursor: pointer;
+                                "
+                                onmouseover="this.style.transform='skewX(-10deg) rotate(-2deg) scale(1.05)'; this.style.boxShadow='6px 6px 0 #000c'"
+                                onmouseout="this.style.transform='skewX(-10deg) rotate(-2deg)'; this.style.boxShadow='4px 4px 0 #000c'"
+                            >
+                                <h3
+                                    style="color: ${upgrade.Category === UpgradeCategory.Weapon
+                                        ? "#ff4a4a"
+                                        : upgrade.Category === UpgradeCategory.Enhancement
+                                          ? "#8bc34a"
+                                          : upgrade.Category === UpgradeCategory.Companion
+                                            ? "#55ceff"
+                                            : upgrade.Category === UpgradeCategory.Special
+                                              ? "#e75dff"
+                                              : "#000"};"
+                                >
+                                    ${upgrade.Name}
+                                </h3>
+                                <p>
+                                    ${upgrade.Category === UpgradeCategory.Weapon
+                                        ? "Weapon"
+                                        : upgrade.Category === UpgradeCategory.Companion
+                                          ? "Companion"
+                                          : upgrade.Description}
+                                </p>
+                            </div>
+                        `,
                     )
                     .join("")}
             </div>

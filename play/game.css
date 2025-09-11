@@ -43,6 +43,10 @@ h3 {
     text-shadow: 2px 2px 0 #000;
 }
 
+p {
+    margin: 0.5em 0 0;
+}
+
 button {
     border-radius: 2em;
     text-shadow: #000;
