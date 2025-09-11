@@ -31,15 +31,15 @@ h2 {
 }
 
 h2 {
-    font-size: 5em;
+    font-size: min(15vw, 10vh);
 }
 
 h3 {
-    font-size: 3em;
+    font-size: min(10vw, 6vh);
     margin: 0;
     color: #fff;
-    -webkit-text-stroke: 2px #000;
-    text-shadow: 3px 3px 0 #000;
+    -webkit-text-stroke: 1px #000;
+    text-shadow: 2px 2px 0 #000;
 }
 
 button {

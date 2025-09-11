@@ -75,8 +75,7 @@ export const enum UpgradeId {
 export interface UpgradeType {
     id: UpgradeId; // Numeric ID for optimal compression
     category: UpgradeCategory;
-    name: string; // Display name
-    description: string; // UI description
+    name: string; // Display name (formerly description)
     rarity: UpgradeRarity; // Determines selection probability
     tier?: number; // For power scaling (optional)
 }

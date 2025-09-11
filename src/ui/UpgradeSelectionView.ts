@@ -23,12 +23,10 @@ export function UpgradeSelectionView(game: Game): string {
         <div
             style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; background: #ffea64; background-image: radial-gradient(#fddd50 20%, transparent 0), radial-gradient(#fddd50 20%, transparent 0); background-size: 20px 20px; background-position: 0 0, 10px 10px;"
         >
-            <h2>DUEL ${game.State.currentLevel}</h2>
+            <h2>DUEL&nbsp;${game.State.currentLevel}</h2>
 
             <!-- Upgrade choices -->
-            <div
-                style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; align-items: center; width: 100%; max-width: 400px; padding: 0 20px;"
-            >
+            <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
                 ${choices
                     .map(
                         (upgrade: UpgradeType, index: number) => `
@@ -38,17 +36,18 @@ export function UpgradeSelectionView(game: Game): string {
                             border: 4px solid #000;
                             background: #fff;
                             transition: all 0.2s;
-                            width: 100%;
+                            width: calc(100% - 80px);
                             box-shadow: 4px 4px 0 #000c;
                             transform: skewX(-10deg) rotate(-2deg);
                             text-align: center;
                             padding: 20px;
+                            margin: 0 20px;
                             cursor: pointer;
                         "
                         onmouseover="this.style.transform='skewX(-10deg) rotate(-2deg) scale(1.05)'; this.style.boxShadow='6px 6px 0 #000c'"
                         onmouseout="this.style.transform='skewX(-10deg) rotate(-2deg)'; this.style.boxShadow='4px 4px 0 #000c'"
                     >
-                        <h3 style="margin: 0 0 10px 0; color: ${
+                        <h3 style="color: ${
                             upgrade.category === UpgradeCategory.Weapon
                                 ? "#ff4a4a"
                                 : upgrade.category === UpgradeCategory.Enhancement
@@ -61,11 +60,6 @@ export function UpgradeSelectionView(game: Game): string {
                         };">
                             ${upgrade.name}
                         </h3>
-                        <div style="margin: 10px 0;">
-                            ${upgrade.description}
-                        </div>
-
-                        <button style="margin-top: 15px;">CHOOSE</button>
                     </div>
                 `,
                     )
