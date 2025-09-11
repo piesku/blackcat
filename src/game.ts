@@ -77,7 +77,6 @@ export class Game extends Game3D {
     constructor() {
         super();
 
-        this.Gl.clearColor(0, 0, 0, 0);
         this.Gl.disable(GL_DEPTH_TEST);
         this.Gl.disable(GL_CULL_FACE);
         this.Gl.enable(GL_BLEND);
