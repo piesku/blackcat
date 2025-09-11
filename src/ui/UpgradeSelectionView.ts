@@ -1,7 +1,7 @@
 import {html} from "../../lib/html.js";
 import {Action} from "../actions.js";
 import {Game} from "../game.js";
-import {ALL_UPGRADES_MAP, UpgradeId, UpgradeType} from "../upgrades/types.js";
+import {ALL_UPGRADES_MAP, UpgradeCategory, UpgradeId, UpgradeType} from "../upgrades/types.js";
 
 export function UpgradeSelectionView(game: Game): string {
     // Use persisted upgrade choices from game state instead of generating new ones
@@ -26,28 +26,46 @@ export function UpgradeSelectionView(game: Game): string {
             <h2>DUEL ${game.State.currentLevel}</h2>
 
             <!-- Upgrade choices -->
-            <div style="display: flex; gap: 15px; margin-bottom: 30px; justify-content: center;">
+            <div
+                style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; align-items: center; width: 100%; max-width: 400px; padding: 0 20px;"
+            >
                 ${choices
                     .map(
                         (upgrade: UpgradeType, index: number) => `
                     <div 
                         onclick="window.$(${Action.UpgradeSelected}, ${index})"
                         style="
-                            border: 2px solid #000;
+                            border: 4px solid #000;
                             background: #fff;
                             transition: all 0.2s;
-                            flex: 1;
+                            width: 100%;
                             box-shadow: 4px 4px 0 #000c;
+                            transform: skewX(-10deg) rotate(-2deg);
+                            text-align: center;
+                            padding: 20px;
+                            cursor: pointer;
                         "
+                        onmouseover="this.style.transform='skewX(-10deg) rotate(-2deg) scale(1.05)'; this.style.boxShadow='6px 6px 0 #000c'"
+                        onmouseout="this.style.transform='skewX(-10deg) rotate(-2deg)'; this.style.boxShadow='4px 4px 0 #000c'"
                     >
-                        <h3>
+                        <h3 style="margin: 0 0 10px 0; color: ${
+                            upgrade.category === UpgradeCategory.Weapon
+                                ? "#ff4a4a"
+                                : upgrade.category === UpgradeCategory.Enhancement
+                                  ? "#8bc34a"
+                                  : upgrade.category === UpgradeCategory.Companion
+                                    ? "#55ceff"
+                                    : upgrade.category === UpgradeCategory.Special
+                                      ? "#e75dff"
+                                      : "#000"
+                        };">
                             ${upgrade.name}
                         </h3>
-                        <div>
+                        <div style="margin: 10px 0;">
                             ${upgrade.description}
                         </div>
 
-                        <button>CHOOSE</button>
+                        <button style="margin-top: 15px;">CHOOSE</button>
                     </div>
                 `,
                     )

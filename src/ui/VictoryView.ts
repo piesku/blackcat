@@ -10,13 +10,13 @@ export function VictoryView(game: Game): string {
             onclick="window.$(${Action.ViewTransition}, {view: ${GameView.UpgradeSelection}})"
             style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: repeating-conic-gradient(from 0deg at 50% 50%, #4CAF5099 0 6deg, #2d8f2d99 0 12deg); z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;"
         >
-            <h2 style="color: #4CAF50;">
+            <h2>
                 ${isFinalVictory ? "YOU WIN!" : `DUEL ${game.State.currentLevel - 1} COMPLETE!`}
             </h2>
 
             ${!isFinalVictory
                 ? `
-            <h2 style="color: #4CAF50;">
+            <h2>
                     You gain +2 HP!
             </h2>
             <button>
