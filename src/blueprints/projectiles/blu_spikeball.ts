@@ -11,8 +11,8 @@ import {Layer} from "../../game.js";
 export function blueprint_spikeball(damage: number) {
     return [
         label("spikeball"),
-        local_transform2d(undefined, 0, [0.3, 0.3]), // Medium-sized spiky projectile
-        render2d(Tile.Die1), // Use body sprite (spiky appearance)
+        local_transform2d(),
+        render2d(Tile.Spikeball),
         collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.15),
 
         // High bounciness for persistent bouncing, no gravity for arena-level bouncing

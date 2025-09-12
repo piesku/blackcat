@@ -11,8 +11,8 @@ import {Layer} from "../../game.js";
 export function blueprint_chiquita_main_bomb() {
     return [
         label("chiquita_main_bomb"),
-        local_transform2d(undefined, 0, [0.3, 0.3]), // Medium-sized bomb
-        render2d(Tile.Die1), // Main bomb sprite
+        local_transform2d(),
+        render2d(Tile.Bomb),
         collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.1),
         rigid_body2d(RigidKind.Dynamic, 0, 0.5, [0, -2]), // Light gravity, slight arc
 

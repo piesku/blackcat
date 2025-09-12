@@ -15,8 +15,8 @@ export function blueprint_larpa_rocket(damage: number) {
     return [
         label("larpa rocket"),
         spatial_node2d(),
-        local_transform2d(undefined, 0, [0.3, 0.3]), // Medium-sized rocket
-        render2d(Tile.Die1), // Use mortar sprite for rocket appearance
+        local_transform2d(),
+        render2d(Tile.Rocket),
         collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.08),
         rigid_body2d(RigidKind.Dynamic, 0, 0, [0, 0]),
         deal_damage(damage), // Default cooldown=0, destroys on hit

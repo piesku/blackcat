@@ -32,7 +32,7 @@ export function blueprint_boomerang(target_direction: Vec2, target_distance: num
         label("boomerang"),
 
         spatial_node2d(),
-        local_transform2d(undefined, 0, [0.4, 0.4]),
+        local_transform2d(),
 
         control_always2d(arc_direction, -1), // Initial direction for circular motion
         move2d(BOOMERANG_MOVE_SPEED, BOOMERANG_ARC_SPEED), // Higher arc speed for circular path
@@ -50,7 +50,7 @@ export function blueprint_boomerang(target_direction: Vec2, target_distance: num
             [
                 spatial_node2d(),
                 local_transform2d(),
-                render2d(Tile.Die1),
+                render2d(Tile.Banana),
                 control_always2d(null, -1),
                 move2d(0, BOOMERANG_SPIN_SPEED),
             ],

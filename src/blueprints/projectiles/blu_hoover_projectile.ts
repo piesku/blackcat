@@ -1,8 +1,11 @@
 import {Tile} from "../../../sprites/spritesheet.js";
+import {children} from "../../components/com_children.js";
 import {collide2d} from "../../components/com_collide2d.js";
+import {control_always2d} from "../../components/com_control_always2d.js";
 import {label} from "../../components/com_label.js";
 import {lifespan} from "../../components/com_lifespan.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
+import {move2d} from "../../components/com_move2d.js";
 import {render2d} from "../../components/com_render2d.js";
 import {rigid_body2d, RigidKind} from "../../components/com_rigid_body2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
@@ -14,8 +17,7 @@ export function blueprint_hoover_projectile() {
     return [
         label("hoover crack projectile"),
         spatial_node2d(),
-        local_transform2d(undefined, 0, [0.3, 0.3]), // Medium-sized spinning emitter
-        render2d(Tile.Die1), // Using rifle sprite for the spinning emitter
+        local_transform2d(),
         collide2d(false, Layer.Projectile, Layer.Terrain, 0.1), // Doesn't deal direct damage, just spawns particles
         rigid_body2d(RigidKind.Dynamic, 0, 0.8, [0, 0]), // Friction to slow down over time
 
@@ -30,5 +32,16 @@ export function blueprint_hoover_projectile() {
         ),
 
         lifespan(6), // Emitter persists for 6 seconds total
+
+        children(
+            // Spinning sprite
+            [
+                spatial_node2d(),
+                local_transform2d(),
+                render2d(Tile.Spikeball),
+                control_always2d(null, -1),
+                move2d(0, 3600),
+            ],
+        ),
     ];
 }

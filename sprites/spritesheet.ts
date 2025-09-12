@@ -1,10 +1,15 @@
 export const enum Tile {
+    Banana,
+    Bomb,
     Die1,
     Die2,
+    Dynamite,
+    Grass,
     Hurt1,
     Hurt2,
     Hurt3,
     Hurt4,
+    Rocket,
     Run1,
     Run2,
     Run3,
@@ -13,4 +18,5 @@ export const enum Tile {
     Run6,
     Run7,
     Run8,
+    Spikeball,
 }

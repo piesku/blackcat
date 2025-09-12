@@ -1,6 +1,6 @@
 import {instantiate} from "../lib/game.js";
-import {blueprint_chiquita_banana_spawner} from "./blueprints/blu_chiquita_banana_spawner.js";
 import {blueprint_explosion} from "./blueprints/blu_explosion.js";
+import {blueprint_chiquita_spawner} from "./blueprints/projectiles/blu_chiquita_spawner.js";
 import {Game, GameView} from "./game.js";
 import {scene_arena} from "./scenes/sce_arena.js";
 import {
@@ -126,7 +126,7 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
             );
 
             // Create dedicated banana spawner at explosion location
-            instantiate(game, blueprint_chiquita_banana_spawner([x, y]));
+            instantiate(game, blueprint_chiquita_spawner([x, y]));
 
             break;
         }

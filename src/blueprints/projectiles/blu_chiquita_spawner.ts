@@ -1,11 +1,11 @@
-import {label} from "../components/com_label.js";
-import {lifespan} from "../components/com_lifespan.js";
-import {local_transform2d} from "../components/com_local_transform2d.js";
-import {spatial_node2d} from "../components/com_spatial_node2d.js";
-import {spawn_count} from "../components/com_spawn.js";
-import {blueprint_chiquita_banana_simple} from "./projectiles/blu_chiquita_banana_simple.js";
+import {label} from "../../components/com_label.js";
+import {lifespan} from "../../components/com_lifespan.js";
+import {local_transform2d} from "../../components/com_local_transform2d.js";
+import {spatial_node2d} from "../../components/com_spatial_node2d.js";
+import {spawn_count} from "../../components/com_spawn.js";
+import {blueprint_chiquita_banana} from "./blu_chiquita_banana.js";
 
-export function blueprint_chiquita_banana_spawner(position: [number, number]) {
+export function blueprint_chiquita_spawner(position: [number, number]) {
     return [
         label("chiquita_banana_spawner"),
 
@@ -14,7 +14,7 @@ export function blueprint_chiquita_banana_spawner(position: [number, number]) {
 
         // Spawner for banana sub-bombs - immediately active
         spawn_count(
-            blueprint_chiquita_banana_simple,
+            blueprint_chiquita_banana,
             0, // interval: spawn all bananas almost at once
             Math.PI * 2, // spread: full circle (360 degrees)
             5, // speedMin: banana launch speed

@@ -4,9 +4,9 @@ import {local_transform2d} from "../../components/com_local_transform2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {spawn_count} from "../../components/com_spawn.js";
 import {weapon_ranged} from "../../components/com_weapon.js";
-import {blueprint_chiquita_main_bomb} from "../projectiles/blu_chiquita_main_bomb.js";
+import {blueprint_chiquita_main_bomb} from "../projectiles/blu_chiquita_bomb.js";
 
-export function blueprint_chiquita_bomb() {
+export function blueprint_chiquita_weapon() {
     return [
         spatial_node2d(),
         local_transform2d([0, 0], 0, [1.0, 1.0]), // Standard weapon size

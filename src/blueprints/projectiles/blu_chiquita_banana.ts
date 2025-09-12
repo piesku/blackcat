@@ -11,12 +11,12 @@ import {render2d} from "../../components/com_render2d.js";
 import {rigid_body2d, RigidKind} from "../../components/com_rigid_body2d.js";
 import {Layer} from "../../game.js";
 
-export function blueprint_chiquita_banana_simple() {
+export function blueprint_chiquita_banana() {
     return [
         label("chiquita_banana"),
 
-        local_transform2d([0, 0], 0, [0.2, 0.2]), // Smaller than main bomb
-        render2d(Tile.Die1), // Banana sprite (using body for now)
+        local_transform2d(),
+        render2d(Tile.Banana),
 
         // Physics integration via RigidBody2D
         rigid_body2d(RigidKind.Dynamic, 0.2, 0.1, [0, -2]),

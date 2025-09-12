@@ -9,7 +9,7 @@ import {blueprint_mr_red} from "../blueprints/companions/blu_mr_red.js";
 import {blueprint_mr_white} from "../blueprints/companions/blu_mr_white.js";
 import {blueprint_shadow_particle} from "../blueprints/particles/blu_shadow_particle.js";
 import {blueprint_boomerang_weapon} from "../blueprints/weapons/blu_boomerang_weapon.js";
-import {blueprint_chiquita_bomb} from "../blueprints/weapons/blu_chiquita_bomb.js";
+import {blueprint_chiquita_weapon} from "../blueprints/weapons/blu_chiquita_weapon.js";
 import {blueprint_explosives} from "../blueprints/weapons/blu_explosives.js";
 import {blueprint_flamethrower} from "../blueprints/weapons/blu_flamethrower.js";
 import {blueprint_hoover_crack} from "../blueprints/weapons/blu_hoover_crack.js";
@@ -284,7 +284,7 @@ function apply_weapon_upgrade(game: Game, entity: number, upgrade: UpgradeType, 
             break;
 
         case UpgradeId.ChiquitaBomb:
-            weapon_entity = instantiate(game, blueprint_chiquita_bomb());
+            weapon_entity = instantiate(game, blueprint_chiquita_weapon());
             attach_to_parent(game, weapon_entity, entity);
             break;
 
