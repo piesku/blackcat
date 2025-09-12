@@ -61,13 +61,13 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 #### Armor Properties (Health component modifications)
 
 - **Scrap Armor** ✅ _(Tiered)_ - Ignore damage instances (Tier 1: ignore first 1 instance, Tier 2: ignore first 2 instances, Tier 3: ignore first 3 instances)
-- **Spiked Vest** ✅ _(Tiered)_ - Reflect damage to attackers (Tier 1: +1 damage, Tier 2: +2 damage, Tier 3: +3 damage)
-- **Damage Reduction** ✅ _(Tiered)_ - Damage reduction (Tier 1: 15%, Tier 2: 25%, Tier 3: 35%)
-- **Regenerative Mesh** ✅ _(Tiered)_ - Combat healing (Tier 1: 0.2 HP/s, Tier 2: 0.3 HP/s, Tier 3: 0.5 HP/s)
-- **Mirror Armor** ✅ _(Tiered)_ - Damage reflection while taking damage (Tier 1: +1 reflect, Tier 2: +2 reflect, Tier 3: +3 reflect)
+- **Spiked Vest** ✅ _(Tiered)_ - Reflect damage to attackers (tier damage: +1, +2, +3)
+- **Damage Reduction** ✅ _(Tiered)_ - Damage reduction (0.05 + 0.1\*tier: 15%, 25%, 35%)
+- **Regenerative Mesh** ✅ _(Tiered)_ - Combat healing (+0.1\*tier: +0.1 HP/s, +0.2 HP/s, +0.3 HP/s)
+- **Mirror Armor** ✅ _(Tiered)_ - Damage reflection while taking damage (tier reflect: +1, +2, +3)
 - **Last Stand** ✅ _(Tiered)_ - Low health damage reduction (Tier 1: 50% reduction at <25% HP, Tier 2: 75% reduction at <25% HP, Tier 3: 90% reduction at <25% HP )
-- **Thick Hide** ✅ _(Tiered)_ - Health and damage reduction (Tier 1: +1 HP, -1 damage taken, Tier 2: +2 HP, -2 damage, Tier 3: +3 HP, -3 damage)
-- **Evasion** ✅ _(Tiered)_ - Dodge chance (Tier 1: 15%, Tier 2: 25%, Tier 3: 35% )
+- **Thick Hide** ✅ _(Tiered)_ - Health and damage reduction (tier HP & damage reduction: +1/-1, +2/-2, +3/-3)
+- **Evasion** ✅ _(Tiered)_ - Dodge chance (0.05 + 0.1\*tier: 15%, 25%, 35%)
 
 #### Combat Abilities (ControlAi flags)
 
@@ -77,27 +77,27 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 #### Energy Properties (ControlAi energy system)
 
-- **Combat Veteran** ✅ _(Tiered)_ - Energy per damage dealt (Tier 1: +0.3, Tier 2: +0.5, Tier 3: +0.8)
-- **Adrenaline Surge** ✅ _(Tiered)_ - Energy per damage taken (Tier 1: +0.2, Tier 2: +0.3, Tier 3: +0.4)
-- **Slow Metabolism** ✅ _(Tiered)_ - Energy decay rate (Tier 1: 25% slower decay, Tier 2: 50% slower decay, Tier 3: 75% slower decay)
-- **Combat Medic** ✅ _(Tiered)_ - Auto-heal when energy > 50% (Tier 1: +1 HP/s, Tier 2: +2 HP/s, Tier 3: +3 HP/s)
+- **Combat Veteran** ✅ _(Tiered)_ - Energy per damage dealt (0.1 + 0.2 \* tier: +0.3, +0.5, +0.7)
+- **Adrenaline Surge** ✅ _(Tiered)_ - Energy per damage taken (0.1 + 0.1 \* tier: +0.2, +0.3, +0.4)
+- **Slow Metabolism** ✅ _(Tiered)_ - Energy decay rate (1 - 0.25\*tier decay rate: 75%, 50%, 25%)
+- **Combat Medic** ✅ _(Tiered)_ - Auto-heal when energy > 50% (tier HP/s: +1, +2, +3)
 - **Hypermetabolism** ✅ _(Rare)_ - Energy decays twice as fast but enables powerful +3 HP/s auto-healing
 - **Weapon Mastery** ✅ _(Rare)_ - Gain +0.8 energy per damage dealt and +25% weapon damage when energy > 75%
-- **Pain Tolerance** ✅ _(Tiered)_ - Energy per damage taken (Tier 1: +0.2, Tier 2: +0.4, Tier 3: +0.6)
+- **Pain Tolerance** ✅ _(Tiered)_ - Energy per damage taken (0.2 \* tier: +0.2, +0.4, +0.6)
 - **Shockwave Burst** ✅ _(Rare)_ - Automatically spawn damaging particles in all directions when energy reaches maximum
-- **Kinetic Charger** ✅ _(Tiered)_ - Energy generation while moving (Tier 1: base rate, Tier 2: 2x rate, Tier 3: 3x rate)
-- **Mana Siphon** ✅ _(Tiered)_ - Energy drain per damage dealt (Tier 1: 25% of damage, Tier 2: 50% of damage, Tier 3: 75% of damage)
-- **Resonance Shield** ✅ _(Tiered)_ - Damage reduction at full energy (Tier 1: 25% reduction, Tier 2: 50% reduction, Tier 3: 75% reduction)
+- **Kinetic Charger** ✅ _(Tiered)_ - Energy generation while moving (tier multiplier: 1x, 2x, 3x)
+- **Mana Siphon** ✅ _(Tiered)_ - Energy drain per damage dealt (0.25 \* tier: 25%, 50%, 75%)
+- **Resonance Shield** ✅ _(Tiered)_ - Damage reduction at full energy (0.25 \* tier: 25%, 50%, 75%)
 
 #### Behavioral Properties (ControlAi traits)
 
-- **Lightning Reflexes** ✅ _(Tiered)_ - Movement speed (Tier 1: +25%, Tier 2: +50%, Tier 3: +75%)
-- **Quick Draw** ✅ _(Tiered)_ - Attack speed (Tier 1: +25%, Tier 2: +40%, Tier 3: +60%)
-- **Brawler** ✅ _(Tiered)_ - Aggressiveness and damage bonus (Tier 1: +0.1 aggr, +1 damage, Tier 2: +0.2 aggr, +2 damage, Tier 3: +0.3 aggr, +3 damage)
-- **Vitality** ✅ _(Tiered)_ - Maximum health (Tier 1: +2 HP, Tier 2: +3 HP, Tier 3: +4 HP)
+- **Lightning Reflexes** ✅ _(Tiered)_ - Movement speed (0.25 \* tier: +25%, +50%, +75%)
+- **Quick Draw** ✅ _(Tiered)_ - Attack speed (0.20 \* tier: +20%, +40%, +60%)
+- **Brawler** ✅ _(Tiered)_ - Aggressiveness and damage bonus (tier damage, 0.1\*tier aggr: +1/+0.1, +2/+0.2, +3/+0.3)
+- **Vitality** ✅ _(Tiered)_ - Maximum health (1 + tier HP: +2, +3, +4)
 - **Berserker** ✅ _(Uncommon)_ - +50% attack speed and movement when below 25% HP
 - **Pacifist** ✅ _(Rare)_ - Much lower aggressiveness but +3 max health and +50% damage reduction
-- **Cautious** ✅ _(Tiered)_ - Maximum health with defensive AI (Tier 1: +1 HP, Tier 2: +2 HP, Tier 3: +3 HP)
+- **Cautious** ✅ _(Tiered)_ - Maximum health with defensive AI (tier HP: +1, +2, +3)
 
 **Implementation**:
 

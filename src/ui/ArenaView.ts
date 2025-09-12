@@ -1,15 +1,17 @@
 import {html} from "../../lib/html.js";
 import {Game} from "../game.js";
-import {ALL_UPGRADES_MAP, UpgradeId, UpgradeType} from "../upgrades/types.js";
+import {ALL_UPGRADES_MAP, UpgradeId, UpgradeInstance, UpgradeType} from "../upgrades/types.js";
 import {getFighterStats} from "./entity_queries.js";
 
 export function ArenaView(game: Game): string {
     // Get upgrades from game state (state stores ids)
     let playerUpgrades = game.State.playerUpgrades
+        .map((ui: UpgradeInstance) => ui.id)
         .map((id: UpgradeId) => ALL_UPGRADES_MAP[id])
         .filter((u): u is UpgradeType => !!u)
         .map((u) => u.Name);
     let opponentUpgrades = game.State.opponentUpgrades
+        .map((ui: UpgradeInstance) => ui.id)
         .map((id: UpgradeId) => ALL_UPGRADES_MAP[id])
         .filter((u): u is UpgradeType => !!u)
         .map((u) => u.Name);

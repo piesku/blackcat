@@ -12,7 +12,6 @@ import {label} from "../components/com_label.js";
 import {set_position} from "../components/com_local_transform2d.js";
 import {Game, WORLD_CAPACITY} from "../game.js";
 import {apply_upgrades} from "../upgrades/manager.js";
-import {ALL_UPGRADES_MAP, UpgradeType} from "../upgrades/types.js";
 import {World} from "../world.js";
 
 export const ARENA_WIDTH = 20;
@@ -93,16 +92,9 @@ export function scene_arena(game: Game) {
         set_position(ARENA_CENTER_X + 4, ARENA_CENTER_Y),
     ]);
 
-    // Apply upgrades from game state (state stores ids; convert to UpgradeType[])
-    const playerUpgradeObjs: UpgradeType[] = game.State.playerUpgrades
-        .map((id) => ALL_UPGRADES_MAP[id])
-        .filter((u): u is UpgradeType => !!u);
-    const opponentUpgradeObjs: UpgradeType[] = game.State.opponentUpgrades
-        .map((id) => ALL_UPGRADES_MAP[id])
-        .filter((u): u is UpgradeType => !!u);
-
-    apply_upgrades(game, player, playerUpgradeObjs);
-    apply_upgrades(game, opponent, opponentUpgradeObjs);
+    // Apply upgrades from game state
+    apply_upgrades(game, player, game.State.playerUpgrades);
+    apply_upgrades(game, opponent, game.State.opponentUpgrades);
 
     // Generate destructible terrain
     generate_terrain(game);

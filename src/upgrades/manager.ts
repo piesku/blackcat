@@ -23,23 +23,35 @@ import {attach_to_parent} from "../components/com_children.js";
 import {spawn_timed} from "../components/com_spawn.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
-import {UpgradeCategory, UpgradeId, UpgradeType} from "./types.js";
+import {
+    ALL_UPGRADES_MAP,
+    UpgradeCategory,
+    UpgradeId,
+    UpgradeInstance,
+    UpgradeType,
+} from "./types.js";
 
-export function apply_upgrades(game: Game, entity: number, upgrades: UpgradeType[]) {
+export function apply_upgrades(game: Game, entity: number, upgradeInstances: UpgradeInstance[]) {
     // Apply all upgrades - order doesn't matter since categories are independent
-    for (let upgrade of upgrades) {
+    for (let instance of upgradeInstances) {
+        let upgrade = ALL_UPGRADES_MAP[instance.id];
+        if (!upgrade) {
+            console.warn(`Unknown upgrade ID: ${instance.id}`);
+            continue;
+        }
+
         switch (upgrade.Category) {
             case UpgradeCategory.Weapon:
-                apply_weapon_upgrade(game, entity, upgrade);
+                apply_weapon_upgrade(game, entity, upgrade, instance.tier);
                 break;
             case UpgradeCategory.Companion:
-                apply_companion_upgrade(game, entity, upgrade);
+                apply_companion_upgrade(game, entity, upgrade, instance.tier);
                 break;
             case UpgradeCategory.Enhancement:
-                apply_enhancement_upgrade(game, entity, upgrade);
+                apply_enhancement_upgrade(game, entity, upgrade, instance.tier);
                 break;
             case UpgradeCategory.Special:
-                apply_special_upgrade(game, entity, upgrade);
+                apply_special_upgrade(game, entity, upgrade, instance.tier);
                 break;
             default:
                 console.warn(`Unknown upgrade category: ${upgrade.Category}`);
@@ -48,7 +60,7 @@ export function apply_upgrades(game: Game, entity: number, upgrades: UpgradeType
     }
 }
 
-function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
+function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeType, tier: number) {
     let ai = game.World.ControlAi[entity];
     let move = game.World.Move2D[entity];
     let health = game.World.Health[entity];
@@ -62,22 +74,16 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
     switch (upgrade.Id) {
         // === Energy Properties ===
         case UpgradeId.CombatVeteran:
-            ai.EnergyFromDamageDealt += 0.3;
-            break;
-        case UpgradeId.BattleFury:
-            ai.EnergyFromDamageDealt += 0.5;
+            ai.EnergyFromDamageDealt += 0.1 + 0.2 * tier;
             break;
         case UpgradeId.AdrenalineSurge:
-            ai.EnergyFromDamageTaken += 0.2;
+            ai.EnergyFromDamageTaken += 0.1 + 0.1 * tier;
             break;
         case UpgradeId.SlowMetabolism:
-            ai.EnergyDecayRate *= 0.5;
+            ai.EnergyDecayRate *= 1 - 0.25 * tier;
             break;
         case UpgradeId.CombatMedic:
-            ai.HealingRate += 1.0;
-            break;
-        case UpgradeId.FieldSurgeon:
-            ai.HealingRate += 2.0;
+            ai.HealingRate += tier;
             break;
         case UpgradeId.Hypermetabolism:
             ai.EnergyDecayRate *= 2.0;
@@ -88,39 +94,43 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
             ai.WeaponMasteryEnabled = true;
             break;
         case UpgradeId.PainTolerance:
-            ai.EnergyFromDamageTaken += 0.4;
-            health.FlatDamageReduction++;
+            ai.EnergyFromDamageTaken += 0.2 * tier;
             break;
         case UpgradeId.ShockwaveBurst:
             ai.ShockwaveBurstEnabled = true;
             break;
         case UpgradeId.KineticCharger:
             ai.KineticChargerEnabled = true;
+            // TODO: Implement tier-based rate multiplier in energy system
             break;
         case UpgradeId.ManaSiphon:
-            ai.ManaSiphon += 0.5;
+            ai.ManaSiphon += 0.25 * tier;
             break;
         case UpgradeId.ResonanceShield:
-            health.ResonanceShield += 0.05;
+            health.ResonanceShield += 0.25 * tier;
             break;
 
         // === Behavioral Properties ===
         case UpgradeId.LightningReflexes:
-            move.MoveSpeed *= 1.5;
-            ai.BaseMoveSpeed *= 1.5;
-            ai.DashSpeedMultiplier = (ai.DashSpeedMultiplier || 1.0) * 1.5;
+            let speedMultiplier = 1 + 0.25 * tier;
+            move.MoveSpeed *= speedMultiplier;
+            ai.BaseMoveSpeed *= speedMultiplier;
+            ai.DashSpeedMultiplier = (ai.DashSpeedMultiplier || 1.0) * speedMultiplier;
             break;
         case UpgradeId.QuickDraw:
-            ai.AttackSpeedMultiplier = (ai.AttackSpeedMultiplier || 1.0) * 1.4;
+            // Tier 1: +20%, Tier 2: +40%, Tier 3: +60%
+            let attackSpeedBonus = 1 + 0.2 * tier;
+            ai.AttackSpeedMultiplier = (ai.AttackSpeedMultiplier || 1.0) * attackSpeedBonus;
             break;
         case UpgradeId.Brawler:
-            ai.Aggressiveness += 0.3;
+            ai.Aggressiveness += 0.1 * tier;
             ai.DashRangeMultiplier = (ai.DashRangeMultiplier || 1.0) * 0.8;
-            ai.DamageBonus = (ai.DamageBonus || 0) + 1;
+            ai.DamageBonus = (ai.DamageBonus || 0) + tier;
             break;
         case UpgradeId.Vitality:
-            health.Max += 2;
-            health.Current += 2;
+            let vitalityBonus = 1 + tier;
+            health.Max += vitalityBonus;
+            health.Current += vitalityBonus;
             break;
         case UpgradeId.BerserkerMode:
             ai.BerserkerMode = {
@@ -138,52 +148,58 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
             break;
         case UpgradeId.Cautious:
             ai.Aggressiveness *= 0.7;
-            health.Max += 1;
-            health.Current += 1;
+            health.Max += tier;
+            health.Current += tier;
             break;
 
         // === Combat Properties (Armor) ===
         case UpgradeId.ScrapArmor:
             health.IgnoreFirstDamage = true;
             health.FirstDamageIgnored = false; // Reset the flag
+            // TODO: Implement tier-based damage instance counting (1, 2, or 3 instances)
             break;
         case UpgradeId.SpikedVest:
-            health.ReflectDamage += 1; // Stack with existing reflect
-            health.FlatDamageReduction++;
+            health.ReflectDamage += tier;
             break;
         case UpgradeId.DamageReduction:
-            // Stack damage reduction multiplicatively to prevent going over 100%
-            health.DamageReduction += (1 - health.DamageReduction) * 0.25;
+            // Formula: 0.05 + 0.1 * tier (15%, 25%, 35%)
+            let reductionAmount = 0.05 + 0.1 * tier;
+            health.DamageReduction += (1 - health.DamageReduction) * reductionAmount;
             break;
         case UpgradeId.RegenerativeMesh:
-            // Stack regeneration rates additively
-            health.RegenerationRate += 0.3;
+            let regenRate = tier * 0.1;
+            health.RegenerationRate += regenRate;
             break;
         case UpgradeId.MirrorArmor:
-            health.ReflectDamage += 2;
+            health.ReflectDamage += tier;
             break;
         case UpgradeId.LastStand:
             health.LastStand = true;
+            // TODO: Implement tier-based damage reduction (50%, 75%, 90% at <25% health)
             break;
         case UpgradeId.ThickHide:
-            health.Max += 1;
-            health.Current += 1;
-            health.FlatDamageReduction++;
+            health.Max += tier;
+            health.Current += tier;
+            health.FlatDamageReduction += tier;
             break;
         case UpgradeId.Evasion:
-            // Stack evasion chances multiplicatively to prevent going over 100%
-            health.EvasionChance += (1 - health.EvasionChance) * 0.25;
+            // Formula: 0.05 + 0.1 * tier (15%, 25%, 35%)
+            let evasionAmount = 0.05 + 0.1 * tier;
+            health.EvasionChance += (1 - health.EvasionChance) * evasionAmount;
             break;
 
         // === Combat Properties (Abilities) ===
         case UpgradeId.Vampiric:
             ai.VampiricHealing = true;
+            // TODO: Implement tier-based lifesteal percentage (25%, 50%, 75%)
             break;
         case UpgradeId.PhaseWalk:
             ai.PhaseWalkEnabled = true;
+            // TODO: Implement tier-based invincibility duration (50%, 75%, 100%)
             break;
         case UpgradeId.DashMaster:
             ai.DashMasterEnabled = true;
+            // TODO: Implement tier-based dash range (+50%, +100%, +150%)
             break;
 
         default:
@@ -192,7 +208,7 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
     }
 }
 
-function apply_special_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
+function apply_special_upgrade(game: Game, entity: number, upgrade: UpgradeType, tier: number) {
     switch (upgrade.Id) {
         case UpgradeId.ShadowTrail:
             // Spawn system attachment - unique mechanic
@@ -213,7 +229,7 @@ function apply_special_upgrade(game: Game, entity: number, upgrade: UpgradeType)
     }
 }
 
-function apply_weapon_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
+function apply_weapon_upgrade(game: Game, entity: number, upgrade: UpgradeType, tier: number) {
     let weapon_entity: number;
 
     switch (upgrade.Id) {
@@ -281,7 +297,7 @@ function apply_weapon_upgrade(game: Game, entity: number, upgrade: UpgradeType) 
 // Removed: apply_armor_upgrade and apply_ability_upgrade
 // All enhancement logic now consolidated in apply_enhancement_upgrade()
 
-function apply_companion_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
+function apply_companion_upgrade(game: Game, entity: number, upgrade: UpgradeType, tier: number) {
     // Get the owner's team (IsPlayer status)
     let owner_ai = game.World.ControlAi[entity];
     DEBUG: if (!owner_ai) throw new Error("missing ControlAi component for companion upgrade");

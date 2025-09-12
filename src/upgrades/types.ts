@@ -2,6 +2,7 @@ export const enum UpgradeRarity {
     Common, // 70% chance - basic upgrades
     Uncommon, // 25% chance - enhanced upgrades
     Rare, // 5% chance - powerful upgrades
+    Legendary, // Tier-3 upgrades only - 1% chance
 }
 
 // Numeric upgrade IDs for optimal compression
@@ -45,11 +46,9 @@ export const enum UpgradeId {
 
     // Energy properties
     CombatVeteran,
-    BattleFury,
     AdrenalineSurge,
     SlowMetabolism,
     CombatMedic,
-    FieldSurgeon,
     Hypermetabolism,
     WeaponMastery,
     PainTolerance,
@@ -78,8 +77,13 @@ export interface UpgradeType {
     Id: UpgradeId; // Numeric ID for optimal compression
     Category: UpgradeCategory;
     Name: string; // Display name
-    Description?: string; // Optional description for enhancements and special upgrades
+    Tiers: string[]; // Tier descriptions - single element for single-tier, multiple for tiered
     Rarity: UpgradeRarity; // Determines selection probability
+}
+
+export interface UpgradeInstance {
+    id: UpgradeId; // Which upgrade this is
+    tier: number; // Current tier (1-based: 1, 2, or 3)
 }
 
 export const enum UpgradeCategory {
@@ -91,7 +95,7 @@ export const enum UpgradeCategory {
 
 export interface GameState {
     currentLevel: number; // 1-33 duels
-    playerUpgrades: UpgradeType[]; // Player's accumulated upgrades
+    playerUpgrades: UpgradeInstance[]; // Player's accumulated upgrades with tiers
     population: number; // Narrative countdown (8 billion -> 1)
     isNewRun: boolean; // Fresh start vs resumed
 }

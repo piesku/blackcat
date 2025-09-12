@@ -1,21 +1,20 @@
 import {html} from "../../lib/html.js";
 import {Action} from "../actions.js";
 import {Game} from "../game.js";
-import {ALL_UPGRADES_MAP, UpgradeCategory, UpgradeId, UpgradeType} from "../upgrades/types.js";
+import {
+    ALL_UPGRADES_MAP,
+    UpgradeCategory,
+    UpgradeId,
+    UpgradeInstance,
+    UpgradeType,
+} from "../upgrades/types.js";
 
 export function UpgradeSelectionView(game: Game): string {
     // Use persisted upgrade choices from game state instead of generating new ones
     // This prevents players from re-rolling choices by reloading the page
     // State stores ids; map to UpgradeType objects for rendering
     let choices: UpgradeType[] = game.State.availableUpgradeChoices
-        .map((id: UpgradeId) => ALL_UPGRADES_MAP[id])
-        .filter((u): u is UpgradeType => !!u);
-
-    // Player / opponent loadouts (ids -> objects)
-    let playerLoadout: UpgradeType[] = game.State.playerUpgrades
-        .map((id: UpgradeId) => ALL_UPGRADES_MAP[id])
-        .filter((u): u is UpgradeType => !!u);
-    let opponentLoadout: UpgradeType[] = game.State.opponentUpgrades
+        .map((ui) => ui.id)
         .map((id: UpgradeId) => ALL_UPGRADES_MAP[id])
         .filter((u): u is UpgradeType => !!u);
 
@@ -55,9 +54,11 @@ export function UpgradeSelectionView(game: Game): string {
             <h2>DUEL&nbsp;${game.State.currentLevel}</h2>
 
             <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
-                ${choices
-                    .map(
-                        (upgrade: UpgradeType, index: number) => html`
+                ${game.State.availableUpgradeChoices
+                    .map((u: UpgradeInstance, index: number) => {
+                        let upgrade = ALL_UPGRADES_MAP[u.id];
+                        if (!upgrade) return `<div>Unknown Upgrade</div>`;
+                        return html`
                             <div
                                 onclick="window.$(${Action.UpgradeSelected}, ${index})"
                                 style="
@@ -93,11 +94,11 @@ export function UpgradeSelectionView(game: Game): string {
                                         ? "Weapon"
                                         : upgrade.Category === UpgradeCategory.Companion
                                           ? "Companion"
-                                          : upgrade.Description}
+                                          : upgrade.Tiers[u.tier - 1] || "Unknown Tier"}
                                 </p>
                             </div>
-                        `,
-                    )
+                        `;
+                    })
                     .join("")}
             </div>
         </div>
