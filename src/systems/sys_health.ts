@@ -14,9 +14,7 @@ export function sys_health(game: Game, _delta: number) {
         if ((game.World.Signature[entity] & QUERY) === QUERY) {
             let health = game.World.Health[entity];
 
-            if (!health.IsAlive) {
-                continue;
-            }
+            // Entity is alive if it has Health component - no need to check further
 
             // Check for Phase Walk invincibility during dashing
             if (game.World.Signature[entity] & Has.ControlAi) {
@@ -70,10 +68,9 @@ export function sys_health(game: Game, _delta: number) {
                 }
             }
 
-            if (health.IsAlive && health.Current <= 0) {
-                health.IsAlive = false;
+            if (health.Current <= 0) {
                 console.log(
-                    `[DEATH] Entity ${entity} died from ${total_damage.toFixed(1)} damage - marked as dead`,
+                    `[DEATH] Entity ${entity} died from ${total_damage.toFixed(1)} damage - removing Health component`,
                 );
 
                 // Rotate the fighter sideways to show they're lying down
@@ -83,6 +80,9 @@ export function sys_health(game: Game, _delta: number) {
                     transform.Rotation = 90;
                 }
 
+                // Remove Health component to mark entity as dead
+                game.World.Signature[entity] &= ~Has.Health;
+
                 // Entity destruction will be handled next frame after duel_manager has chance to run
             }
 
@@ -90,16 +90,14 @@ export function sys_health(game: Game, _delta: number) {
             for (let reflect of reflect_targets) {
                 if (game.World.Signature[reflect.entity] & Has.Health) {
                     let source_health = game.World.Health[reflect.entity];
-                    if (source_health.IsAlive) {
-                        source_health.PendingDamage.push({
-                            Amount: reflect.amount,
-                            Source: entity,
-                            Type: "reflect",
-                        });
-                        console.log(
-                            `[REFLECT] Entity ${entity} reflecting ${reflect.amount} damage back to entity ${reflect.entity}`,
-                        );
-                    }
+                    source_health.PendingDamage.push({
+                        Amount: reflect.amount,
+                        Source: entity,
+                        Type: "reflect",
+                    });
+                    console.log(
+                        `[REFLECT] Entity ${entity} reflecting ${reflect.amount} damage back to entity ${reflect.entity}`,
+                    );
                 }
             }
 

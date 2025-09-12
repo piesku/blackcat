@@ -63,10 +63,7 @@ export function sys_aim(game: Game, delta: number) {
 
 function is_target_valid(game: Game, target_entity: number): boolean {
     if (target_entity === -1) return false;
-    if ((game.World.Signature[target_entity] & QUERY_TARGET) !== QUERY_TARGET) return false;
-
-    let target_health = game.World.Health[target_entity];
-    return target_health.IsAlive;
+    return (game.World.Signature[target_entity] & QUERY_TARGET) === QUERY_TARGET;
 }
 
 function find_nearest_enemy(game: Game, entity: number): number {

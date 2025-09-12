@@ -343,7 +343,6 @@ export class SceneGraphInspector {
             html += `<div class="component">
                 <strong>Health</strong><br>
                 Current: ${h.Current} / ${h.Max}<br>
-                Alive: ${h.IsAlive}<br>
                 Pending Damage: ${h.PendingDamage ? h.PendingDamage.length : 0}
             </div>`;
         }

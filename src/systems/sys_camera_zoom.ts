@@ -31,16 +31,13 @@ export function sys_camera_zoom(game: Game, delta: number) {
 
     for (let ent = 0; ent < game.World.Signature.length; ent++) {
         if ((game.World.Signature[ent] & QUERY) === QUERY) {
-            let health = game.World.Health[ent];
-            if (health && health.IsAlive) {
-                all_alive.push(ent);
+            all_alive.push(ent);
 
-                // Check if this is a main fighter (Player or Opponent)
-                if (game.World.Signature[ent] & Has.Label) {
-                    let label = game.World.Label[ent];
-                    if (label.Name === "Player" || label.Name === "Opponent") {
-                        alive_fighters.push(ent);
-                    }
+            // Check if this is a main fighter (Player or Opponent)
+            if (game.World.Signature[ent] & Has.Label) {
+                let label = game.World.Label[ent];
+                if (label.Name === "Player" || label.Name === "Opponent") {
+                    alive_fighters.push(ent);
                 }
             }
         }

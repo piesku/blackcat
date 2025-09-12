@@ -17,7 +17,6 @@ export interface Health {
     Max: number;
     Current: number;
     LastDamageTime: number; // Game time in seconds when last damage occurred
-    IsAlive: boolean;
 
     // Armor properties for upgrades
     IgnoreFirstDamage?: boolean; // Scrap Armor - ignores first damage instance
@@ -43,7 +42,6 @@ export function health(max: number = 3) {
             Max: max,
             Current: max,
             LastDamageTime: 0,
-            IsAlive: true,
             PendingDamage: [],
             PendingHealing: [],
 

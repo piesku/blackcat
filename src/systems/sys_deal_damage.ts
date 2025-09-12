@@ -64,7 +64,6 @@ function handle_collision_damage(
         if (!(game.World.Signature[target_entity] & Has.Health)) continue;
 
         let target_health = game.World.Health[target_entity];
-        if (!target_health.IsAlive) continue;
 
         // Deal damage
         let final_damage = damage_dealer.Damage;

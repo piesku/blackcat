@@ -30,7 +30,7 @@ export function sys_control_ai(game: Game, delta: number) {
             let move = game.World.Move2D[entity];
             let aim = game.World.Aim[entity];
 
-            if (!health.IsAlive || !move || !aim) {
+            if (!move || !aim) {
                 continue;
             }
 

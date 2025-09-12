@@ -42,7 +42,7 @@ export function sys_energy(game: Game, delta: number) {
 
             DEBUG: if (!ai || !transform || !health) throw new Error("missing component");
 
-            if (!health.IsAlive) continue;
+            // Entity has Health component, so it's alive - process energy
 
             // 1. Handle energy decay toward baseline
             handle_energy_decay(ai, delta);

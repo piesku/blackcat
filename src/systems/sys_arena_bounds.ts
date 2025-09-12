@@ -26,10 +26,7 @@ function update(game: Game, entity: Entity) {
     let transform = game.World.LocalTransform2D[entity];
     let health = game.World.Health[entity];
 
-    // Only apply bounds to living entities
-    if (!health.IsAlive) {
-        return;
-    }
+    // Entity has Health component, so it's alive - apply bounds
 
     let position = transform.Translation;
     let arena_center: Vec2 = [ARENA_CENTER_X, ARENA_CENTER_Y];

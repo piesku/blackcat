@@ -18,8 +18,7 @@ export function ArenaView(game: Game): string {
     let {PlayerHP, OpponentHP} = getFighterStats(game);
 
     const healthbar = (hp: {current: number; max: number} | null, isPlayer: boolean) => {
-        if (!hp) return "";
-        const percent = (hp.current / hp.max) * 100;
+        const percent = hp ? (hp.current / hp.max) * 100 : 0;
         const innerStyle = `width: ${percent}%; height: 100%; background: ${isPlayer ? "#4CAF50" : "#F44336"}; ${!isPlayer ? "float: right;" : ""}`;
 
         return html`
