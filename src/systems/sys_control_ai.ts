@@ -15,9 +15,9 @@ const BASE_DASH_SPEED_MULTIPLIER = 4.0;
 const BASE_MOVE_SPEED = 2.0;
 
 interface ScaledDistances {
-    circle: number;
-    dash_trigger: number;
-    separation: number;
+    Circle: number;
+    DashTrigger: number;
+    Separation: number;
 }
 
 // --- Main System ---
@@ -58,9 +58,9 @@ export function sys_control_ai(game: Game, delta: number) {
             }
 
             let scaled_distances: ScaledDistances = {
-                circle: BASE_CIRCLE_DISTANCE * speed_scale,
-                dash_trigger: dash_range * speed_scale * ai.Aggressiveness,
-                separation: BASE_SEPARATION_DISTANCE * speed_scale,
+                Circle: BASE_CIRCLE_DISTANCE * speed_scale,
+                DashTrigger: dash_range * speed_scale * ai.Aggressiveness,
+                Separation: BASE_SEPARATION_DISTANCE * speed_scale,
             };
 
             // --- State Machine & Movement ---
@@ -124,11 +124,11 @@ function handle_circling(
     let aim = game.World.Aim[entity];
 
     // State transitions
-    if (aim.DistanceToTarget < scaled_distances.separation && float(0, 1) < 0.3) {
+    if (aim.DistanceToTarget < scaled_distances.Separation && float(0, 1) < 0.3) {
         change_state(ai, AiState.Separating, game.Time);
         return; // No movement this frame, will be handled by Separating state next frame
     } else if (
-        aim.DistanceToTarget < scaled_distances.dash_trigger &&
+        aim.DistanceToTarget < scaled_distances.DashTrigger &&
         ai.AttackCooldown <= 0 &&
         ai.StateTimer > ai.Patience * time_scale &&
         float(0, 1) < 0.2 * ai.Aggressiveness
@@ -146,7 +146,7 @@ function handle_circling(
     let distance = aim.DistanceToTarget;
     if (distance < 0.1) return;
 
-    let target_distance = scaled_distances.circle;
+    let target_distance = scaled_distances.Circle;
     let distance_factor = (distance - target_distance) / target_distance;
 
     let normalized: Vec2 = [0, 0];
@@ -219,7 +219,7 @@ function handle_separating(
     // State transitions
     let separation_timeout = 2.0 * time_scale;
     if (
-        aim.DistanceToTarget > scaled_distances.separation * 1.5 ||
+        aim.DistanceToTarget > scaled_distances.Separation * 1.5 ||
         ai.StateTimer > separation_timeout
     ) {
         change_state(ai, AiState.Circling, game.Time);
