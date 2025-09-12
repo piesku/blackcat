@@ -15,7 +15,8 @@ export function apply_spiked_vest(game: Game, entity: number, reflect_amount: nu
         throw new Error(`Cannot apply Spiked Vest to entity ${entity} - no Health component`);
 
     let health = game.World.Health[entity];
-    health.ReflectDamage = (health.ReflectDamage || 0) + reflect_amount; // Stack with existing reflect
+    health.ReflectDamage += reflect_amount; // Stack with existing reflect
+    health.FlatDamageReduction++;
 }
 
 export function apply_damage_reduction(
@@ -29,10 +30,9 @@ export function apply_damage_reduction(
     let health = game.World.Health[entity];
 
     // Stack damage reduction multiplicatively to prevent going over 100%
-    let existing_reduction = health.DamageReduction || 0;
-    let remaining_damage = 1 - existing_reduction;
+    let remaining_damage = 1 - health.DamageReduction;
     let new_reduction = remaining_damage * reduction_percent;
-    health.DamageReduction = existing_reduction + new_reduction;
+    health.DamageReduction += new_reduction;
 }
 
 export function apply_regenerative_mesh(game: Game, entity: number, regen_rate: number = 0.3) {
@@ -42,7 +42,7 @@ export function apply_regenerative_mesh(game: Game, entity: number, regen_rate: 
     let health = game.World.Health[entity];
 
     // Stack regeneration rates additively
-    health.RegenerationRate = (health.RegenerationRate || 0) + regen_rate;
+    health.RegenerationRate += +regen_rate;
 }
 
 export function apply_mirror_armor(game: Game, entity: number) {
@@ -50,8 +50,6 @@ export function apply_mirror_armor(game: Game, entity: number) {
         throw new Error(`Cannot apply Mirror Armor to entity ${entity} - no Health component`);
 
     let health = game.World.Health[entity];
-
-    // Mirror Armor provides 100% reflect but with self-damage
     health.MirrorArmor = true;
 }
 
@@ -60,8 +58,6 @@ export function apply_last_stand(game: Game, entity: number) {
         throw new Error(`Cannot apply Last Stand to entity ${entity} - no Health component`);
 
     let health = game.World.Health[entity];
-
-    // Enable Last Stand ability
     health.LastStand = true;
 }
 
@@ -70,13 +66,9 @@ export function apply_thick_hide(game: Game, entity: number) {
         throw new Error(`Cannot apply Thick Hide to entity ${entity} - no Health component`);
 
     let health = game.World.Health[entity];
-
-    // Add +1 HP (both max and current)
     health.Max += 1;
     health.Current += 1;
-
-    // Add flat damage reduction (stacks additively)
-    health.FlatDamageReduction = (health.FlatDamageReduction || 0) + 1;
+    health.FlatDamageReduction++;
 }
 
 export function apply_evasion(game: Game, entity: number, evasion_chance: number = 0.25) {
@@ -86,10 +78,9 @@ export function apply_evasion(game: Game, entity: number, evasion_chance: number
     let health = game.World.Health[entity];
 
     // Stack evasion chances multiplicatively to prevent going over 100%
-    let existing_evasion = health.EvasionChance || 0;
-    let remaining_vulnerability = 1 - existing_evasion;
+    let remaining_vulnerability = 1 - health.EvasionChance;
     let new_evasion = remaining_vulnerability * evasion_chance;
-    health.EvasionChance = existing_evasion + new_evasion;
+    health.EvasionChance += new_evasion;
 }
 
 export function apply_pain_tolerance(game: Game, entity: number) {
@@ -97,7 +88,5 @@ export function apply_pain_tolerance(game: Game, entity: number) {
         throw new Error(`Cannot apply Pain Tolerance to entity ${entity} - no Health component`);
 
     let health = game.World.Health[entity];
-
-    // Add flat damage reduction of 1 (same as Tough Skin, stacks additively)
-    health.FlatDamageReduction = (health.FlatDamageReduction || 0) + 1;
+    health.FlatDamageReduction++;
 }

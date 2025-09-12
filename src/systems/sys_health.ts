@@ -40,7 +40,7 @@ export function sys_health(game: Game, _delta: number) {
                 let final_damage = calculate_armor_reduction(game, entity, health, damage_instance);
 
                 // Handle reflect damage (before damage is applied)
-                if (health.ReflectDamage && health.ReflectDamage > 0) {
+                if (health.ReflectDamage > 0 && damage_instance.Type !== "reflect") {
                     reflect_targets.push({
                         entity: damage_instance.Source,
                         amount: health.ReflectDamage,
@@ -160,11 +160,7 @@ export function sys_health(game: Game, _delta: number) {
             }
 
             // Process regeneration (Regenerative Mesh armor)
-            if (
-                health.RegenerationRate &&
-                health.RegenerationRate > 0 &&
-                health.Current < health.Max
-            ) {
+            if (health.RegenerationRate > 0 && health.Current < health.Max) {
                 let regen_amount = health.RegenerationRate * _delta;
                 let health_before_regen = health.Current;
                 health.Current = Math.min(health.Max, health.Current + regen_amount);
@@ -193,7 +189,7 @@ function calculate_armor_reduction(
     let final_damage = damage_instance.Amount;
 
     // Evasion: Chance to completely avoid damage (checked first, before other armor)
-    if (health.EvasionChance && health.EvasionChance > 0) {
+    if (health.EvasionChance > 0) {
         let roll = rand(); // Random number between 0 and 1
         if (roll < health.EvasionChance) {
             console.log(
@@ -222,7 +218,7 @@ function calculate_armor_reduction(
     }
 
     // Percentage damage reduction
-    if (health.DamageReduction && health.DamageReduction > 0) {
+    if (health.DamageReduction > 0) {
         let reduction = final_damage * health.DamageReduction;
         final_damage -= reduction;
         console.log(
@@ -231,7 +227,7 @@ function calculate_armor_reduction(
     }
 
     // Flat damage reduction (applied last, minimum 1 damage)
-    if (health.FlatDamageReduction && health.FlatDamageReduction > 0) {
+    if (health.FlatDamageReduction > 0) {
         let original_damage = final_damage;
         final_damage = Math.max(1, final_damage - health.FlatDamageReduction);
         let actual_reduction = original_damage - final_damage;

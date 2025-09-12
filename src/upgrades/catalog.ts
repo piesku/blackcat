@@ -96,7 +96,7 @@ export const ARMOR_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
     [UpgradeId.RegenerativeMesh]: {
         Id: UpgradeId.RegenerativeMesh,
         Category: UpgradeCategory.Enhancement,
-        Name: "Regenerative Mesh",
+        Name: "Regeneration",
         Description: "Heal +0.3 life per second",
         Rarity: UpgradeRarity.Uncommon,
     },

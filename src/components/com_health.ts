@@ -21,18 +21,19 @@ export interface Health {
 
     // Armor properties for upgrades
     IgnoreFirstDamage?: boolean; // Scrap Armor - ignores first damage instance
-    ReflectDamage?: number; // Spiked Vest - reflects damage back to attacker
-    DamageReduction?: number; // Percentage damage reduction (0.0 to 1.0)
-    FirstDamageIgnored?: boolean; // Internal flag tracking if first damage was used
-    RegenerationRate?: number; // Regenerative Mesh - HP per second during combat
+    ReflectDamage: number; // Spiked Vest - reflects damage back to attacker
+    DamageReduction: number; // Percentage damage reduction (0.0 to 1.0)
+    RegenerationRate: number; // Regenerative Mesh - HP per second during combat
     MirrorArmor?: boolean; // Mirror Armor - 100% reflect but take 50% of reflected damage
     LastStand?: boolean; // Last Stand - 75% damage reduction when at 1 HP
-    FlatDamageReduction?: number; // Thick Hide/Tough Skin - flat damage reduction per attack
-    EvasionChance?: number; // Evasion - chance to completely avoid damage (0.0 to 1.0)
+    FlatDamageReduction: number; // Thick Hide/Tough Skin - flat damage reduction per attack
+    EvasionChance: number; // Evasion - chance to completely avoid damage (0.0 to 1.0)
 
     // Pending damage and healing instances
     PendingDamage: DamageInstance[];
     PendingHealing: HealingInstance[];
+
+    FirstDamageIgnored?: boolean; // Internal flag tracking if first damage was used
 }
 
 export function health(max: number = 3) {
@@ -45,6 +46,12 @@ export function health(max: number = 3) {
             IsAlive: true,
             PendingDamage: [],
             PendingHealing: [],
+
+            ReflectDamage: 0,
+            FlatDamageReduction: 0,
+            DamageReduction: 0,
+            EvasionChance: 0,
+            RegenerationRate: 0,
         };
     };
 }
