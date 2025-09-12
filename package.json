@@ -26,7 +26,6 @@
         "esbuild": "0.25",
         "playwright": "1.54",
         "prettier": "3.6",
-        "spritesmith": "^3.5.1",
         "typescript": "5.9"
     },
     "engines": {
