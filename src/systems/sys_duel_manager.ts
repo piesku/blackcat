@@ -4,6 +4,15 @@ import {Has} from "../world.js";
 
 const QUERY = Has.Health | Has.ControlAi | Has.Label;
 
+const enum DuelOutcome {
+    Pending,
+    Victory,
+    Defeat,
+}
+
+let duel_outcome = DuelOutcome.Pending;
+let delay_remaining = 0;
+
 // TODO Consider checking for victory conditions in action handlers.
 export function sys_duel_manager(game: Game, delta: number) {
     // Only run in arena view
@@ -41,13 +50,13 @@ export function sys_duel_manager(game: Game, delta: number) {
     }
 
     // Handle delayed duel resolution
-    if (game.DuelEndData) {
+    if (duel_outcome) {
         // We're in the delay period, count down
-        game.DuelEndData.DelayRemaining -= delta;
+        delay_remaining -= delta;
 
-        if (game.DuelEndData.DelayRemaining <= 0) {
+        if (delay_remaining <= 0) {
             // Delay finished, trigger the actual victory/defeat
-            if (game.DuelEndData.Type === "victory") {
+            if (duel_outcome === DuelOutcome.Victory) {
                 console.log("[DUEL] Victory delay finished - showing victory screen");
                 dispatch(game, Action.DuelVictory);
             } else {
@@ -55,7 +64,8 @@ export function sys_duel_manager(game: Game, delta: number) {
                 dispatch(game, Action.DuelDefeat);
             }
             // Clear the delay data
-            game.DuelEndData = undefined;
+            duel_outcome = DuelOutcome.Pending;
+            delay_remaining = 0;
         }
         return; // Don't check for new resolution while delay is active
     }
@@ -64,24 +74,18 @@ export function sys_duel_manager(game: Game, delta: number) {
     if (alivePlayers === 0 && aliveOpponents > 0) {
         // Player(s) died - start defeat delay
         console.log("[DUEL] Player defeated! Starting delay...");
-        game.DuelEndData = {
-            Type: "defeat",
-            DelayRemaining: 3.0, // 3 second delay
-        };
+        duel_outcome = DuelOutcome.Defeat;
+        delay_remaining = 3.0; // 3 second delay
     } else if (aliveOpponents === 0 && alivePlayers > 0) {
         // Opponent(s) died - start victory delay
         console.log("[DUEL] Player victorious! Starting delay...");
-        game.DuelEndData = {
-            Type: "victory",
-            DelayRemaining: 3.0, // 3 second delay
-        };
+        duel_outcome = DuelOutcome.Victory;
+        delay_remaining = 3.0; // 3 second delay
     } else if (alivePlayers === 0 && aliveOpponents === 0) {
         // Mutual destruction - start defeat delay
         console.log("[DUEL] Mutual destruction! Starting delay...");
-        game.DuelEndData = {
-            Type: "defeat",
-            DelayRemaining: 3.0, // 3 second delay
-        };
+        duel_outcome = DuelOutcome.Defeat;
+        delay_remaining = 3.0; // 3 second delay
     }
     // If both sides have alive entities, continue the duel
 }

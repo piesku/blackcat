@@ -49,17 +49,11 @@ export interface VictoryData {
     TimeRemaining: number;
 }
 
-export interface DuelEndData {
-    Type: "victory" | "defeat";
-    DelayRemaining: number;
-}
-
 export class Game extends Game3D {
     World = new World(WORLD_CAPACITY);
     State: GameState = createFreshGameState();
     CurrentView: GameView = GameView.Arena; // Start in arena for now
     VictoryData?: VictoryData;
-    DuelEndData?: DuelEndData;
 
     MaterialRender2D = mat_render2d(this.Gl, Has.Render2D, Has.SpatialNode2D);
     Spritesheet = create_spritesheet_from(this.Gl, document.querySelector("img")!);
