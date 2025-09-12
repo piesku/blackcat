@@ -1,20 +1,25 @@
 import {html} from "../../lib/html.js";
 import {Game} from "../game.js";
-import {ALL_UPGRADES_MAP, UpgradeId, UpgradeInstance, UpgradeType} from "../upgrades/types.js";
+import {getRarityColor} from "../state.js";
+import {ALL_UPGRADES_MAP, UpgradeInstance} from "../upgrades/types.js";
 import {getFighterStats} from "./entity_queries.js";
 
 export function ArenaView(game: Game): string {
-    // Get upgrades from game state (state stores ids)
-    let playerUpgrades = game.State.playerUpgrades
-        .map((ui: UpgradeInstance) => ui.id)
-        .map((id: UpgradeId) => ALL_UPGRADES_MAP[id])
-        .filter((u): u is UpgradeType => !!u)
-        .map((u) => u.Name);
-    let opponentUpgrades = game.State.opponentUpgrades
-        .map((ui: UpgradeInstance) => ui.id)
-        .map((id: UpgradeId) => ALL_UPGRADES_MAP[id])
-        .filter((u): u is UpgradeType => !!u)
-        .map((u) => u.Name);
+    // Helper function to format upgrade with tier and color
+    const formatUpgrade = (upgradeInstance: UpgradeInstance) => {
+        let upgrade = ALL_UPGRADES_MAP[upgradeInstance.id];
+        if (!upgrade) return {name: "Unknown", color: "#8bc34a"};
+
+        let color = getRarityColor(upgradeInstance);
+        let displayName =
+            upgrade.Tiers.length > 1 ? `${upgrade.Name} T${upgradeInstance.tier}` : upgrade.Name;
+
+        return {name: displayName, color};
+    };
+
+    // Get formatted upgrades with tier info and colors
+    let playerUpgrades = game.State.playerUpgrades.map(formatUpgrade);
+    let opponentUpgrades = game.State.opponentUpgrades.map(formatUpgrade);
 
     // Get fighter stats
     let {PlayerHP, OpponentHP} = getFighterStats(game);
@@ -44,8 +49,8 @@ export function ArenaView(game: Game): string {
                 <div style="color: #4CAF50; font-weight: bold; margin-bottom: 3px;">PLAYER</div>
                 ${playerUpgrades
                     .map(
-                        (upgrade: string) =>
-                            `<div style="font-size: clamp(8px, 2vw, 10px);">• ${upgrade}</div>`,
+                        (upgrade) =>
+                            `<div style="font-size: clamp(8px, 2vw, 10px); color: ${upgrade.color};">• ${upgrade.name}</div>`,
                     )
                     .join("")}
             </div>
@@ -56,8 +61,8 @@ export function ArenaView(game: Game): string {
                 <div style="color: #F44336; font-weight: bold; margin-bottom: 3px;">OPPONENT</div>
                 ${opponentUpgrades
                     .map(
-                        (upgrade: string) =>
-                            `<div style="font-size: clamp(8px, 2vw, 10px);">• ${upgrade}</div>`,
+                        (upgrade) =>
+                            `<div style="font-size: clamp(8px, 2vw, 10px); color: ${upgrade.color};">• ${upgrade.name}</div>`,
                     )
                     .join("")}
             </div>

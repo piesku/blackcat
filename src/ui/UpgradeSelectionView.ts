@@ -1,22 +1,12 @@
 import {html} from "../../lib/html.js";
 import {Action} from "../actions.js";
 import {Game} from "../game.js";
-import {
-    ALL_UPGRADES_MAP,
-    UpgradeCategory,
-    UpgradeId,
-    UpgradeInstance,
-    UpgradeType,
-} from "../upgrades/types.js";
+import {getRarityColor} from "../state.js";
+import {ALL_UPGRADES_MAP, UpgradeCategory, UpgradeInstance} from "../upgrades/types.js";
 
 export function UpgradeSelectionView(game: Game): string {
     // Use persisted upgrade choices from game state instead of generating new ones
     // This prevents players from re-rolling choices by reloading the page
-    // State stores ids; map to UpgradeType objects for rendering
-    let choices: UpgradeType[] = game.State.availableUpgradeChoices
-        .map((ui) => ui.id)
-        .map((id: UpgradeId) => ALL_UPGRADES_MAP[id])
-        .filter((u): u is UpgradeType => !!u);
 
     return html`
         <style>
@@ -76,21 +66,11 @@ export function UpgradeSelectionView(game: Game): string {
                                 onmouseover="this.style.transform='skewX(-10deg) rotate(-2deg) scale(1.05)'; this.style.boxShadow='6px 6px 0 #000c'"
                                 onmouseout="this.style.transform='skewX(-10deg) rotate(-2deg)'; this.style.boxShadow='4px 4px 0 #000c'"
                             >
-                                <h3
-                                    style="color: ${upgrade.Category === UpgradeCategory.Weapon
-                                        ? "#ff4a4a"
-                                        : upgrade.Category === UpgradeCategory.Enhancement
-                                          ? "#8bc34a"
-                                          : upgrade.Category === UpgradeCategory.Companion
-                                            ? "#55ceff"
-                                            : upgrade.Category === UpgradeCategory.Special
-                                              ? "#e75dff"
-                                              : "#000"};"
-                                >
-                                    ${upgrade.Name}
-                                </h3>
+                                <h3 style="color: ${getRarityColor(u)};">${upgrade.Name}</h3>
                                 <p>
-                                    ${upgrade.Category === UpgradeCategory.Weapon
+                                    ${upgrade.Tiers.length > 1
+                                        ? `Tier ${u.tier}: `
+                                        : ""}${upgrade.Category === UpgradeCategory.Weapon
                                         ? "Weapon"
                                         : upgrade.Category === UpgradeCategory.Companion
                                           ? "Companion"

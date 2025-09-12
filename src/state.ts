@@ -1,6 +1,7 @@
 import {float, set_seed, shuffle} from "../lib/random.js";
 import {
     ALL_UPGRADES_LIST,
+    ALL_UPGRADES_MAP,
     UpgradeCategory,
     UpgradeId,
     UpgradeInstance,
@@ -111,6 +112,25 @@ export function generatePlayerUpgradeChoices(
 export function getTierRarity(baseRarity: UpgradeRarity, tier: number): UpgradeRarity {
     // Tier 1 = base rarity, Tier 2 = +1, Tier 3 = +2 (capped at Legendary)
     return Math.min(UpgradeRarity.Legendary, baseRarity + (tier - 1));
+}
+
+// Get color for upgrade instance (tier-adjusted rarity)
+export function getRarityColor(upgradeInstance: UpgradeInstance): string {
+    let upgrade = ALL_UPGRADES_MAP[upgradeInstance.id];
+    if (!upgrade) return "#8bc34a"; // Default to green for unknown upgrades
+
+    let tierRarity = getTierRarity(upgrade.Rarity, upgradeInstance.tier);
+
+    switch (tierRarity) {
+        case UpgradeRarity.Uncommon:
+            return "#55ceff"; // Blue
+        case UpgradeRarity.Rare:
+            return "#ff4a4a"; // Red
+        case UpgradeRarity.Legendary:
+            return "#e75dff"; // Violet
+        default:
+            return "#8bc34a"; // Default to green
+    }
 }
 
 // Weighted selection based on tier-adjusted rarity
