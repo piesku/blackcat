@@ -67,7 +67,7 @@ export function ArenaView(game: Game): string {
                         text-shadow: 1px 1px 0 #000;
                     "
                 >
-                    ${barLabel}: ${value ? Math.ceil(value.current) : 0}/${value ? value.max : 0}
+                    ${value ? Math.ceil(value.current) : 0} ${barLabel}
                 </div>
             </div>
         `;

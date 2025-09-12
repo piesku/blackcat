@@ -40,7 +40,7 @@ export const WEAPON_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
     [UpgradeId.Boomerang]: {
         Id: UpgradeId.Boomerang,
         Category: UpgradeCategory.Weapon,
-        Name: "Boomerang",
+        Name: "Bananarang",
         Tiers: ["Return to sender"],
         Rarity: UpgradeRarity.Uncommon,
     },

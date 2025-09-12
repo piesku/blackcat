@@ -2,7 +2,7 @@
 # On Ubuntu, install the `webp` package.
 
 SPRITES := $(wildcard *.png)
-SPRITES := $(filter-out spritesheet.png *.pad.png, $(SPRITES))
+SPRITES := $(filter-out spritesheet.png %.pad.png, $(SPRITES))
 PADDED := $(SPRITES:%.png=%.pad.png)
 
 all: spritesheet.png.webp
