@@ -19,6 +19,8 @@ export const enum Tile {
     Flame4,
     Flame5,
     Flame6,
+    Heal1,
+    Heal2,
     Hurt1,
     Hurt2,
     Hurt3,

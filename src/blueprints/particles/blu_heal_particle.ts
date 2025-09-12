@@ -1,4 +1,5 @@
 import {Tile} from "../../../sprites/spritesheet.js";
+import {animate_sprite, AnimationId} from "../../components/com_animate_sprite.js";
 import {label} from "../../components/com_label.js";
 import {lifespan} from "../../components/com_lifespan.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
@@ -11,17 +12,23 @@ export function blueprint_heal_particle() {
         label("heal particle"),
 
         // NO spatial_node2d() - enables fast path for particles!
-        local_transform2d([0, 0], 0, [0.3, 0.3]), // Start small and shrink further
-        render2d(Tile.Die1, [0, 1, 0, 0.5]), // Green color for healing
+        local_transform2d(),
+        render2d(Tile.Heal1),
+        animate_sprite({
+            [AnimationId.Run]: {
+                [Tile.Heal1]: 0.3,
+                [Tile.Heal2]: 1,
+            },
+        }),
 
         // Physics integration - gentle upward float
         rigid_body2d(RigidKind.Dynamic, 0, 0.95, [0, 2.0]), // Gentle upward drift (healing energy rises)
 
         // Healing particle physics and behavior
-        particle(0.5, [0.01, 0.01], 0.6), // spread, finalScale, fadeOut
+        particle(0.5, [1, 1], 0.6), // spread, finalScale, fadeOut
 
         // No collision or damage - healing particles are purely visual
 
-        lifespan(4), // Short lifespan for gentle healing effect
+        lifespan(1),
     ];
 }
