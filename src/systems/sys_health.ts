@@ -43,29 +43,8 @@ export function sys_health(game: Game, _delta: number) {
                 if (health.ReflectDamage > 0 && damage_instance.Type !== "reflect") {
                     reflect_targets.push({
                         entity: damage_instance.Source,
-                        amount: health.ReflectDamage,
+                        amount: Math.min(health.ReflectDamage, final_damage),
                     });
-                }
-
-                // Handle Mirror Armor - 100% reflect but take 50% self-damage
-                // Skip mirror armor for self-inflicted recoil damage to prevent infinite loops
-                if (health.MirrorArmor && damage_instance.Type !== "mirror_recoil") {
-                    reflect_targets.push({
-                        entity: damage_instance.Source,
-                        amount: damage_instance.Amount, // Reflect full original damage
-                    });
-
-                    // Add self-damage (50% of reflected amount)
-                    let self_damage = damage_instance.Amount * 0.5;
-                    health.PendingDamage.push({
-                        Amount: self_damage,
-                        Source: entity, // Self-inflicted
-                        Type: "mirror_recoil",
-                    });
-
-                    console.log(
-                        `[MIRROR_ARMOR] Entity ${entity} reflecting ${damage_instance.Amount.toFixed(1)} damage and taking ${self_damage.toFixed(1)} recoil`,
-                    );
                 }
 
                 total_damage += final_damage;

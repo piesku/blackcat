@@ -63,7 +63,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Spiked Vest** ✅ _(Common)_ - Reflects +1 damage back to attackers (stacks with other reflection)
 - **Damage Reduction** ✅ _(Uncommon)_ - Reduces all damage taken by 25%
 - **Regenerative Mesh** ✅ _(Uncommon)_ - Slowly heal during combat (0.3hp/s)
-- **Mirror Armor** ✅ _(Rare)_ - 100% reflect damage but you take 50% of reflected amount
+- **Mirror Armor** ✅ _(Rare)_ - Reflects +2 damage back to attackers but you still take original damage
 - **Last Stand** ✅ _(Rare)_ - Take 75% less damage when at 1 HP
 - **Thick Hide** ✅ _(Uncommon)_ - Gain +1 HP and reduce damage from attacks by 1 (minimum 1)
 - **Evasion** ✅ _(Uncommon)_ - 25% chance to dodge incoming attacks

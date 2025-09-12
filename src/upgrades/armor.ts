@@ -50,7 +50,7 @@ export function apply_mirror_armor(game: Game, entity: number) {
         throw new Error(`Cannot apply Mirror Armor to entity ${entity} - no Health component`);
 
     let health = game.World.Health[entity];
-    health.MirrorArmor = true;
+    health.ReflectDamage += 2;
 }
 
 export function apply_last_stand(game: Game, entity: number) {
