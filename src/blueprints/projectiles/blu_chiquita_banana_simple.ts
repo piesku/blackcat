@@ -26,7 +26,7 @@ export function blueprint_chiquita_banana_simple() {
         move2d(0, 180),
 
         // Small collision radius for the banana
-        collide2d(true, Layer.Object, Layer.Player | Layer.Terrain, 0.15),
+        collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.15),
 
         // Damage on impact - bananas explode when they hit something
         deal_damage(3), // Default cooldown=0, destroys on hit
