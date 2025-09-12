@@ -13,7 +13,6 @@ import {SpawnMode} from "../components/com_spawn.js";
 import {spawned_by} from "../components/com_spawned_by.js";
 import {Weapon} from "../components/com_weapon.js";
 import {Game} from "../game.js";
-import {getAIStateName} from "../ui/ai_state.js";
 import {Has} from "../world.js";
 
 const QUERY = Has.Weapon | Has.SpatialNode2D;
@@ -50,9 +49,7 @@ function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapo
     let cooldown_threshold = weapon.Cooldown - weapon.Cooldown / ai.Energy;
 
     let should_activate =
-        (ai.State === AiState.Circling ||
-            ai.State === AiState.Pursuing ||
-            ai.State === AiState.Dashing) &&
+        (ai.State === AiState.Circling || ai.State === AiState.Dashing) &&
         weapon.TimeToNext <= cooldown_threshold &&
         aim.TargetEntity !== -1 &&
         aim.DistanceToTarget <= weapon.Range;
@@ -61,7 +58,7 @@ function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapo
         let entityType = ai.IsPlayer ? "PLAYER" : "AI";
         let energyInfo = ai.IsPlayer ? `, Energy: ${ai.Energy.toFixed(2)}` : "";
         console.log(
-            `[${entityType}_WEAPON] Entity ${parent_entity} activating weapon (AI State: ${getAIStateName(ai.State)}, Target: ${aim.TargetEntity}, Distance: ${aim.DistanceToTarget.toFixed(2)}${energyInfo})`,
+            `[${entityType}_WEAPON] Entity ${parent_entity} activating weapon (Target: ${aim.TargetEntity}, Distance: ${aim.DistanceToTarget.toFixed(2)}${energyInfo})`,
         );
     }
 

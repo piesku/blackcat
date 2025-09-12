@@ -14,11 +14,6 @@ export interface ControlAi {
     Aggressiveness: number; // 0.0-2.0, affects attack frequency and distance
     Patience: number; // 0.5-2.0, affects how long they circle before attacking
 
-    // New state data
-    PrepareDirection: [number, number]; // Direction for preparing dash attack
-    SeparationForce: [number, number]; // Collision avoidance force
-    HasRetreatedAtLowHealth: boolean; // Prevents repeated retreating at same health level
-
     // Player energy control
     Energy: number; // For player entities: unified energy affecting movement speed, weapon cooldowns, and rate of fire (seconds)
     BaseMoveSpeed: number; // Original movement speed before energy scaling
@@ -58,16 +53,12 @@ export interface ControlAi {
         SpeedBonus: number;
         AttackBonus: number;
     }; // Berserker trait
-    RetreatHealthThreshold?: number; // Cautious trait retreat threshold
 }
 
 export const enum AiState {
     Circling,
-    Preparing, // New: Wind-up state before dash attack
     Dashing,
-    Retreating,
     Stunned,
-    Pursuing,
     Separating, // New: Active collision avoidance
 }
 
@@ -110,11 +101,6 @@ export function control_ai(is_player: boolean, base_move_speed: number) {
             // Personality traits
             Aggressiveness: aggressiveness,
             Patience: patience,
-
-            // State vectors
-            PrepareDirection: [0, 0],
-            SeparationForce: [0, 0],
-            HasRetreatedAtLowHealth: false,
 
             // Combat-driven energy upgrade properties (initialized to defaults)
             EnergyFromDamageDealt: 0,

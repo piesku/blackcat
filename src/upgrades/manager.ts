@@ -140,7 +140,6 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
             ai.Aggressiveness *= 0.7;
             health.Max += 1;
             health.Current += 1;
-            ai.RetreatHealthThreshold = 2;
             break;
 
         // === Combat Properties (Armor) ===

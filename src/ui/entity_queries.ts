@@ -1,13 +1,10 @@
 import {query_down} from "../components/com_children.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
-import {getAIStateName} from "./ai_state.js";
 
 export interface FighterStats {
     PlayerHP: {current: number; max: number} | null;
     OpponentHP: {current: number; max: number} | null;
-    PlayerAIState: string;
-    OpponentAIState: string;
 }
 
 export interface WeaponCooldownInfo {
@@ -20,8 +17,6 @@ export interface WeaponCooldownInfo {
 export function getFighterStats(game: Game): FighterStats {
     let PlayerHP = null;
     let OpponentHP = null;
-    let PlayerAIState = "Unknown";
-    let OpponentAIState = "Unknown";
 
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
         if (
@@ -41,15 +36,10 @@ export function getFighterStats(game: Game): FighterStats {
                 }
             }
 
-            // Get AI state info
-            let aiStateInfo = getAIStateName(ai.State);
-
             if (label.Name === "Player") {
                 PlayerHP = healthInfo;
-                PlayerAIState = aiStateInfo;
             } else if (label.Name === "Opponent") {
                 OpponentHP = healthInfo;
-                OpponentAIState = aiStateInfo;
             }
         }
     }
@@ -57,8 +47,6 @@ export function getFighterStats(game: Game): FighterStats {
     return {
         PlayerHP,
         OpponentHP,
-        PlayerAIState,
-        OpponentAIState,
     };
 }
 

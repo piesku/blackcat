@@ -48,10 +48,6 @@ export function sys_health(game: Game, _delta: number) {
                 }
 
                 total_damage += final_damage;
-
-                console.log(
-                    `[HEALTH] Entity ${entity} taking ${final_damage.toFixed(1)} damage (${damage_instance.Amount.toFixed(1)} before armor) from entity ${damage_instance.Source}`,
-                );
             }
 
             // Apply final damage

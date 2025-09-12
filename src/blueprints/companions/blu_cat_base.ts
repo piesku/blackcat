@@ -43,11 +43,6 @@ export function cat_control_ai(
             Aggressiveness: aggressiveness,
             Patience: patience,
 
-            // State vectors
-            PrepareDirection: [0, 0],
-            SeparationForce: [0, 0],
-            HasRetreatedAtLowHealth: false,
-
             // Combat-driven energy properties (cats use defaults, don't get upgrade modifications)
             EnergyFromDamageDealt: 0.0, // Cats don't get energy upgrades
             EnergyFromDamageTaken: 0.0, // Cats don't get energy upgrades

@@ -10,7 +10,7 @@ The AI system is built around the `ControlAi` component and the `sys_control_ai`
 
 - **Component**: `com_control_ai.ts` - Defines AI state and personality properties
 - **System**: `sys_control_ai.ts` - Implements state machine logic
-- **States**: Seven distinct behavioral states with clear transitions
+- **States**: Four distinct behavioral states with clear transitions
 - **Personality System**: Aggressiveness and Patience traits affect behavior
 
 ## AI States
@@ -22,124 +22,70 @@ The AI system is built around the `ControlAi` component and the `sys_control_ai`
 **Behavior:**
 
 - Moves in circular patterns around the target
-- Maintains optimal engagement distance
-- Randomly changes direction for unpredictability
-- Occasionally spirals inward for dramatic tension
-- **Can activate ranged weapons when in range**
+- Maintains optimal engagement distance (BASE_CIRCLE_DISTANCE = 2.5)
+- Randomly changes direction (`ai.CircleDirection *= -1`) for unpredictability
+- When target is too close, either separates or moves away cooperatively
+- When target is separating, backs away with reduced circling
+
+**Movement Logic:**
+- Calculates perpendicular vector for circular motion
+- Adjusts radial movement based on distance to target
+- When target is separating: stronger inward movement (-1.2) with reduced perpendicular (0.3)
+- Normal circling: moderate radial movement (0.6) with strong perpendicular (0.7)
 
 **Transitions:**
 
-- → **Pursuing**: When target starts retreating
-- → **Preparing**: When within dash range + personality-based timing + cooldown ready
-- → **Retreating**: When health drops to low threshold
-- → **Stunned**: When taking damage
-- → **Separating**: When too close to target (entity priority system)
+- → **Dashing**: When within dash range + personality timing + cooldown ready + random chance (20% * Aggressiveness)
+- → **Stunned**: When taking damage (within 0.3 seconds)
+- → **Separating**: When too close to target (entity priority system: only higher entity ID separates)
 
-### 2. Pursuing 🏃‍♂️
-
-**Aggressive chase state** - Direct pursuit of retreating targets with no circling.
-
-**Behavior:**
-
-- Moves directly toward retreating target
-- Speed multiplied by Aggressiveness personality trait (1.2x base)
-- Shorter attack cooldowns (1.0-1.5s vs 2.0-3.5s)
-- No circular movement - pure aggression
-- **Can activate ranged weapons when in range**
-
-**Transitions:**
-
-- → **Preparing**: When close enough to strike (starts attack preparation)
-- → **Circling**: When target stops retreating
-- → **Stunned**: When taking damage
-
-### 3. Preparing ⚡
-
-**Wind-up state** - Telegraphs incoming dash attacks with dramatic buildup.
-
-**Behavior:**
-
-- Slight oscillating movement toward target direction
-- Duration scales with Aggressiveness (more aggressive = faster preparation)
-- Base preparation time: 0.8 seconds (scaled by speed)
-- Stores attack direction for consistent dash targeting
-
-**Transitions:**
-
-- → **Dashing**: After preparation duration completes
-- → **Stunned**: When taking damage
-- → **Retreating**: When health drops to low threshold
-
-### 4. Dashing ⚔️
+### 2. Dashing ⚔️
 
 **Combat engagement state** - High-speed dash attacks toward the target.
 
 **Behavior:**
 
-- Direct movement toward target at dramatic high speed
-- Speed multiplier scales with Aggressiveness personality trait
-- Duration: 1.5 + (0.5 \* Aggressiveness) seconds, scaled by speed
+- Direct movement toward target at dramatically high speed
+- Speed multiplier: `BASE_DASH_SPEED_MULTIPLIER * ai.Aggressiveness * (ai.DashSpeedMultiplier || 1)`
+- Speed capped to prevent overshooting: `(BASE_DASH_SPEED_MULTIPLIER * 1.5) / sqrt(speed_scale)`
+- Duration: `(1.5 + 0.5 * ai.Aggressiveness) * time_scale` seconds
 - Activates melee weapon systems when in range
 
 **Transitions:**
 
-- → **Circling**: After dash duration expires or target moves away
-- → **Stunned**: When taking damage
-- → **Retreating**: When health drops to low threshold
-
-### 5. Retreating 🛡️
-
-**Defensive state** - Moves away from threats when health is low.
-
-**Behavior:**
-
-- Moves directly away from target at reduced speed (0.8x multiplier)
-- Triggered when health ≤ 1 HP
-- Strategic positioning rather than frantic escape
-- Timeout protection: maximum 3.0 seconds to prevent stalemates
-- **One-time per health episode**: Uses `HasRetreatedAtLowHealth` flag to prevent infinite cycling
-
-**Retreat Cycling Prevention:**
-
-- `HasRetreatedAtLowHealth` flag prevents multiple retreats at same health level
-- Flag set to `true` when entering retreat state
-- Flag reset to `false` when health recovers above threshold
-- Ensures strategic retreat behavior without state oscillation
-
-**Transitions:**
-
-- → **Circling**: When at safe distance AND health > low threshold OR timeout expires
+- → **Circling**: After dash duration expires OR target moves too far away (> 1.5x dash trigger distance)
 - → **Stunned**: When taking damage
 
-### 6. Stunned 😵
+### 3. Stunned 😵
 
 **Temporary incapacitation** - Brief immobilization after taking damage.
 
 **Behavior:**
 
-- No movement for short duration (0.3 seconds, scaled by speed)
+- No movement for short duration (0.3 seconds, scaled by time_scale)
+- Triggered automatically when `game.Time - health.LastDamageTime < 0.3 * time_scale`
 - Provides combat rhythm and counterplay opportunities
 - Duration scales with movement speed to maintain consistent feel
 
 **Transitions:**
 
-- → **Circling**: After stun duration expires (unless other conditions apply)
-- → **Retreating**: If health is low when stun ends
+- → **Circling**: After stun duration expires (0.3 * time_scale)
 
-### 7. Separating 🔄
+### 4. Separating 🔄
 
 **Collision avoidance state** - Active separation when fighters get too close.
 
 **Behavior:**
 
-- Asymmetric priority system: only higher entity ID enters this state
-- Pushes away from target with strong separation forces
+- Asymmetric priority system: only higher entity ID (`entity > aim.TargetEntity`) enters this state
+- Moves in random direction to break deadlock situations
+- Random angle generation: `float(0, Math.PI * 2)` for unpredictable movement
+- Enhanced movement speed (1.2x) to quickly exit close-range situations
 - Timeout protection: maximum 2.0 seconds in this state
-- Uses random direction fallback if separation forces cancel out
 
 **Transitions:**
 
-- → **Circling**: When adequately separated OR timeout expires
+- → **Circling**: When adequately separated (> 1.5x separation distance) OR timeout expires
 - → **Stunned**: When taking damage
 
 ## Speed Scaling System
@@ -186,21 +132,23 @@ effective_multiplier = Math.min(
 );
 ```
 
-## Retreat Detection
+## Movement Speed and Energy System
 
-The AI uses vector dot product calculation to detect when targets are retreating:
+The AI system includes dynamic movement speed based on energy levels:
 
 ```typescript
-let target_movement: Vec2 = [target_move.Direction[0], target_move.Direction[1]];
-let dot_product = target_movement[0] * to_target[0] + target_movement[1] * to_target[1];
-let is_target_retreating = dot_product < -0.3; // Threshold to avoid false positives
+move.MoveSpeed = ai.BaseMoveSpeed * Math.sqrt(ai.Energy);
 ```
 
-When retreat is detected:
+**Energy Effects:**
+- Movement speed scales with square root of energy level
+- Provides visual feedback through speed changes
+- Integrates with upgrade systems like Kinetic Charger
 
-- **Circling** state immediately transitions to **Pursuing**
-- No more defensive circling - pure aggression
-- Faster movement and shorter cooldowns
+**Kinetic Charger Integration:**
+- When moving, AI gains energy: `ai.Energy += (move.MoveSpeed / 4) * 0.5 * delta`
+- Rewards active movement and combat engagement
+- Creates positive feedback loop for aggressive play
 
 ## Personality System
 
@@ -239,32 +187,17 @@ When no valid targets remain (all enemies defeated):
 stateDiagram-v2
     [*] --> Circling
 
-    Circling --> Pursuing : Target retreating
-    Circling --> Preparing : In range + personality timing
-    Circling --> Separating : Too close (higher entity ID)
-    Circling --> Retreating : Low health (once per episode)
+    Circling --> Dashing : In range + timing + cooldown + 20% chance
+    Circling --> Separating : Too close (higher entity ID only)
     Circling --> Stunned : Damage taken
 
-    Pursuing --> Preparing : Close enough to strike
-    Pursuing --> Circling : Target stops retreating
-    Pursuing --> Stunned : Damage taken
-
-    Preparing --> Dashing : Preparation complete
-    Preparing --> Stunned : Damage taken
-    Preparing --> Retreating : Low health (once per episode)
-
-    Dashing --> Circling : Dash complete/target away
+    Dashing --> Circling : Duration expires OR target moves away
     Dashing --> Stunned : Damage taken
-    Dashing --> Retreating : Low health (once per episode)
 
-    Separating --> Circling : Separated OR timeout
+    Separating --> Circling : Separated OR 2s timeout
     Separating --> Stunned : Damage taken
 
-    Retreating --> Circling : Safe distance + health recovered
-    Retreating --> Stunned : Damage taken
-
-    Stunned --> Circling : Stun duration expires
-    Stunned --> Retreating : Low health when stun ends
+    Stunned --> Circling : 0.3s stun duration expires
 ```
 
 ## Key Parameters
@@ -272,25 +205,23 @@ stateDiagram-v2
 | Parameter                    | Base Value | Description                            |
 | ---------------------------- | ---------- | -------------------------------------- |
 | `BASE_CIRCLE_DISTANCE`       | 2.5        | Preferred circling radius              |
-| `BASE_DASH_TRIGGER_DISTANCE` | 4.5        | Attack initiation range (much longer!) |
+| `BASE_DASH_TRIGGER_DISTANCE` | 4.5        | Attack initiation range                |
 | `BASE_SEPARATION_DISTANCE`   | 1.2        | Minimum separation to prevent lock-ins |
-| `BASE_RETREAT_DISTANCE`      | 5.0        | Safe retreat distance                  |
-| `BASE_PREPARE_DURATION`      | 0.8        | Wind-up time for dash attacks          |
-| `LOW_HEALTH_THRESHOLD`       | 1          | Health trigger for retreat             |
-| `BASE_DASH_SPEED_MULTIPLIER` | 4.0        | Attack speed boost (increased)         |
+| `BASE_DASH_SPEED_MULTIPLIER` | 4.0        | Attack speed boost multiplier          |
 | `BASE_MOVE_SPEED`            | 2.0        | Reference speed for scaling            |
 
 ## Implementation Notes
 
-- All states check for target validity (alive enemies)
-- State changes are logged for debugging
-- Attack cooldowns prevent spam behavior
+- All states check for target validity (`aim.TargetEntity === -1`)
+- Attack cooldowns prevent spam behavior (`ai.AttackCooldown`)  
 - Personality traits add variety while maintaining determinism
-- Asymmetric separation prevents collision deadlocks
+- Asymmetric separation prevents collision deadlocks (entity ID priority)
 - System designed for hackability and easy modification
-- Uses lib/random.ts for deterministic behavior
+- Uses lib/random.ts for deterministic behavior (`float()` function)
 - Player fighters use consistent defaults for upgrade system
-- **Retreat cycling prevention**: `HasRetreatedAtLowHealth` flag ensures fighters only retreat once per health episode, preventing infinite state oscillation when health remains at low threshold
+- **Energy integration**: Movement speed scales with energy level and upgrades
+- **Berserker mode**: Speed bonus when health drops below threshold
+- **Kinetic Charger**: Movement generates energy for sustained combat
 
 ## Collision Avoidance System
 
