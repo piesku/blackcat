@@ -48,7 +48,7 @@ export class Game extends Game3D {
     State: GameState = createFreshGameState();
     CurrentView: GameView = GameView.Arena; // Start in arena for now
 
-    MaterialRender2D = mat_render2d(this.Gl, Has.Render2D, Has.SpatialNode2D);
+    MaterialRender2D = mat_render2d(this.Gl);
     Spritesheet = create_spritesheet_from(this.Gl, document.querySelector("img")!);
 
     InstanceBuffer = this.Gl.createBuffer()!;
