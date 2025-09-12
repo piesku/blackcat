@@ -2,7 +2,7 @@ import {Tile} from "../../../sprites/spritesheet.js";
 import {label} from "../../components/com_label.js";
 import {lifespan} from "../../components/com_lifespan.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
-import {particle, ParticleType} from "../../components/com_particle.js";
+import {particle} from "../../components/com_particle.js";
 import {render2d} from "../../components/com_render2d.js";
 import {rigid_body2d, RigidKind} from "../../components/com_rigid_body2d.js";
 
@@ -18,7 +18,7 @@ export function blueprint_shell_casing() {
         rigid_body2d(RigidKind.Dynamic, 0, 0.7, [0, -8.0]), // Strong downward gravity for realistic shell drop
 
         // Shell casing particle physics and behavior
-        particle(ParticleType.Debris, 0.2, [0.05, 0.05], 1.0), // spread, finalScale, fadeOut
+        particle(0.2, [0.05, 0.05], 1.0), // spread, finalScale, fadeOut
 
         lifespan(3), // Short lifespan - shells disappear after bouncing
     ];

@@ -388,7 +388,7 @@ export class SceneGraphInspector {
             const p = world.Particle[entityId];
             html += `<div class="component">
                 <strong>Particle</strong><br>
-                Type: ${p.Type}
+                Spread: ${p.Spread}
             </div>`;
         }
 

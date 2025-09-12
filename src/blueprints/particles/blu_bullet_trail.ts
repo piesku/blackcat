@@ -2,7 +2,7 @@ import {Tile} from "../../../sprites/spritesheet.js";
 import {label} from "../../components/com_label.js";
 import {lifespan} from "../../components/com_lifespan.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
-import {particle, ParticleType} from "../../components/com_particle.js";
+import {particle} from "../../components/com_particle.js";
 import {render2d} from "../../components/com_render2d.js";
 
 export function blueprint_bullet_trail() {
@@ -14,7 +14,7 @@ export function blueprint_bullet_trail() {
         render2d(Tile.Body), // Small particle sprite
 
         // Trail particle physics and behavior
-        particle(ParticleType.Debris, 0.0, [0.05, 0.05], 1), // spread, finalScale, fadeOut
+        particle(0.0, [0.05, 0.05], 1), // spread, finalScale, fadeOut
 
         lifespan(1), // Short lifespan - trails disappear quickly
     ];

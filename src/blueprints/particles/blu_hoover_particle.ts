@@ -4,7 +4,7 @@ import {deal_damage} from "../../components/com_deal_damage.js";
 import {label} from "../../components/com_label.js";
 import {lifespan} from "../../components/com_lifespan.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
-import {particle, ParticleType} from "../../components/com_particle.js";
+import {particle} from "../../components/com_particle.js";
 import {render2d} from "../../components/com_render2d.js";
 import {rigid_body2d, RigidKind} from "../../components/com_rigid_body2d.js";
 import {Layer} from "../../game.js";
@@ -21,7 +21,7 @@ export function blueprint_hoover_particle(damage: number) {
         rigid_body2d(RigidKind.Dynamic, 0, 0.9, [0, 0]),
 
         // Spinning particle with continuous damage
-        particle(ParticleType.Spark, 0.8, [0.05, 0.05], 0.3), // spread, finalScale, fadeOut
+        particle(0.8, [0.05, 0.05], 0.3), // spread, finalScale, fadeOut
 
         // Collision and damage - continuous damage dealing
         collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.15),
