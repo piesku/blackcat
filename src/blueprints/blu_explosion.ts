@@ -19,10 +19,7 @@ export function blueprint_explosion(
         spatial_node2d(),
         local_transform2d(position),
         collide2d(true, Layer.Object, Layer.Player, radius), // Explosion collision radius
-        deal_damage(damage, {
-            cooldown: 0.0, // Instant damage
-            destroy_on_hit: false, // Hit multiple targets
-        }),
+        deal_damage(damage, 0.1), // Brief 0.1s cooldown for multi-target explosion damage
         lifespan(duration), // Brief explosion area
 
         spawn_count(

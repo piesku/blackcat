@@ -25,10 +25,7 @@ export function blueprint_flame_particle(damage: number) {
 
         // Collision and damage - particles collide with fighters and terrain but not each other
         collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.1),
-        deal_damage(damage, {
-            cooldown: 0.0,
-            destroy_on_hit: true,
-        }),
+        deal_damage(damage), // Default cooldown=0, destroys on hit
 
         lifespan(8),
     ];

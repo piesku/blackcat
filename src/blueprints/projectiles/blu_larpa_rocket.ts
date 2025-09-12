@@ -19,9 +19,7 @@ export function blueprint_larpa_rocket(damage: number) {
         render2d(Tile.Mortar), // Use mortar sprite for rocket appearance
         collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.08),
         rigid_body2d(RigidKind.Dynamic, 0, 0, [0, 0]),
-        deal_damage(damage, {
-            destroy_on_hit: true,
-        }),
+        deal_damage(damage), // Default cooldown=0, destroys on hit
         lifespan(5), // Longer flight time than regular projectiles
 
         // Spawner for falling particle damage trail

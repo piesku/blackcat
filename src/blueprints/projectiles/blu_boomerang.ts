@@ -43,10 +43,7 @@ export function blueprint_boomerang(target_direction: Vec2, target_distance: num
         lifespan(travel_time),
 
         // Damage throughout flight
-        deal_damage(1, {
-            cooldown: 0.5,
-            destroy_on_hit: false,
-        }),
+        deal_damage(1, 0.5), // 0.5s cooldown, persistent damage
 
         children(
             // Spinning boomerang sprite

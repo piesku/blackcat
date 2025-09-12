@@ -10,6 +10,7 @@
  * All damage detection uses the collision system - no separate radius detection needed.
  */
 
+import {destroy_all} from "../components/com_children.js";
 import {Collide2D} from "../components/com_collide2d.js";
 import {DealDamage} from "../components/com_deal_damage.js";
 import {get_root_spawner} from "../components/com_label.js";
@@ -71,7 +72,7 @@ function handle_collision_damage(
         // Apply trait-based damage bonus (Brawler trait) and energy scaling
         if (game.World.Signature[original_spawner] & Has.ControlAi) {
             let ai = game.World.ControlAi[original_spawner];
-            DEBUG: if (!ai) throw new Error("missing AI component");
+            if (!ai) throw new Error("missing AI component");
 
             // Apply trait damage bonus
             if (ai.DamageBonus) {
@@ -101,7 +102,7 @@ function handle_collision_damage(
         // Generate energy from dealing damage (combat-driven energy system)
         if (game.World.Signature[original_spawner] & Has.ControlAi) {
             let attacker_ai = game.World.ControlAi[original_spawner];
-            DEBUG: if (!attacker_ai) throw new Error("missing AI component");
+            if (!attacker_ai) throw new Error("missing AI component");
 
             // Gain energy based on damage dealt and upgrade bonus
             if (attacker_ai.EnergyFromDamageDealt > 0) {
@@ -114,7 +115,7 @@ function handle_collision_damage(
             let attacker_ai = game.World.ControlAi[original_spawner];
             if (attacker_ai.VampiricHealing) {
                 let attacker_health = game.World.Health[original_spawner];
-                DEBUG: if (!attacker_health) throw new Error("attacker missing health component");
+                if (!attacker_health) throw new Error("attacker missing health component");
 
                 let heal_amount = final_damage / 2; // Heal 1 HP for every 2 damage dealt
                 attacker_health.PendingHealing.push({
@@ -157,19 +158,16 @@ function handle_collision_damage(
         }
 
         hit_something = true;
-
-        // Only hit the first target (no piercing)
-        break;
     }
 
     // Handle post-hit effects
     if (hit_something) {
-        // Set cooldown
+        // Set cooldown (if cooldown is 0, this will be 0 and allow immediate destruction)
         damage_dealer.LastDamageTime = damage_dealer.Cooldown;
 
-        // Destroy entity if configured to do so
-        if (damage_dealer.DestroyOnHit) {
-            game.World.Signature[entity] = 0;
+        // Destroy entity if cooldown is 0 (instant/projectile damage)
+        if (damage_dealer.Cooldown === 0) {
+            destroy_all(game.World, entity);
         }
     }
 }

@@ -18,10 +18,7 @@ export function blueprint_spikeball(damage: number) {
         // High bounciness for persistent bouncing, no gravity for arena-level bouncing
         rigid_body2d(RigidKind.Dynamic, 0.8, 0.4, [0, 0]), // 80% bounce, minimal drag, no gravity
 
-        deal_damage(damage, {
-            destroy_on_hit: false, // Spikeball continues after hitting
-            cooldown: 0.3, // Brief cooldown to prevent multiple hits on same target
-        }),
+        deal_damage(damage, 0.3), // 0.3s cooldown, persistent bouncing damage
 
         // Long lifespan - persists until timeout as per upgrade description
         lifespan(8.0), // 8 seconds of bouncing chaos

@@ -23,12 +23,9 @@ export function blueprint_hoover_particle(damage: number) {
         // Spinning particle with continuous damage
         particle(0.8, [0.05, 0.05], 0.3), // spread, finalScale, fadeOut
 
-        // Collision and damage - continuous damage dealing
+        // Collision and damage
         collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.15),
-        deal_damage(damage, {
-            cooldown: 0.1, // Short cooldown for continuous damage
-            destroy_on_hit: false, // Don't destroy on hit - continuous damage
-        }),
+        deal_damage(damage),
 
         lifespan(6), // Persist for 6 seconds of continuous damage
     ];

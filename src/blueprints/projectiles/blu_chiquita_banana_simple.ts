@@ -29,9 +29,7 @@ export function blueprint_chiquita_banana_simple() {
         collide2d(true, Layer.Object, Layer.Player | Layer.Terrain, 0.15),
 
         // Damage on impact - bananas explode when they hit something
-        deal_damage(3.14, {
-            destroy_on_hit: true,
-        }),
+        deal_damage(3), // Default cooldown=0, destroys on hit
 
         // Also explode on timeout like mortar shells - creates explosion area effect
         lifespan(2.0, Action.ExplodeArea),

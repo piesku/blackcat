@@ -26,9 +26,7 @@ export function blueprint_bullet(damage: number) {
         collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.05),
         rigid_body2d(RigidKind.Dynamic, 0, 0, [0, 0]),
 
-        deal_damage(damage, {
-            destroy_on_hit: true,
-        }),
+        deal_damage(damage), // Default cooldown=0, destroys on hit
 
         lifespan(4),
 
