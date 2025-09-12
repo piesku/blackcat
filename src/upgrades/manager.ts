@@ -23,17 +23,6 @@ import {attach_to_parent} from "../components/com_children.js";
 import {spawn_timed} from "../components/com_spawn.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
-import {
-    apply_damage_reduction,
-    apply_evasion,
-    apply_last_stand,
-    apply_mirror_armor,
-    apply_pain_tolerance,
-    apply_regenerative_mesh,
-    apply_scrap_armor,
-    apply_spiked_vest,
-    apply_thick_hide,
-} from "./armor.js";
 import {UpgradeCategory, UpgradeId, UpgradeType} from "./types.js";
 
 export function apply_upgrades(game: Game, entity: number, upgrades: UpgradeType[]) {
@@ -100,7 +89,7 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
             break;
         case UpgradeId.PainTolerance:
             ai.EnergyFromDamageTaken += 0.4;
-            apply_pain_tolerance(game, entity);
+            health.FlatDamageReduction++;
             break;
         case UpgradeId.ShockwaveBurst:
             ai.ShockwaveBurstEnabled = true;
@@ -135,7 +124,8 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
             ai.Aggressiveness *= 0.3;
             health.Max += 3;
             health.Current += 3;
-            apply_damage_reduction(game, entity, 0.5);
+            // Stack damage reduction multiplicatively to prevent going over 100%
+            health.DamageReduction += (1 - health.DamageReduction) * 0.5;
             break;
         case UpgradeId.Cautious:
             ai.Aggressiveness *= 0.7;
@@ -146,28 +136,35 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
 
         // === Combat Properties (Armor) ===
         case UpgradeId.ScrapArmor:
-            apply_scrap_armor(game, entity);
+            health.IgnoreFirstDamage = true;
+            health.FirstDamageIgnored = false; // Reset the flag
             break;
         case UpgradeId.SpikedVest:
-            apply_spiked_vest(game, entity, 1);
+            health.ReflectDamage += 1; // Stack with existing reflect
+            health.FlatDamageReduction++;
             break;
         case UpgradeId.DamageReduction:
-            apply_damage_reduction(game, entity, 0.25);
+            // Stack damage reduction multiplicatively to prevent going over 100%
+            health.DamageReduction += (1 - health.DamageReduction) * 0.25;
             break;
         case UpgradeId.RegenerativeMesh:
-            apply_regenerative_mesh(game, entity, 0.3);
+            // Stack regeneration rates additively
+            health.RegenerationRate += 0.3;
             break;
         case UpgradeId.MirrorArmor:
-            apply_mirror_armor(game, entity);
+            health.ReflectDamage += 2;
             break;
         case UpgradeId.LastStand:
-            apply_last_stand(game, entity);
+            health.LastStand = true;
             break;
         case UpgradeId.ThickHide:
-            apply_thick_hide(game, entity);
+            health.Max += 1;
+            health.Current += 1;
+            health.FlatDamageReduction++;
             break;
         case UpgradeId.Evasion:
-            apply_evasion(game, entity, 0.25);
+            // Stack evasion chances multiplicatively to prevent going over 100%
+            health.EvasionChance += (1 - health.EvasionChance) * 0.25;
             break;
 
         // === Combat Properties (Abilities) ===
