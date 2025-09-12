@@ -128,6 +128,27 @@ function handle_collision_damage(
             }
         }
 
+        // Handle mana siphon (drain energy from target and add to attacker)
+        if (game.World.Signature[original_spawner] & Has.ControlAi) {
+            let attacker_ai = game.World.ControlAi[original_spawner];
+            if (attacker_ai.ManaSiphon) {
+                if (game.World.Signature[target_entity] & Has.ControlAi) {
+                    let target_ai = game.World.ControlAi[target_entity];
+                    let siphoned_amount = final_damage * attacker_ai.ManaSiphon;
+
+                    // Drain from target
+                    target_ai.Energy = Math.max(0, target_ai.Energy - siphoned_amount);
+
+                    // Add to attacker
+                    attacker_ai.Energy += siphoned_amount;
+
+                    console.log(
+                        `[MANA SIPHON] Entity ${original_spawner} siphoned ${siphoned_amount.toFixed(2)} energy from entity ${target_entity}`,
+                    );
+                }
+            }
+        }
+
         // Apply screen shake based on damage amount
         if (game.Camera !== undefined) {
             let shake_radius = Math.min(1.0, final_damage * 0.2); // Scale with damage (0.2 to 1.0+)

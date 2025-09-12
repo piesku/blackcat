@@ -2,15 +2,6 @@ import {float} from "../../lib/random.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
-// Default energy system parameters (can be overridden by upgrades)
-const DEFAULT_ENERGY_FROM_DAMAGE_DEALT = 0.0; // Combat energy generation disabled by default
-const DEFAULT_ENERGY_FROM_DAMAGE_TAKEN = 0.0; // Combat energy generation disabled by default
-const DEFAULT_ENERGY_DECAY_RATE = 1.0;
-const DEFAULT_HEALING_RATE = 0.0; // Healing disabled by default
-
-// Default shockwave burst parameters
-const DEFAULT_SHOCKWAVE_BURST_ENABLED = false;
-
 export interface ControlAi {
     State: AiState;
     LastStateChange: number; // Game time in seconds when state last changed
@@ -47,6 +38,9 @@ export interface ControlAi {
 
     // Kinetic charger upgrade properties
     KineticChargerEnabled?: boolean; // Whether kinetic charger upgrade is active
+
+    // Mana siphon upgrade properties
+    ManaSiphon: number; // Percentage of damage dealt to siphon as energy
 
     // Ability upgrade flags (optional - only set when abilities are applied)
     VampiricHealing?: boolean; // Vampiric upgrade - heal based on damage dealt
@@ -123,13 +117,15 @@ export function control_ai(is_player: boolean, base_move_speed: number) {
             HasRetreatedAtLowHealth: false,
 
             // Combat-driven energy upgrade properties (initialized to defaults)
-            EnergyFromDamageDealt: DEFAULT_ENERGY_FROM_DAMAGE_DEALT,
-            EnergyFromDamageTaken: DEFAULT_ENERGY_FROM_DAMAGE_TAKEN,
-            EnergyDecayRate: DEFAULT_ENERGY_DECAY_RATE,
-            HealingRate: DEFAULT_HEALING_RATE,
+            EnergyFromDamageDealt: 0,
+            EnergyFromDamageTaken: 0,
+            EnergyDecayRate: 1,
+            HealingRate: 0.0, // Healing disabled by default
 
             // Shockwave burst properties (initialized to defaults)
-            ShockwaveBurstEnabled: DEFAULT_SHOCKWAVE_BURST_ENABLED,
+            ShockwaveBurstEnabled: false,
+
+            ManaSiphon: 0.0, // No siphoning by default
         };
     };
 }

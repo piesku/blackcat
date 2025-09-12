@@ -293,6 +293,13 @@ export const ENERGY_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         Description: "Gain mana while moving",
         Rarity: UpgradeRarity.Uncommon,
     },
+    [UpgradeId.ManaSiphon]: {
+        Id: UpgradeId.ManaSiphon,
+        Category: UpgradeCategory.Enhancement,
+        Name: "Mana Siphon",
+        Description: "Drain mana when dealing damage",
+        Rarity: UpgradeRarity.Rare,
+    },
 };
 
 // Trait upgrade definitions - Combat & behavioral enhancement

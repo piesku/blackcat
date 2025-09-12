@@ -97,6 +97,9 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
         case UpgradeId.KineticCharger:
             ai.KineticChargerEnabled = true;
             break;
+        case UpgradeId.ManaSiphon:
+            ai.ManaSiphon += 0.5; // Add 50% siphon rate
+            break;
 
         // === Behavioral Properties ===
         case UpgradeId.LightningReflexes:
