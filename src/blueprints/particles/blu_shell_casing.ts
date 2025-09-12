@@ -12,7 +12,7 @@ export function blueprint_shell_casing() {
 
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d([0, 0], 0, [0.08, 0.08]), // Small shell casings
-        render2d(Tile.Body), // Small metallic shell sprite
+        render2d(Tile.Die1), // Small metallic shell sprite
 
         // Physics integration via RigidBody2D - shells fall with gravity
         rigid_body2d(RigidKind.Dynamic, 0, 0.7, [0, -8.0]), // Strong downward gravity for realistic shell drop

@@ -15,7 +15,7 @@ export function blueprint_shockwave_particle(damage: number = 0.5) {
 
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d([0, 0], 0, [0.2, 0.2]), // Medium-sized shockwave particles
-        render2d(Tile.Body), // Use body sprite for shockwave visual
+        render2d(Tile.Die1), // Use body sprite for shockwave visual
 
         // Physics integration via RigidBody2D - no gravity for energy-based shockwave
         rigid_body2d(RigidKind.Dynamic, 0, 0.2), // Light air resistance, no gravity

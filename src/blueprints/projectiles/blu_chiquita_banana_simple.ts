@@ -16,7 +16,7 @@ export function blueprint_chiquita_banana_simple() {
         label("chiquita_banana"),
 
         local_transform2d([0, 0], 0, [0.2, 0.2]), // Smaller than main bomb
-        render2d(Tile.Body), // Banana sprite (using body for now)
+        render2d(Tile.Die1), // Banana sprite (using body for now)
 
         // Physics integration via RigidBody2D
         rigid_body2d(RigidKind.Dynamic, 0.2, 0.1, [0, -2]),

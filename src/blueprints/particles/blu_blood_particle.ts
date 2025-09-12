@@ -12,7 +12,7 @@ export function blueprint_blood_particle() {
 
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d([0, 0], 0, [0.4, 0.4]), // Start medium-sized for visible splatter
-        render2d(Tile.Body, [0.8, 0, 0, 0.9]), // Dark red color for blood
+        render2d(Tile.Die1, [0.8, 0, 0, 0.9]), // Dark red color for blood
 
         // Physics integration - slight downward gravity with initial velocity
         rigid_body2d(RigidKind.Dynamic, 0, 0.8, [0, -1.0]), // Slight downward gravity

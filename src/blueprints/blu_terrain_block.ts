@@ -15,7 +15,7 @@ export function blueprint_terrain_block(scale: number = 1.0) {
     return [
         label("terrain block"),
         local_transform2d(undefined, 0, [scale, scale]),
-        render2d(Tile.Body, [r, r, r, 1]),
+        render2d(Tile.Run1, [r, r, r, 1]),
         // Static collider on Terrain layer
         collide2d(false, Layer.Terrain, Layer.None, 0.5 * scale),
         rigid_body2d(RigidKind.Static, 0, 0, [0, 0]),

@@ -12,7 +12,7 @@ export function blueprint_explosive_bomb() {
     return [
         label("explosive bomb"),
         local_transform2d(undefined, 0, [0.3, 0.3]), // Medium-sized bomb
-        render2d(Tile.Body), // Bomb sprite - using Body for now
+        render2d(Tile.Die1), // Bomb sprite - using Body for now
         collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.1),
         rigid_body2d(RigidKind.Dynamic, 0, 0.5, [0, -2]), // Light gravity, slight arc
 

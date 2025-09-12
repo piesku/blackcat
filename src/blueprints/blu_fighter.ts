@@ -2,6 +2,7 @@ import {Vec4} from "../../lib/math.js";
 import {Tile} from "../../sprites/spritesheet.js";
 
 import {aim} from "../components/com_aim.js";
+import {animate_sprite} from "../components/com_animate_sprite.js";
 import {children} from "../components/com_children.js";
 import {collide2d} from "../components/com_collide2d.js";
 import {control_ai} from "../components/com_control_ai.js";
@@ -18,17 +19,22 @@ import {blueprint_blood_spawner} from "./blu_blood_spawner.js";
 export const PLAYER_TEAM_COLOR: Vec4 = [0.2, 0.4, 0.8, 1]; // Blue
 export const OPPONENT_TEAM_COLOR: Vec4 = [0.8, 0.2, 0.2, 1]; // Red
 
-export function blueprint_eyes(_game: Game, color: Vec4 = [0, 0, 0, 1]) {
-    return [spatial_node2d(), local_transform2d(undefined, 0, [1, 1]), render2d(Tile.Eyes, color)];
-}
-
 export function blueprint_body(game: Game, is_player: boolean) {
     let team_color = is_player ? PLAYER_TEAM_COLOR : OPPONENT_TEAM_COLOR;
     return [
         spatial_node2d(),
         local_transform2d(),
-        render2d(Tile.Body, team_color),
-        children(blueprint_eyes(game, [1, 1, 1, 1])),
+        render2d(Tile.Run1, team_color),
+        animate_sprite({
+            [Tile.Run1]: 0.1,
+            [Tile.Run2]: 0.1,
+            [Tile.Run3]: 0.1,
+            [Tile.Run4]: 0.1,
+            [Tile.Run5]: 0.1,
+            [Tile.Run6]: 0.1,
+            [Tile.Run7]: 0.1,
+            [Tile.Run8]: 0.1,
+        }),
     ];
 }
 
@@ -47,7 +53,6 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
         control_ai(is_player, base_speed),
 
         collide2d(true, Layer.Player, Layer.Terrain | Layer.Player, 0.5),
-        // animate_sprite({[Tile.Body]: Math.random()}),
         health(totalHealth),
         move2d(base_speed, 0),
         aim(0.1), // Target search every 0.1 seconds

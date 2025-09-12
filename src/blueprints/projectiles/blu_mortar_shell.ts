@@ -14,7 +14,7 @@ export function blueprint_mortar_shell(lifetime: number) {
         label("mortar_shell"),
         spatial_node2d(),
         local_transform2d([0, 0], 0, [0.3, 0.3]), // Small grenade
-        render2d(Tile.Body), // Using sprite for mortar shell
+        render2d(Tile.Die1), // Using sprite for mortar shell
 
         // Physics integration via RigidBody2D with gravity
         rigid_body2d(RigidKind.Dynamic, 0.3, 0.01, [0, -9.8]), // Standard gravity for grenades

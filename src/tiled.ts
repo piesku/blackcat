@@ -53,7 +53,7 @@ export function* tiled_layer_blueprints(layer: TiledLayer) {
         }
 
         // For now, just use the first sprite for all tiles
-        let blueprint = [local, render2d(Tile.Body)];
+        let blueprint = [local, render2d(Tile.Die1)];
 
         // Note: Animation and collision data from atlas.ts is no longer available
         // This would need to be reimplemented based on tile_id if needed

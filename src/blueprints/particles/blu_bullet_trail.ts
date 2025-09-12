@@ -11,7 +11,7 @@ export function blueprint_bullet_trail() {
 
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d([0, 0], 0, [0.1, 0.1]), // Small elongated trail mark
-        render2d(Tile.Body), // Small particle sprite
+        render2d(Tile.Die1), // Small particle sprite
 
         // Trail particle physics and behavior
         particle(0.0, [0.05, 0.05], 1), // spread, finalScale, fadeOut

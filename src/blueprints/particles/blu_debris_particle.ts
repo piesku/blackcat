@@ -15,7 +15,7 @@ export function blueprint_debris_particle() {
 
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d([0, 0], 0, [0.15, 0.15]), // Small debris pieces
-        render2d(Tile.Body), // Debris sprite
+        render2d(Tile.Die1), // Debris sprite
 
         // Physics integration via RigidBody2D with realistic gravity
         rigid_body2d(RigidKind.Dynamic, 0, 0.3, [0, -9.8]), // Standard gravity for debris

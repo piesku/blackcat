@@ -14,7 +14,7 @@ export function blueprint_shadow_particle() {
 
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d(),
-        render2d(Tile.Body, [1, 1, 1, 0.3]),
+        render2d(Tile.Die1, [1, 1, 1, 0.3]),
         order(1),
 
         // Shadow particle physics and behavior

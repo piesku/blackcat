@@ -21,7 +21,7 @@ export function blueprint_bullet(damage: number) {
         spatial_node2d(),
         local_transform2d(undefined, 0, [0.2, 0.2]), // Small projectile
 
-        render2d(Tile.Body), // Use a bullet/projectile sprite
+        render2d(Tile.Die1), // Use a bullet/projectile sprite
 
         collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.05),
         rigid_body2d(RigidKind.Dynamic, 0, 0, [0, 0]),

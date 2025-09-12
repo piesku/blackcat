@@ -15,7 +15,7 @@ export function blueprint_hoover_projectile() {
         label("hoover crack projectile"),
         spatial_node2d(),
         local_transform2d(undefined, 0, [0.3, 0.3]), // Medium-sized spinning emitter
-        render2d(Tile.Rifle), // Using rifle sprite for the spinning emitter
+        render2d(Tile.Die1), // Using rifle sprite for the spinning emitter
         collide2d(false, Layer.Projectile, Layer.Terrain, 0.1), // Doesn't deal direct damage, just spawns particles
         rigid_body2d(RigidKind.Dynamic, 0, 0.8, [0, 0]), // Friction to slow down over time
 

@@ -50,7 +50,7 @@ export function blueprint_boomerang(target_direction: Vec2, target_distance: num
             [
                 spatial_node2d(),
                 local_transform2d(),
-                render2d(Tile.Body),
+                render2d(Tile.Die1),
                 control_always2d(null, -1),
                 move2d(0, BOOMERANG_SPIN_SPEED),
             ],

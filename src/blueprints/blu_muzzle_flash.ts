@@ -12,7 +12,7 @@ export function blueprint_muzzle_flash(position: Vec2) {
     return [
         spatial_node2d(),
         local_transform2d(position, 0, [1.5, 1.5]),
-        render2d(Tile.Body, [0, 1, 1, 1]),
+        render2d(Tile.Run1, [0, 1, 1, 1]),
         order(0.1), // Render in front of most objects
         lifespan(0.1),
     ];

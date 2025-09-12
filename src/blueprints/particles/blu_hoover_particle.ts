@@ -15,7 +15,7 @@ export function blueprint_hoover_particle(damage: number) {
 
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d([0, 0], 0, [0.2, 0.2]),
-        render2d(Tile.Body),
+        render2d(Tile.Die1),
 
         // Physics for spinning motion - high friction, no gravity
         rigid_body2d(RigidKind.Dynamic, 0, 0.9, [0, 0]),

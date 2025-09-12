@@ -38,9 +38,9 @@ export function render2d(tile_id: number, color: Vec4 = [1, 1, 1, 1]) {
         game.World.InstanceData[instance_offset + 11] = color[3];
         // Sprite. For 8x8 tiles with 1px padding in a vertical layout
         game.World.InstanceData[instance_offset + 12] = 0; // x is always 0 for vertical layout
-        game.World.InstanceData[instance_offset + 13] = tile_id * 9; // y = tile_id * (8 + 1 padding)
-        game.World.InstanceData[instance_offset + 14] = 8; // width is always 8
-        game.World.InstanceData[instance_offset + 15] = 8; // height is always 8
+        game.World.InstanceData[instance_offset + 13] = tile_id * 17; // y = tile_id * (16 + 1 padding)
+        game.World.InstanceData[instance_offset + 14] = 16; // width is always 16
+        game.World.InstanceData[instance_offset + 15] = 16; // height is always 16
 
         game.World.Signature[entity] |= Has.Render2D;
         game.World.Render2D[entity] = {
@@ -71,9 +71,9 @@ export function order(z: number) {
 export function set_sprite(game: Game, entity: Entity, tile_id: number) {
     let instance_offset = entity * FLOATS_PER_INSTANCE;
     game.World.InstanceData[instance_offset + 12] = 0; // x is always 0 for vertical layout
-    game.World.InstanceData[instance_offset + 13] = tile_id * 9; // y = tile_id * (8 + 1 padding)
-    game.World.InstanceData[instance_offset + 14] = 8; // width is always 8
-    game.World.InstanceData[instance_offset + 15] = 8; // height is always 8
+    game.World.InstanceData[instance_offset + 13] = tile_id * 17; // y = tile_id * (16 + 1 padding)
+    game.World.InstanceData[instance_offset + 14] = 16; // width is always 16
+    game.World.InstanceData[instance_offset + 15] = 16; // height is always 16
 }
 
 export function set_color(game: Game, entity: Entity, color: Vec4) {

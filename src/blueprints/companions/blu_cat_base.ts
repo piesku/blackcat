@@ -57,15 +57,6 @@ export function cat_control_ai(
     };
 }
 
-// Cat eyes with specific color based on cat type
-export function blueprint_cat_eyes(_game: Game, eye_color: Vec4 = [0.2, 1.0, 0.2, 1]) {
-    return [
-        spatial_node2d(),
-        local_transform2d(undefined, 0, [1, 1]),
-        render2d(Tile.Eyes, eye_color),
-    ];
-}
-
 // Cat body with team color and specific eye color
 export function blueprint_cat_body(
     game: Game,
@@ -77,8 +68,7 @@ export function blueprint_cat_body(
     return [
         spatial_node2d(),
         local_transform2d(undefined, 0, [scale, scale]),
-        render2d(Tile.Body, team_color),
-        children(blueprint_cat_eyes(game, eye_color)),
+        render2d(Tile.Die1, team_color),
     ];
 }
 

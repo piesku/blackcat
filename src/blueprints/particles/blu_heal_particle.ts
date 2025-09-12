@@ -12,7 +12,7 @@ export function blueprint_heal_particle() {
 
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d([0, 0], 0, [0.3, 0.3]), // Start small and shrink further
-        render2d(Tile.Body, [0, 1, 0, 0.5]), // Green color for healing
+        render2d(Tile.Die1, [0, 1, 0, 0.5]), // Green color for healing
 
         // Physics integration - gentle upward float
         rigid_body2d(RigidKind.Dynamic, 0, 0.95, [0, 2.0]), // Gentle upward drift (healing energy rises)

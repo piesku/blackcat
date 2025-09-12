@@ -15,7 +15,7 @@ export function blueprint_larpa_trail_particle() {
 
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d([0, 0], 0, [0.1, 0.1]), // Small trail particles
-        render2d(Tile.Body), // Small particle sprite
+        render2d(Tile.Die1), // Small particle sprite
 
         // Physics integration via RigidBody2D with gravity
         rigid_body2d(RigidKind.Dynamic, 0, 0.2, [0, -5.0]), // Falling particles with gravity
