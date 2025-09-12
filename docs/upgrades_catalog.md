@@ -61,45 +61,43 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 #### Armor Properties (Health component modifications)
 
 - **Scrap Armor** ✅ _(Common)_ - Ignores the first damage instance you take in combat
-- **Spiked Vest** ✅ _(Common)_ - Reflects +1 damage back to attackers (stacks with other reflection)
-- **Damage Reduction** ✅ _(Uncommon)_ - Reduces all damage taken by 25%
-- **Regenerative Mesh** ✅ _(Uncommon)_ - Slowly heal during combat (0.3hp/s)
-- **Mirror Armor** ✅ _(Rare)_ - Reflects +2 damage back to attackers but you still take original damage
-- **Last Stand** ✅ _(Rare)_ - Take 75% less damage when at 1 HP
-- **Thick Hide** ✅ _(Uncommon)_ - Gain +1 HP and reduce damage from attacks by 1 (minimum 1)
-- **Evasion** ✅ _(Uncommon)_ - 25% chance to dodge incoming attacks
+- **Spiked Vest** ✅ _(Tiered)_ - Reflect damage to attackers (Tier 1: +1 damage, Tier 2: +2 damage, Tier 3: +3 damage)
+- **Damage Reduction** ✅ _(Tiered)_ - Damage reduction (Tier 1: 15%, Tier 2: 25%, Tier 3: 35%)
+- **Regenerative Mesh** ✅ _(Tiered)_ - Combat healing (Tier 1: 0.2 HP/s, Tier 2: 0.3 HP/s, Tier 3: 0.5 HP/s)
+- **Mirror Armor** ✅ _(Tiered)_ - Damage reflection while taking damage (Tier 1: +1 reflect, Tier 2: +2 reflect, Tier 3: +3 reflect)
+- **Last Stand** ✅ _(Tiered)_ - Low health damage reduction (Tier 1: 50% reduction at <25% HP, Tier 2: 75% reduction at <25% HP, Tier 3: 90% reduction at <25% HP )
+- **Thick Hide** ✅ _(Tiered)_ - Health and damage reduction (Tier 1: +1 HP, -1 damage taken, Tier 2: +2 HP, -2 damage, Tier 3: +3 HP, -3 damage)
+- **Evasion** ✅ _(Tiered)_ - Dodge chance (Tier 1: 15%, Tier 2: 25%, Tier 3: 35% )
 
 #### Combat Abilities (ControlAi flags)
 
-- **Vampiric** ✅ _(Uncommon)_ - Heal 1 HP for every 2 damage you deal to enemies
-- **Phase Walk** ✅ _(Rare)_ - Invincibility for the entire duration of dash attacks
-- **Dash Master** ✅ _(Common)_ - +100% dash range
+- **Vampiric** ✅ _(Tiered)_ - Lifesteal (Tier 1: 25% lifesteal, Tier 2: 50% lifesteal, Tier 3: 75% lifesteal)
+- **Phase Walk** ✅ _(Tiered)_ - Dash invincibility duration (Tier 1: 50% of dash, Tier 2: 75% of dash, Tier 3: 100% of dash)
+- **Dash Master** ✅ _(Tiered)_ - Dash range bonus (Tier 1: +50% range, Tier 2: +100% range, Tier 3: +150% range)
 
 #### Energy Properties (ControlAi energy system)
 
-- **Combat Veteran** ✅ _(Common)_ - Gain +0.3 energy per damage dealt to enemies
-- **Battle Fury** ✅ _(Uncommon)_ - Enhanced combat energy generation (+0.5 energy per damage dealt, stacks)
-- **Adrenaline Surge** ✅ _(Common)_ - Gain +0.2 energy per damage taken (pain fuels power)
-- **Slow Metabolism** ✅ _(Common)_ - Energy decays 50% slower
-- **Combat Medic** ✅ _(Common)_ - Auto-heal +1 HP per second when energy > 50% (stacks with other healing)
-- **Field Surgeon** ✅ _(Uncommon)_ - Auto-heal +2 HP per second when energy > 50% (stacks with other healing)
+- **Combat Veteran** ✅ _(Tiered)_ - Energy per damage dealt (Tier 1: +0.3, Tier 2: +0.5, Tier 3: +0.8)
+- **Adrenaline Surge** ✅ _(Tiered)_ - Energy per damage taken (Tier 1: +0.2, Tier 2: +0.3, Tier 3: +0.4)
+- **Slow Metabolism** ✅ _(Tiered)_ - Energy decay rate (Tier 1: 25% slower decay, Tier 2: 50% slower decay, Tier 3: 75% slower decay)
+- **Combat Medic** ✅ _(Tiered)_ - Auto-heal when energy > 50% (Tier 1: +1 HP/s, Tier 2: +2 HP/s, Tier 3: +3 HP/s)
 - **Hypermetabolism** ✅ _(Rare)_ - Energy decays twice as fast but enables powerful +3 HP/s auto-healing
 - **Weapon Mastery** ✅ _(Rare)_ - Gain +0.8 energy per damage dealt and +25% weapon damage when energy > 75%
-- **Pain Tolerance** ✅ _(Uncommon)_ - Gain +0.4 energy per damage taken and reduce damage by 1 (minimum 1)
+- **Pain Tolerance** ✅ _(Tiered)_ - Energy per damage taken (Tier 1: +0.2, Tier 2: +0.4, Tier 3: +0.6)
 - **Shockwave Burst** ✅ _(Rare)_ - Automatically spawn damaging particles in all directions when energy reaches maximum
-- **Kinetic Charger** ✅ _(Uncommon)_ - Gain energy while moving, proportional to speed
-- **Mana Siphon** ✅ _(Rare)_ - Drain opponent's energy when dealing damage and add it to your own
-- **Resonance Shield** ✅ _(Uncommon)_ - Reduce incoming damage proportionally to your current energy level
+- **Kinetic Charger** ✅ _(Tiered)_ - Energy generation while moving (Tier 1: base rate, Tier 2: 2x rate, Tier 3: 3x rate)
+- **Mana Siphon** ✅ _(Tiered)_ - Energy drain per damage dealt (Tier 1: 25% of damage, Tier 2: 50% of damage, Tier 3: 75% of damage)
+- **Resonance Shield** ✅ _(Tiered)_ - Damage reduction at full energy (Tier 1: 25% reduction, Tier 2: 50% reduction, Tier 3: 75% reduction)
 
 #### Behavioral Properties (ControlAi traits)
 
-- **Lightning Reflexes** ✅ _(Uncommon)_ - +50% movement speed and dash speed
-- **Quick Draw** ✅ _(Common)_ - +40% attack speed (faster weapon cooldowns)
+- **Lightning Reflexes** ✅ _(Tiered)_ - Movement speed (Tier 1: +25%, Tier 2: +50%, Tier 3: +75%)
+- **Quick Draw** ✅ _(Tiered)_ - Attack speed (Tier 1: +25%, Tier 2: +40%, Tier 3: +60%)
 - **Brawler** ✅ _(Common)_ - Higher aggressiveness, shorter dash range but +1 damage to all attacks
-- **Vitality** ✅ _(Common)_ - +2 maximum health
+- **Vitality** ✅ _(Tiered)_ - Maximum health (Tier 1: +2 HP, Tier 2: +3 HP, Tier 3: +4 HP)
 - **Berserker** ✅ _(Uncommon)_ - +50% attack speed and movement when below 25% HP
 - **Pacifist** ✅ _(Rare)_ - Much lower aggressiveness but +3 max health and +50% damage reduction
-- **Cautious** ✅ _(Common)_ - Lower aggressiveness but +1 max health and better retreat timing
+- **Cautious** ✅ _(Tiered)_ - Maximum health with defensive AI (Tier 1: +1 HP, Tier 2: +2 HP, Tier 3: +3 HP)
 
 **Implementation**:
 
@@ -124,22 +122,56 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 ## Upgrade Distribution Summary
 
-**Current Implemented Upgrades: 50** / **Complete System ✅**
+**Current Implemented Upgrades: 49** / **Complete System ✅** (Field Surgeon consolidated into Combat Medic tiers)
 
 - **Weapons**: 11 upgrades ✅ (child entities with blueprints)
 - **Companions**: 8 upgrades ✅ (root entities with blueprints)
-- **Enhancement**: 32 upgrades ✅ (component property modifications)
-    - Armor Properties: 8 upgrades ✅
-    - Combat Abilities: 3 upgrades ✅
-    - Energy Properties: 14 upgrades ✅
-    - Behavioral Properties: 7 upgrades ✅
+- **Enhancement**: 29 upgrades ✅ (component property modifications, including 22 tiered upgrades)
+    - Armor Properties: 8 upgrades ✅ (7 tiered)
+    - Combat Abilities: 3 upgrades ✅ (3 tiered)
+    - Energy Properties: 13 upgrades ✅ (8 tiered)
+    - Behavioral Properties: 7 upgrades ✅ (3 tiered)
 - **Special**: 1 upgrade ✅ (unique mechanics)
 
-**Rarity Distribution** (All 46 Complete):
+**Tiered Upgrades with 3 Tiers Each:**
 
-- **Common**: 19 upgrades (41%)
-- **Uncommon**: 21 upgrades (46%)
-- **Rare**: 9 upgrades (18%)
+**Armor Properties:**
+- Spiked Vest (3 tiers): Damage reflection
+- Damage Reduction (3 tiers): Percentage damage reduction
+- Regenerative Mesh (3 tiers): Passive combat healing
+- Mirror Armor (3 tiers): Reflection while taking damage
+- Last Stand (3 tiers): Low health damage reduction
+- Thick Hide (3 tiers): Health bonus + damage reduction
+- Evasion (3 tiers): Dodge chance
+
+**Combat Abilities:**
+- Vampiric (3 tiers): Lifesteal percentage
+- Phase Walk (3 tiers): Dash invincibility duration
+- Dash Master (3 tiers): Dash range bonus
+
+**Energy Properties:**
+- Combat Medic (3 tiers): Healing rate when energy >50%
+- Combat Veteran (3 tiers): Energy generation from damage dealt
+- Adrenaline Surge (3 tiers): Energy generation from damage taken
+- Slow Metabolism (3 tiers): Energy decay rate reduction
+- Pain Tolerance (3 tiers): Energy generation from damage taken
+- Mana Siphon (3 tiers): Energy drain from damage dealt
+- Kinetic Charger (3 tiers): Energy generation while moving
+- Resonance Shield (3 tiers): Energy-based damage reduction
+
+**Behavioral Properties:**
+- Lightning Reflexes (3 tiers): Movement speed
+- Quick Draw (3 tiers): Attack speed
+- Vitality (3 tiers): Maximum health
+- Cautious (3 tiers): Defensive health + AI behavior
+
+**Rarity Distribution** (49 Total - Tiered upgrades span multiple rarities):
+
+- **Common**: 5 base upgrades + 20 Tier 1 tiered = 25 total common options
+- **Uncommon**: 10 base upgrades + 22 Tier 2 tiered = 32 total uncommon options  
+- **Rare**: 34 base upgrades + 22 Tier 3 tiered = 56 total rare options
+
+**Note**: Tiered upgrades appear at multiple rarity levels, with some high-tier upgrades like Mirror Armor and Last Stand starting at Uncommon/Rare for their Tier 1 versions. This creates 113 total upgrade options across all tiers.
 
 **Current Implementation Strategy**:
 

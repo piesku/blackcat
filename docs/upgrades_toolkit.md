@@ -17,6 +17,19 @@ This approach modifies how existing entities behave within systems. It's intrusi
 **Complexity**: Very Low  
 **Examples**: Most armor, traits, energy upgrades
 
+#### Tiered Upgrade System
+
+Many upgrades benefit from having multiple tiers that can stack when selected repeatedly:
+
+**Design Constraint**: Each tiered upgrade can only modify a single tunable parameter OR apply the same mathematical transformation to multiple parameters. This is because the actual values are computed from tier level using formulas like `base_value * tier` or `base_value + (tier - 1) * increment`.
+
+**Combat Medic** (3 tiers - example of tiered upgrade):
+- Tier 1 (Common): +1 life/s when energy >50%
+- Tier 2 (Uncommon): +2 life/s when energy >50% 
+- Tier 3 (Rare): +3 life/s when energy >50%
+
+*All other tiered upgrades follow the same pattern - see the full catalog in `docs/upgrades_catalog.md` for complete tier specifications.*
+
 **What it does**: Modify existing component properties that systems already read and process.
 
 **Implementation**:
@@ -24,17 +37,24 @@ This approach modifies how existing entities behave within systems. It's intrusi
 ```typescript
 // Armor upgrades modify Health component
 health.DamageReduction = 0.25; // Reinforced Plating - sys_health reads this
-health.FlatDamageReduction = 1; // Tough Skin - processed in armor calculations
+health.FlatDamageReduction = 1; // Thick Hide - processed in armor calculations
 health.RegenerationRate = 0.3; // Regenerative Mesh - sys_health processes over time
+health.EvasionChance = 0.25; // Evasion - sys_health processes dodge chance
 
 // Trait upgrades modify ControlAi component
 ai.AttackSpeedMultiplier = 1.4; // Quick Draw - sys_control_weapon applies this
 ai.DamageBonus = 1; // Brawler - sys_deal_damage adds to damage
 ai.Aggressiveness = 0.3; // Pacifist - sys_control_ai uses for behavior
+ai.MaxHealthBonus = 2; // Vitality - increases max health
+ai.MaxHealthBonus = 1; // Cautious - smaller health bonus with defensive behavior
 
-// Energy upgrades modify energy generation rates
-ai.EnergyFromDamageDealt = 0.3; // Combat Veteran - sys_deal_damage generates energy
-ai.HealingRate = 1.0; // Combat Medic - sys_energy processes healing
+// Energy upgrades modify energy generation rates (stackable tiers)
+ai.EnergyFromDamageDealt = 0.3; // Combat Veteran Tier 1 - sys_deal_damage generates energy
+ai.EnergyFromDamageDealt = 0.5; // Combat Veteran Tier 2 - enhanced energy generation
+ai.EnergyFromDamageDealt = 0.8; // Combat Veteran Tier 3 - maximum energy generation
+ai.HealingRate = 1.0; // Combat Medic Tier 1 - sys_energy processes healing
+ai.HealingRate = 2.0; // Combat Medic Tier 2 - enhanced healing rate
+ai.HealingRate = 3.0; // Combat Medic Tier 3 - maximum healing rate
 ```
 
 **Systems that process these properties**:
