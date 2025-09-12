@@ -12,11 +12,10 @@ import {
 import {clear_game_state, save_game_state} from "./store.js";
 
 export const enum Action {
-    NoOp,
     DuelVictory,
     DuelDefeat,
     UpgradeSelected,
-    ViewTransition,
+    ToUpgradeSelection,
     RestartRun,
     ClearSave,
     ExplodeArea,
@@ -26,7 +25,9 @@ export const enum Action {
 
 export function dispatch(game: Game, action: Action, payload?: unknown) {
     switch (action) {
-        case Action.NoOp: {
+        case Action.ArenaIntroComplete: {
+            // Transition from arena intro to main arena view
+            game.CurrentView = GameView.Arena;
             break;
         }
         case Action.DuelVictory: {
@@ -38,7 +39,7 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
             if (game.State.currentLevel > 33) {
                 // Final victory - clear save and show special ending
                 clear_game_state();
-                game.SetView(GameView.Victory, {IsFinalVictory: true, TimeRemaining: Infinity});
+                game.CurrentView = GameView.Victory;
             } else {
                 // Generate next opponent's upgrades for preview in upgrade selection
                 game.State.opponentUpgrades = generateOpponentUpgrades(
@@ -56,15 +57,14 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
                 // Save state before showing upgrade selection so player always comes back to selection screen
                 save_game_state(game.State);
 
-                // Regular victory - show victory screen with 5-second countdown
-                game.SetView(GameView.Victory, {IsFinalVictory: false, TimeRemaining: 5.0});
+                game.CurrentView = GameView.Victory;
             }
             break;
         }
         case Action.DuelDefeat: {
             // Clear save state on defeat
             clear_game_state();
-            game.SetView(GameView.Defeat);
+            game.CurrentView = GameView.Defeat;
             break;
         }
         case Action.UpgradeSelected: {
@@ -79,13 +79,12 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
 
             // Opponent upgrades are already generated during victory
             // Switch to arena intro first, then arena
-            game.SetView(GameView.ArenaIntro);
+            game.CurrentView = GameView.ArenaIntro;
             scene_arena(game);
             break;
         }
-        case Action.ViewTransition: {
-            let transitionPayload = payload as {view: GameView};
-            game.SetView(transitionPayload.view);
+        case Action.ToUpgradeSelection: {
+            game.CurrentView = GameView.UpgradeSelection;
             break;
         }
         case Action.RestartRun: {
@@ -96,7 +95,7 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
             clear_game_state();
 
             // Start with upgrade selection
-            game.SetView(GameView.UpgradeSelection);
+            game.CurrentView = GameView.UpgradeSelection;
             break;
         }
         case Action.ClearSave: {
@@ -129,11 +128,6 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
             // Create dedicated banana spawner at explosion location
             instantiate(game, blueprint_chiquita_banana_spawner([x, y]));
 
-            break;
-        }
-        case Action.ArenaIntroComplete: {
-            // Transition from arena intro to main arena view
-            game.SetView(GameView.Arena);
             break;
         }
     }

@@ -30,7 +30,6 @@ import {sys_shake2d} from "./systems/sys_shake2d.js";
 import {sys_spawn2d} from "./systems/sys_spawn2d.js";
 import {sys_transform2d} from "./systems/sys_transform2d.js";
 import {sys_ui} from "./systems/sys_ui.js";
-import {sys_victory_timer} from "./systems/sys_victory_timer.js";
 import {Has, World} from "./world.js";
 
 export const WORLD_CAPACITY = 65_536; // = 4MB of InstanceData.
@@ -44,16 +43,10 @@ export const enum GameView {
     Defeat,
 }
 
-export interface VictoryData {
-    IsFinalVictory: boolean;
-    TimeRemaining: number;
-}
-
 export class Game extends Game3D {
     World = new World(WORLD_CAPACITY);
     State: GameState = createFreshGameState();
     CurrentView: GameView = GameView.Arena; // Start in arena for now
-    VictoryData?: VictoryData;
 
     MaterialRender2D = mat_render2d(this.Gl, Has.Render2D, Has.SpatialNode2D);
     Spritesheet = create_spritesheet_from(this.Gl, document.querySelector("img")!);
@@ -69,11 +62,6 @@ export class Game extends Game3D {
         this.Gl.blendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         setup_render2d_buffers(this.Gl, this.InstanceBuffer);
-    }
-
-    SetView(view: GameView, VictoryData?: VictoryData) {
-        this.CurrentView = view;
-        this.VictoryData = VictoryData;
     }
 
     override FrameUpdate(delta: number) {
@@ -120,8 +108,7 @@ export class Game extends Game3D {
         sys_render2d_animate(this, delta);
         sys_render2d(this, delta);
 
-        // UI and timers.
-        sys_victory_timer(this, delta);
+        // UI.
         sys_ui(this, delta);
     }
 }

@@ -1,9 +1,9 @@
 import {html} from "../../lib/html.js";
 import {Action} from "../actions.js";
-import {Game, GameView} from "../game.js";
+import {Game} from "../game.js";
 
 export function VictoryView(game: Game): string {
-    let isFinalVictory = game.VictoryData?.IsFinalVictory || false;
+    let isFinalVictory = game.State.currentLevel > 33;
 
     return html`
         <style>
@@ -35,10 +35,7 @@ export function VictoryView(game: Game): string {
                 z-index: -1;
             }
         </style>
-        <div
-            onclick="window.$(${Action.ViewTransition}, {view: ${GameView.UpgradeSelection}})"
-            class="rotate-background"
-        >
+        <div onclick="window.$(${Action.ToUpgradeSelection})" class="rotate-background">
             <h2>${isFinalVictory ? "YOU WIN!" : `DUEL ${game.State.currentLevel - 1} WON!`}</h2>
 
             ${!isFinalVictory

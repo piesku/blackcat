@@ -21,7 +21,7 @@ if (savedState) {
     game.State.isNewRun = false; // Mark as resumed
 
     // Start on upgrade selection screen when resuming
-    game.SetView(GameView.UpgradeSelection);
+    game.CurrentView = GameView.UpgradeSelection;
 
     console.log(
         `Resumed game at level ${savedState.currentLevel} with ${savedState.playerUpgrades.length} upgrades`,
