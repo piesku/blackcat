@@ -8,7 +8,7 @@ import {Entity} from "../../lib/world.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
-export const enum Animation {
+export const enum AnimationId {
     Run,
     Hurt,
     Die,
@@ -21,13 +21,13 @@ export interface AnimationSequence {
 
 export interface AnimateSprite {
     Sequences: Record<string, AnimationSequence>;
-    CurrentSequence: Animation;
+    CurrentSequence: AnimationId;
     Time: number;
 }
 
 export function animate_sprite(
     sequences: Record<string, Record<number, number>>,
-    defaultSequence: Animation = Animation.Run,
+    defaultSequence: AnimationId = AnimationId.Run,
 ) {
     let processedSequences: Record<string, AnimationSequence> = {};
 
@@ -53,7 +53,7 @@ export function animate_sprite(
     };
 }
 
-export function set_animation(game: Game, entity: Entity, seq: Animation) {
+export function set_animation(game: Game, entity: Entity, seq: AnimationId) {
     let animate = game.World.AnimateSprite[entity];
     DEBUG: if (!animate) throw new Error("missing AnimateSprite component");
 

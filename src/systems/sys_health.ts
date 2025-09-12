@@ -1,5 +1,5 @@
 import {rand} from "../../lib/random.js";
-import {Animation, set_animation} from "../components/com_animate_sprite.js";
+import {AnimationId, set_animation} from "../components/com_animate_sprite.js";
 import {query_down} from "../components/com_children.js";
 import {AiState} from "../components/com_control_ai.js";
 
@@ -75,7 +75,7 @@ export function sys_health(game: Game, _delta: number) {
                 );
 
                 for (let entity_child of query_down(game.World, entity, Has.AnimateSprite)) {
-                    set_animation(game, entity_child, Animation.Die);
+                    set_animation(game, entity_child, AnimationId.Die);
                 }
 
                 // Remove Health component to mark entity as dead

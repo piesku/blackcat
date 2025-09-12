@@ -1,6 +1,7 @@
 import {Vec4} from "../../../lib/math.js";
 import {Tile} from "../../../sprites/spritesheet.js";
 import {aim} from "../../components/com_aim.js";
+import {animate_sprite, AnimationId} from "../../components/com_animate_sprite.js";
 import {children} from "../../components/com_children.js";
 import {collide2d} from "../../components/com_collide2d.js";
 import {AiState} from "../../components/com_control_ai.js";
@@ -68,7 +69,21 @@ export function blueprint_cat_body(
     return [
         spatial_node2d(),
         local_transform2d(undefined, 0, [scale, scale]),
-        render2d(Tile.Die1, team_color),
+        render2d(Tile.CatRun1, team_color),
+        animate_sprite({
+            [AnimationId.Run]: {
+                [Tile.CatRun1]: 0.1,
+                [Tile.CatRun2]: 0.1,
+                [Tile.CatRun3]: 0.1,
+                [Tile.CatRun4]: 0.1,
+            },
+            [AnimationId.Die]: {
+                [Tile.CatDie1]: 0.1,
+                [Tile.CatDie2]: 0.1,
+                [Tile.CatDie3]: 0.1,
+                [Tile.CatDie4]: Infinity,
+            },
+        }),
     ];
 }
 
