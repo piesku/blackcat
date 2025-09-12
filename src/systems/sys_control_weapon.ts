@@ -3,7 +3,7 @@ import {mat2d_get_translation} from "../../lib/mat2d.js";
 import {Vec2} from "../../lib/math.js";
 import {clamp} from "../../lib/number.js";
 import {vec2_copy} from "../../lib/vec2.js";
-import {blueprint_boomerang_outward} from "../blueprints/projectiles/blu_boomerang.js";
+import {blueprint_boomerang} from "../blueprints/projectiles/blu_boomerang.js";
 import {blueprint_mortar_shell} from "../blueprints/projectiles/blu_mortar_shell.js";
 import {query_down} from "../components/com_children.js";
 import {AiState} from "../components/com_control_ai.js";
@@ -219,7 +219,7 @@ function execute_boomerang_attack(
     let fighter_entity = get_root_spawner(game.World, weapon_entity);
 
     instantiate(game, [
-        ...blueprint_boomerang_outward(
+        ...blueprint_boomerang(
             target_direction, // direction to target
             aim.DistanceToTarget,
         ),
