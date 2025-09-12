@@ -1,4 +1,5 @@
 import {instantiate} from "../../lib/game.js";
+import {Vec2} from "../../lib/math.js";
 import {blueprint_mr_black} from "../blueprints/companions/blu_mr_black.js";
 import {blueprint_mr_blue} from "../blueprints/companions/blu_mr_blue.js";
 import {blueprint_mr_brown} from "../blueprints/companions/blu_mr_brown.js";
@@ -20,9 +21,9 @@ import {blueprint_shotgun} from "../blueprints/weapons/blu_shotgun.js";
 import {blueprint_sniper_rifle} from "../blueprints/weapons/blu_sniper_rifle.js";
 import {blueprint_spikeballs} from "../blueprints/weapons/blu_spikeballs.js";
 import {attach_to_parent} from "../components/com_children.js";
+import {copy_position} from "../components/com_local_transform2d.js";
 import {spawn_timed} from "../components/com_spawn.js";
 import {Game} from "../game.js";
-import {Has} from "../world.js";
 import {
     ALL_UPGRADES_MAP,
     UpgradeCategory,
@@ -300,58 +301,78 @@ function apply_weapon_upgrade(game: Game, entity: number, upgrade: UpgradeType, 
 function apply_companion_upgrade(game: Game, entity: number, upgrade: UpgradeType, tier: number) {
     // Get the owner's team (IsPlayer status)
     let owner_ai = game.World.ControlAi[entity];
-    DEBUG: if (!owner_ai) throw new Error("missing ControlAi component for companion upgrade");
+    let owner_transform = game.World.LocalTransform2D[entity];
+    DEBUG: {
+        if (!owner_ai) throw new Error("missing ControlAi component");
+        if (!owner_transform) throw new Error("missing LocalTransform2D component");
+    }
 
-    let owner_is_player = owner_ai.IsPlayer;
-    let companion_entity: number;
+    let spawn_position: Vec2 = [
+        owner_transform.Translation[0] + 2,
+        owner_transform.Translation[1] + 2,
+    ];
 
     // Spawn new companion (multiple companions allowed for interesting synergies)
     // Each companion upgrade adds another cat ally to fight alongside the owner
     switch (upgrade.Id) {
         case UpgradeId.MrBlack:
-            companion_entity = instantiate(game, blueprint_mr_black(game, owner_is_player));
+            instantiate(game, [
+                ...blueprint_mr_black(owner_ai.IsPlayer),
+                copy_position(spawn_position),
+            ]);
             break;
 
         case UpgradeId.MrOrange:
-            companion_entity = instantiate(game, blueprint_mr_orange(game, owner_is_player));
+            instantiate(game, [
+                ...blueprint_mr_orange(owner_ai.IsPlayer),
+                copy_position(spawn_position),
+            ]);
             break;
 
         case UpgradeId.MrPink:
-            companion_entity = instantiate(game, blueprint_mr_pink(game, owner_is_player));
+            instantiate(game, [
+                ...blueprint_mr_pink(owner_ai.IsPlayer),
+                copy_position(spawn_position),
+            ]);
             break;
 
         case UpgradeId.MrWhite:
-            companion_entity = instantiate(game, blueprint_mr_white(game, owner_is_player));
+            instantiate(game, [
+                ...blueprint_mr_white(owner_ai.IsPlayer),
+                copy_position(spawn_position),
+            ]);
             break;
 
         case UpgradeId.MrBrown:
-            companion_entity = instantiate(game, blueprint_mr_brown(game, owner_is_player));
+            instantiate(game, [
+                ...blueprint_mr_brown(owner_ai.IsPlayer),
+                copy_position(spawn_position),
+            ]);
             break;
 
         case UpgradeId.MrBlue:
-            companion_entity = instantiate(game, blueprint_mr_blue(game, owner_is_player));
+            instantiate(game, [
+                ...blueprint_mr_blue(owner_ai.IsPlayer),
+                copy_position(spawn_position),
+            ]);
             break;
 
         case UpgradeId.MrGray:
-            companion_entity = instantiate(game, blueprint_mr_gray(game, owner_is_player));
+            instantiate(game, [
+                ...blueprint_mr_gray(owner_ai.IsPlayer),
+                copy_position(spawn_position),
+            ]);
             break;
 
         case UpgradeId.MrRed:
-            companion_entity = instantiate(game, blueprint_mr_red(game, owner_is_player));
+            instantiate(game, [
+                ...blueprint_mr_red(owner_ai.IsPlayer),
+                copy_position(spawn_position),
+            ]);
             break;
 
         default:
             console.warn(`Unknown companion upgrade: ${upgrade.Id}`);
             return;
-    }
-
-    // Position companion near owner (slight offset to avoid collision)
-    let owner_transform = game.World.LocalTransform2D[entity];
-    let companion_transform = game.World.LocalTransform2D[companion_entity];
-
-    if (owner_transform && companion_transform) {
-        companion_transform.Translation[0] = owner_transform.Translation[0] + 1.0; // Slight offset
-        companion_transform.Translation[1] = owner_transform.Translation[1] + 0.5;
-        game.World.Signature[companion_entity] |= Has.Dirty;
     }
 }

@@ -10,7 +10,6 @@
  * All damage detection uses the collision system - no separate radius detection needed.
  */
 
-import {destroy_all} from "../components/com_children.js";
 import {Collide2D} from "../components/com_collide2d.js";
 import {DealDamage} from "../components/com_deal_damage.js";
 import {get_root_spawner} from "../components/com_label.js";
@@ -166,7 +165,11 @@ function handle_collision_damage(
 
         // Destroy entity if cooldown is 0 (instant/projectile damage)
         if (damage_dealer.Cooldown === 0) {
-            destroy_all(game.World, entity);
+            // If entity has lifespan, expire it to trigger lifespan's on-destroy actions
+            if (game.World.Signature[entity] & Has.Lifespan) {
+                let lifespan = game.World.Lifespan[entity];
+                lifespan.Age = lifespan.Lifetime; // Will be destroyed by sys_lifespan
+            }
         }
     }
 }

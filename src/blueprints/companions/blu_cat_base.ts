@@ -1,4 +1,3 @@
-import {Vec4} from "../../../lib/math.js";
 import {Tile} from "../../../sprites/spritesheet.js";
 import {aim} from "../../components/com_aim.js";
 import {animate_sprite, AnimationId} from "../../components/com_animate_sprite.js";
@@ -59,16 +58,11 @@ export function cat_control_ai(
 }
 
 // Cat body with team color and specific eye color
-export function blueprint_cat_body(
-    game: Game,
-    owner_is_player: boolean,
-    eye_color: Vec4,
-    scale: number = 1.0,
-) {
+export function blueprint_cat_body(owner_is_player: boolean) {
     let team_color = owner_is_player ? PLAYER_TEAM_COLOR : OPPONENT_TEAM_COLOR;
     return [
         spatial_node2d(),
-        local_transform2d(undefined, 0, [scale, scale]),
+        local_transform2d(),
         render2d(Tile.CatRun1, team_color),
         animate_sprite({
             [AnimationId.Run]: {
@@ -89,9 +83,7 @@ export function blueprint_cat_body(
 
 // Base cat companion with customizable stats
 export function blueprint_cat_base(
-    game: Game,
     owner_is_player: boolean,
-    eye_color: Vec4,
     hp: number,
     move_speed: number,
     aggressiveness: number,
@@ -110,7 +102,7 @@ export function blueprint_cat_base(
         aim(0.1), // Base aim speed for cats (can be overridden)
 
         children(
-            blueprint_cat_body(game, owner_is_player, eye_color, 1.0),
+            blueprint_cat_body(owner_is_player),
             // No reticle for cats - they're more instinctual
         ),
 

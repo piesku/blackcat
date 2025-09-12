@@ -110,7 +110,7 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
 
             let [x, y] = bomb_transform.Translation;
             console.log(
-                `[EXPLOSIVES] Bomb ${bomb_entity} explodesing at (${x.toFixed(2)}, ${y.toFixed(2)})`,
+                `[EXPLOSIVES] Bomb ${bomb_entity} exploding at (${x.toFixed(2)}, ${y.toFixed(2)})`,
             );
             instantiate(game, blueprint_explosion([x, y], 3, 1.5, 0.2));
             break;
