@@ -1,4 +1,5 @@
 import {Tile} from "../../../sprites/spritesheet.js";
+import {animate_sprite, AnimationId} from "../../components/com_animate_sprite.js";
 import {collide2d} from "../../components/com_collide2d.js";
 import {deal_damage} from "../../components/com_deal_damage.js";
 import {label} from "../../components/com_label.js";
@@ -14,8 +15,18 @@ export function blueprint_flame_particle(damage: number) {
         label("flame particle"),
 
         // NO spatial_node2d() - enables fast path for particles!
-        local_transform2d([0, 0], 0, [0.1, 0.1]), // Start small
-        render2d(Tile.Die1), // Flame sprite
+        local_transform2d(),
+        render2d(Tile.Flame1), // Flame sprite
+        animate_sprite({
+            [AnimationId.Run]: {
+                [Tile.Flame1]: 0.1,
+                [Tile.Flame2]: 0.1,
+                [Tile.Flame3]: 0.1,
+                [Tile.Flame4]: 0.1,
+                [Tile.Flame5]: 0.1,
+                [Tile.Flame6]: 0.1,
+            },
+        }),
 
         // Physics integration via RigidBody2D (replaces move2d)
         rigid_body2d(RigidKind.Dynamic, 0, 0.8, [0, 1.0]), // Custom gravity: gentle upward drift (flames rise)

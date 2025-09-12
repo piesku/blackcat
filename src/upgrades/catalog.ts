@@ -206,7 +206,7 @@ export const COMPANION_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
     [UpgradeId.MrBlack]: {
         Id: UpgradeId.MrBlack,
         Category: UpgradeCategory.Companion,
-        Name: "Black Cat",
+        Name: "Spawn Cat",
         Tiers: ["Cat summoner"],
         Rarity: UpgradeRarity.Rare,
     },
