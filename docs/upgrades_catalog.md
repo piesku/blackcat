@@ -88,8 +88,8 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Pain Tolerance** ✅ _(Uncommon)_ - Gain +0.4 energy per damage taken and reduce damage by 1 (minimum 1)
 - **Shockwave Burst** ✅ _(Rare)_ - Automatically spawn damaging particles in all directions when energy reaches maximum
 - **Kinetic Charger** ✅ _(Uncommon)_ - Gain energy while moving, proportional to speed
-- **Mana Siphon** _(Rare)_ - Drain opponent's energy when dealing damage and add it to your own
-- **Resonance Shield** _(Uncommon)_ - Reduce incoming damage proportionally to your current energy level
+- **Mana Siphon** ✅ _(Rare)_ - Drain opponent's energy when dealing damage and add it to your own
+- **Resonance Shield** ✅ _(Uncommon)_ - Reduce incoming damage proportionally to your current energy level
 
 #### Behavioral Properties (ControlAi traits)
 

@@ -56,6 +56,8 @@ export function cat_control_ai(
 
             // Shockwave burst properties (cats don't use shockwave burst)
             ShockwaveBurstEnabled: false, // No shockwave burst for companion cats
+
+            ManaSiphon: 0.0, // No siphoning for cats
         };
     };
 }
