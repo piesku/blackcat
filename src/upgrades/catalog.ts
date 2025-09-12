@@ -300,6 +300,13 @@ export const ENERGY_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         Description: "Drain mana when dealing damage",
         Rarity: UpgradeRarity.Rare,
     },
+    [UpgradeId.ResonanceShield]: {
+        Id: UpgradeId.ResonanceShield,
+        Category: UpgradeCategory.Enhancement,
+        Name: "Resonance Shield",
+        Description: "Reduce damage taken when mana is high",
+        Rarity: UpgradeRarity.Uncommon,
+    },
 };
 
 // Trait upgrade definitions - Combat & behavioral enhancement
