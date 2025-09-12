@@ -5,6 +5,8 @@ import {Has} from "../world.js";
 export interface FighterStats {
     PlayerHP: {current: number; max: number} | null;
     OpponentHP: {current: number; max: number} | null;
+    PlayerMana: {current: number; max: number} | null;
+    OpponentMana: {current: number; max: number} | null;
 }
 
 export interface WeaponCooldownInfo {
@@ -17,6 +19,8 @@ export interface WeaponCooldownInfo {
 export function getFighterStats(game: Game): FighterStats {
     let PlayerHP = null;
     let OpponentHP = null;
+    let PlayerMana = null;
+    let OpponentMana = null;
 
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
         if (
@@ -36,10 +40,19 @@ export function getFighterStats(game: Game): FighterStats {
                 }
             }
 
+            // Get mana info (using Energy from AI)
+            let manaInfo = null;
+            if (ai.Energy !== undefined) {
+                // Using 2.0 as max energy for display purposes
+                manaInfo = {current: ai.Energy, max: 2.0};
+            }
+
             if (label.Name === "Player") {
                 PlayerHP = healthInfo;
+                PlayerMana = manaInfo;
             } else if (label.Name === "Opponent") {
                 OpponentHP = healthInfo;
+                OpponentMana = manaInfo;
             }
         }
     }
@@ -47,6 +60,8 @@ export function getFighterStats(game: Game): FighterStats {
     return {
         PlayerHP,
         OpponentHP,
+        PlayerMana,
+        OpponentMana,
     };
 }
 
