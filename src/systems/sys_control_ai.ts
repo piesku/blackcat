@@ -1,6 +1,8 @@
 import {Vec2} from "../../lib/math.js";
 import {float} from "../../lib/random.js";
 import {vec2_add, vec2_normalize, vec2_scale} from "../../lib/vec2.js";
+import {Animation, set_animation} from "../components/com_animate_sprite.js";
+import {query_down} from "../components/com_children.js";
 import {AiState, ControlAi} from "../components/com_control_ai.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
@@ -71,6 +73,9 @@ export function sys_control_ai(game: Game, delta: number) {
                 ai.State !== AiState.Stunned
             ) {
                 change_state(ai, AiState.Stunned, game.Time);
+                for (let entity_child of query_down(game.World, entity, Has.AnimateSprite)) {
+                    set_animation(game, entity_child, Animation.Hurt);
+                }
             }
 
             let movement: Vec2 = [0, 0];
@@ -202,6 +207,9 @@ function handle_stunned(game: Game, entity: number, time_scale: number) {
     // State transitions
     if (ai.StateTimer > 0.3 * time_scale) {
         change_state(ai, AiState.Circling, game.Time);
+        for (let entity_child of query_down(game.World, entity, Has.AnimateSprite)) {
+            set_animation(game, entity_child, Animation.Run);
+        }
     }
     // No movement
 }

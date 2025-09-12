@@ -21,9 +21,11 @@ export function sys_render2d_animate(game: Game, delta: number) {
 
 function update(game: Game, entity: Entity, delta: number) {
     let animate = game.World.AnimateSprite[entity];
+    let sequence = animate.Sequences[animate.CurrentSequence];
+    if (!sequence) return;
 
-    for (let frame_id in animate.Frames) {
-        let frame_timestamp = animate.Frames[frame_id];
+    for (let frame_id in sequence.Frames) {
+        let frame_timestamp = sequence.Frames[frame_id];
         if (animate.Time < frame_timestamp) {
             set_sprite(game, entity, Number(frame_id));
             break;
@@ -31,7 +33,7 @@ function update(game: Game, entity: Entity, delta: number) {
     }
 
     animate.Time += delta;
-    if (animate.Time >= animate.Duration) {
-        animate.Time -= animate.Duration;
+    if (animate.Time >= sequence.Duration) {
+        animate.Time -= sequence.Duration;
     }
 }

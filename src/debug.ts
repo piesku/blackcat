@@ -257,11 +257,13 @@ export class SceneGraphInspector {
 
         if (world.Signature[entityId] & Has.AnimateSprite) {
             const a = world.AnimateSprite[entityId];
+            const currentSeq = a.Sequences[a.CurrentSequence];
             html += `<div class="component">
                 <strong>AnimateSprite</strong><br>
-                Duration: ${a.Duration.toFixed(2)}<br>
+                Current: ${a.CurrentSequence} (${Object.keys(currentSeq?.Frames || {}).length} frames)<br>
+                Duration: ${currentSeq?.Duration.toFixed(2) || 0}<br>
                 Time: ${a.Time.toFixed(2)}<br>
-                Frames: ${Object.keys(a.Frames).length}
+                Sequences: ${Object.keys(a.Sequences).length}
             </div>`;
         }
 

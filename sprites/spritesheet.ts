@@ -1,7 +1,6 @@
 export const enum Tile {
     Die1,
     Die2,
-    Die3,
     Hurt1,
     Hurt2,
     Hurt3,

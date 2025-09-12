@@ -1,4 +1,5 @@
 import {rand} from "../../lib/random.js";
+import {Animation, set_animation} from "../components/com_animate_sprite.js";
 import {query_down} from "../components/com_children.js";
 import {AiState} from "../components/com_control_ai.js";
 
@@ -73,11 +74,8 @@ export function sys_health(game: Game, _delta: number) {
                     `[DEATH] Entity ${entity} died from ${total_damage.toFixed(1)} damage - removing Health component`,
                 );
 
-                // Rotate the fighter sideways to show they're lying down
-                if (game.World.Signature[entity] & Has.LocalTransform2D) {
-                    let transform = game.World.LocalTransform2D[entity];
-                    DEBUG: if (!transform) throw new Error("missing transform");
-                    transform.Rotation = 90;
+                for (let entity_child of query_down(game.World, entity, Has.AnimateSprite)) {
+                    set_animation(game, entity_child, Animation.Die);
                 }
 
                 // Remove Health component to mark entity as dead

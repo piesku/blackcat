@@ -2,7 +2,7 @@ import {Vec4} from "../../lib/math.js";
 import {Tile} from "../../sprites/spritesheet.js";
 
 import {aim} from "../components/com_aim.js";
-import {animate_sprite} from "../components/com_animate_sprite.js";
+import {animate_sprite, Animation} from "../components/com_animate_sprite.js";
 import {children} from "../components/com_children.js";
 import {collide2d} from "../components/com_collide2d.js";
 import {control_ai} from "../components/com_control_ai.js";
@@ -25,16 +25,31 @@ export function blueprint_body(game: Game, is_player: boolean) {
         spatial_node2d(),
         local_transform2d(),
         render2d(Tile.Run1, team_color),
-        animate_sprite({
-            [Tile.Run1]: 0.1,
-            [Tile.Run2]: 0.1,
-            [Tile.Run3]: 0.1,
-            [Tile.Run4]: 0.1,
-            [Tile.Run5]: 0.1,
-            [Tile.Run6]: 0.1,
-            [Tile.Run7]: 0.1,
-            [Tile.Run8]: 0.1,
-        }),
+        animate_sprite(
+            {
+                [Animation.Run]: {
+                    [Tile.Run1]: 0.1,
+                    [Tile.Run2]: 0.1,
+                    [Tile.Run3]: 0.1,
+                    [Tile.Run4]: 0.1,
+                    [Tile.Run5]: 0.1,
+                    [Tile.Run6]: 0.1,
+                    [Tile.Run7]: 0.1,
+                    [Tile.Run8]: 0.1,
+                },
+                [Animation.Hurt]: {
+                    [Tile.Hurt1]: 0.1,
+                    [Tile.Hurt2]: 0.1,
+                    [Tile.Hurt3]: 0.1,
+                    [Tile.Hurt4]: 0.1,
+                },
+                [Animation.Die]: {
+                    [Tile.Die1]: 0.3,
+                    [Tile.Die2]: 0.4,
+                },
+            },
+            Animation.Run,
+        ),
     ];
 }
 
