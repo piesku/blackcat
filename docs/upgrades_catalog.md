@@ -60,7 +60,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 #### Armor Properties (Health component modifications)
 
-- **Scrap Armor** ✅ _(Common)_ - Ignores the first damage instance you take in combat
+- **Scrap Armor** ✅ _(Tiered)_ - Ignore damage instances (Tier 1: ignore first 1 instance, Tier 2: ignore first 2 instances, Tier 3: ignore first 3 instances)
 - **Spiked Vest** ✅ _(Tiered)_ - Reflect damage to attackers (Tier 1: +1 damage, Tier 2: +2 damage, Tier 3: +3 damage)
 - **Damage Reduction** ✅ _(Tiered)_ - Damage reduction (Tier 1: 15%, Tier 2: 25%, Tier 3: 35%)
 - **Regenerative Mesh** ✅ _(Tiered)_ - Combat healing (Tier 1: 0.2 HP/s, Tier 2: 0.3 HP/s, Tier 3: 0.5 HP/s)
@@ -93,7 +93,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 - **Lightning Reflexes** ✅ _(Tiered)_ - Movement speed (Tier 1: +25%, Tier 2: +50%, Tier 3: +75%)
 - **Quick Draw** ✅ _(Tiered)_ - Attack speed (Tier 1: +25%, Tier 2: +40%, Tier 3: +60%)
-- **Brawler** ✅ _(Common)_ - Higher aggressiveness, shorter dash range but +1 damage to all attacks
+- **Brawler** ✅ _(Tiered)_ - Aggressiveness and damage bonus (Tier 1: +0.1 aggr, +1 damage, Tier 2: +0.2 aggr, +2 damage, Tier 3: +0.3 aggr, +3 damage)
 - **Vitality** ✅ _(Tiered)_ - Maximum health (Tier 1: +2 HP, Tier 2: +3 HP, Tier 3: +4 HP)
 - **Berserker** ✅ _(Uncommon)_ - +50% attack speed and movement when below 25% HP
 - **Pacifist** ✅ _(Rare)_ - Much lower aggressiveness but +3 max health and +50% damage reduction
@@ -126,16 +126,18 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 - **Weapons**: 11 upgrades ✅ (child entities with blueprints)
 - **Companions**: 8 upgrades ✅ (root entities with blueprints)
-- **Enhancement**: 29 upgrades ✅ (component property modifications, including 22 tiered upgrades)
-    - Armor Properties: 8 upgrades ✅ (7 tiered)
+- **Enhancement**: 29 upgrades ✅ (component property modifications, including 24 tiered upgrades)
+    - Armor Properties: 8 upgrades ✅ (8 tiered)
     - Combat Abilities: 3 upgrades ✅ (3 tiered)
     - Energy Properties: 13 upgrades ✅ (8 tiered)
-    - Behavioral Properties: 7 upgrades ✅ (3 tiered)
+    - Behavioral Properties: 7 upgrades ✅ (5 tiered)
 - **Special**: 1 upgrade ✅ (unique mechanics)
 
 **Tiered Upgrades with 3 Tiers Each:**
 
 **Armor Properties:**
+
+- Scrap Armor (3 tiers): Damage instance blocking
 - Spiked Vest (3 tiers): Damage reflection
 - Damage Reduction (3 tiers): Percentage damage reduction
 - Regenerative Mesh (3 tiers): Passive combat healing
@@ -145,11 +147,13 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - Evasion (3 tiers): Dodge chance
 
 **Combat Abilities:**
+
 - Vampiric (3 tiers): Lifesteal percentage
 - Phase Walk (3 tiers): Dash invincibility duration
 - Dash Master (3 tiers): Dash range bonus
 
 **Energy Properties:**
+
 - Combat Medic (3 tiers): Healing rate when energy >50%
 - Combat Veteran (3 tiers): Energy generation from damage dealt
 - Adrenaline Surge (3 tiers): Energy generation from damage taken
@@ -160,15 +164,17 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - Resonance Shield (3 tiers): Energy-based damage reduction
 
 **Behavioral Properties:**
+
 - Lightning Reflexes (3 tiers): Movement speed
 - Quick Draw (3 tiers): Attack speed
+- Brawler (3 tiers): Damage bonus
 - Vitality (3 tiers): Maximum health
 - Cautious (3 tiers): Defensive health + AI behavior
 
 **Rarity Distribution** (49 Total - Tiered upgrades span multiple rarities):
 
 - **Common**: 5 base upgrades + 20 Tier 1 tiered = 25 total common options
-- **Uncommon**: 10 base upgrades + 22 Tier 2 tiered = 32 total uncommon options  
+- **Uncommon**: 10 base upgrades + 22 Tier 2 tiered = 32 total uncommon options
 - **Rare**: 34 base upgrades + 22 Tier 3 tiered = 56 total rare options
 
 **Note**: Tiered upgrades appear at multiple rarity levels, with some high-tier upgrades like Mirror Armor and Last Stand starting at Uncommon/Rare for their Tier 1 versions. This creates 113 total upgrade options across all tiers.
