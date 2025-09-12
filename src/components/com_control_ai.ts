@@ -45,6 +45,9 @@ export interface ControlAi {
     // Shockwave burst upgrade properties
     ShockwaveBurstEnabled: boolean; // Whether shockwave burst upgrade is active
 
+    // Kinetic charger upgrade properties
+    KineticChargerEnabled?: boolean; // Whether kinetic charger upgrade is active
+
     // Ability upgrade flags (optional - only set when abilities are applied)
     VampiricHealing?: boolean; // Vampiric upgrade - heal based on damage dealt
     PhaseWalkEnabled?: boolean; // Phase Walk upgrade - invincibility during dashing

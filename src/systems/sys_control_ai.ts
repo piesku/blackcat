@@ -177,6 +177,13 @@ export function sys_control_ai(game: Game, delta: number) {
                     move.MoveSpeed *= ai.BerserkerMode.SpeedBonus;
                 }
 
+                // Kinetic Charger upgrade: generate energy while moving
+                if (ai.KineticChargerEnabled && (movement[0] !== 0 || movement[1] !== 0)) {
+                    // Energy gain proportional to current movement speed
+                    // Base rate: 0.5 energy per second at move speed =4
+                    ai.Energy += (move.MoveSpeed / 4) * 0.5 * delta;
+                }
+
                 // Mark entity as dirty since we modified its movement
                 game.World.Signature[entity] |= Has.Dirty;
             }

@@ -98,26 +98,6 @@ function handle_collision_damage(
             Source: original_spawner,
         });
 
-        // Log energy multiplier and weapon mastery for debugging
-        let energy_info = "";
-        if (game.World.Signature[original_spawner] & Has.ControlAi) {
-            let ai = game.World.ControlAi[original_spawner];
-            let energy_multiplier = Math.sqrt(ai.Energy);
-            energy_info = `, energy: ${ai.Energy.toFixed(1)} (${energy_multiplier.toFixed(2)}x)`;
-
-            // Add Weapon Mastery info
-            if (ai.WeaponMasteryEnabled) {
-                let energy_threshold = 5.0 * 0.75;
-                if (ai.Energy > energy_threshold) {
-                    energy_info += `, mastery: +25%`;
-                }
-            }
-        }
-
-        console.log(
-            `[DAMAGE] Entity ${entity} hit target ${target_entity}: adding ${final_damage.toFixed(1)} damage (base: ${damage_dealer.Damage}${energy_info}, source: ${original_spawner})`,
-        );
-
         // Generate energy from dealing damage (combat-driven energy system)
         if (game.World.Signature[original_spawner] & Has.ControlAi) {
             let attacker_ai = game.World.ControlAi[original_spawner];
@@ -125,9 +105,7 @@ function handle_collision_damage(
 
             // Gain energy based on damage dealt and upgrade bonus
             if (attacker_ai.EnergyFromDamageDealt > 0) {
-                let energy_gain = final_damage * attacker_ai.EnergyFromDamageDealt;
-
-                attacker_ai.Energy += energy_gain;
+                attacker_ai.Energy += final_damage * attacker_ai.EnergyFromDamageDealt;
             }
         }
 

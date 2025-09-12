@@ -59,6 +59,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 **Strategy**: Direct component property modifications that enhance survivability, combat performance, and AI behavior through ControlAi and Health component changes.
 
 #### Armor Properties (Health component modifications)
+
 - **Scrap Armor** ✅ _(Common)_ - Ignores the first damage instance you take in combat
 - **Spiked Vest** ✅ _(Common)_ - Reflects +1 damage back to attackers (stacks with other reflection)
 - **Damage Reduction** ✅ _(Uncommon)_ - Reduces all damage taken by 25%
@@ -69,11 +70,13 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Evasion** ✅ _(Uncommon)_ - 25% chance to dodge incoming attacks
 
 #### Combat Abilities (ControlAi flags)
+
 - **Vampiric** ✅ _(Uncommon)_ - Heal 1 HP for every 2 damage you deal to enemies
 - **Phase Walk** ✅ _(Rare)_ - Invincibility for the entire duration of dash attacks
 - **Dash Master** ✅ _(Common)_ - +100% dash range
 
 #### Energy Properties (ControlAi energy system)
+
 - **Combat Veteran** ✅ _(Common)_ - Gain +0.3 energy per damage dealt to enemies
 - **Battle Fury** ✅ _(Uncommon)_ - Enhanced combat energy generation (+0.5 energy per damage dealt, stacks)
 - **Adrenaline Surge** ✅ _(Common)_ - Gain +0.2 energy per damage taken (pain fuels power)
@@ -84,8 +87,12 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Weapon Mastery** ✅ _(Rare)_ - Gain +0.8 energy per damage dealt and +25% weapon damage when energy > 75%
 - **Pain Tolerance** ✅ _(Uncommon)_ - Gain +0.4 energy per damage taken and reduce damage by 1 (minimum 1)
 - **Shockwave Burst** ✅ _(Rare)_ - Automatically spawn damaging particles in all directions when energy reaches maximum
+- **Kinetic Charger** ✅ _(Uncommon)_ - Gain energy while moving, proportional to speed
+- **Mana Siphon** _(Rare)_ - Drain opponent's energy when dealing damage and add it to your own
+- **Resonance Shield** _(Uncommon)_ - Reduce incoming damage proportionally to your current energy level
 
 #### Behavioral Properties (ControlAi traits)
+
 - **Lightning Reflexes** ✅ _(Uncommon)_ - +50% movement speed and dash speed
 - **Quick Draw** ✅ _(Common)_ - +40% attack speed (faster weapon cooldowns)
 - **Brawler** ✅ _(Common)_ - Higher aggressiveness, shorter dash range but +1 damage to all attacks
@@ -117,32 +124,32 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 ## Upgrade Distribution Summary
 
-**Current Implemented Upgrades: 46** / **Complete System ✅**
+**Current Implemented Upgrades: 50** / **Complete System ✅**
 
 - **Weapons**: 11 upgrades ✅ (child entities with blueprints)
 - **Companions**: 8 upgrades ✅ (root entities with blueprints)
-- **Enhancement**: 28 upgrades ✅ (component property modifications)
-  - Armor Properties: 8 upgrades ✅
-  - Combat Abilities: 3 upgrades ✅
-  - Energy Properties: 10 upgrades ✅
-  - Behavioral Properties: 7 upgrades ✅
+- **Enhancement**: 32 upgrades ✅ (component property modifications)
+    - Armor Properties: 8 upgrades ✅
+    - Combat Abilities: 3 upgrades ✅
+    - Energy Properties: 14 upgrades ✅
+    - Behavioral Properties: 7 upgrades ✅
 - **Special**: 1 upgrade ✅ (unique mechanics)
 
 **Rarity Distribution** (All 46 Complete):
 
 - **Common**: 19 upgrades (41%)
-- **Uncommon**: 21 upgrades (46%) 
-- **Rare**: 6 upgrades (13%)
+- **Uncommon**: 21 upgrades (46%)
+- **Rare**: 9 upgrades (18%)
 
 **Current Implementation Strategy**:
 
 ```typescript
 // Simplified upgrade categories (src/upgrades/types.ts)
 export enum UpgradeCategory {
-    Weapon = "Weapon",        // Child entities with blueprints (11 upgrades ✅)
-    Companion = "Companion",  // Root entities with blueprints (8 upgrades ✅)
-    Enhancement = "Enhancement", // ControlAi property modifications (28 upgrades ✅)
-    Special = "Special",      // Unique mechanics that don't fit patterns (1 upgrade ✅)
+    Weapon = "Weapon", // Child entities with blueprints (11 upgrades ✅)
+    Companion = "Companion", // Root entities with blueprints (8 upgrades ✅)
+    Enhancement = "Enhancement", // ControlAi property modifications (31 upgrades ✅)
+    Special = "Special", // Unique mechanics that don't fit patterns (1 upgrade ✅)
 }
 ```
 

@@ -94,6 +94,9 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
         case UpgradeId.ShockwaveBurst:
             ai.ShockwaveBurstEnabled = true;
             break;
+        case UpgradeId.KineticCharger:
+            ai.KineticChargerEnabled = true;
+            break;
 
         // === Behavioral Properties ===
         case UpgradeId.LightningReflexes:

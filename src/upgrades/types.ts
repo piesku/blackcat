@@ -54,6 +54,7 @@ export const enum UpgradeId {
     WeaponMastery,
     PainTolerance,
     ShockwaveBurst,
+    KineticCharger,
 
     // Behavioral properties
     LightningReflexes,

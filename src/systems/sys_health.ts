@@ -54,8 +54,6 @@ export function sys_health(game: Game, _delta: number) {
                 );
             }
 
-            let health_before = health.Current;
-
             // Apply final damage
             if (total_damage > 0) {
                 health.Current = Math.max(0, health.Current - total_damage);
@@ -71,9 +69,7 @@ export function sys_health(game: Game, _delta: number) {
 
                     // Gain energy based on damage taken and upgrade bonus
                     if (ai.EnergyFromDamageTaken > 0) {
-                        let energy_gain = total_damage * ai.EnergyFromDamageTaken;
-
-                        ai.Energy += energy_gain;
+                        ai.Energy += total_damage * ai.EnergyFromDamageTaken;
                     }
                 }
             }

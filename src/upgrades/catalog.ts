@@ -286,6 +286,13 @@ export const ENERGY_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         Description: "Damage burst at full mana",
         Rarity: UpgradeRarity.Rare,
     },
+    [UpgradeId.KineticCharger]: {
+        Id: UpgradeId.KineticCharger,
+        Category: UpgradeCategory.Enhancement,
+        Name: "Kinetic Charger",
+        Description: "Gain mana while moving",
+        Rarity: UpgradeRarity.Uncommon,
+    },
 };
 
 // Trait upgrade definitions - Combat & behavioral enhancement
