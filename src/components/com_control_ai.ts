@@ -95,7 +95,7 @@ export function control_ai(is_player: boolean, base_move_speed: number) {
             CircleDirection: circle_direction,
             AttackCooldown: attack_delay,
             IsPlayer: is_player,
-            Energy: is_player ? 1.0 : float(0.7, 1.1), // Start player at base energy
+            Energy: 0,
             BaseMoveSpeed: base_move_speed,
 
             // Personality traits

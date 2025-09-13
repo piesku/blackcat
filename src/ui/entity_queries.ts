@@ -44,7 +44,7 @@ export function getFighterStats(game: Game): FighterStats {
             let manaInfo = null;
             if (ai.Energy !== undefined) {
                 // Using 2.0 as max energy for display purposes
-                manaInfo = {current: ai.Energy, max: 2.0};
+                manaInfo = {current: ai.Energy, max: 5.0};
             }
 
             if (label.Name === "Player") {
