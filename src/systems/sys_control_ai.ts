@@ -53,9 +53,6 @@ export function sys_control_ai(game: Game, delta: number) {
             let time_scale = 1.0 / Math.sqrt(speed_scale);
 
             let dash_range = BASE_DASH_TRIGGER_DISTANCE;
-            if (ai.DashMasterEnabled) {
-                dash_range *= 2.0;
-            }
             if (ai.DashRangeMultiplier) {
                 dash_range *= ai.DashRangeMultiplier;
             }

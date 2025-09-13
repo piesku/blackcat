@@ -38,7 +38,6 @@ export interface ControlAi {
     // Ability upgrade flags (optional - only set when abilities are applied)
     VampiricHealing?: boolean; // Vampiric upgrade - heal based on damage dealt
     PhaseWalkEnabled?: boolean; // Phase Walk upgrade - invincibility during dashing
-    DashMasterEnabled?: boolean; // Dash Master upgrade - +100% dash range
     WeaponMasteryScaling?: number; // Weapon Mastery upgrade - damage scaling factor (0.2/0.4/0.6)
 
     // Trait upgrade properties (optional - only set when traits are applied)

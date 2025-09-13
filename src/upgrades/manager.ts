@@ -162,8 +162,9 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
             // TODO: Implement tier-based invincibility duration (50%, 75%, 100%)
             break;
         case UpgradeId.DashMaster:
-            ai.DashMasterEnabled = true;
-            // TODO: Implement tier-based dash range (+50%, +100%, +150%)
+            // Tier-based dash range: +50%, +100%, +150%
+            let dashMultiplier = 1.0 + tier * 0.5;
+            ai.DashRangeMultiplier = (ai.DashRangeMultiplier || 1.0) * dashMultiplier;
             break;
 
         default:
