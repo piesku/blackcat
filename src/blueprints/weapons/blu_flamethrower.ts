@@ -13,7 +13,6 @@ export function blueprint_flamethrower() {
         weapon_ranged(
             6, // range: medium range
             3.0, // cooldown: slower rate of fire for triggering flame bursts
-            0.5, // initial timeout
             1.0, // totalAmount: 1 second flame duration
         ),
 

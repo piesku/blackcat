@@ -15,7 +15,6 @@ export function blueprint_larpa() {
         weapon_ranged(
             7, // range: good range for rocket launcher
             2.5, // cooldown: moderate rate of fire
-            0.3, // initial timeout
             3, // totalAmount: 3 rockets per shot
         ),
 

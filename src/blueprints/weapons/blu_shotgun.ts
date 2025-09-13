@@ -15,7 +15,6 @@ export function blueprint_shotgun() {
         weapon_ranged(
             4, // range (shorter than pistol)
             2.5, // cooldown (slow)
-            0.9, // initial timeout
             5, // totalAmount: 5 pellets per shot
         ),
 

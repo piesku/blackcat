@@ -1,7 +1,6 @@
 import {instantiate} from "../../lib/game.js";
 import {mat2d_get_translation} from "../../lib/mat2d.js";
 import {Vec2} from "../../lib/math.js";
-import {clamp} from "../../lib/number.js";
 import {vec2_copy} from "../../lib/vec2.js";
 import {blueprint_boomerang} from "../blueprints/projectiles/blu_boomerang.js";
 import {query_down} from "../components/com_children.js";
@@ -16,14 +15,16 @@ import {Has} from "../world.js";
 
 const QUERY = Has.Weapon | Has.SpatialNode2D;
 
+const ENERGY_COOLDOWN_SCALE = 0.5; // Cooldown is reduced by up to 50% at max energy
+
 export function sys_control_weapon(game: Game, delta: number) {
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
         if ((game.World.Signature[entity] & QUERY) === QUERY) {
             let weapon = game.World.Weapon[entity];
             DEBUG: if (!weapon) throw new Error("missing component");
 
-            // Update cooldowns (can go negative for energy scaling)
-            weapon.TimeToNext -= delta;
+            // Update cooldowns
+            weapon.SinceLast += delta;
 
             // Find the wielder (parent entity)
             let spatial_node = game.World.SpatialNode2D[entity];
@@ -41,15 +42,29 @@ export function sys_control_weapon(game: Game, delta: number) {
 function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapon): boolean {
     let ai = game.World.ControlAi[parent_entity];
     let aim = game.World.Aim[parent_entity];
-    DEBUG: if (!ai || !aim) throw new Error("missing component");
+    let health = game.World.Health[parent_entity];
+    DEBUG: if (!ai || !aim || !health) throw new Error("missing component");
 
     // Check basic firing conditions
     // Scale cooldown comparison based on energy for all entities
-    let cooldown_threshold = weapon.Cooldown - weapon.Cooldown / ai.Energy;
+    // When energy is 0, use full cooldown; as energy increases, reduce cooldown
+    let effective_cooldown = weapon.Cooldown / (1 + ai.Energy * ENERGY_COOLDOWN_SCALE);
+
+    // Apply attack speed multiplier from traits (Quick Draw, Berserker)
+    if (ai.AttackSpeedMultiplier) {
+        effective_cooldown /= ai.AttackSpeedMultiplier;
+    }
+
+    // Apply berserker mode attack bonus when at low health
+    if (ai.BerserkerMode) {
+        if (health.Current / health.Max <= ai.BerserkerMode.LowHealthThreshold) {
+            effective_cooldown /= ai.BerserkerMode.AttackBonus;
+        }
+    }
 
     let should_activate =
         (ai.State === AiState.Circling || ai.State === AiState.Dashing) &&
-        weapon.TimeToNext <= cooldown_threshold &&
+        weapon.SinceLast >= effective_cooldown &&
         aim.TargetEntity !== -1 &&
         aim.DistanceToTarget <= weapon.Range;
 
@@ -74,27 +89,10 @@ function get_weapon_name(game: Game, weapon_entity: number): string | null {
 
 function activate_weapon(game: Game, wielder_entity: number, weapon_entity: number) {
     let weapon = game.World.Weapon[weapon_entity];
-    let ai = game.World.ControlAi[wielder_entity];
-    let health = game.World.Health[wielder_entity];
-    DEBUG: if (!weapon || !ai || !health) throw new Error("missing component");
-
-    // Calculate effective cooldown with trait bonuses
-    let effective_cooldown = weapon.Cooldown;
-
-    // Apply attack speed multiplier from traits (Quick Draw, Berserker)
-    if (ai.AttackSpeedMultiplier) {
-        effective_cooldown /= ai.AttackSpeedMultiplier;
-    }
-
-    // Apply berserker mode attack bonus when at low health
-    if (ai.BerserkerMode) {
-        if (health.Current / health.Max <= ai.BerserkerMode.LowHealthThreshold) {
-            effective_cooldown /= ai.BerserkerMode.AttackBonus;
-        }
-    }
+    DEBUG: if (!weapon) throw new Error("missing component");
 
     // Set weapon on cooldown
-    weapon.TimeToNext = effective_cooldown;
+    weapon.SinceLast = 0;
 
     // Apply weapon-specific effects based on weapon name
     let weapon_name = get_weapon_name(game, weapon_entity);

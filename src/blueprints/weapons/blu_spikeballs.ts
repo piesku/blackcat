@@ -1,4 +1,3 @@
-import {float} from "../../../lib/random.js";
 import {label} from "../../components/com_label.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
@@ -14,7 +13,6 @@ export function blueprint_spikeballs() {
         weapon_ranged(
             7, // range: good range for lobbing spikeballs
             2.8, // cooldown: moderate rate for persistence weapon
-            float(0.2, 0.5), // initial timeout
             5.0, // totalAmount
         ),
 

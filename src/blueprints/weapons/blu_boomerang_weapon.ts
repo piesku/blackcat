@@ -12,7 +12,6 @@ export function blueprint_boomerang_weapon() {
         weapon_ranged(
             6, // range: medium range for throwing
             2.5, // cooldown: moderate rate of fire for precision throwing
-            0.3, // initial timeout
             1, // totalAmount: 1 boomerang per shot (not used for direct instantiation)
         ),
     ];

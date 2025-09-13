@@ -1,4 +1,3 @@
-import {float} from "../../../lib/random.js";
 import {label} from "../../components/com_label.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
 import {spatial_node2d} from "../../components/com_spatial_node2d.js";
@@ -14,7 +13,6 @@ export function blueprint_chiquita_weapon() {
         weapon_ranged(
             8, // range: long range for throwing bombs
             3.5, // cooldown: slower rate of fire for powerful explosive
-            float(1, 3), // initial timeout
             1.0, // totalAmount: single shot weapon, no burst
         ),
 

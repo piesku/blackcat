@@ -15,7 +15,6 @@ export function blueprint_sniper_rifle() {
         weapon_ranged(
             15, // range (very long)
             3.5, // cooldown (very slow)
-            1.2, // initial timeout (longer delay before first shot)
             1, // totalAmount: 1 bullet per shot
         ),
 

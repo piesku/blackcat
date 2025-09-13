@@ -1,4 +1,3 @@
-import {float} from "../../../lib/random.js";
 import {children} from "../../components/com_children.js";
 import {control_always2d} from "../../components/com_control_always2d.js";
 import {label} from "../../components/com_label.js";
@@ -17,7 +16,6 @@ export function blueprint_hoover_crack() {
         weapon_ranged(
             5, // range: medium range for particle emitter
             2.5, // cooldown: moderate rate of fire
-            float(0.3, 1.5), // initial timeout
             1, // totalAmount:
         ),
 

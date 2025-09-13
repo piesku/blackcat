@@ -16,7 +16,6 @@ export function blueprint_minigun() {
         weapon_ranged(
             6, // range: medium range
             1.8, // cooldown: fast rate of fire for bursts
-            0.2, // initial timeout
             10, // totalAmount: 10 bullets
         ),
 
