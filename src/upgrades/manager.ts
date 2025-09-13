@@ -87,8 +87,8 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
             ai.HealingRate += 3.0;
             break;
         case UpgradeId.WeaponMastery:
-            ai.EnergyFromDamageDealt += 0.8;
-            ai.WeaponMasteryEnabled = true;
+            // Store damage scaling factor (Tier 1: 0.2, Tier 2: 0.4, Tier 3: 0.6)
+            ai.WeaponMasteryScaling = tier * 0.2;
             break;
         case UpgradeId.PainTolerance:
             ai.EnergyFromDamageTaken += 0.2 * tier;

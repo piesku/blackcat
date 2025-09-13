@@ -289,8 +289,12 @@ export const ENERGY_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         Id: UpgradeId.WeaponMastery,
         Category: UpgradeCategory.Enhancement,
         Name: "Weapon Mastery",
-        Tiers: ["+0.8 mana/damage, +25% damage"],
-        Rarity: UpgradeRarity.Rare,
+        Tiers: [
+            "Damage scales with mana (up to +20%)",
+            "Damage scales with mana (up to +40%)",
+            "Damage scales with mana (up to +60%)",
+        ],
+        Rarity: UpgradeRarity.Common,
     },
     [UpgradeId.PainTolerance]: {
         Id: UpgradeId.PainTolerance,

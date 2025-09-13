@@ -77,18 +77,13 @@ function handle_collision_damage(
                 final_damage += ai.DamageBonus;
             }
 
-            // Apply energy-based damage scaling (higher energy = more damage)
-            // Energy range: 1.0 (baseline) → 5.0 (maximum)
-            // Damage scale: 1.0x → 2.5x (square root for balanced scaling)
-            let energy_multiplier = Math.sqrt(ai.Energy);
-            final_damage *= energy_multiplier;
-
-            // Apply Weapon Mastery: +25% damage when energy > 75% of max
-            if (ai.WeaponMasteryEnabled) {
-                let energy_threshold = 5.0 * 0.75; // 75% of max energy (3.75)
-                if (ai.Energy > energy_threshold) {
-                    final_damage *= 1.25; // +25% weapon damage
-                }
+            // Apply Weapon Mastery upgrade: energy-based damage scaling
+            if (ai.WeaponMasteryScaling) {
+                // Energy range: 0.0 (baseline) → 5.0 (maximum)
+                // Damage scaling: energy_ratio * scaling_factor (0.2/0.4/0.6)
+                let energy_ratio = ai.Energy / 5.0; // 0.0 to 1.0
+                let damage_bonus = energy_ratio * ai.WeaponMasteryScaling; // 0% to scaling%
+                final_damage *= 1.0 + damage_bonus;
             }
         }
 
