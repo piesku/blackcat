@@ -76,7 +76,6 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 #### Energy Properties (ControlAi energy system)
 
 - **Combat Veteran** ✅ _(Tiered)_ - Energy per damage dealt (0.1 + 0.2 \* tier: +0.3, +0.5, +0.7)
-- **Adrenaline Surge** ✅ _(Tiered)_ - Energy per damage taken (0.1 + 0.1 \* tier: +0.2, +0.3, +0.4)
 - **Slow Metabolism** ✅ _(Tiered)_ - Energy decay rate (1 - 0.25\*tier decay rate: 75%, 50%, 25%)
 - **Combat Medic** ✅ _(Tiered)_ - Auto-heal when energy > 0 (tier HP/s: +1, +2, +3 at full mana)
 - **Hypermetabolism** ✅ _(Rare)_ - Energy decays twice as fast but enables powerful +3 HP/s auto-healing
@@ -120,14 +119,14 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 ## Upgrade Distribution Summary
 
-**Current Implemented Upgrades: 47** / **Complete System ✅** (Field Surgeon consolidated into Combat Medic tiers, Mortar removed, Scrap Armor removed)
+**Current Implemented Upgrades: 46** / **Complete System ✅** (Field Surgeon consolidated into Combat Medic tiers, Mortar removed, Scrap Armor removed, Adrenaline Surge removed - redundant with Pain Tolerance)
 
 - **Weapons**: 10 upgrades ✅ (child entities with blueprints)
 - **Companions**: 8 upgrades ✅ (root entities with blueprints)
-- **Enhancement**: 28 upgrades ✅ (component property modifications, including 23 tiered upgrades)
+- **Enhancement**: 27 upgrades ✅ (component property modifications, including 22 tiered upgrades)
     - Armor Properties: 7 upgrades ✅ (7 tiered)
     - Combat Abilities: 3 upgrades ✅ (3 tiered)
-    - Energy Properties: 13 upgrades ✅ (8 tiered)
+    - Energy Properties: 12 upgrades ✅ (7 tiered)
     - Behavioral Properties: 7 upgrades ✅ (5 tiered)
 - **Special**: 1 upgrade ✅ (unique mechanics)
 
@@ -153,7 +152,6 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 - Combat Medic (3 tiers): Healing rate when energy >50%
 - Combat Veteran (3 tiers): Energy generation from damage dealt
-- Adrenaline Surge (3 tiers): Energy generation from damage taken
 - Slow Metabolism (3 tiers): Energy decay rate reduction
 - Pain Tolerance (3 tiers): Energy generation from damage taken
 - Mana Siphon (3 tiers): Energy drain from damage dealt

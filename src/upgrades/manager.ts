@@ -76,9 +76,6 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
         case UpgradeId.CombatVeteran:
             ai.EnergyFromDamageDealt += 0.1 + 0.2 * tier;
             break;
-        case UpgradeId.AdrenalineSurge:
-            ai.EnergyFromDamageTaken += 0.1 + 0.1 * tier;
-            break;
         case UpgradeId.SlowMetabolism:
             ai.EnergyDecayRate *= 1 - 0.25 * tier;
             break;

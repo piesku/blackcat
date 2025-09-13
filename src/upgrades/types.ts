@@ -44,7 +44,6 @@ export const enum UpgradeId {
 
     // Energy properties
     CombatVeteran,
-    AdrenalineSurge,
     SlowMetabolism,
     CombatMedic,
     Hypermetabolism,

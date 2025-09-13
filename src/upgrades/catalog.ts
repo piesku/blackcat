@@ -260,13 +260,6 @@ export const ENERGY_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         ],
         Rarity: UpgradeRarity.Common,
     },
-    [UpgradeId.AdrenalineSurge]: {
-        Id: UpgradeId.AdrenalineSurge,
-        Category: UpgradeCategory.Enhancement,
-        Name: "Adrenaline Surge",
-        Tiers: ["+0.2 mana when hit", "+0.3 mana when hit", "+0.4 mana when hit"],
-        Rarity: UpgradeRarity.Common,
-    },
     [UpgradeId.SlowMetabolism]: {
         Id: UpgradeId.SlowMetabolism,
         Category: UpgradeCategory.Enhancement,
