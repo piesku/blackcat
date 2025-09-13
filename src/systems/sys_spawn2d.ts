@@ -116,6 +116,12 @@ function spawn_single_entity(
         spawned_by(fighter_entity),
     ]);
 
+    // Set spawned entity's rotation to match spawner's rotation
+    let spawned_transform = game.World.LocalTransform2D[spawned_entity];
+    if (spawned_transform) {
+        spawned_transform.Rotation = local_transform.Rotation;
+    }
+
     // Set initial velocity after all components are set up
     let rigid_body = game.World.RigidBody2D[spawned_entity];
     if (rigid_body) {
