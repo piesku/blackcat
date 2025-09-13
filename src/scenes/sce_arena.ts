@@ -77,7 +77,7 @@ export function scene_arena(game: Game) {
 
     // Player fighter (left side)
     let player = instantiate(game, [
-        label("Player"),
+        label("p"),
         ...blueprint_fighter(game, true),
         set_position(ARENA_CENTER_X - 4, ARENA_CENTER_Y),
 
@@ -87,7 +87,7 @@ export function scene_arena(game: Game) {
 
     // Opponent fighter (right side)
     let opponent = instantiate(game, [
-        label("Opponent"),
+        label("o"),
         ...blueprint_fighter(game, false),
         set_position(ARENA_CENTER_X + 4, ARENA_CENTER_Y),
     ]);

@@ -9,9 +9,9 @@ import {blueprint_larpa_rocket} from "../projectiles/blu_larpa_rocket.js";
 
 export function blueprint_larpa() {
     return [
+        DEBUG && label("larpa"), // Name for identification
         spatial_node2d(),
         local_transform2d(),
-        label("larpa"), // Name for identification
         weapon_ranged(
             7, // range: good range for rocket launcher
             2.5, // cooldown: moderate rate of fire

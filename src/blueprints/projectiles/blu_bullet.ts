@@ -16,7 +16,7 @@ import {blueprint_bullet_trail} from "../particles/blu_bullet_trail.js";
  */
 export function blueprint_bullet(damage: number) {
     return [
-        label("bullet"),
+        DEBUG && label("bullet"),
 
         spatial_node2d(),
         local_transform2d(),

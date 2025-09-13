@@ -13,7 +13,7 @@ import {blueprint_larpa_trail_particle} from "../particles/blu_larpa_trail_parti
 
 export function blueprint_larpa_rocket(damage: number) {
     return [
-        label("larpa rocket"),
+        DEBUG && label("larpa rocket"),
         spatial_node2d(),
         local_transform2d(),
         render2d(Tile.Rocket),

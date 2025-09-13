@@ -31,10 +31,10 @@ export function sys_duel_manager(game: Game, delta: number) {
             let label = game.World.Label[entity];
 
             // Only count main fighters, not companion cats
-            if (label.Name === "Player") {
+            if (label.Name === "p") {
                 players.push(entity);
                 alivePlayers++; // Entity has Health component, so it's alive
-            } else if (label.Name === "Opponent") {
+            } else if (label.Name === "o") {
                 opponents.push(entity);
                 aliveOpponents++; // Entity has Health component, so it's alive
             }

@@ -9,9 +9,9 @@ import {blueprint_bullet} from "../projectiles/blu_bullet.js";
 
 export function blueprint_sniper_rifle() {
     return [
+        DEBUG && label("sniper_rifle"), // Name for identification
         spatial_node2d(),
         local_transform2d(),
-        label("sniper_rifle"), // Name for identification
         weapon_ranged(
             15, // range (very long)
             3.5, // cooldown (very slow)

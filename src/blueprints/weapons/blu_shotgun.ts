@@ -9,9 +9,9 @@ import {blueprint_bullet} from "../projectiles/blu_bullet.js";
 
 export function blueprint_shotgun() {
     return [
+        DEBUG && label("shotgun"), // Name for identification
         spatial_node2d(),
         local_transform2d(),
-        label("shotgun"), // Name for identification
         weapon_ranged(
             4, // range (shorter than pistol)
             2.5, // cooldown (slow)

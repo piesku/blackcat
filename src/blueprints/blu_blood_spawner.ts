@@ -7,7 +7,7 @@ import {blueprint_blood_particle} from "./particles/blu_blood_particle.js";
 
 export function blueprint_blood_spawner() {
     return [
-        label("blood_spawner"),
+        label("b"),
         spatial_node2d(),
         local_transform2d(),
         shake(0.4),

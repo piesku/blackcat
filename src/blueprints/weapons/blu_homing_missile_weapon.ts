@@ -9,7 +9,7 @@ import {blueprint_homing_missile} from "../projectiles/blu_homing_missile.js";
 
 export function blueprint_homing_missile_weapon() {
     return [
-        label("homing_missile_launcher"), // Name for identification
+        DEBUG && label("homing_missile_launcher"), // Name for identification
 
         spatial_node2d(),
         local_transform2d(),

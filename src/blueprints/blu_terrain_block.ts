@@ -9,7 +9,7 @@ import {Layer} from "../game.js";
 
 export function blueprint_terrain_block(scale: number = 1.0) {
     return [
-        label("terrain block"),
+        DEBUG && label("terrain block"),
         local_transform2d(),
         render2d(Tile.Crate),
         // Static collider on Terrain layer

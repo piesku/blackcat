@@ -10,9 +10,9 @@ import {blueprint_hoover_projectile} from "../projectiles/blu_hoover_projectile.
 
 export function blueprint_hoover_crack() {
     return [
+        DEBUG && label("hoover crack"), // Name for identification
         spatial_node2d(),
         local_transform2d(),
-        label("hoover crack"), // Name for identification
         weapon_ranged(
             5, // range: medium range for particle emitter
             2.5, // cooldown: moderate rate of fire

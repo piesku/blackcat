@@ -7,7 +7,7 @@ import {blueprint_chiquita_banana} from "./blu_chiquita_banana.js";
 
 export function blueprint_chiquita_spawner(position: [number, number]) {
     return [
-        label("chiquita_banana_spawner"),
+        DEBUG && label("chiquita_banana_spawner"),
 
         spatial_node2d(),
         local_transform2d(position, 0, [1, 1]),

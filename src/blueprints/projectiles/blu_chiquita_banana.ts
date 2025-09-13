@@ -13,7 +13,7 @@ import {Layer} from "../../game.js";
 
 export function blueprint_chiquita_banana() {
     return [
-        label("chiquita_banana"),
+        DEBUG && label("chiquita_banana"),
 
         local_transform2d(),
         render2d(Tile.Banana),

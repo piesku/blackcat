@@ -11,7 +11,7 @@ import {Layer} from "../../game.js";
 
 export function blueprint_shockwave_particle(damage: number = 0.5) {
     return [
-        label("shockwave particle"),
+        DEBUG && label("shockwave particle"),
 
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d(), // Medium-sized shockwave particles

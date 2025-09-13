@@ -18,7 +18,7 @@ const HOMING_MISSILE_LIFESPAN = 8; // 8 seconds flight time
 // Homing missile that seeks the nearest enemy
 export function blueprint_homing_missile(is_player_team: boolean = true) {
     return [
-        label("homing_missile"),
+        DEBUG && label("homing_missile"),
 
         spatial_node2d(),
         local_transform2d(),

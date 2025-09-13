@@ -12,7 +12,7 @@ import {Layer} from "../../game.js";
 
 export function blueprint_flame_particle(damage: number) {
     return [
-        label("flame particle"),
+        DEBUG && label("flame particle"),
 
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d(),

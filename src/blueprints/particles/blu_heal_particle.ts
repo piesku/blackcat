@@ -9,7 +9,7 @@ import {rigid_body2d, RigidKind} from "../../components/com_rigid_body2d.js";
 
 export function blueprint_heal_particle() {
     return [
-        label("heal particle"),
+        DEBUG && label("heal particle"),
 
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d(),

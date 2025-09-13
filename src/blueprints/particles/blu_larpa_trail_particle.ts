@@ -11,7 +11,7 @@ import {Layer} from "../../game.js";
 
 export function blueprint_larpa_trail_particle() {
     return [
-        label("larpa trail particle"),
+        DEBUG && label("larpa trail particle"),
 
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d(),

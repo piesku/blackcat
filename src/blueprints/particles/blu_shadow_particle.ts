@@ -10,7 +10,7 @@ import {Layer} from "../../game.js";
 
 export function blueprint_shadow_particle() {
     return [
-        label("shadow particle"),
+        DEBUG && label("shadow particle"),
 
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d(),

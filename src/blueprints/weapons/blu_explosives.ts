@@ -7,9 +7,9 @@ import {blueprint_explosive_bomb} from "../projectiles/blu_explosive_bomb.js";
 
 export function blueprint_explosives() {
     return [
+        DEBUG && label("explosives"), // Name for identification
         spatial_node2d(),
         local_transform2d(),
-        label("explosives"), // Name for identification
         weapon_ranged(
             8, // range: long range for throwing bombs
             3.0, // cooldown: slower rate of fire for powerful explosives

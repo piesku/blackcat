@@ -169,7 +169,7 @@ function calculate_armor_reduction(
 function activate_heal_particles(game: Game, entity: number, healing_amount: number) {
     for (let child_entity of query_down(game.World, entity, Has.Spawn | Has.Label)) {
         let label = game.World.Label[child_entity];
-        if (label && label.Name === "heal_spawner") {
+        if (label && label.Name === "h") {
             let spawn = game.World.Spawn[child_entity];
             if (spawn.Mode === SpawnMode.Count) {
                 // Add particles for healing effect
@@ -183,7 +183,7 @@ function activate_heal_particles(game: Game, entity: number, healing_amount: num
 function activate_blood_particles(game: Game, entity: number, damage: number) {
     for (let child_entity of query_down(game.World, entity, Has.Spawn | Has.Label)) {
         let label = game.World.Label[child_entity];
-        if (label && label.Name === "blood_spawner") {
+        if (label && label.Name === "b") {
             let spawn = game.World.Spawn[child_entity];
             if (spawn.Mode === SpawnMode.Count) {
                 // Add blood particles based on damage amount (more damage = more blood)

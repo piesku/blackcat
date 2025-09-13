@@ -46,10 +46,10 @@ export function getFighterStats(game: Game): FighterStats {
                 manaInfo = {current: ai.Energy, max: 5.0};
             }
 
-            if (label.Name === "Player") {
+            if (label.Name === "p") {
                 PlayerHP = healthInfo;
                 PlayerMana = manaInfo;
-            } else if (label.Name === "Opponent") {
+            } else if (label.Name === "o") {
                 OpponentHP = healthInfo;
                 OpponentMana = manaInfo;
             }

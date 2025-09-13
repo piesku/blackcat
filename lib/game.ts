@@ -56,12 +56,12 @@ export abstract class Game3D {
 }
 
 type Mixin<G extends Game3D> = (game: G, entity: Entity) => void;
-export type Blueprint<G extends Game3D> = Array<Mixin<G>>;
+export type Blueprint<G extends Game3D> = Array<Mixin<G> | false>;
 
 export function instantiate<G extends Game3D>(game: G, blueprint: Blueprint<G>) {
     let entity = create_entity(game.World);
     for (let mixin of blueprint) {
-        mixin(game, entity);
+        mixin && mixin(game, entity);
     }
     return entity;
 }

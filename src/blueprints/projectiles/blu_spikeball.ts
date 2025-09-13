@@ -10,7 +10,7 @@ import {Layer} from "../../game.js";
 
 export function blueprint_spikeball(damage: number) {
     return [
-        label("spikeball"),
+        DEBUG && label("spikeball"),
         local_transform2d(),
         render2d(Tile.Spikeball),
         collide2d(Layer.Projectile, Layer.Player | Layer.Terrain, 0.15),

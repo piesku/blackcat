@@ -11,7 +11,7 @@ import {Layer} from "../../game.js";
 
 export function blueprint_debris_particle() {
     return [
-        label("debris particle"),
+        DEBUG && label("debris particle"),
 
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d(),

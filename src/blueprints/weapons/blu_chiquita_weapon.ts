@@ -7,9 +7,9 @@ import {blueprint_chiquita_main_bomb} from "../projectiles/blu_chiquita_bomb.js"
 
 export function blueprint_chiquita_weapon() {
     return [
+        DEBUG && label("chiquita bomb launcher"), // Name for identification
         spatial_node2d(),
         local_transform2d(),
-        label("chiquita bomb launcher"), // Name for identification
         weapon_ranged(
             8, // range: long range for throwing bombs
             3.5, // cooldown: slower rate of fire for powerful explosive

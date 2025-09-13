@@ -11,7 +11,7 @@ import {Layer} from "../../game.js";
 
 export function blueprint_hoover_particle(damage: number) {
     return [
-        label("hoover particle"),
+        DEBUG && label("hoover particle"),
 
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d(),

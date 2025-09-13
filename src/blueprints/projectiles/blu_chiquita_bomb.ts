@@ -10,7 +10,7 @@ import {Layer} from "../../game.js";
 
 export function blueprint_chiquita_main_bomb() {
     return [
-        label("chiquita_main_bomb"),
+        DEBUG && label("chiquita_main_bomb"),
         local_transform2d(),
         render2d(Tile.Bomb),
         collide2d(Layer.Projectile, Layer.Player | Layer.Terrain, 0.1),

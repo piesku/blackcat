@@ -36,7 +36,7 @@ export function sys_camera_zoom(game: Game, delta: number) {
             // Check if this is a main fighter (Player or Opponent)
             if (game.World.Signature[ent] & Has.Label) {
                 let label = game.World.Label[ent];
-                if (label.Name === "Player" || label.Name === "Opponent") {
+                if (label.Name === "p" || label.Name === "o") {
                     alive_fighters.push(ent);
                 }
             }

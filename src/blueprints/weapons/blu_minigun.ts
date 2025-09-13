@@ -10,9 +10,9 @@ import {blueprint_bullet} from "../projectiles/blu_bullet.js";
 
 export function blueprint_minigun() {
     return [
+        DEBUG && label("minigun"), // Name for identification
         spatial_node2d(),
         local_transform2d(),
-        label("minigun"), // Name for identification
         weapon_ranged(
             6, // range: medium range
             1.8, // cooldown: fast rate of fire for bursts

@@ -10,7 +10,7 @@ import {Layer} from "../../game.js";
 
 export function blueprint_explosive_bomb() {
     return [
-        label("explosive bomb"),
+        DEBUG && label("explosive bomb"),
         local_transform2d(),
         render2d(Tile.Dynamite),
         collide2d(Layer.Projectile, Layer.Player | Layer.Terrain, 0.1),

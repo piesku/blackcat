@@ -15,7 +15,7 @@ import {blueprint_hoover_particle} from "../particles/blu_hoover_particle.js";
 
 export function blueprint_hoover_projectile() {
     return [
-        label("hoover crack projectile"),
+        DEBUG && label("hoover crack projectile"),
         spatial_node2d(),
         local_transform2d(),
         collide2d(Layer.Projectile, Layer.Terrain, 0.1), // Doesn't deal direct damage, just spawns particles

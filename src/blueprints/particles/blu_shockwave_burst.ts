@@ -8,7 +8,7 @@ export function blueprint_shockwave_burst(particle_count: number = 8) {
     const SHOCKWAVE_DAMAGE = 0.5; // Hardcoded damage per particle
 
     return [
-        label("shockwave burst"),
+        DEBUG && label("shockwave burst"),
 
         // NO spatial_node2d() - this is a short-lived spawner entity
         local_transform2d([0, 0], 0, [1, 1]),

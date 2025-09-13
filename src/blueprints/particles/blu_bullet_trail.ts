@@ -7,7 +7,7 @@ import {render2d} from "../../components/com_render2d.js";
 
 export function blueprint_bullet_trail() {
     return [
-        label("bullet trail"),
+        DEBUG && label("bullet trail"),
 
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d(),

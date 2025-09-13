@@ -7,9 +7,9 @@ import {weapon_ranged} from "../../components/com_weapon.js";
 
 export function blueprint_flamethrower() {
     return [
+        DEBUG && label("flamethrower"), // Name for identification
         spatial_node2d(),
         local_transform2d(),
-        label("flamethrower"), // Name for identification
         weapon_ranged(
             6, // range: medium range
             3.0, // cooldown: slower rate of fire for triggering flame bursts

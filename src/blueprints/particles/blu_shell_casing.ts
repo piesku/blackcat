@@ -8,7 +8,7 @@ import {rigid_body2d, RigidKind} from "../../components/com_rigid_body2d.js";
 
 export function blueprint_shell_casing() {
     return [
-        label("shell casing"),
+        DEBUG && label("shell casing"),
 
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d(),
