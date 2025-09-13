@@ -22,9 +22,7 @@ export function ArenaView(game: Game): string {
 
         const barLabel = isHealthBar ? "LIFE" : "MANA";
         const position = isPlayer ? "left: 20px;" : "right: 20px;";
-        const topOffset = isHealthBar
-            ? "calc(20px + env(safe-area-inset-top))"
-            : "calc(30px + 3vh + env(safe-area-inset-top))";
+        const topOffset = isHealthBar ? "20px" : "calc(30px + 3vh)";
 
         // Different skew directions for left vs right bars
         const skewTransform = isPlayer
@@ -37,7 +35,7 @@ export function ArenaView(game: Game): string {
                     position: absolute; 
                     ${position} 
                     top: ${topOffset}; 
-                    width: calc(100% / 2 - 40px); 
+                    width: calc(100% / 2 - 15vw); 
                     height: 3vh; 
                     background: #222; 
                     border: 3px solid #000; 
