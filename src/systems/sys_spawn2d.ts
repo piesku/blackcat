@@ -117,8 +117,8 @@ function spawn_single_entity(
     ]);
 
     // Set spawned entity's rotation to match spawner's rotation
-    let spawned_transform = game.World.LocalTransform2D[spawned_entity];
-    if (spawned_transform) {
+    if (!spawn.AlwaysUp) {
+        let spawned_transform = game.World.LocalTransform2D[spawned_entity];
         spawned_transform.Rotation = local_transform.Rotation;
     }
 

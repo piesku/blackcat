@@ -20,6 +20,7 @@ export interface SpawnBase {
     Spread: number; // Cone angle in radians (0 = straight line, π = full circle)
     SpeedMin: number; // Minimum spawn speed
     SpeedMax: number; // Maximum spawn speed
+    AlwaysUp: boolean; // If true, spawned entities always face up (world space)
 }
 
 export interface SpawnCount extends SpawnBase {
@@ -67,6 +68,7 @@ export function spawn_count(
             Spread: spread,
             SpeedMin: speedMin,
             SpeedMax: speedMax,
+            AlwaysUp: false,
         };
 
         game.World.Spawn[entity] = spawner;
@@ -92,6 +94,7 @@ export function spawn_timed(
     speedMin: number,
     speedMax: number,
     initialDuration: number = 0,
+    alwaysUp: boolean = false,
 ) {
     return (game: Game, entity: Entity) => {
         const spawner: SpawnTimed = {
@@ -103,6 +106,7 @@ export function spawn_timed(
             Spread: spread,
             SpeedMin: speedMin,
             SpeedMax: speedMax,
+            AlwaysUp: alwaysUp,
         };
 
         game.World.Spawn[entity] = spawner;

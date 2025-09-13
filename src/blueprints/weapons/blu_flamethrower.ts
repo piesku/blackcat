@@ -23,6 +23,8 @@ export function blueprint_flamethrower() {
             Math.PI / 4, // spread: 45 degree cone spread
             3.0, // speedMin
             5.0, // speedMax
+            0,
+            true, // alwaysUp: particles always face up
         ),
     ];
 }
