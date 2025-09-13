@@ -22,7 +22,7 @@ interface GameState {
 }
 
 interface UpgradeType {
-    id: string;          // "battle_axe", "scrap_armor", "last_stand", etc.
+    id: string;          // "battle_axe", "last_stand", etc.
     category: UpgradeCategory;
     tier?: number;       // For power scaling (optional)
     data?: any;          // Upgrade-specific parameters (optional)
@@ -215,9 +215,6 @@ function apply_armor_upgrade(game: Game, entity: number, upgrade: UpgradeType) {
     let health = game.World.Health[entity];
     
     switch (upgrade.id) {
-        case "scrap_armor":
-            health.IgnoreFirstDamage = true;
-            break;
         case "spiked_vest":
             health.ReflectDamage = (health.ReflectDamage || 0) + 1;
             break;
@@ -261,7 +258,6 @@ const ALL_UPGRADES: UpgradeType[] = [
     { id: "throwing_knives", category: UpgradeCategory.Weapon },
     
     // Armor
-    { id: "scrap_armor", category: UpgradeCategory.Armor },
     { id: "spiked_vest", category: UpgradeCategory.Armor },
     { id: "bonus_hp", category: UpgradeCategory.Armor },
     

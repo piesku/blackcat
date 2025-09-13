@@ -166,15 +166,6 @@ function calculate_armor_reduction(
         }
     }
 
-    // Scrap Armor: Ignore first damage instance
-    if (health.IgnoreFirstDamage && !health.FirstDamageIgnored) {
-        health.FirstDamageIgnored = true;
-        console.log(
-            `[ARMOR] Scrap Armor activated - ignoring ${damage_instance.Amount.toFixed(1)} damage`,
-        );
-        return 0;
-    }
-
     // Last Stand: 75% damage reduction when at 1 HP
     if (health.LastStand && health.Current <= 1) {
         let reduction = final_damage * 0.75;

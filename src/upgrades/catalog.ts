@@ -76,13 +76,6 @@ export const WEAPON_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
 
 // Armor upgrade definitions
 export const ARMOR_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
-    [UpgradeId.ScrapArmor]: {
-        Id: UpgradeId.ScrapArmor,
-        Category: UpgradeCategory.Enhancement,
-        Name: "Scrap Armor",
-        Tiers: ["Ignore first hit", "Ignore first two hits", "Ignore first three hits"],
-        Rarity: UpgradeRarity.Common,
-    },
     [UpgradeId.SpikedVest]: {
         Id: UpgradeId.SpikedVest,
         Category: UpgradeCategory.Enhancement,

@@ -59,7 +59,6 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 #### Armor Properties (Health component modifications)
 
-- **Scrap Armor** ✅ _(Tiered)_ - Ignore damage instances (Tier 1: ignore first 1 instance, Tier 2: ignore first 2 instances, Tier 3: ignore first 3 instances)
 - **Spiked Vest** ✅ _(Tiered)_ - Reflect damage to attackers (tier damage: +1, +2, +3)
 - **Damage Reduction** ✅ _(Tiered)_ - Damage reduction (0.05 + 0.1\*tier: 15%, 25%, 35%)
 - **Regenerative Mesh** ✅ _(Tiered)_ - Combat healing (+0.1\*tier: +0.1 HP/s, +0.2 HP/s, +0.3 HP/s)
@@ -121,12 +120,12 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 ## Upgrade Distribution Summary
 
-**Current Implemented Upgrades: 48** / **Complete System ✅** (Field Surgeon consolidated into Combat Medic tiers, Mortar removed)
+**Current Implemented Upgrades: 47** / **Complete System ✅** (Field Surgeon consolidated into Combat Medic tiers, Mortar removed, Scrap Armor removed)
 
 - **Weapons**: 10 upgrades ✅ (child entities with blueprints)
 - **Companions**: 8 upgrades ✅ (root entities with blueprints)
-- **Enhancement**: 29 upgrades ✅ (component property modifications, including 24 tiered upgrades)
-    - Armor Properties: 8 upgrades ✅ (8 tiered)
+- **Enhancement**: 28 upgrades ✅ (component property modifications, including 23 tiered upgrades)
+    - Armor Properties: 7 upgrades ✅ (7 tiered)
     - Combat Abilities: 3 upgrades ✅ (3 tiered)
     - Energy Properties: 13 upgrades ✅ (8 tiered)
     - Behavioral Properties: 7 upgrades ✅ (5 tiered)
@@ -136,7 +135,6 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 **Armor Properties:**
 
-- Scrap Armor (3 tiers): Damage instance blocking
 - Spiked Vest (3 tiers): Damage reflection
 - Damage Reduction (3 tiers): Percentage damage reduction
 - Regenerative Mesh (3 tiers): Passive combat healing

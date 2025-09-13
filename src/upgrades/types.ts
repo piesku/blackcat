@@ -31,7 +31,6 @@ export const enum UpgradeId {
 
     // === Enhancements (ControlAi property modifications) ===
     // Combat properties
-    ScrapArmor,
     SpikedVest,
     DamageReduction,
     RegenerativeMesh,

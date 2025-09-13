@@ -32,7 +32,7 @@ Upgrades are the heart of the game's strategy and chaos. They are designed to be
 * **Weapons:** Define the character's basic attack.  
   * *Examples: Battle Axe, Single-Shot Pistol, Baseball Bat, Throwing Knives.*  
 * **Armor/Defense:** Provide passive survivability.  
-  * *Examples: "Scrap Armor" (ignores the first instance of damage), "Spiked Vest" (deals 1 damage back when hit), "+2 HP."*  
+  * *Examples: "Spiked Vest" (deals 1 damage back when hit), "+2 HP."*  
 * **Abilities (Active/Passive):** Game-changing skills that can turn the tide.  
   * *Examples: "Last Stand" (when you lose your last HP, deal 1 damage back), "Ricochet" (your bullets can bounce once), "Shadow Trail" (move faster and leave a damaging trail).*  
 * **Companions:** AI-controlled allies who fight alongside the player.  

@@ -153,11 +153,6 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
             break;
 
         // === Combat Properties (Armor) ===
-        case UpgradeId.ScrapArmor:
-            health.IgnoreFirstDamage = true;
-            health.FirstDamageIgnored = false; // Reset the flag
-            // TODO: Implement tier-based damage instance counting (1, 2, or 3 instances)
-            break;
         case UpgradeId.SpikedVest:
             health.ReflectDamage += tier;
             break;

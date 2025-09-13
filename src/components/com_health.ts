@@ -19,7 +19,6 @@ export interface Health {
     LastDamageTime: number; // Game time in seconds when last damage occurred
 
     // Armor properties for upgrades
-    IgnoreFirstDamage?: boolean; // Scrap Armor - ignores first damage instance
     ReflectDamage: number; // Spiked Vest - reflects damage back to attacker
     DamageReduction: number; // Percentage damage reduction (0.0 to 1.0)
     RegenerationRate: number; // Regenerative Mesh - HP per second during combat
@@ -31,8 +30,6 @@ export interface Health {
     // Pending damage and healing instances
     PendingDamage: DamageInstance[];
     PendingHealing: HealingInstance[];
-
-    FirstDamageIgnored?: boolean; // Internal flag tracking if first damage was used
 }
 
 export function health(max: number = 3) {

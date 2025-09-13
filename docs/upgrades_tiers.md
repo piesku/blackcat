@@ -113,9 +113,6 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeI
             ai.Aggressiveness += 0.1 * tier; // +0.1/+0.2/+0.3 aggression
             break;
 
-        case UpgradeId.ScrapArmor:
-            health.DamageInstancesIgnored = tier; // 1/2/3 instances
-            break;
 
         case UpgradeId.Vitality:
             let healthBonus = tier + 1; // 2/3/4 HP

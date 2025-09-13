@@ -276,7 +276,6 @@ interface Health {
     IsAlive: boolean;
     
     // Armor properties (upgrade system)
-    IgnoreFirstDamage?: boolean;
     ReflectDamage?: number;
     DamageReduction?: number;
     
