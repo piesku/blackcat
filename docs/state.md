@@ -22,7 +22,7 @@ interface GameState {
 }
 
 interface UpgradeType {
-    id: string;          // "battle_axe", "last_stand", etc.
+    id: string;          // "battle_axe", "berserker_mode", etc.
     category: UpgradeCategory;
     tier?: number;       // For power scaling (optional)
     data?: any;          // Upgrade-specific parameters (optional)
@@ -231,9 +231,6 @@ function apply_ability_upgrade(game: Game, entity: number, upgrade: UpgradeType)
     let abilities = game.World.Abilities[entity] || { Passive: [], Triggered: [] };
     
     switch (upgrade.id) {
-        case "last_stand":
-            abilities.Triggered.push(AbilityType.LastStand);
-            break;
         case "shadow_trail":
             abilities.Passive.push(AbilityType.ShadowTrail);
             break;
@@ -262,7 +259,6 @@ const ALL_UPGRADES: UpgradeType[] = [
     { id: "bonus_hp", category: UpgradeCategory.Armor },
     
     // Abilities
-    { id: "last_stand", category: UpgradeCategory.Ability },
     { id: "ricochet", category: UpgradeCategory.Ability },
     { id: "shadow_trail", category: UpgradeCategory.Ability },
     { id: "berserker", category: UpgradeCategory.Ability },

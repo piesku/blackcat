@@ -116,17 +116,6 @@ export const ARMOR_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         ],
         Rarity: UpgradeRarity.Uncommon,
     },
-    [UpgradeId.LastStand]: {
-        Id: UpgradeId.LastStand,
-        Category: UpgradeCategory.Enhancement,
-        Name: "Last Stand",
-        Tiers: [
-            "50% damage reduction at <25% health",
-            "75% damage reduction at <25% health",
-            "90% damage reduction at <25% health",
-        ],
-        Rarity: UpgradeRarity.Uncommon,
-    },
     [UpgradeId.ThickHide]: {
         Id: UpgradeId.ThickHide,
         Category: UpgradeCategory.Enhancement,

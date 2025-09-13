@@ -22,7 +22,6 @@ export interface Health {
     ReflectDamage: number; // Spiked Vest - reflects damage back to attacker
     DamageReduction: number; // Percentage damage reduction (0.0 to 1.0)
     RegenerationRate: number; // Regenerative Mesh - HP per second during combat
-    LastStand?: boolean; // Last Stand - 75% damage reduction when at 1 HP
     FlatDamageReduction: number; // Thick Hide/Tough Skin - flat damage reduction per attack
     EvasionChance: number; // Evasion - chance to completely avoid damage (0.0 to 1.0)
     ResonanceShield: number; // Resonance Shield - damage reduction factor based on energy

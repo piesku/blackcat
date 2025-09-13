@@ -34,7 +34,7 @@ Upgrades are the heart of the game's strategy and chaos. They are designed to be
 * **Armor/Defense:** Provide passive survivability.  
   * *Examples: "Spiked Vest" (deals 1 damage back when hit), "+2 HP."*  
 * **Abilities (Active/Passive):** Game-changing skills that can turn the tide.  
-  * *Examples: "Last Stand" (when you lose your last HP, deal 1 damage back), "Ricochet" (your bullets can bounce once), "Shadow Trail" (move faster and leave a damaging trail).*  
+  * *Examples: "Ricochet" (your bullets can bounce once), "Shadow Trail" (move faster and leave a damaging trail), "Berserker" (increased speed and damage when low on health).*  
 * **Companions:** AI-controlled allies who fight alongside the player.  
   * *Examples: Feral Dog, Attack Rat, A Moose.*  
 * **Special / Thematic:**  

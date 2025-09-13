@@ -63,7 +63,6 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Damage Reduction** ✅ _(Tiered)_ - Damage reduction (0.05 + 0.1\*tier: 15%, 25%, 35%)
 - **Regenerative Mesh** ✅ _(Tiered)_ - Combat healing (+0.1\*tier: +0.1 HP/s, +0.2 HP/s, +0.3 HP/s)
 - **Mirror Armor** ✅ _(Tiered)_ - Damage reflection while taking damage (tier reflect: +1, +2, +3)
-- **Last Stand** ✅ _(Tiered)_ - Low health damage reduction (Tier 1: 50% reduction at <25% HP, Tier 2: 75% reduction at <25% HP, Tier 3: 90% reduction at <25% HP )
 - **Thick Hide** ✅ _(Tiered)_ - Health and damage reduction (tier HP & damage reduction: +1/-1, +2/-2, +3/-3)
 - **Evasion** ✅ _(Tiered)_ - Dodge chance (0.05 + 0.1\*tier: 15%, 25%, 35%)
 
@@ -119,12 +118,12 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 ## Upgrade Distribution Summary
 
-**Current Implemented Upgrades: 46** / **Complete System ✅** (Field Surgeon consolidated into Combat Medic tiers, Mortar removed, Scrap Armor removed, Adrenaline Surge removed - redundant with Pain Tolerance)
+**Current Implemented Upgrades: 45** / **Complete System ✅** (Field Surgeon consolidated into Combat Medic tiers, Mortar removed, Scrap Armor removed, Adrenaline Surge removed - redundant with Pain Tolerance, Last Stand removed)
 
 - **Weapons**: 10 upgrades ✅ (child entities with blueprints)
 - **Companions**: 8 upgrades ✅ (root entities with blueprints)
-- **Enhancement**: 27 upgrades ✅ (component property modifications, including 22 tiered upgrades)
-    - Armor Properties: 7 upgrades ✅ (7 tiered)
+- **Enhancement**: 26 upgrades ✅ (component property modifications, including 21 tiered upgrades)
+    - Armor Properties: 6 upgrades ✅ (6 tiered)
     - Combat Abilities: 3 upgrades ✅ (3 tiered)
     - Energy Properties: 12 upgrades ✅ (7 tiered)
     - Behavioral Properties: 7 upgrades ✅ (5 tiered)
@@ -138,7 +137,6 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - Damage Reduction (3 tiers): Percentage damage reduction
 - Regenerative Mesh (3 tiers): Passive combat healing
 - Mirror Armor (3 tiers): Reflection while taking damage
-- Last Stand (3 tiers): Low health damage reduction
 - Thick Hide (3 tiers): Health bonus + damage reduction
 - Evasion (3 tiers): Dodge chance
 
@@ -168,11 +166,11 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 **Rarity Distribution** (48 Total - Tiered upgrades span multiple rarities):
 
-- **Common**: 5 base upgrades + 20 Tier 1 tiered = 25 total common options
-- **Uncommon**: 10 base upgrades + 22 Tier 2 tiered = 32 total uncommon options
-- **Rare**: 34 base upgrades + 22 Tier 3 tiered = 56 total rare options
+- **Common**: 5 base upgrades + 19 Tier 1 tiered = 24 total common options
+- **Uncommon**: 10 base upgrades + 21 Tier 2 tiered = 31 total uncommon options
+- **Rare**: 34 base upgrades + 21 Tier 3 tiered = 55 total rare options
 
-**Note**: Tiered upgrades appear at multiple rarity levels, with some high-tier upgrades like Mirror Armor and Last Stand starting at Uncommon/Rare for their Tier 1 versions. This creates 113 total upgrade options across all tiers.
+**Note**: Tiered upgrades appear at multiple rarity levels, with some high-tier upgrades like Mirror Armor starting at Uncommon/Rare for their Tier 1 versions. This creates 110 total upgrade options across all tiers.
 
 **Current Implementation Strategy**:
 

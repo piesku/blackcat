@@ -165,10 +165,6 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
         case UpgradeId.MirrorArmor:
             health.ReflectDamage += tier;
             break;
-        case UpgradeId.LastStand:
-            health.LastStand = true;
-            // TODO: Implement tier-based damage reduction (50%, 75%, 90% at <25% health)
-            break;
         case UpgradeId.ThickHide:
             health.Max += tier;
             health.Current += tier;

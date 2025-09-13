@@ -166,15 +166,6 @@ function calculate_armor_reduction(
         }
     }
 
-    // Last Stand: 75% damage reduction when at 1 HP
-    if (health.LastStand && health.Current <= 1) {
-        let reduction = final_damage * 0.75;
-        final_damage -= reduction;
-        console.log(
-            `[ARMOR] Last Stand activated - 75% damage reduction (reducing by ${reduction.toFixed(1)})`,
-        );
-    }
-
     // Resonance Shield: Reduce damage based on current energy
     if (health.ResonanceShield && health.ResonanceShield > 0) {
         if (game.World.Signature[defender_entity] & Has.ControlAi) {
