@@ -76,13 +76,14 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 #### Energy Properties (ControlAi energy system)
 
 - **Combat Veteran** ✅ _(Tiered)_ - Energy per damage dealt (0.1 + 0.2 \* tier: +0.3, +0.5, +0.7)
+- **Pain Tolerance** ✅ _(Tiered)_ - Energy per damage taken (0.2 \* tier: +0.2, +0.4, +0.6)
+- **Kinetic Charger** ✅ _(Tiered)_ - Energy generation while moving (tier multiplier: 1x, 2x, 3x)
+- **Mana Siphon** ✅ _(Tiered)_ - Energy drain per damage dealt (0.25 \* tier: 25%, 50%, 75%)
+
 - **Slow Metabolism** ✅ _(Tiered)_ - Energy decay rate (1 - 0.25\*tier decay rate: 75%, 50%, 25%)
 - **Combat Medic** ✅ _(Tiered)_ - Auto-heal when energy > 0 (tier HP/s: +1, +2, +3 at full mana)
 - **Hypermetabolism** ✅ _(Rare)_ - Energy decays twice as fast but enables powerful +3 HP/s auto-healing
-- **Pain Tolerance** ✅ _(Tiered)_ - Energy per damage taken (0.2 \* tier: +0.2, +0.4, +0.6)
 - **Shockwave Burst** ✅ _(Rare)_ - Automatically spawn damaging particles in all directions when energy reaches maximum
-- **Kinetic Charger** ✅ _(Tiered)_ - Energy generation while moving (tier multiplier: 1x, 2x, 3x)
-- **Mana Siphon** ✅ _(Tiered)_ - Energy drain per damage dealt (0.25 \* tier: 25%, 50%, 75%)
 
 #### Behavioral Properties (ControlAi traits)
 

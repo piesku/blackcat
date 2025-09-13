@@ -4,7 +4,6 @@ import {blueprint_chiquita_spawner} from "./blueprints/projectiles/blu_chiquita_
 import {Game, GameView} from "./game.js";
 import {scene_arena} from "./scenes/sce_arena.js";
 import {
-    calculatePopulation,
     createFreshGameState,
     generateOpponentUpgrades,
     generatePlayerUpgradeChoices,
@@ -33,7 +32,6 @@ export function dispatch(game: Game, action: Action, payload?: unknown) {
         case Action.DuelVictory: {
             // Update progression
             game.State.currentLevel++;
-            game.State.population = calculatePopulation(game.State.currentLevel);
 
             // Check for final victory
             if (game.State.currentLevel > 33) {

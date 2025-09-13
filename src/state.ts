@@ -3,7 +3,6 @@ import {
     ALL_UPGRADES_LIST,
     ALL_UPGRADES_MAP,
     UpgradeCategory,
-    UpgradeId,
     UpgradeInstance,
     UpgradeRarity,
     UpgradeType,
@@ -14,7 +13,6 @@ export interface GameState {
     playerUpgrades: UpgradeInstance[]; // Player's accumulated upgrades with tiers
     opponentUpgrades: UpgradeInstance[]; // Current opponent's upgrades with tiers
     availableUpgradeChoices: UpgradeInstance[]; // Player's available upgrade choices for selection
-    population: number; // Narrative countdown (8 billion -> 1)
     isNewRun: boolean; // Fresh start vs resumed
     runSeed: number; // Unique seed for this run, regenerated for each new run
 }
@@ -202,32 +200,6 @@ function getRarityWeight(rarity: UpgradeRarity): number {
     }
 }
 
-export function calculatePopulation(level: number): number {
-    // Exponential decay: each victory halves the population
-    return Math.max(1, Math.floor(8_000_000_000 / Math.pow(2, level - 1)));
-}
-
-export function addPlayerUpgrade(
-    playerUpgrades: UpgradeInstance[],
-    upgradeId: UpgradeId,
-): UpgradeInstance[] {
-    // Find existing upgrade instance
-    let existingIndex = playerUpgrades.findIndex((u) => u.id === upgradeId);
-
-    if (existingIndex >= 0) {
-        // Upgrade existing to next tier
-        let updated = [...playerUpgrades];
-        updated[existingIndex] = {
-            id: upgradeId,
-            tier: updated[existingIndex].tier + 1,
-        };
-        return updated;
-    } else {
-        // Add new upgrade at tier 1
-        return [...playerUpgrades, {id: upgradeId, tier: 1}];
-    }
-}
-
 export function createFreshGameState(): GameState {
     let initialPlayerUpgrades: UpgradeInstance[] = [];
     let runSeed = Math.floor(Math.random() * 1000000); // Generate random run seed
@@ -237,7 +209,6 @@ export function createFreshGameState(): GameState {
         playerUpgrades: initialPlayerUpgrades,
         opponentUpgrades: generateOpponentUpgrades(1, runSeed),
         availableUpgradeChoices: generatePlayerUpgradeChoices(1, initialPlayerUpgrades, runSeed),
-        population: 8_000_000_000,
         isNewRun: true,
         runSeed: runSeed,
     };
