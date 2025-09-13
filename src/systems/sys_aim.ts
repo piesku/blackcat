@@ -4,7 +4,7 @@ import {query_down} from "../components/com_children.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
 
-const QUERY = Has.Aim | Has.LocalTransform2D | Has.Children;
+const QUERY = Has.Aim | Has.LocalTransform2D;
 const QUERY_TARGET = Has.Health | Has.LocalTransform2D | Has.ControlAi;
 
 export function sys_aim(game: Game, delta: number) {
@@ -71,9 +71,8 @@ function is_target_valid(game: Game, target_entity: number): boolean {
 
 function find_nearest_enemy(game: Game, entity: number): number {
     let transform = game.World.LocalTransform2D[entity];
-    if (!transform) return -1;
-
-    let my_ai = game.World.ControlAi[entity];
+    let aim = game.World.Aim[entity];
+    if (!transform || !aim) return -1;
 
     let nearest_entity = -1;
     let nearest_distance = Infinity;
@@ -84,7 +83,7 @@ function find_nearest_enemy(game: Game, entity: number): number {
 
         // Skip entities on the same team
         let other_ai = game.World.ControlAi[other];
-        if (other_ai && other_ai.IsPlayer === my_ai.IsPlayer) {
+        if (other_ai && other_ai.IsPlayer === aim.IsPlayerTeam) {
             // Same team!
             continue;
         }

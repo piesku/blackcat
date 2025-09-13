@@ -10,9 +10,10 @@ export interface Aim {
     RotationToTarget: number; // Angle in degrees
     UpdateInterval: number; // How often to search for new targets (in seconds)
     SinceLastUpdate: number; // Time accumulated since last target search
+    IsPlayerTeam: boolean; // Which team this entity belongs to for targeting purposes
 }
 
-export function aim(update_interval: number = 0.1) {
+export function aim(update_interval: number = 0.1, is_player_team: boolean) {
     return (game: Game, entity: number) => {
         game.World.Signature[entity] |= Has.Aim;
         game.World.Aim[entity] = {
@@ -22,6 +23,7 @@ export function aim(update_interval: number = 0.1) {
             RotationToTarget: 0,
             UpdateInterval: update_interval,
             SinceLastUpdate: 0,
+            IsPlayerTeam: is_player_team,
         };
     };
 }

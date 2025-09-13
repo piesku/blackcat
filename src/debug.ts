@@ -168,6 +168,7 @@ export class SceneGraphInspector {
     private getComponentMapping(): Record<number, string> {
         // Centralized component mapping
         return {
+            [Has.Aim]: "Aim",
             [Has.AnimateSprite]: "AnimateSprite",
             [Has.Camera2D]: "Camera2D",
             [Has.Collide2D]: "Collide2D",
@@ -187,6 +188,7 @@ export class SceneGraphInspector {
             [Has.Shake]: "Shake",
             [Has.SpatialNode2D]: "SpatialNode2D",
             [Has.Spawn]: "Spawn",
+            [Has.SpawnedBy]: "SpawnedBy",
             [Has.Weapon]: "Weapon",
         };
     }
@@ -254,6 +256,26 @@ export class SceneGraphInspector {
         html += '<div class="component-list">';
 
         // Check each component type - alphabetical order
+
+        if (world.Signature[entityId] & Has.Aim) {
+            const aim = world.Aim[entityId];
+            let targetDisplay = "None";
+            if (aim.TargetEntity !== -1 && is_entity_alive(world, aim.TargetEntity)) {
+                const targetName =
+                    this.getEntityName(aim.TargetEntity) || `Entity ${aim.TargetEntity}`;
+                targetDisplay = `<a href="#" onclick="selectEntity(${aim.TargetEntity}); return false;" style="color: #4a9eff; text-decoration: underline;">${targetName}</a>`;
+            }
+            html += `<div class="component">
+                <strong>Aim</strong><br>
+                Target: ${targetDisplay}<br>
+                Distance: ${aim.DistanceToTarget.toFixed(2)}<br>
+                Direction: [${aim.DirectionToTarget[0].toFixed(2)}, ${aim.DirectionToTarget[1].toFixed(2)}]<br>
+                Rotation: ${aim.RotationToTarget.toFixed(2)}°<br>
+                Team: ${aim.IsPlayerTeam ? "Player" : "Enemy"}<br>
+                Update Interval: ${aim.UpdateInterval.toFixed(2)}s<br>
+                Since Last Update: ${aim.SinceLastUpdate.toFixed(2)}s
+            </div>`;
+        }
 
         if (world.Signature[entityId] & Has.AnimateSprite) {
             const a = world.AnimateSprite[entityId];

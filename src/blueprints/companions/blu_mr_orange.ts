@@ -11,6 +11,6 @@ export function blueprint_mr_orange(owner_is_player: boolean) {
             2.5, // aggressiveness
             0.1, // patience
         ),
-        aim(0.02), // Lightning-fast retargeting - overwrites base aim
+        aim(0.02, owner_is_player), // Lightning-fast retargeting - overwrites base aim
     ];
 }

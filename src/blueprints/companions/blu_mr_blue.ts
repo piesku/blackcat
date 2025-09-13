@@ -14,6 +14,6 @@ export function blueprint_mr_blue(owner_is_player: boolean) {
             0.1, // patience (decreased from 1.0)
         ),
         children(blueprint_explosives()),
-        aim(0.03), // Fastest targeting for rapid artillery fire - overwrites base aim
+        aim(0.03, owner_is_player), // Fastest targeting for rapid artillery fire - overwrites base aim
     ];
 }

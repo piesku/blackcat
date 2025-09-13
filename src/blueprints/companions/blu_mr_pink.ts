@@ -14,6 +14,6 @@ export function blueprint_mr_pink(owner_is_player: boolean) {
             2.0, // patience (increased from 1.0)
         ),
         children(blueprint_homing_missile_weapon()),
-        aim(0.3), // Slow careful aiming - overwrites base aim
+        aim(0.3, owner_is_player), // Slow careful aiming - overwrites base aim
     ];
 }

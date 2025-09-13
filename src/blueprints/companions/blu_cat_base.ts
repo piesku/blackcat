@@ -100,7 +100,7 @@ export function blueprint_cat_base(
         collide2d(Layer.Player, Layer.Terrain | Layer.Player, 0.4), // Smaller collision
         health(hp),
         move2d(move_speed, 0),
-        aim(0.1), // Base aim speed for cats (can be overridden)
+        aim(0.1, owner_is_player), // Base aim speed for cats (can be overridden)
 
         children(
             blueprint_cat_body(owner_is_player),

@@ -70,7 +70,7 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
         collide2d(Layer.Player, Layer.Terrain | Layer.Player, 0.5),
         health(totalHealth),
         move2d(base_speed, 0),
-        aim(0.1), // Target search every 0.1 seconds
+        aim(0.1, is_player), // Target search every 0.1 seconds
         children(
             blueprint_body(game, is_player), // Body sprite as child (includes eyes)
             blueprint_blood_spawner(), // Blood splatter spawner for damage effects

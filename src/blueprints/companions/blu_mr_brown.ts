@@ -11,6 +11,6 @@ export function blueprint_mr_brown(owner_is_player: boolean) {
             0.1, // aggressiveness (decreased from 0.3)
             3.0, // patience (increased from 2.5)
         ),
-        aim(0.8), // Slow targeting - protection focused - overwrites base aim
+        aim(0.8, owner_is_player), // Slow targeting - protection focused - overwrites base aim
     ];
 }

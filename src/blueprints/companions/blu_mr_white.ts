@@ -14,6 +14,6 @@ export function blueprint_mr_white(owner_is_player: boolean) {
             2.5, // patience (increased from 2.0)
         ),
         children(blueprint_shotgun()),
-        aim(0.15), // Slightly slower targeting for defensive play - overwrites base aim
+        aim(0.15, owner_is_player), // Slightly slower targeting for defensive play - overwrites base aim
     ];
 }
