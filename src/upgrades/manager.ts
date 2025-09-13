@@ -133,9 +133,6 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
             break;
 
         // === Combat Properties (Armor) ===
-        case UpgradeId.SpikedVest:
-            health.ReflectDamage += tier;
-            break;
         case UpgradeId.DamageReduction:
             // Formula: 0.05 + 0.1 * tier (15%, 25%, 35%)
             let reductionAmount = 0.05 + 0.1 * tier;
@@ -144,9 +141,6 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
         case UpgradeId.RegenerativeMesh:
             let regenRate = tier * 0.1;
             health.RegenerationRate += regenRate;
-            break;
-        case UpgradeId.MirrorArmor:
-            health.ReflectDamage += tier;
             break;
         case UpgradeId.ThickHide:
             health.Max += tier;

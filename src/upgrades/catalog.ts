@@ -76,17 +76,6 @@ export const WEAPON_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
 
 // Armor upgrade definitions
 export const ARMOR_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
-    [UpgradeId.SpikedVest]: {
-        Id: UpgradeId.SpikedVest,
-        Category: UpgradeCategory.Enhancement,
-        Name: "Spiked Vest",
-        Tiers: [
-            "Reflect +1 damage when hit",
-            "Reflect +2 damage when hit",
-            "Reflect +3 damage when hit",
-        ],
-        Rarity: UpgradeRarity.Common,
-    },
     [UpgradeId.DamageReduction]: {
         Id: UpgradeId.DamageReduction,
         Category: UpgradeCategory.Enhancement,
@@ -102,17 +91,6 @@ export const ARMOR_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
             "Heal +0.2 life per second",
             "Heal +0.3 life per second",
             "Heal +0.5 life per second",
-        ],
-        Rarity: UpgradeRarity.Uncommon,
-    },
-    [UpgradeId.MirrorArmor]: {
-        Id: UpgradeId.MirrorArmor,
-        Category: UpgradeCategory.Enhancement,
-        Name: "Mirror Armor",
-        Tiers: [
-            "Reflect +1 damage when hit",
-            "Reflect +2 damage when hit",
-            "Reflect +3 damage when hit",
         ],
         Rarity: UpgradeRarity.Uncommon,
     },
@@ -243,9 +221,9 @@ export const ENERGY_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         Category: UpgradeCategory.Enhancement,
         Name: "Combat Veteran",
         Tiers: [
-            "+0.3 mana per damage dealt",
-            "+0.5 mana per damage dealt",
-            "+0.7 mana per damage dealt",
+            "Gain +0.3 mana per damage dealt",
+            "Gain +0.5 mana per damage dealt",
+            "Gain +0.7 mana per damage dealt",
         ],
         Rarity: UpgradeRarity.Common,
     },
@@ -261,9 +239,9 @@ export const ENERGY_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         Category: UpgradeCategory.Enhancement,
         Name: "Combat Medic",
         Tiers: [
-            "+1 life/s (scales with mana)",
-            "+2 life/s (scales with mana)",
-            "+3 life/s (scales with mana)",
+            "Heal +1 life/s (scales with mana)",
+            "Heal +2 life/s (scales with mana)",
+            "Heal +3 life/s (scales with mana)",
         ],
         Rarity: UpgradeRarity.Common,
     },
@@ -290,9 +268,9 @@ export const ENERGY_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         Category: UpgradeCategory.Enhancement,
         Name: "Pain Tolerance",
         Tiers: [
-            "+0.2 mana per damage taken",
-            "+0.4 mana per damage taken",
-            "+0.6 mana per damage taken",
+            "Gain +0.2 mana per damage taken",
+            "Gain +0.4 mana per damage taken",
+            "Gain +0.6 mana per damage taken",
         ],
         Rarity: UpgradeRarity.Uncommon,
     },

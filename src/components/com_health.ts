@@ -17,7 +17,6 @@ export interface Health {
     LastDamageTime: number; // Game time in seconds when last damage occurred
 
     // Armor properties for upgrades
-    ReflectDamage: number; // Spiked Vest - reflects damage back to attacker
     DamageReduction: number; // Percentage damage reduction (0.0 to 1.0)
     RegenerationRate: number; // Regenerative Mesh - HP per second during combat
     FlatDamageReduction: number; // Thick Hide/Tough Skin - flat damage reduction per attack
@@ -38,7 +37,6 @@ export function health(max: number = 3) {
             PendingDamage: [],
             PendingHealing: [],
 
-            ReflectDamage: 0,
             FlatDamageReduction: 0,
             DamageReduction: 0,
             EvasionChance: 0,

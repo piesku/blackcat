@@ -33,19 +33,9 @@ export function sys_health(game: Game, _delta: number) {
 
             // Process all pending damage instances
             let total_damage = 0;
-            let reflect_targets: Array<{entity: number; amount: number}> = [];
 
             for (let damage_instance of health.PendingDamage) {
                 let final_damage = calculate_armor_reduction(game, entity, health, damage_instance);
-
-                // Handle reflect damage (before damage is applied)
-                if (health.ReflectDamage > 0 && damage_instance.Source !== -entity) {
-                    reflect_targets.push({
-                        entity: damage_instance.Source,
-                        amount: Math.min(health.ReflectDamage, final_damage),
-                    });
-                }
-
                 total_damage += final_damage;
             }
 
@@ -82,21 +72,6 @@ export function sys_health(game: Game, _delta: number) {
                 game.World.Signature[entity] &= ~Has.Health;
 
                 // Entity destruction will be handled next frame after duel_manager has chance to run
-            }
-
-            // Apply reflected damage
-            for (let reflect of reflect_targets) {
-                if (game.World.Signature[reflect.entity] & Has.Health) {
-                    let source_health = game.World.Health[reflect.entity];
-                    source_health.PendingDamage.push({
-                        Amount: reflect.amount,
-                        // A negative source indicates reflected damage
-                        Source: -entity,
-                    });
-                    console.log(
-                        `[REFLECT] Entity ${entity} reflecting ${reflect.amount} damage back to entity ${reflect.entity}`,
-                    );
-                }
             }
 
             // Process all pending healing instances

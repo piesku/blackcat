@@ -31,10 +31,8 @@ export const enum UpgradeId {
 
     // === Enhancements (ControlAi property modifications) ===
     // Combat properties
-    SpikedVest,
     DamageReduction,
     RegenerativeMesh,
-    MirrorArmor,
     ThickHide,
     Evasion,
     Vampiric,

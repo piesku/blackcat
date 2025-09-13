@@ -59,10 +59,8 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 #### Armor Properties (Health component modifications)
 
-- **Spiked Vest** ✅ _(Tiered)_ - Reflect damage to attackers (tier damage: +1, +2, +3)
 - **Damage Reduction** ✅ _(Tiered)_ - Damage reduction (0.05 + 0.1\*tier: 15%, 25%, 35%)
 - **Regenerative Mesh** ✅ _(Tiered)_ - Combat healing (+0.1\*tier: +0.1 HP/s, +0.2 HP/s, +0.3 HP/s)
-- **Mirror Armor** ✅ _(Tiered)_ - Damage reflection while taking damage (tier reflect: +1, +2, +3)
 - **Thick Hide** ✅ _(Tiered)_ - Health and damage reduction (tier HP & damage reduction: +1/-1, +2/-2, +3/-3)
 - **Evasion** ✅ _(Tiered)_ - Dodge chance (0.05 + 0.1\*tier: 15%, 25%, 35%)
 
@@ -116,12 +114,12 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 ## Upgrade Distribution Summary
 
-**Current Implemented Upgrades: 42** / **Complete System ✅** (Field Surgeon consolidated into Combat Medic tiers, Mortar removed, Scrap Armor removed, Adrenaline Surge removed - redundant with Pain Tolerance, Last Stand removed, Resonance Shield removed, Berserker removed, Pacifist removed)
+**Current Implemented Upgrades: 40** / **Complete System ✅** (Field Surgeon consolidated into Combat Medic tiers, Mortar removed, Scrap Armor removed, Adrenaline Surge removed - redundant with Pain Tolerance, Last Stand removed, Resonance Shield removed, Berserker removed, Pacifist removed, Spiked Vest removed, Mirror Armor removed - reflection mechanics lack visual feedback)
 
 - **Weapons**: 10 upgrades ✅ (child entities with blueprints)
 - **Companions**: 8 upgrades ✅ (root entities with blueprints)
-- **Enhancement**: 23 upgrades ✅ (component property modifications, including 18 tiered upgrades)
-    - Armor Properties: 6 upgrades ✅ (6 tiered)
+- **Enhancement**: 21 upgrades ✅ (component property modifications, including 16 tiered upgrades)
+    - Armor Properties: 4 upgrades ✅ (4 tiered)
     - Combat Abilities: 3 upgrades ✅ (3 tiered)
     - Energy Properties: 9 upgrades ✅ (6 tiered)
     - Behavioral Properties: 5 upgrades ✅ (3 tiered)
@@ -131,10 +129,8 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 **Armor Properties:**
 
-- Spiked Vest (3 tiers): Damage reflection
 - Damage Reduction (3 tiers): Percentage damage reduction
 - Regenerative Mesh (3 tiers): Passive combat healing
-- Mirror Armor (3 tiers): Reflection while taking damage
 - Thick Hide (3 tiers): Health bonus + damage reduction
 - Evasion (3 tiers): Dodge chance
 
@@ -161,13 +157,13 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - Vitality (3 tiers): Maximum health
 - Cautious (3 tiers): Defensive health + AI behavior
 
-**Rarity Distribution** (42 Total - Tiered upgrades span multiple rarities):
+**Rarity Distribution** (40 Total - Tiered upgrades span multiple rarities):
 
-- **Common**: 5 base upgrades + 18 Tier 1 tiered = 23 total common options
-- **Uncommon**: 9 base upgrades + 18 Tier 2 tiered = 27 total uncommon options
-- **Rare**: 28 base upgrades + 18 Tier 3 tiered = 46 total rare options
+- **Common**: 5 base upgrades + 16 Tier 1 tiered = 21 total common options
+- **Uncommon**: 9 base upgrades + 16 Tier 2 tiered = 25 total uncommon options
+- **Rare**: 26 base upgrades + 16 Tier 3 tiered = 42 total rare options
 
-**Note**: Tiered upgrades appear at multiple rarity levels, with some high-tier upgrades like Mirror Armor starting at Uncommon/Rare for their Tier 1 versions. This creates 96 total upgrade options across all tiers.
+**Note**: Tiered upgrades appear at multiple rarity levels. This creates 88 total upgrade options across all tiers.
 
 **Current Implementation Strategy**:
 
@@ -176,7 +172,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 export enum UpgradeCategory {
     Weapon = "Weapon", // Child entities with blueprints (10 upgrades ✅)
     Companion = "Companion", // Root entities with blueprints (8 upgrades ✅)
-    Enhancement = "Enhancement", // ControlAi property modifications (23 upgrades ✅)
+    Enhancement = "Enhancement", // ControlAi property modifications (21 upgrades ✅)
     Special = "Special", // Unique mechanics that don't fit patterns (1 upgrade ✅)
 }
 ```
