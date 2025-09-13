@@ -22,11 +22,13 @@ export function sys_lifespan(game: Game, delta: number) {
 
 function update(game: Game, entity: Entity, delta: number) {
     let lifespan = game.World.Lifespan[entity];
-    lifespan.Age += delta;
-    if (lifespan.Age >= lifespan.Lifetime) {
+    // Check if entity should be destroyed before incrementing age.
+    // This allows lifespan of 0 to last exactly one frame.
+    if (lifespan.Age > lifespan.Lifetime) {
         if (lifespan.Action) {
             dispatch(game, lifespan.Action, entity);
         }
         destroy_all(game.World, entity);
     }
+    lifespan.Age += delta;
 }

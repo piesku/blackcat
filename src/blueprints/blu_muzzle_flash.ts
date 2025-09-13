@@ -11,9 +11,9 @@ import {spatial_node2d} from "../components/com_spatial_node2d.js";
 export function blueprint_muzzle_flash(position: Vec2) {
     return [
         spatial_node2d(),
-        local_transform2d(position, 0, [1.5, 1.5]),
-        render2d(Tile.Run1, [0, 1, 1, 1]),
+        local_transform2d(position),
+        render2d(Tile.Flash),
         order(0.1), // Render in front of most objects
-        lifespan(0.1),
+        lifespan(0),
     ];
 }
