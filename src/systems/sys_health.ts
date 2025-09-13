@@ -123,7 +123,7 @@ export function sys_health(game: Game, _delta: number) {
                 );
 
                 // Activate healing particle effects on heal spawner child entity
-                activate_heal_particles(game, entity);
+                activate_heal_particles(game, entity, total_healing);
             }
 
             // Process regeneration (Regenerative Mesh armor)
@@ -225,14 +225,14 @@ function calculate_armor_reduction(
     return final_damage;
 }
 
-function activate_heal_particles(game: Game, entity: number) {
+function activate_heal_particles(game: Game, entity: number, healing_amount: number) {
     for (let child_entity of query_down(game.World, entity, Has.Spawn | Has.Label)) {
         let label = game.World.Label[child_entity];
         if (label && label.Name === "heal_spawner") {
             let spawn = game.World.Spawn[child_entity];
             if (spawn.Mode === SpawnMode.Count) {
                 // Add particles for healing effect
-                spawn.Count ||= 1;
+                spawn.Count += healing_amount * healing_amount;
             }
             break; // Found the heal spawner, no need to continue
         }
@@ -246,7 +246,7 @@ function activate_blood_particles(game: Game, entity: number, damage: number) {
             let spawn = game.World.Spawn[child_entity];
             if (spawn.Mode === SpawnMode.Count) {
                 // Add blood particles based on damage amount (more damage = more blood)
-                spawn.Count += damage;
+                spawn.Count += damage * damage;
             }
             break; // Found the blood spawner, no need to continue
         }

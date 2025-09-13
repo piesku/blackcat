@@ -79,7 +79,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Combat Veteran** ✅ _(Tiered)_ - Energy per damage dealt (0.1 + 0.2 \* tier: +0.3, +0.5, +0.7)
 - **Adrenaline Surge** ✅ _(Tiered)_ - Energy per damage taken (0.1 + 0.1 \* tier: +0.2, +0.3, +0.4)
 - **Slow Metabolism** ✅ _(Tiered)_ - Energy decay rate (1 - 0.25\*tier decay rate: 75%, 50%, 25%)
-- **Combat Medic** ✅ _(Tiered)_ - Auto-heal when energy > 50% (tier HP/s: +1, +2, +3)
+- **Combat Medic** ✅ _(Tiered)_ - Auto-heal when energy > 0 (tier HP/s: +1, +2, +3 at full mana)
 - **Hypermetabolism** ✅ _(Rare)_ - Energy decays twice as fast but enables powerful +3 HP/s auto-healing
 - **Weapon Mastery** ✅ _(Rare)_ - Gain +0.8 energy per damage dealt and +25% weapon damage when energy > 75%
 - **Pain Tolerance** ✅ _(Tiered)_ - Energy per damage taken (0.2 \* tier: +0.2, +0.4, +0.6)

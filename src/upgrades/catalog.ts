@@ -285,7 +285,11 @@ export const ENERGY_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         Id: UpgradeId.CombatMedic,
         Category: UpgradeCategory.Enhancement,
         Name: "Combat Medic",
-        Tiers: ["+1 life/s when mana >50%", "+2 life/s when mana >50%", "+3 life/s when mana >50%"],
+        Tiers: [
+            "+1 life/s (scales with mana)",
+            "+2 life/s (scales with mana)",
+            "+3 life/s (scales with mana)",
+        ],
         Rarity: UpgradeRarity.Common,
     },
     [UpgradeId.Hypermetabolism]: {

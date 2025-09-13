@@ -26,12 +26,11 @@ import {Has} from "../world.js";
 const QUERY = Has.ControlAi | Has.LocalTransform2D | Has.Health;
 
 // Energy system constants
-const BASE_ENERGY = 1.0; // Baseline energy when idle (also minimum)
+const BASE_ENERGY = 0.0; // Baseline energy when idle (also minimum)
 const MAX_ENERGY = 5.0; // Maximum energy level for scaling
 const SIZE_SCALE_RANGE = 4.0; // How much size can scale (1.0x → 5.0x)
 
-// Healing constants
-const ENERGY_HEALING_THRESHOLD = 0.5; // Percentage of max energy needed for healing
+// Healing constants - removed threshold, now heals whenever energy > 0
 
 export function sys_energy(game: Game, delta: number) {
     for (let entity = 0; entity < game.World.Signature.length; entity++) {
@@ -73,10 +72,6 @@ function handle_energy_decay(ai: ControlAi, delta: number) {
         // Decay toward baseline using exponential approach
         let decay_amount = (ai.Energy - BASE_ENERGY) * ai.EnergyDecayRate * delta;
         ai.Energy = Math.max(BASE_ENERGY, ai.Energy - decay_amount);
-    } else if (ai.Energy < BASE_ENERGY) {
-        // Recover toward baseline (slower than decay)
-        let recovery_amount = (BASE_ENERGY - ai.Energy) * (ai.EnergyDecayRate * 0.5) * delta;
-        ai.Energy = Math.min(BASE_ENERGY, ai.Energy + recovery_amount);
     }
 
     // Ensure energy stays within bounds (never below baseline)
@@ -84,26 +79,23 @@ function handle_energy_decay(ai: ControlAi, delta: number) {
 }
 
 /**
- * Handle threshold-based auto-healing when energy is high enough
+ * Handle energy-scaled auto-healing - heals whenever energy > 0, rate scales with energy level
  */
 function handle_auto_healing(entity: number, ai: ControlAi, health: Health, delta: number): number {
     let healing_applied = 0;
 
-    // Check if we have healing capability and sufficient energy
-    if (ai.HealingRate > 0 && health.Current < health.Max) {
-        let energy_threshold = MAX_ENERGY * ENERGY_HEALING_THRESHOLD;
+    // Check if we have healing capability, any energy, and need healing
+    if (ai.HealingRate > 0 && ai.Energy > 0 && health.Current < health.Max) {
+        // Scale healing rate by energy level (0 energy = 0x, max energy = 1x base rate)
+        let energy_multiplier = ai.Energy / MAX_ENERGY;
+        let effective_healing_rate = ai.HealingRate * energy_multiplier;
+        healing_applied = effective_healing_rate * delta;
 
-        if (ai.Energy >= energy_threshold) {
-            // Add healing to pending queue (will be processed by sys_health)
-            let healing_rate = ai.HealingRate;
-            healing_applied = healing_rate * delta;
-
-            health.PendingHealing.push({
-                Amount: healing_applied,
-                Source: entity,
-                Type: "energy_healing",
-            });
-        }
+        health.PendingHealing.push({
+            Amount: healing_applied,
+            Source: entity,
+            Type: "energy_healing",
+        });
     }
 
     return healing_applied;
@@ -172,6 +164,7 @@ function update_movement_speed(game: Game, entity: number, ai: ControlAi) {
         DEBUG: if (!move) throw new Error("missing move component");
 
         // Scale movement speed by square root of energy for balanced scaling
-        move.MoveSpeed = ai.BaseMoveSpeed * Math.sqrt(ai.Energy / BASE_ENERGY);
+        // At 0 energy: base speed, at 1 energy: ~1.4x speed, at max energy (5): ~2.2x speed
+        move.MoveSpeed = ai.BaseMoveSpeed * Math.sqrt(1.0 + ai.Energy / MAX_ENERGY);
     }
 }
