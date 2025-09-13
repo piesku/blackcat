@@ -1,9 +1,9 @@
 import {Game, GameView} from "../game.js";
+import {ArenaIntroView} from "./ArenaIntroView.js";
+import {ArenaView} from "./ArenaView.js";
+import {DefeatView} from "./DefeatView.js";
 import {UpgradeSelectionView} from "./UpgradeSelectionView.js";
 import {VictoryView} from "./VictoryView.js";
-import {DefeatView} from "./DefeatView.js";
-import {ArenaView} from "./ArenaView.js";
-import {ArenaIntroView} from "./ArenaIntroView.js";
 
 export function App(game: Game) {
     switch (game.CurrentView) {
@@ -11,13 +11,11 @@ export function App(game: Game) {
             return UpgradeSelectionView(game);
         case GameView.ArenaIntro:
             return ArenaIntroView(game);
-        case GameView.Arena:
-            return ArenaView(game);
         case GameView.Victory:
             return VictoryView(game);
         case GameView.Defeat:
             return DefeatView(game);
-        default:
+        case GameView.Arena:
             return ArenaView(game);
     }
 }

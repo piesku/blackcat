@@ -18,7 +18,7 @@ export function ArenaView(game: Game): string {
                 : "#F44336"
             : isPlayer
               ? "#4CAF50"
-              : "#FF9800"; // Blue for player mana, orange for opponent mana
+              : "#FF9800";
 
         const barLabel = isHealthBar ? "LIFE" : "MANA";
         const position = isPlayer ? "left: 20px;" : "right: 20px;";
@@ -60,11 +60,9 @@ export function ArenaView(game: Game): string {
                         left: 0; 
                         right: 0; 
                         bottom: 0; 
-                        display: flex; 
-                        align-items: center; 
-                        justify-content: center; 
                         color: #fff;
                         text-shadow: 1px 1px 0 #000;
+                        text-align: center;
                     "
                 >
                     ${value ? Math.ceil(value.current) : 0} ${barLabel}

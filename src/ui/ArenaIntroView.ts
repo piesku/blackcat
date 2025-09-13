@@ -6,14 +6,14 @@ export function ArenaIntroView(game: Game): string {
     return html`
         <div>
             <div
-                style="position: absolute; left: 50%; transform: translate(-50%, -50%); animation: titleSlide 1s ease forwards;"
+                style="position: absolute; left: 50%; transform: translate(-50%, -50%); animation: top-forwards 1s ease forwards;"
                 onanimationend="$(${Action.ArenaIntroComplete})"
             >
                 <h2>DUEL&nbsp;${game.State.currentLevel}</h2>
             </div>
 
             <style>
-                @keyframes titleSlide {
+                @keyframes top-forwards {
                     0% {
                         top: -20%;
                     }

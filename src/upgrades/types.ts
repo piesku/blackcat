@@ -78,10 +78,10 @@ export interface UpgradeInstance {
 }
 
 export const enum UpgradeCategory {
-    Weapon = "Weapon", // Child entities with blueprints
-    Companion = "Companion", // Root entities with blueprints
-    Enhancement = "Enhancement", // ControlAi property modifications (combat, energy, behavioral)
-    Special = "Special", // Unique mechanics that don't fit patterns
+    Weapon, // Child entities with blueprints
+    Companion, // Root entities with blueprints
+    Enhancement, // ControlAi property modifications (combat, energy, behavioral)
+    Special, // Unique mechanics that don't fit patterns
 }
 
 export interface GameState {
