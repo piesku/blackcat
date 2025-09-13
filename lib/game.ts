@@ -36,10 +36,12 @@ export abstract class Game3D {
             let delta = (now - last) / 1000;
             last = now;
 
+            this.Time += delta;
             this.IsRunning = requestAnimationFrame(tick);
 
-            this.FrameSetup(delta);
             this.FrameUpdate(delta);
+
+            this.ViewportResized = false;
         };
 
         requestAnimationFrame(tick);
@@ -48,11 +50,6 @@ export abstract class Game3D {
     Stop() {
         cancelAnimationFrame(this.IsRunning);
         this.IsRunning = 0;
-    }
-
-    FrameSetup(delta: number) {
-        this.Time += delta; // Accumulate game time in seconds
-        this.ViewportResized = false;
     }
 
     abstract FrameUpdate(delta: number): void;
