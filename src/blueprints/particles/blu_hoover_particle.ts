@@ -14,14 +14,14 @@ export function blueprint_hoover_particle(damage: number) {
         label("hoover particle"),
 
         // NO spatial_node2d() - enables fast path for particles!
-        local_transform2d([0, 0], 0, [0.2, 0.2]),
-        render2d(Tile.Die1),
+        local_transform2d(),
+        render2d(Tile.Part, [0.6, 0.6, 1, 1]), // Light blue color for hoover particles
 
         // Physics for spinning motion - high friction, no gravity
         rigid_body2d(RigidKind.Dynamic, 0, 0.9, [0, 0]),
 
         // Spinning particle with continuous damage
-        particle(0.8, [0.05, 0.05], 0.3), // spread, finalScale, fadeOut
+        particle(0.8), // spread
 
         // Collision and damage
         collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.15),

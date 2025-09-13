@@ -14,16 +14,16 @@ export function blueprint_shadow_particle() {
 
         // NO spatial_node2d() - enables fast path for particles!
         local_transform2d(),
-        render2d(Tile.Die1, [1, 1, 1, 0.3]),
+        render2d(Tile.Run1, [1, 1, 1, 0.3]),
         order(1),
 
         // Shadow particle physics and behavior
-        particle(0.0, [0.05, 0.05], 2), // spread, finalScale, fadeOut
+        particle(0.0), // spread
 
         // Collision and damage - continuous damage dealing
         collide2d(true, Layer.Particle, Layer.Player, 1),
         deal_damage(1, 0.1), // 0.1s cooldown, continuous shadow damage
 
-        lifespan(3),
+        lifespan(5),
     ];
 }

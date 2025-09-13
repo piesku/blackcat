@@ -11,14 +11,14 @@ export function blueprint_shell_casing() {
         label("shell casing"),
 
         // NO spatial_node2d() - enables fast path for particles!
-        local_transform2d([0, 0], 0, [0.08, 0.08]), // Small shell casings
-        render2d(Tile.Die1), // Small metallic shell sprite
+        local_transform2d(),
+        render2d(Tile.Part, [0.9, 0.8, 0.6, 1]), // Brass color for shell casings
 
         // Physics integration via RigidBody2D - shells fall with gravity
         rigid_body2d(RigidKind.Dynamic, 0, 0.7, [0, -8.0]), // Strong downward gravity for realistic shell drop
 
         // Shell casing particle physics and behavior
-        particle(0.2, [0.05, 0.05], 1.0), // spread, finalScale, fadeOut
+        particle(0.2), // spread
 
         lifespan(3), // Short lifespan - shells disappear after bouncing
     ];

@@ -25,7 +25,7 @@ export function blueprint_heal_particle() {
         rigid_body2d(RigidKind.Dynamic, 0, 0.95, [0, 2.0]), // Gentle upward drift (healing energy rises)
 
         // Healing particle physics and behavior
-        particle(0.5, [1, 1], 0.6), // spread, finalScale, fadeOut
+        particle(0.5), // spread
 
         // No collision or damage - healing particles are purely visual
 

@@ -10,11 +10,11 @@ export function blueprint_bullet_trail() {
         label("bullet trail"),
 
         // NO spatial_node2d() - enables fast path for particles!
-        local_transform2d([0, 0], 0, [0.1, 0.1]), // Small elongated trail mark
-        render2d(Tile.Die1), // Small particle sprite
+        local_transform2d(),
+        render2d(Tile.Part, [1, 1, 0, 0.8]), // Yellowish color for bullet trails
 
         // Trail particle physics and behavior
-        particle(0.0, [0.05, 0.05], 1), // spread, finalScale, fadeOut
+        particle(0.0), // spread
 
         lifespan(1), // Short lifespan - trails disappear quickly
     ];

@@ -25,6 +25,7 @@ export const enum Tile {
     Hurt2,
     Hurt3,
     Hurt4,
+    Part,
     Rocket,
     Run1,
     Run2,

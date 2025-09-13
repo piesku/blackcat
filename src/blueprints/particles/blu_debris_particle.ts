@@ -14,14 +14,14 @@ export function blueprint_debris_particle() {
         label("debris particle"),
 
         // NO spatial_node2d() - enables fast path for particles!
-        local_transform2d([0, 0], 0, [0.15, 0.15]), // Small debris pieces
-        render2d(Tile.Die1), // Debris sprite
+        local_transform2d(),
+        render2d(Tile.Part, [0.5, 0.5, 0.5, 1]),
 
         // Physics integration via RigidBody2D with realistic gravity
         rigid_body2d(RigidKind.Dynamic, 0, 0.3, [0, -9.8]), // Standard gravity for debris
 
         // Debris particle physics and behavior
-        particle(0.8, [0.05, 0.05], 0.6), // spread, finalScale, fadeOut
+        particle(0.8), // spread
 
         // Collision and damage
         collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.1),

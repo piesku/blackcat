@@ -14,14 +14,14 @@ export function blueprint_larpa_trail_particle() {
         label("larpa trail particle"),
 
         // NO spatial_node2d() - enables fast path for particles!
-        local_transform2d([0, 0], 0, [0.1, 0.1]), // Small trail particles
-        render2d(Tile.Die1), // Small particle sprite
+        local_transform2d(),
+        render2d(Tile.Part, [0.5, 0, 1, 0.7]), // Purple color for larpa trail
 
         // Physics integration via RigidBody2D with gravity
         rigid_body2d(RigidKind.Dynamic, 0, 0.2, [0, -5.0]), // Falling particles with gravity
 
         // Particle behavior - falling damage trail
-        particle(0.4, [0.05, 0.05], 0.8), // spread, finalScale, fadeOut
+        particle(0.4), // spread
 
         // Collision and damage
         collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.05),

@@ -1,8 +1,6 @@
 import {float} from "../../lib/random.js";
-import {Lifespan} from "../components/com_lifespan.js";
-import {LocalTransform2D} from "../components/com_local_transform2d.js";
 import {Particle} from "../components/com_particle.js";
-import {Render2D, set_color} from "../components/com_render2d.js";
+import {set_color} from "../components/com_render2d.js";
 import {RigidBody2D} from "../components/com_rigid_body2d.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
@@ -14,11 +12,9 @@ export function sys_particles(game: Game, delta: number) {
         if ((game.World.Signature[entity] & QUERY) === QUERY) {
             let particle = game.World.Particle[entity];
             let transform = game.World.LocalTransform2D[entity];
-            let render = game.World.Render2D[entity];
             let lifespan = game.World.Lifespan[entity];
 
-            DEBUG: if (!particle || !transform || !render || !lifespan)
-                throw new Error("missing component");
+            DEBUG: if (!particle || !transform || !lifespan) throw new Error("missing component");
 
             if (game.World.Signature[entity] & Has.RigidBody2D) {
                 // Apply particle-specific physics by modifying rigid body acceleration
@@ -28,7 +24,9 @@ export function sys_particles(game: Game, delta: number) {
             }
 
             // Handle visual effects
-            update_particle_visuals(game, entity, particle, transform, render, lifespan);
+            // Calculate age factor (0 = just born, 1 = about to die)
+            let age_factor = Math.min(lifespan.Age / lifespan.Lifetime, 1.0);
+            update_particle_visuals(game, entity, age_factor);
 
             // Mark transform as dirty for the render system
             //game.World.Signature[entity] |= Has.Dirty;
@@ -46,35 +44,12 @@ function update_particle_physics(particle: Particle, rigid_body: RigidBody2D) {
     }
 }
 
-function update_particle_visuals(
-    game: Game,
-    entity: number,
-    particle: Particle,
-    transform: LocalTransform2D,
-    render: Render2D,
-    lifespan: Lifespan,
-) {
-    let alpha = render.Color[3];
+function update_particle_visuals(game: Game, entity: number, age_factor: number) {
+    let render = game.World.Render2D[entity];
+    DEBUG: if (!render) throw new Error("missing component");
 
-    // Handle fade out
-    if (particle.FadeOutDuration > 0) {
-        let fade_start_time = lifespan.Lifetime - particle.FadeOutDuration;
-        if (lifespan.Age >= fade_start_time) {
-            let fade_progress = (lifespan.Age - fade_start_time) / particle.FadeOutDuration;
-            alpha *= 1.0 - fade_progress;
-        }
-    }
-
-    // Calculate age factor (0 = just born, 1 = about to die)
-    let age_factor = Math.min(lifespan.Age / lifespan.Lifetime, 1.0);
-
-    // Interpolate scale from current to final using age factor
-    let scale_x = transform.Scale[0] + (particle.FinalScale[0] - transform.Scale[0]) * age_factor;
-    let scale_y = transform.Scale[1] + (particle.FinalScale[1] - transform.Scale[1]) * age_factor;
-
-    // Apply visual changes
-    transform.Scale[0] = scale_x;
-    transform.Scale[1] = scale_y;
+    // Fade out proportionally to age - particles become more transparent as they age
+    let alpha = render.Color[3] * (1.0 - age_factor);
 
     // Apply alpha to rendering using set_color helper
     let current_color = game.World.Render2D[entity].Color;

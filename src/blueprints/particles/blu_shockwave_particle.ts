@@ -14,14 +14,14 @@ export function blueprint_shockwave_particle(damage: number = 0.5) {
         label("shockwave particle"),
 
         // NO spatial_node2d() - enables fast path for particles!
-        local_transform2d([0, 0], 0, [0.2, 0.2]), // Medium-sized shockwave particles
-        render2d(Tile.Die1), // Use body sprite for shockwave visual
+        local_transform2d(), // Medium-sized shockwave particles
+        render2d(Tile.Part, [1, 0.5, 0, 0.7]), // Orange color for shockwave
 
         // Physics integration via RigidBody2D - no gravity for energy-based shockwave
         rigid_body2d(RigidKind.Dynamic, 0, 0.2), // Light air resistance, no gravity
 
         // Shockwave particle physics and behavior
-        particle(0.5, [0.1, 0.1], 0.8), // spread, finalScale, fadeOut
+        particle(0.5), // spread
 
         // Collision and damage - damages objects and other fighters
         collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.1),
