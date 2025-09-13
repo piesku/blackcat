@@ -49,23 +49,7 @@ export function UpgradeSelectionView(game: Game): string {
                         let upgrade = ALL_UPGRADES_MAP[u.id];
                         if (!upgrade) return `<div>Unknown Upgrade</div>`;
                         return html`
-                            <div
-                                onclick="window.$(${Action.UpgradeSelected}, ${index})"
-                                style="
-                                    border: 4px solid #000;
-                                    background: #fff;
-                                    transition: all 0.2s;
-                                    width: calc(100% - 80px);
-                                    box-shadow: 4px 4px 0 #000c;
-                                    transform: skewX(-10deg) rotate(-2deg);
-                                    text-align: center;
-                                    padding: 1em;
-                                    margin: 0 20px;
-                                    cursor: pointer;
-                                "
-                                onmouseover="this.style.transform='skewX(-10deg) rotate(-2deg) scale(1.05)'; this.style.boxShadow='6px 6px 0 #000c'"
-                                onmouseout="this.style.transform='skewX(-10deg) rotate(-2deg)'; this.style.boxShadow='4px 4px 0 #000c'"
-                            >
+                            <div onclick="window.$(${Action.UpgradeSelected}, ${index})">
                                 <h3 style="color: ${getRarityColor(u)};">${upgrade.Name}</h3>
                                 <p>
                                     ${upgrade.Tiers.length > 1

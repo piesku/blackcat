@@ -48,19 +48,35 @@ p {
 }
 
 button {
-    border-radius: 2em;
-    text-shadow: #000;
-    box-shadow: 4px 4px 0 #333;
-    padding: 0.875em 1em;
-    line-height: 1;
-    border: 0.1875rem solid #000;
+    border: 4px solid #000;
+    background: #fff;
+    box-shadow: 4px 4px 0 #000c;
+    transform: skewX(-10deg) rotate(-2deg);
     text-align: center;
     cursor: pointer;
+    padding: 1em;
+    line-height: 1;
+    text-shadow: none;
+    border-radius: 0;
 }
 
-button:hover {
-    box-shadow: 6px 6px 0 #333;
-    transform: translateY(-2px);
+div[onclick] {
+    border: 4px solid #000;
+    background: #fff;
+    transform: skewX(-10deg) rotate(-2deg);
+    text-align: center;
+    cursor: pointer;
+    padding: 1em;
+    transition: all 0.2s;
+    width: calc(100% - 80px);
+    box-shadow: 4px 4px 0 #000c;
+    margin: 0 20px;
+}
+
+button:hover,
+div[onclick]:hover {
+    transform: skewX(-10deg) rotate(-2deg) scale(1.05);
+    box-shadow: 6px 6px 0 #000c;
 }
 
 @keyframes rotate-background {
