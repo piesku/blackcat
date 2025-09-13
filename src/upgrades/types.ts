@@ -12,7 +12,7 @@ export const enum UpgradeId {
     Shotgun,
     Minigun,
     SniperRifle,
-    Boomerang,
+    HomingMissile,
     Explosives,
     Spikeballs,
     Larpa,

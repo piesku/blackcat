@@ -1,14 +1,6 @@
-import {instantiate} from "../../lib/game.js";
-import {mat2d_get_translation} from "../../lib/mat2d.js";
-import {Vec2} from "../../lib/math.js";
-import {vec2_copy} from "../../lib/vec2.js";
-import {blueprint_boomerang} from "../blueprints/projectiles/blu_boomerang.js";
 import {query_down} from "../components/com_children.js";
 import {AiState} from "../components/com_control_ai.js";
-import {get_root_spawner, label} from "../components/com_label.js";
-import {copy_position} from "../components/com_local_transform2d.js";
 import {SpawnMode} from "../components/com_spawn.js";
-import {spawned_by} from "../components/com_spawned_by.js";
 import {Weapon} from "../components/com_weapon.js";
 import {Game} from "../game.js";
 import {Has} from "../world.js";
@@ -79,14 +71,6 @@ function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapo
     return should_activate;
 }
 
-function get_weapon_name(game: Game, weapon_entity: number): string | null {
-    // Check if weapon has a Label component
-    if (!(game.World.Signature[weapon_entity] & Has.Label)) return null;
-
-    let label_component = game.World.Label[weapon_entity];
-    return label_component ? label_component.Name || null : null;
-}
-
 function activate_weapon(game: Game, wielder_entity: number, weapon_entity: number) {
     let weapon = game.World.Weapon[weapon_entity];
     DEBUG: if (!weapon) throw new Error("missing component");
@@ -94,24 +78,6 @@ function activate_weapon(game: Game, wielder_entity: number, weapon_entity: numb
     // Set weapon on cooldown
     weapon.SinceLast = 0;
 
-    // Apply weapon-specific effects based on weapon name
-    let weapon_name = get_weapon_name(game, weapon_entity);
-    switch (weapon_name) {
-        case "boomerang":
-            execute_boomerang_attack(game, wielder_entity, weapon, weapon_entity);
-            break;
-        default:
-            execute_ranged_attack(game, wielder_entity, weapon, weapon_entity);
-            break;
-    }
-}
-
-function execute_ranged_attack(
-    game: Game,
-    wielder_entity: number,
-    weapon: Weapon,
-    weapon_entity: number,
-) {
     // Get direction from Aim component
     let aim = game.World.Aim[wielder_entity];
     DEBUG: if (!aim) throw new Error("missing component");
@@ -146,43 +112,5 @@ function execute_ranged_attack(
 
     console.log(
         `[RANGED] Entity ${wielder_entity} activated ${spawners_activated} spawner(s) toward target ${aim.TargetEntity}`,
-    );
-}
-
-function execute_boomerang_attack(
-    game: Game,
-    wielder_entity: number,
-    weapon: Weapon,
-    weapon_entity: number,
-) {
-    let aim = game.World.Aim[wielder_entity];
-    DEBUG: if (!aim) throw new Error("wielder missing aim component");
-
-    let target_direction: Vec2 = [0, 0];
-    vec2_copy(target_direction, aim.DirectionToTarget);
-
-    let weapon_spatial = game.World.SpatialNode2D[weapon_entity];
-    DEBUG: if (!weapon_spatial) throw new Error("weapon missing spatial node");
-
-    // Get world position from spatial node
-    let weapon_world_position: Vec2 = [0, 0];
-    mat2d_get_translation(weapon_world_position, weapon_spatial.World);
-
-    // Create and launch the boomerang directly at weapon location
-    // Get the fighter entity for damage attribution
-    let fighter_entity = get_root_spawner(game.World, weapon_entity);
-
-    instantiate(game, [
-        ...blueprint_boomerang(
-            target_direction, // direction to target
-            aim.DistanceToTarget,
-        ),
-        copy_position(weapon_world_position), // Spawn at weapon's world position
-        label("boomerang outward"),
-        spawned_by(fighter_entity),
-    ]);
-
-    console.log(
-        `[BOOMERANG] Entity ${wielder_entity} threw boomerang toward target ${aim.TargetEntity}`,
     );
 }

@@ -22,7 +22,15 @@ function update(game: Game, entity: Entity) {
     let control = game.World.ControlAlways2D[entity];
     let move = game.World.Move2D[entity];
 
-    if (control.Direction) {
+    // Use aim direction if available, otherwise use control direction
+    if (game.World.Signature[entity] & Has.Aim) {
+        let aim = game.World.Aim[entity];
+        if (aim.TargetEntity !== -1) {
+            move.Direction[0] = aim.DirectionToTarget[0];
+            move.Direction[1] = aim.DirectionToTarget[1];
+            game.World.Signature[entity] |= Has.Dirty;
+        }
+    } else if (control.Direction) {
         move.Direction[0] = control.Direction[0];
         move.Direction[1] = control.Direction[1];
         game.World.Signature[entity] |= Has.Dirty;

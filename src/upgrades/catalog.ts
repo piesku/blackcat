@@ -30,11 +30,11 @@ export const WEAPON_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         Tiers: ["High-damage, long-range"],
         Rarity: UpgradeRarity.Common,
     },
-    [UpgradeId.Boomerang]: {
-        Id: UpgradeId.Boomerang,
+    [UpgradeId.HomingMissile]: {
+        Id: UpgradeId.HomingMissile,
         Category: UpgradeCategory.Weapon,
-        Name: "Bananarang",
-        Tiers: ["Return to sender"],
+        Name: "Homing Missile",
+        Tiers: ["Seeking destruction"],
         Rarity: UpgradeRarity.Uncommon,
     },
     [UpgradeId.Explosives]: {

@@ -9,7 +9,7 @@ import {blueprint_mr_pink} from "../blueprints/companions/blu_mr_pink.js";
 import {blueprint_mr_red} from "../blueprints/companions/blu_mr_red.js";
 import {blueprint_mr_white} from "../blueprints/companions/blu_mr_white.js";
 import {blueprint_shadow_particle} from "../blueprints/particles/blu_shadow_particle.js";
-import {blueprint_boomerang_weapon} from "../blueprints/weapons/blu_boomerang_weapon.js";
+import {blueprint_homing_missile_weapon} from "../blueprints/weapons/blu_homing_missile_weapon.js";
 import {blueprint_chiquita_weapon} from "../blueprints/weapons/blu_chiquita_weapon.js";
 import {blueprint_explosives} from "../blueprints/weapons/blu_explosives.js";
 import {blueprint_flamethrower} from "../blueprints/weapons/blu_flamethrower.js";
@@ -245,8 +245,8 @@ function apply_weapon_upgrade(game: Game, entity: number, upgrade: UpgradeType, 
             attach_to_parent(game, weapon_entity, entity);
             break;
 
-        case UpgradeId.Boomerang:
-            weapon_entity = instantiate(game, blueprint_boomerang_weapon());
+        case UpgradeId.HomingMissile:
+            weapon_entity = instantiate(game, blueprint_homing_missile_weapon());
             attach_to_parent(game, weapon_entity, entity);
             break;
 
