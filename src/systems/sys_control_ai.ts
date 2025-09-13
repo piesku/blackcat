@@ -100,13 +100,6 @@ export function sys_control_ai(game: Game, delta: number) {
             move.Direction[1] = movement[1];
             move.MoveSpeed = ai.BaseMoveSpeed * Math.sqrt(ai.Energy);
 
-            if (
-                ai.BerserkerMode &&
-                health.Current / health.Max <= ai.BerserkerMode.LowHealthThreshold
-            ) {
-                move.MoveSpeed *= ai.BerserkerMode.SpeedBonus;
-            }
-
             if (ai.KineticChargerEnabled && (movement[0] !== 0 || movement[1] !== 0)) {
                 ai.Energy += (move.MoveSpeed / 4) * 0.5 * delta;
             }

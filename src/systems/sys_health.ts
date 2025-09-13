@@ -166,22 +166,6 @@ function calculate_armor_reduction(
         }
     }
 
-    // Resonance Shield: Reduce damage based on current energy
-    if (health.ResonanceShield && health.ResonanceShield > 0) {
-        if (game.World.Signature[defender_entity] & Has.ControlAi) {
-            let ai = game.World.ControlAi[defender_entity];
-            // Reduction is proportional to energy, capped at 90%
-            let reduction_percentage = Math.min(0.9, ai.Energy * health.ResonanceShield);
-            if (reduction_percentage > 0) {
-                let reduction = final_damage * reduction_percentage;
-                final_damage -= reduction;
-                console.log(
-                    `[ARMOR] Resonance Shield: ${(reduction_percentage * 100).toFixed(0)}% reduction from ${ai.Energy.toFixed(1)} energy (reducing by ${reduction.toFixed(1)})`,
-                );
-            }
-        }
-    }
-
     // Percentage damage reduction
     if (health.DamageReduction > 0) {
         let reduction = final_damage * health.DamageReduction;

@@ -51,15 +51,12 @@ export const enum UpgradeId {
     ShockwaveBurst,
     KineticCharger,
     ManaSiphon,
-    ResonanceShield,
 
     // Behavioral properties
     LightningReflexes,
     QuickDraw,
     Brawler,
     Vitality,
-    BerserkerMode,
-    Pacifist,
     Cautious,
 
     // === Special (Unique mechanics) ===

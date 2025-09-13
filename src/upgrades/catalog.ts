@@ -321,17 +321,6 @@ export const ENERGY_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         ],
         Rarity: UpgradeRarity.Uncommon,
     },
-    [UpgradeId.ResonanceShield]: {
-        Id: UpgradeId.ResonanceShield,
-        Category: UpgradeCategory.Enhancement,
-        Name: "Resonance Shield",
-        Tiers: [
-            "25% damage reduction at full mana",
-            "50% damage reduction at full mana",
-            "75% damage reduction at full mana",
-        ],
-        Rarity: UpgradeRarity.Uncommon,
-    },
 };
 
 // Trait upgrade definitions - Combat & behavioral enhancement
@@ -367,20 +356,6 @@ export const TRAIT_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         Name: "Vitality",
         Tiers: ["+2 maximum life", "+3 maximum life", "+4 maximum life"],
         Rarity: UpgradeRarity.Common,
-    },
-    [UpgradeId.BerserkerMode]: {
-        Id: UpgradeId.BerserkerMode,
-        Category: UpgradeCategory.Enhancement,
-        Name: "Berserker Mode",
-        Tiers: ["+50% speed when life <25%"],
-        Rarity: UpgradeRarity.Uncommon,
-    },
-    [UpgradeId.Pacifist]: {
-        Id: UpgradeId.Pacifist,
-        Category: UpgradeCategory.Enhancement,
-        Name: "Pacifist",
-        Tiers: ["+3 max life, -50% damage dealt"],
-        Rarity: UpgradeRarity.Rare,
     },
     [UpgradeId.Cautious]: {
         Id: UpgradeId.Cautious,

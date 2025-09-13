@@ -103,9 +103,6 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
         case UpgradeId.ManaSiphon:
             ai.ManaSiphon += 0.25 * tier;
             break;
-        case UpgradeId.ResonanceShield:
-            health.ResonanceShield += 0.25 * tier;
-            break;
 
         // === Behavioral Properties ===
         case UpgradeId.LightningReflexes:
@@ -128,20 +125,6 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
             let vitalityBonus = 1 + tier;
             health.Max += vitalityBonus;
             health.Current += vitalityBonus;
-            break;
-        case UpgradeId.BerserkerMode:
-            ai.BerserkerMode = {
-                LowHealthThreshold: 0.25,
-                SpeedBonus: 1.5,
-                AttackBonus: 1.5,
-            };
-            break;
-        case UpgradeId.Pacifist:
-            ai.Aggressiveness *= 0.3;
-            health.Max += 3;
-            health.Current += 3;
-            // Stack damage reduction multiplicatively to prevent going over 100%
-            health.DamageReduction += (1 - health.DamageReduction) * 0.5;
             break;
         case UpgradeId.Cautious:
             ai.Aggressiveness *= 0.7;

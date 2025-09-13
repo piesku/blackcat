@@ -48,11 +48,6 @@ export interface ControlAi {
     DashRangeMultiplier?: number; // Brawler dash range reduction
     AttackSpeedMultiplier?: number; // Quick Draw attack speed boost
     DamageBonus?: number; // Brawler damage bonus
-    BerserkerMode?: {
-        LowHealthThreshold: number;
-        SpeedBonus: number;
-        AttackBonus: number;
-    }; // Berserker trait
 }
 
 export const enum AiState {

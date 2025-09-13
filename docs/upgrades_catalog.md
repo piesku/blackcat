@@ -71,6 +71,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Vampiric** ✅ _(Tiered)_ - Lifesteal (Tier 1: 25% lifesteal, Tier 2: 50% lifesteal, Tier 3: 75% lifesteal)
 - **Phase Walk** ✅ _(Tiered)_ - Dash invincibility duration (Tier 1: 50% of dash, Tier 2: 75% of dash, Tier 3: 100% of dash)
 - **Dash Master** ✅ _(Tiered)_ - Dash range bonus (Tier 1: +50% range, Tier 2: +100% range, Tier 3: +150% range)
+- **Weapon Mastery** ✅ _(Rare)_ - +20%/40%/60% weapon damage, scaling with energy level
 
 #### Energy Properties (ControlAi energy system)
 
@@ -78,12 +79,10 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Slow Metabolism** ✅ _(Tiered)_ - Energy decay rate (1 - 0.25\*tier decay rate: 75%, 50%, 25%)
 - **Combat Medic** ✅ _(Tiered)_ - Auto-heal when energy > 0 (tier HP/s: +1, +2, +3 at full mana)
 - **Hypermetabolism** ✅ _(Rare)_ - Energy decays twice as fast but enables powerful +3 HP/s auto-healing
-- **Weapon Mastery** ✅ _(Rare)_ - Gain +0.8 energy per damage dealt and +25% weapon damage when energy > 75%
 - **Pain Tolerance** ✅ _(Tiered)_ - Energy per damage taken (0.2 \* tier: +0.2, +0.4, +0.6)
 - **Shockwave Burst** ✅ _(Rare)_ - Automatically spawn damaging particles in all directions when energy reaches maximum
 - **Kinetic Charger** ✅ _(Tiered)_ - Energy generation while moving (tier multiplier: 1x, 2x, 3x)
 - **Mana Siphon** ✅ _(Tiered)_ - Energy drain per damage dealt (0.25 \* tier: 25%, 50%, 75%)
-- **Resonance Shield** ✅ _(Tiered)_ - Damage reduction at full energy (0.25 \* tier: 25%, 50%, 75%)
 
 #### Behavioral Properties (ControlAi traits)
 
@@ -91,8 +90,6 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Quick Draw** ✅ _(Tiered)_ - Attack speed (0.20 \* tier: +20%, +40%, +60%)
 - **Brawler** ✅ _(Tiered)_ - Aggressiveness and damage bonus (tier damage, 0.1\*tier aggr: +1/+0.1, +2/+0.2, +3/+0.3)
 - **Vitality** ✅ _(Tiered)_ - Maximum health (1 + tier HP: +2, +3, +4)
-- **Berserker** ✅ _(Uncommon)_ - +50% attack speed and movement when below 25% HP
-- **Pacifist** ✅ _(Rare)_ - Much lower aggressiveness but +3 max health and +50% damage reduction
 - **Cautious** ✅ _(Tiered)_ - Maximum health with defensive AI (tier HP: +1, +2, +3)
 
 **Implementation**:
@@ -118,15 +115,15 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 ## Upgrade Distribution Summary
 
-**Current Implemented Upgrades: 45** / **Complete System ✅** (Field Surgeon consolidated into Combat Medic tiers, Mortar removed, Scrap Armor removed, Adrenaline Surge removed - redundant with Pain Tolerance, Last Stand removed)
+**Current Implemented Upgrades: 42** / **Complete System ✅** (Field Surgeon consolidated into Combat Medic tiers, Mortar removed, Scrap Armor removed, Adrenaline Surge removed - redundant with Pain Tolerance, Last Stand removed, Resonance Shield removed, Berserker removed, Pacifist removed)
 
 - **Weapons**: 10 upgrades ✅ (child entities with blueprints)
 - **Companions**: 8 upgrades ✅ (root entities with blueprints)
-- **Enhancement**: 26 upgrades ✅ (component property modifications, including 21 tiered upgrades)
+- **Enhancement**: 23 upgrades ✅ (component property modifications, including 18 tiered upgrades)
     - Armor Properties: 6 upgrades ✅ (6 tiered)
     - Combat Abilities: 3 upgrades ✅ (3 tiered)
-    - Energy Properties: 12 upgrades ✅ (7 tiered)
-    - Behavioral Properties: 7 upgrades ✅ (5 tiered)
+    - Energy Properties: 9 upgrades ✅ (6 tiered)
+    - Behavioral Properties: 5 upgrades ✅ (3 tiered)
 - **Special**: 1 upgrade ✅ (unique mechanics)
 
 **Tiered Upgrades with 3 Tiers Each:**
@@ -154,7 +151,6 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - Pain Tolerance (3 tiers): Energy generation from damage taken
 - Mana Siphon (3 tiers): Energy drain from damage dealt
 - Kinetic Charger (3 tiers): Energy generation while moving
-- Resonance Shield (3 tiers): Energy-based damage reduction
 
 **Behavioral Properties:**
 
@@ -164,13 +160,13 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - Vitality (3 tiers): Maximum health
 - Cautious (3 tiers): Defensive health + AI behavior
 
-**Rarity Distribution** (48 Total - Tiered upgrades span multiple rarities):
+**Rarity Distribution** (42 Total - Tiered upgrades span multiple rarities):
 
-- **Common**: 5 base upgrades + 19 Tier 1 tiered = 24 total common options
-- **Uncommon**: 10 base upgrades + 21 Tier 2 tiered = 31 total uncommon options
-- **Rare**: 34 base upgrades + 21 Tier 3 tiered = 55 total rare options
+- **Common**: 5 base upgrades + 18 Tier 1 tiered = 23 total common options
+- **Uncommon**: 9 base upgrades + 18 Tier 2 tiered = 27 total uncommon options
+- **Rare**: 28 base upgrades + 18 Tier 3 tiered = 46 total rare options
 
-**Note**: Tiered upgrades appear at multiple rarity levels, with some high-tier upgrades like Mirror Armor starting at Uncommon/Rare for their Tier 1 versions. This creates 110 total upgrade options across all tiers.
+**Note**: Tiered upgrades appear at multiple rarity levels, with some high-tier upgrades like Mirror Armor starting at Uncommon/Rare for their Tier 1 versions. This creates 96 total upgrade options across all tiers.
 
 **Current Implementation Strategy**:
 
@@ -179,7 +175,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 export enum UpgradeCategory {
     Weapon = "Weapon", // Child entities with blueprints (10 upgrades ✅)
     Companion = "Companion", // Root entities with blueprints (8 upgrades ✅)
-    Enhancement = "Enhancement", // ControlAi property modifications (31 upgrades ✅)
+    Enhancement = "Enhancement", // ControlAi property modifications (23 upgrades ✅)
     Special = "Special", // Unique mechanics that don't fit patterns (1 upgrade ✅)
 }
 ```

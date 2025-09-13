@@ -22,7 +22,6 @@ export interface Health {
     RegenerationRate: number; // Regenerative Mesh - HP per second during combat
     FlatDamageReduction: number; // Thick Hide/Tough Skin - flat damage reduction per attack
     EvasionChance: number; // Evasion - chance to completely avoid damage (0.0 to 1.0)
-    ResonanceShield: number; // Resonance Shield - damage reduction factor based on energy
 
     // Pending damage and healing instances
     PendingDamage: DamageInstance[];
@@ -44,7 +43,6 @@ export function health(max: number = 3) {
             DamageReduction: 0,
             EvasionChance: 0,
             RegenerationRate: 0,
-            ResonanceShield: 0,
         };
     };
 }

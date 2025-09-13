@@ -42,16 +42,9 @@ function should_activate_weapon(game: Game, parent_entity: number, weapon: Weapo
     // When energy is 0, use full cooldown; as energy increases, reduce cooldown
     let effective_cooldown = weapon.Cooldown / (1 + ai.Energy * ENERGY_COOLDOWN_SCALE);
 
-    // Apply attack speed multiplier from traits (Quick Draw, Berserker)
+    // Apply attack speed multiplier from traits (Quick Draw)
     if (ai.AttackSpeedMultiplier) {
         effective_cooldown /= ai.AttackSpeedMultiplier;
-    }
-
-    // Apply berserker mode attack bonus when at low health
-    if (ai.BerserkerMode) {
-        if (health.Current / health.Max <= ai.BerserkerMode.LowHealthThreshold) {
-            effective_cooldown /= ai.BerserkerMode.AttackBonus;
-        }
     }
 
     let should_activate =
