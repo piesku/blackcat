@@ -9,10 +9,10 @@ import {blueprint_mr_pink} from "../blueprints/companions/blu_mr_pink.js";
 import {blueprint_mr_red} from "../blueprints/companions/blu_mr_red.js";
 import {blueprint_mr_white} from "../blueprints/companions/blu_mr_white.js";
 import {blueprint_shadow_particle} from "../blueprints/particles/blu_shadow_particle.js";
-import {blueprint_homing_missile_weapon} from "../blueprints/weapons/blu_homing_missile_weapon.js";
 import {blueprint_chiquita_weapon} from "../blueprints/weapons/blu_chiquita_weapon.js";
 import {blueprint_explosives} from "../blueprints/weapons/blu_explosives.js";
 import {blueprint_flamethrower} from "../blueprints/weapons/blu_flamethrower.js";
+import {blueprint_homing_missile_weapon} from "../blueprints/weapons/blu_homing_missile_weapon.js";
 import {blueprint_hoover_crack} from "../blueprints/weapons/blu_hoover_crack.js";
 import {blueprint_larpa} from "../blueprints/weapons/blu_larpa.js";
 import {blueprint_minigun} from "../blueprints/weapons/blu_minigun.js";
@@ -97,8 +97,7 @@ function apply_enhancement_upgrade(game: Game, entity: number, upgrade: UpgradeT
             ai.ShockwaveBurstEnabled = true;
             break;
         case UpgradeId.KineticCharger:
-            ai.KineticChargerEnabled = true;
-            // TODO: Implement tier-based rate multiplier in energy system
+            ai.EnergyFromMovement += 0.4;
             break;
         case UpgradeId.ManaSiphon:
             ai.ManaSiphon += 0.25 * tier;

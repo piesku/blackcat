@@ -15,6 +15,7 @@ const BASE_DASH_TRIGGER_DISTANCE = 4.5;
 const BASE_SEPARATION_DISTANCE = 1.2;
 const BASE_DASH_SPEED_MULTIPLIER = 4.0;
 const BASE_MOVE_SPEED = 2.0;
+const BASE_MANA_GENERATION_RATE = 0.1;
 
 interface ScaledDistances {
     Circle: number;
@@ -100,8 +101,15 @@ export function sys_control_ai(game: Game, delta: number) {
             move.Direction[1] = movement[1];
             move.MoveSpeed = ai.BaseMoveSpeed * Math.sqrt(ai.Energy);
 
-            if (ai.KineticChargerEnabled && (movement[0] !== 0 || movement[1] !== 0)) {
-                ai.Energy += (move.MoveSpeed / 4) * 0.5 * delta;
+            // Base mana generation from movement for all entities
+            if (movement[0] !== 0 || movement[1] !== 0) {
+                // Base rate: small amount of mana when moving
+                let base_mana_rate = move.MoveSpeed * BASE_MANA_GENERATION_RATE * delta;
+
+                // Kinetic Charger upgrade: additional mana generation based on multiplier
+                let charger_rate = move.MoveSpeed * ai.EnergyFromMovement * delta;
+
+                ai.Energy += base_mana_rate + charger_rate;
             }
 
             game.World.Signature[entity] |= Has.Dirty;

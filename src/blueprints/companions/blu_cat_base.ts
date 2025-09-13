@@ -46,6 +46,7 @@ export function cat_control_ai(
             // Combat-driven energy properties (cats use defaults, don't get upgrade modifications)
             EnergyFromDamageDealt: 0.0, // Cats don't get energy upgrades
             EnergyFromDamageTaken: 0.0, // Cats don't get energy upgrades
+            EnergyFromMovement: 0, // No kinetic charger for companion cats
             EnergyDecayRate: 1.0,
             HealingRate: 0.0, // Cats don't heal
 

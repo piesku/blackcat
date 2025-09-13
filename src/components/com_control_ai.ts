@@ -21,6 +21,7 @@ export interface ControlAi {
     // Combat-driven energy upgrade properties (initialized to defaults, modified by upgrades)
     EnergyFromDamageDealt: number; // Energy gain per damage dealt (0.0 = disabled)
     EnergyFromDamageTaken: number; // Energy gain per damage taken (0.0 = disabled)
+    EnergyFromMovement: number; // Multiplier for kinetic charger mana generation (0 = disabled)
     EnergyDecayRate: number; // Energy decay rate toward baseline
     HealingRate: number; // Base healing rate multiplier (HP/s when energy > threshold)
 
@@ -30,9 +31,6 @@ export interface ControlAi {
 
     // Shockwave burst upgrade properties
     ShockwaveBurstEnabled: boolean; // Whether shockwave burst upgrade is active
-
-    // Kinetic charger upgrade properties
-    KineticChargerEnabled?: boolean; // Whether kinetic charger upgrade is active
 
     // Mana siphon upgrade properties
     ManaSiphon: number; // Percentage of damage dealt to siphon as energy
@@ -105,6 +103,9 @@ export function control_ai(is_player: boolean, base_move_speed: number) {
 
             // Shockwave burst properties (initialized to defaults)
             ShockwaveBurstEnabled: false,
+
+            // Kinetic charger properties (initialized to defaults)
+            EnergyFromMovement: 0, // Disabled by default
 
             ManaSiphon: 0.0, // No siphoning by default
         };
