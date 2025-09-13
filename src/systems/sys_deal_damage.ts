@@ -114,7 +114,6 @@ function handle_collision_damage(
                 attacker_health.PendingHealing.push({
                     Amount: heal_amount,
                     Source: original_spawner,
-                    Type: "vampiric",
                 });
                 console.log(
                     `[VAMPIRIC] Entity ${original_spawner} vampiric healing ${heal_amount.toFixed(2)} HP from dealing ${final_damage.toFixed(1)} damage to entity ${target_entity}`,

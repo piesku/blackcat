@@ -4,13 +4,11 @@ import {Has} from "../world.js";
 export interface DamageInstance {
     Amount: number;
     Source: number; // Entity ID that caused the damage
-    Type?: string; // Optional damage type for special effects
 }
 
 export interface HealingInstance {
     Amount: number;
     Source: number; // Entity ID that caused the healing
-    Type?: string; // Optional healing type for special effects
 }
 
 export interface Health {

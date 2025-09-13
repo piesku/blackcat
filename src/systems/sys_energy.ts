@@ -94,7 +94,6 @@ function handle_auto_healing(entity: number, ai: ControlAi, health: Health, delt
         health.PendingHealing.push({
             Amount: healing_applied,
             Source: entity,
-            Type: "energy_healing",
         });
     }
 
