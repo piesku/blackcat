@@ -12,7 +12,6 @@ export const enum UpgradeId {
     Shotgun,
     Minigun,
     SniperRifle,
-    Mortar,
     Boomerang,
     Explosives,
     Spikeballs,

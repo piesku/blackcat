@@ -31,7 +31,7 @@ export function blueprint_chiquita_banana() {
         // Damage on impact - bananas explode when they hit something
         deal_damage(3), // Default cooldown=0, destroys on hit
 
-        // Also explode on timeout like mortar shells - creates explosion area effect
+        // Also explode on timeout - creates explosion area effect
         lifespan(2.0, Action.ExplodeArea),
     ];
 }

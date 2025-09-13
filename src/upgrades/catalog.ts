@@ -30,13 +30,6 @@ export const WEAPON_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         Tiers: ["High-damage, long-range"],
         Rarity: UpgradeRarity.Common,
     },
-    [UpgradeId.Mortar]: {
-        Id: UpgradeId.Mortar,
-        Category: UpgradeCategory.Weapon,
-        Name: "Mortar",
-        Tiers: ["Don't look up!"],
-        Rarity: UpgradeRarity.Uncommon,
-    },
     [UpgradeId.Boomerang]: {
         Id: UpgradeId.Boomerang,
         Category: UpgradeCategory.Weapon,
@@ -242,7 +235,7 @@ export const COMPANION_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
         Id: UpgradeId.MrBlue,
         Category: UpgradeCategory.Companion,
         Name: "Berserker Cat",
-        Tiers: ["Mortar artillery"],
+        Tiers: ["Explosive artillery"],
         Rarity: UpgradeRarity.Common,
     },
     [UpgradeId.MrGray]: {

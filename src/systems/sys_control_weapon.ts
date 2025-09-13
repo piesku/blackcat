@@ -4,7 +4,6 @@ import {Vec2} from "../../lib/math.js";
 import {clamp} from "../../lib/number.js";
 import {vec2_copy} from "../../lib/vec2.js";
 import {blueprint_boomerang} from "../blueprints/projectiles/blu_boomerang.js";
-import {blueprint_mortar_shell} from "../blueprints/projectiles/blu_mortar_shell.js";
 import {query_down} from "../components/com_children.js";
 import {AiState} from "../components/com_control_ai.js";
 import {get_root_spawner, label} from "../components/com_label.js";
@@ -100,9 +99,6 @@ function activate_weapon(game: Game, wielder_entity: number, weapon_entity: numb
     // Apply weapon-specific effects based on weapon name
     let weapon_name = get_weapon_name(game, weapon_entity);
     switch (weapon_name) {
-        case "mortar":
-            execute_mortar_attack(game, wielder_entity, weapon, weapon_entity);
-            break;
         case "boomerang":
             execute_boomerang_attack(game, wielder_entity, weapon, weapon_entity);
             break;
@@ -152,46 +148,6 @@ function execute_ranged_attack(
 
     console.log(
         `[RANGED] Entity ${wielder_entity} activated ${spawners_activated} spawner(s) toward target ${aim.TargetEntity}`,
-    );
-}
-
-function execute_mortar_attack(
-    game: Game,
-    wielder_entity: number,
-    weapon: Weapon,
-    weapon_entity: number,
-) {
-    let aim = game.World.Aim[wielder_entity];
-    DEBUG: if (!aim) throw new Error("wielder missing aim component");
-
-    // Find and activate the spawner on the weapon
-    let spawner = game.World.Spawn[weapon_entity];
-    DEBUG: if (!spawner) throw new Error("missing component");
-
-    // Set spawn direction as angled upward toward target
-    let local_transform = game.World.LocalTransform2D[weapon_entity];
-    DEBUG: if (!local_transform) throw new Error("missing component");
-
-    // Set mortar angle as 45 degrees upward, but facing left or right toward target
-    let target_is_left = aim.DirectionToTarget[0] < 0;
-    local_transform.Rotation = target_is_left ? 135 : 45; // 135° for left, 45° for right
-
-    // Mark entity as dirty so transform system updates it
-    game.World.Signature[weapon_entity] |= Has.Dirty;
-
-    // Use shorter flight time for mortar shells (area effect weapon)
-    let approx_lifetime = clamp(0.8, 1.8, 1.0 + aim.DistanceToTarget / 15.0); // Shorter duration
-
-    // Update blueprint to use calculated lifetime
-    spawner.BlueprintCreator = () => blueprint_mortar_shell(approx_lifetime);
-
-    // Activate the count-based spawner using weapon's TotalAmount
-    if (spawner.Mode === SpawnMode.Count) {
-        spawner.Count = weapon.TotalAmount;
-    }
-
-    console.log(
-        `[MORTAR] Entity ${wielder_entity} firing mortar with ${approx_lifetime.toFixed(2)}s lifetime toward target ${aim.TargetEntity}`,
     );
 }
 

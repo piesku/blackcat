@@ -16,7 +16,6 @@ import {blueprint_flamethrower} from "../blueprints/weapons/blu_flamethrower.js"
 import {blueprint_hoover_crack} from "../blueprints/weapons/blu_hoover_crack.js";
 import {blueprint_larpa} from "../blueprints/weapons/blu_larpa.js";
 import {blueprint_minigun} from "../blueprints/weapons/blu_minigun.js";
-import {blueprint_mortar} from "../blueprints/weapons/blu_mortar.js";
 import {blueprint_shotgun} from "../blueprints/weapons/blu_shotgun.js";
 import {blueprint_sniper_rifle} from "../blueprints/weapons/blu_sniper_rifle.js";
 import {blueprint_spikeballs} from "../blueprints/weapons/blu_spikeballs.js";
@@ -251,11 +250,6 @@ function apply_weapon_upgrade(game: Game, entity: number, upgrade: UpgradeType, 
 
         case UpgradeId.SniperRifle:
             weapon_entity = instantiate(game, blueprint_sniper_rifle());
-            attach_to_parent(game, weapon_entity, entity);
-            break;
-
-        case UpgradeId.Mortar:
-            weapon_entity = instantiate(game, blueprint_mortar());
             attach_to_parent(game, weapon_entity, entity);
             break;
 

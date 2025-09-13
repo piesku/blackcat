@@ -1,9 +1,9 @@
 import {aim} from "../../components/com_aim.js";
 import {children} from "../../components/com_children.js";
-import {blueprint_mortar} from "../weapons/blu_mortar.js";
+import {blueprint_explosives} from "../weapons/blu_explosives.js";
 import {blueprint_cat_base} from "./blu_cat_base.js";
 
-// Mr. Blue - Mortar Artillery: Glass cannon with explosive area damage
+// Mr. Blue - Explosive Artillery: Glass cannon with dynamite area damage
 export function blueprint_mr_blue(owner_is_player: boolean) {
     return [
         ...blueprint_cat_base(
@@ -13,7 +13,7 @@ export function blueprint_mr_blue(owner_is_player: boolean) {
             2.0, // aggressiveness (increased from 1.0)
             0.1, // patience (decreased from 1.0)
         ),
-        children(blueprint_mortar()),
+        children(blueprint_explosives()),
         aim(0.03), // Fastest targeting for rapid artillery fire - overwrites base aim
     ];
 }

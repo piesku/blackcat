@@ -18,7 +18,6 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Explosives** ✅ _(Common)_ - Thrown bombs that explode on timeout with debris particles
 - **Spikeballs** ✅ _(Common)_ - Bouncing projectiles that persist and ricochet around the arena
 - **Rifle** ✅ _(Common)_ - High-damage, long-range precision weapon with muzzle flash
-- **Mortar** ✅ _(Uncommon)_ - High-arc explosive shells with area damage
 - **Larpa** ✅ _(Rare)_ - Rockets leaving falling particle damage trails
 - **Chiquita Bomb** ✅ _(Rare)_ - Bomb spawning multiple banana sub-bombs
 - **Hoover Crack** ✅ _(Rare)_ - Spinning particle emitter dealing continuous damage
@@ -41,7 +40,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - **Mr. Pink** ✅ _(Common)_ - Boomerang marksman - Equipped boomerang weapon with slow methodical movement and high patience
 - **Mr. White** ✅ _(Uncommon)_ - Defensive tank - Highest HP, slowest speed, equipped shotgun, waits for enemies to approach
 - **Mr. Brown** ✅ _(Uncommon)_ - Loyal bodyguard - Ultra-low aggression, targets friendlies to stay close and protect allies
-- **Mr. Blue** ✅ _(Common)_ - Mortar artillery - Glass cannon with mortar weapon, fastest targeting for rapid bombardment
+- **Mr. Blue** ✅ _(Common)_ - Explosive artillery - Glass cannon with dynamite weapon, fastest targeting for rapid bombardment
 - **Mr. Gray** ✅ _(Rare)_ - Shadow assassin - High speed, shadow trail ability for hit-and-run attacks
 - **Mr. Red** ✅ _(Uncommon)_ - Suicide bomber - Dies in one hit, fast approach, explodes on death
 
@@ -122,9 +121,9 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 
 ## Upgrade Distribution Summary
 
-**Current Implemented Upgrades: 49** / **Complete System ✅** (Field Surgeon consolidated into Combat Medic tiers)
+**Current Implemented Upgrades: 48** / **Complete System ✅** (Field Surgeon consolidated into Combat Medic tiers, Mortar removed)
 
-- **Weapons**: 11 upgrades ✅ (child entities with blueprints)
+- **Weapons**: 10 upgrades ✅ (child entities with blueprints)
 - **Companions**: 8 upgrades ✅ (root entities with blueprints)
 - **Enhancement**: 29 upgrades ✅ (component property modifications, including 24 tiered upgrades)
     - Armor Properties: 8 upgrades ✅ (8 tiered)
@@ -171,7 +170,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 - Vitality (3 tiers): Maximum health
 - Cautious (3 tiers): Defensive health + AI behavior
 
-**Rarity Distribution** (49 Total - Tiered upgrades span multiple rarities):
+**Rarity Distribution** (48 Total - Tiered upgrades span multiple rarities):
 
 - **Common**: 5 base upgrades + 20 Tier 1 tiered = 25 total common options
 - **Uncommon**: 10 base upgrades + 22 Tier 2 tiered = 32 total uncommon options
@@ -184,7 +183,7 @@ Upgrades are the core mechanic that drives strategic depth and build variety. Pl
 ```typescript
 // Simplified upgrade categories (src/upgrades/types.ts)
 export enum UpgradeCategory {
-    Weapon = "Weapon", // Child entities with blueprints (11 upgrades ✅)
+    Weapon = "Weapon", // Child entities with blueprints (10 upgrades ✅)
     Companion = "Companion", // Root entities with blueprints (8 upgrades ✅)
     Enhancement = "Enhancement", // ControlAi property modifications (31 upgrades ✅)
     Special = "Special", // Unique mechanics that don't fit patterns (1 upgrade ✅)
