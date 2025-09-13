@@ -24,7 +24,7 @@ export function blueprint_hoover_particle(damage: number) {
         particle(0.8), // spread
 
         // Collision and damage
-        collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.15),
+        collide2d(Layer.Particle, Layer.Player | Layer.Terrain, 0.15),
         deal_damage(damage),
 
         lifespan(6), // Persist for 6 seconds of continuous damage

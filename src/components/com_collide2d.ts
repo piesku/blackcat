@@ -25,8 +25,6 @@ export interface Circle2D {
 
 export interface Collide2D extends Circle2D {
     EntityId: Entity;
-    New: boolean;
-    Dynamic: boolean;
     Layers: Layer;
     Mask: Layer;
     Collisions: Array<Entity>;
@@ -35,19 +33,15 @@ export interface Collide2D extends Circle2D {
 /**
  * Add the Collide2D component.
  *
- * @param dynamic Dynamic colliders collider with all colliders. Static
- * colliders collide only with dynamic colliders.
  * @param layers Bit field with layers this collider is on ("I'm a ...").
  * @param mask Bit mask with layers visible to this collider ("I'm interested in ...").
  * @param radius Radius of the circle collider in world units.
  */
-export function collide2d(dynamic: boolean, layers: Layer, mask: Layer, radius: number = 0.5) {
+export function collide2d(layers: Layer, mask: Layer, radius: number = 0.5) {
     return (game: Game, EntityId: Entity) => {
         game.World.Signature[EntityId] |= Has.Collide2D;
         game.World.Collide2D[EntityId] = {
             EntityId,
-            New: true,
-            Dynamic: dynamic,
             Layers: layers,
             Mask: mask,
             Radius: radius,

@@ -18,7 +18,7 @@ export function blueprint_hoover_projectile() {
         label("hoover crack projectile"),
         spatial_node2d(),
         local_transform2d(),
-        collide2d(false, Layer.Projectile, Layer.Terrain, 0.1), // Doesn't deal direct damage, just spawns particles
+        collide2d(Layer.Projectile, Layer.Terrain, 0.1), // Doesn't deal direct damage, just spawns particles
         rigid_body2d(RigidKind.Dynamic, 0, 0.8, [0, 0]), // Friction to slow down over time
 
         // Spawner for continuous spinning particle emission

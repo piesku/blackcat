@@ -37,7 +37,7 @@ export function blueprint_boomerang(target_direction: Vec2, target_distance: num
         control_always2d(arc_direction, -1), // Initial direction for circular motion
         move2d(BOOMERANG_MOVE_SPEED, BOOMERANG_ARC_SPEED), // Higher arc speed for circular path
 
-        collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.1),
+        collide2d(Layer.Projectile, Layer.Player | Layer.Terrain, 0.1),
 
         // Complete circular arc - no action needed, just expires naturally
         lifespan(travel_time),

@@ -13,7 +13,7 @@ export function blueprint_chiquita_main_bomb() {
         label("chiquita_main_bomb"),
         local_transform2d(),
         render2d(Tile.Bomb),
-        collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.1),
+        collide2d(Layer.Projectile, Layer.Player | Layer.Terrain, 0.1),
         rigid_body2d(RigidKind.Dynamic, 0, 0.5, [0, -2]), // Light gravity, slight arc
 
         // Timeout explosion - main bomb explodes after 2 seconds into bananas

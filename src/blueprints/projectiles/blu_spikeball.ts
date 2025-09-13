@@ -13,7 +13,7 @@ export function blueprint_spikeball(damage: number) {
         label("spikeball"),
         local_transform2d(),
         render2d(Tile.Spikeball),
-        collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.15),
+        collide2d(Layer.Projectile, Layer.Player | Layer.Terrain, 0.15),
 
         // High bounciness for persistent bouncing, no gravity for arena-level bouncing
         rigid_body2d(RigidKind.Dynamic, 0.8, 0.4, [0, 0]), // 80% bounce, minimal drag, no gravity

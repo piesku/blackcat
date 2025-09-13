@@ -24,7 +24,7 @@ export function blueprint_larpa_trail_particle() {
         particle(0.4), // spread
 
         // Collision and damage
-        collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.05),
+        collide2d(Layer.Particle, Layer.Player | Layer.Terrain, 0.05),
         deal_damage(0.5), // Default cooldown=0, destroys on hit
 
         lifespan(2.5), // Trail particles last 2.5 seconds before disappearing

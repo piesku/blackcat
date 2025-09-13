@@ -23,7 +23,7 @@ export function blueprint_bullet(damage: number) {
 
         render2d(Tile.Part, [0, 0, 0, 1]),
 
-        collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.05),
+        collide2d(Layer.Projectile, Layer.Player | Layer.Terrain, 0.05),
         rigid_body2d(RigidKind.Dynamic, 0, 0, [0, 0]),
 
         deal_damage(damage), // Default cooldown=0, destroys on hit

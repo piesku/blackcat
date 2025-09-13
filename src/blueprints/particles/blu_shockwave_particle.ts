@@ -24,7 +24,7 @@ export function blueprint_shockwave_particle(damage: number = 0.5) {
         particle(0.5), // spread
 
         // Collision and damage - damages objects and other fighters
-        collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.1),
+        collide2d(Layer.Particle, Layer.Player | Layer.Terrain, 0.1),
         deal_damage(damage), // Default cooldown=0, destroys on hit
 
         lifespan(1.5), // Shockwave particles last 1.5 seconds before disappearing

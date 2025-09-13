@@ -17,7 +17,7 @@ export function blueprint_larpa_rocket(damage: number) {
         spatial_node2d(),
         local_transform2d(),
         render2d(Tile.Rocket),
-        collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.08),
+        collide2d(Layer.Projectile, Layer.Player | Layer.Terrain, 0.08),
         rigid_body2d(RigidKind.Dynamic, 0, 0, [0, 0]),
         deal_damage(damage), // Default cooldown=0, destroys on hit
         lifespan(5), // Longer flight time than regular projectiles

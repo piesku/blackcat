@@ -20,7 +20,7 @@ export function blueprint_mortar_shell(lifetime: number) {
         rigid_body2d(RigidKind.Dynamic, 0.3, 0.01, [0, -9.8]), // Standard gravity for grenades
 
         // Small collision radius for the mortar shell itself
-        collide2d(true, Layer.Projectile, Layer.Player | Layer.Terrain, 0.2),
+        collide2d(Layer.Projectile, Layer.Player | Layer.Terrain, 0.2),
 
         // Explode after calculated lifetime (simulating hitting the ground)
         lifespan(lifetime, Action.ExplodeArea),

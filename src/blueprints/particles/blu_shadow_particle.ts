@@ -21,7 +21,7 @@ export function blueprint_shadow_particle() {
         particle(0.0), // spread
 
         // Collision and damage - continuous damage dealing
-        collide2d(true, Layer.Particle, Layer.Player, 1),
+        collide2d(Layer.Particle, Layer.Player, 1),
         deal_damage(1, 0.1), // 0.1s cooldown, continuous shadow damage
 
         lifespan(5),

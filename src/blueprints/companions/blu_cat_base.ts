@@ -96,7 +96,7 @@ export function blueprint_cat_base(
         // Cats inherit team from owner with custom personality
         cat_control_ai(owner_is_player, move_speed, aggressiveness, patience),
 
-        collide2d(true, Layer.Player, Layer.Terrain | Layer.Player, 0.4), // Smaller collision
+        collide2d(Layer.Player, Layer.Terrain | Layer.Player, 0.4), // Smaller collision
         health(hp),
         move2d(move_speed, 0),
         aim(0.1), // Base aim speed for cats (can be overridden)

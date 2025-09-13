@@ -24,7 +24,7 @@ export function blueprint_debris_particle() {
         particle(0.8), // spread
 
         // Collision and damage
-        collide2d(true, Layer.Particle, Layer.Player | Layer.Terrain, 0.1),
+        collide2d(Layer.Particle, Layer.Player | Layer.Terrain, 0.1),
         deal_damage(0.1), // Default cooldown=0, destroys on hit
 
         lifespan(3), // Debris lasts 3 seconds before disappearing

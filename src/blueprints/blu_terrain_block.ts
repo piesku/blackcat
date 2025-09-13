@@ -13,7 +13,7 @@ export function blueprint_terrain_block(scale: number = 1.0) {
         local_transform2d(),
         render2d(Tile.Crate),
         // Static collider on Terrain layer
-        collide2d(false, Layer.Terrain, Layer.None),
+        collide2d(Layer.Terrain, Layer.None),
         rigid_body2d(RigidKind.Static, 0, 0, [0, 0]),
         // Make terrain destructible
         health(scale * 2), // Health scales with size

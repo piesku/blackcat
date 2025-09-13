@@ -67,7 +67,7 @@ export function blueprint_fighter(game: Game, is_player: boolean) {
 
         control_ai(is_player, base_speed),
 
-        collide2d(true, Layer.Player, Layer.Terrain | Layer.Player, 0.5),
+        collide2d(Layer.Player, Layer.Terrain | Layer.Player, 0.5),
         health(totalHealth),
         move2d(base_speed, 0),
         aim(0.1), // Target search every 0.1 seconds
