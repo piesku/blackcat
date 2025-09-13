@@ -1,5 +1,6 @@
 import {Tile} from "../../../sprites/spritesheet.js";
 import {aim} from "../../components/com_aim.js";
+import {children} from "../../components/com_children.js";
 import {collide2d} from "../../components/com_collide2d.js";
 import {control_always2d} from "../../components/com_control_always2d.js";
 import {deal_damage} from "../../components/com_deal_damage.js";
@@ -8,6 +9,7 @@ import {lifespan} from "../../components/com_lifespan.js";
 import {local_transform2d} from "../../components/com_local_transform2d.js";
 import {move2d} from "../../components/com_move2d.js";
 import {render2d} from "../../components/com_render2d.js";
+import {spatial_node2d} from "../../components/com_spatial_node2d.js";
 import {Layer} from "../../game.js";
 
 const HOMING_MISSILE_SPEED = 5;
@@ -18,8 +20,8 @@ export function blueprint_homing_missile(is_player_team: boolean = true) {
     return [
         label("homing_missile"),
 
+        spatial_node2d(),
         local_transform2d(),
-        render2d(Tile.Rocket),
 
         aim(0.1, is_player_team), // Update target every 0.1 seconds, specify team
         control_always2d(null, 0), // Direction will be set by aim system
@@ -31,5 +33,13 @@ export function blueprint_homing_missile(is_player_team: boolean = true) {
 
         // Damage on impact
         deal_damage(2, 0),
+
+        children([
+            spatial_node2d(),
+            local_transform2d(),
+            render2d(Tile.Banana),
+            control_always2d(null, 1),
+            move2d(0, 180),
+        ]),
     ];
 }

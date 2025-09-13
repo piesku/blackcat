@@ -33,8 +33,8 @@ export const WEAPON_UPGRADES_MAP: Partial<Record<UpgradeId, UpgradeType>> = {
     [UpgradeId.HomingMissile]: {
         Id: UpgradeId.HomingMissile,
         Category: UpgradeCategory.Weapon,
-        Name: "Homing Missile",
-        Tiers: ["Seeking destruction"],
+        Name: "Homing Banana",
+        Tiers: ["Peelin' great!"],
         Rarity: UpgradeRarity.Uncommon,
     },
     [UpgradeId.Explosives]: {
