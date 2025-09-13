@@ -8,7 +8,7 @@ export function blueprint_boomerang_weapon() {
         label("boomerang"), // Name for identification
 
         spatial_node2d(),
-        local_transform2d([0, 0], 0, [1, 1]), // Medium offset and size
+        local_transform2d(),
         weapon_ranged(
             6, // range: medium range for throwing
             2.5, // cooldown: moderate rate of fire for precision throwing

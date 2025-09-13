@@ -8,7 +8,7 @@ import {blueprint_mortar_shell} from "../projectiles/blu_mortar_shell.js";
 export function blueprint_mortar() {
     return [
         spatial_node2d(),
-        local_transform2d([0, 0], 0, [1.0, 1.0]), // Large weapon offset
+        local_transform2d(),
         label("mortar"), // Name for identification
         weapon_ranged(
             8, // range: long range

@@ -10,7 +10,7 @@ import {blueprint_larpa_rocket} from "../projectiles/blu_larpa_rocket.js";
 export function blueprint_larpa() {
     return [
         spatial_node2d(),
-        local_transform2d([0, 0], 0, [1.0, 1.0]), // Standard weapon size
+        local_transform2d(),
         label("larpa"), // Name for identification
         weapon_ranged(
             7, // range: good range for rocket launcher

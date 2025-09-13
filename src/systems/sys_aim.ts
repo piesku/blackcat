@@ -43,6 +43,9 @@ export function sys_aim(game: Game, delta: number) {
 
                         // Flip the body sprite to face the target
                         flip_body_sprite_to_target(game, entity, aim.DirectionToTarget);
+
+                        // Position weapons on the correct side based on target direction
+                        flip_weapon_positions_to_target(game, entity, aim.DirectionToTarget);
                     } else {
                         aim.DirectionToTarget[0] = 0;
                         aim.DirectionToTarget[1] = 0;
@@ -114,7 +117,6 @@ function flip_body_sprite_to_target(game: Game, entity: number, direction_to_tar
     if (body_entity === -1) return; // No body sprite found
 
     let body_transform = game.World.LocalTransform2D[body_entity];
-    if (!body_transform) return;
 
     // Flip the body sprite based on target direction
     // If target is to the left (negative x), flip the sprite (negative scale)
@@ -126,5 +128,27 @@ function flip_body_sprite_to_target(game: Game, entity: number, direction_to_tar
     if (body_transform.Scale[0] !== new_scale_x) {
         body_transform.Scale[0] = new_scale_x;
         game.World.Signature[body_entity] |= Has.Dirty;
+    }
+}
+
+function flip_weapon_positions_to_target(game: Game, entity: number, direction_to_target: Vec2) {
+    // Find all weapon children
+    for (let weapon_entity of query_down(game.World, entity, Has.Weapon | Has.LocalTransform2D)) {
+        if (weapon_entity !== entity) {
+            // Skip the parent entity itself
+            let weapon_transform = game.World.LocalTransform2D[weapon_entity];
+
+            // Flip weapon position based on target direction (same logic as body sprite flipping)
+            // If target is to the left (negative x), flip weapon to left side
+            // If target is to the right (positive x), keep weapon on right side
+            let should_flip = direction_to_target[0] < 0;
+            let new_x_position = should_flip ? -0.5 : 0.5;
+
+            // Only update if the position changed to avoid unnecessary dirty marking
+            if (weapon_transform.Translation[0] !== new_x_position) {
+                weapon_transform.Translation[0] = new_x_position;
+                game.World.Signature[weapon_entity] |= Has.Dirty;
+            }
+        }
     }
 }

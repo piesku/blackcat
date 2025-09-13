@@ -8,7 +8,7 @@ import {weapon_ranged} from "../../components/com_weapon.js";
 export function blueprint_flamethrower() {
     return [
         spatial_node2d(),
-        local_transform2d([0, 0], 0, [1.0, 1.0]), // Larger weapon offset
+        local_transform2d(),
         label("flamethrower"), // Name for identification
         weapon_ranged(
             6, // range: medium range

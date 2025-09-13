@@ -11,7 +11,7 @@ import {blueprint_bullet} from "../projectiles/blu_bullet.js";
 export function blueprint_minigun() {
     return [
         spatial_node2d(),
-        local_transform2d([0, 0], 0, [1.0, 1.0]), // Standard weapon size
+        local_transform2d(),
         label("minigun"), // Name for identification
         weapon_ranged(
             6, // range: medium range
