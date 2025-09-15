@@ -1,6 +1,6 @@
 import {rand} from "../../lib/random.js";
 import {AnimationId, set_animation} from "../components/com_animate_sprite.js";
-import {query_down} from "../components/com_children.js";
+import {destroy_all, query_down} from "../components/com_children.js";
 import {AiState} from "../components/com_control_ai.js";
 
 import {Health} from "../components/com_health.js";
@@ -64,14 +64,17 @@ export function sys_health(game: Game, _delta: number) {
                     `[DEATH] Entity ${entity} died from ${total_damage.toFixed(1)} damage - removing Health component`,
                 );
 
-                for (let entity_child of query_down(game.World, entity, Has.AnimateSprite)) {
-                    set_animation(game, entity_child, AnimationId.Die);
+                if (game.World.Signature[entity] & Has.ControlAi) {
+                    // Fighters and cats have death animations and stay on the screen as corpses.
+                    for (let entity_child of query_down(game.World, entity, Has.AnimateSprite)) {
+                        set_animation(game, entity_child, AnimationId.Die);
+                    }
+                } else {
+                    destroy_all(game.World, entity);
                 }
 
                 // Remove Health component to mark entity as dead
                 game.World.Signature[entity] &= ~Has.Health;
-
-                // Entity destruction will be handled next frame after duel_manager has chance to run
             }
 
             // Process all pending healing instances
